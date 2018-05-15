@@ -2,9 +2,11 @@
 
 DEW-R unifies behavior and topology of an experiment, but captures only relevant topological details. 
 
+# Design overview 
+
 DEW-R has several design goals:
 
-## High-level representation.##
+## High-level representation
 
 It was important to us that DEW-R contains a human-readable, short
 description of what the experiment is supposed to do.  Such a
@@ -14,13 +16,13 @@ to them.  Moreover, expressing what an experiment will do in broad strokes
 captures the process, which so far has existed only in the researcher's
 mind, and eases experiment design.
 
-## Generic language. ##
+## Generic language
 
 DEW-R should support many diverse experiments, and thus its language must be
 expressive enough to be broadly applicable, regardless of the experiment's
 goal or testbed infrastructure where it will be realized.
 
-## Self-contained representation. ##
+## Self-contained representation
 
 We wanted DEW-R to contain sufficient details to facilitate automated
 generation of experimental topologies and scripts, which would run on these
@@ -30,7 +32,7 @@ error-prone tasks to machines.  This would further facilitate generation of
 topologies and scripts in many different languages, and for many different
 testbed infrastructures, enabling portability.
 
-## Decouple behavior from topology.##
+## Decouple behavior from topology
 
 We wanted to decouple the intended behavior from the topology where it will
 be realized, thus enabling the same experiment to be scaled up and down
@@ -38,7 +40,8 @@ easily, by changing a few lines of DEW-R.  Our goal was to capture only the
 necessary topology details in the form of constraints the behavior must
 place on resources.
 
-## Structured representation.##
+## Structured representation
+
 We wanted to impose some natural structure on DEW-R, enabling researchers to
 easily locate and focus on the important pieces for their goal.  This
 structure should facilitate experiment design and running, which are aligned
