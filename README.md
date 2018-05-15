@@ -58,7 +58,12 @@ For spaCY install and model install instructions see:
 	https://spacy.io/usage/
 	https://spacy.io/usage/models
 
-You can find the BNF notation of DEW-R in BNF folder.
+# Organization
 
+You can find the BNF notation of DEW in BNF folder.
+
+Folder UI has our UI implementation
+
+Folder translators will house translators from other representations into DEW
 
 
