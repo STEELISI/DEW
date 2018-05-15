@@ -58,3 +58,7 @@ For spaCY install and model install instructions see:
 	https://spacy.io/usage/
 	https://spacy.io/usage/models
 
+You can find the BNF notation of DEW-R in BNF folder.
+
+
+
