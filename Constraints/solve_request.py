@@ -395,7 +395,8 @@ def rec_shorten_ids(d):
 if __name__ == "__main__":
 
     # Import json resources for the example sites
-    root = "/Users/jim/repo/Projects/Bridge/CEF/git/xir/examples/"
+    #root = "/Users/jim/repo/Projects/Bridge/CEF/git/xir/examples/"
+    root = ""
     with open(root + "sites/emu.json") as f:
         emu_json = json.load(f)
     with open(root + "sites/cellular.json") as f:
