@@ -2,10 +2,12 @@ app = None
 dialogue = None
 bdg_canvas = None
 topo_canvas = None
+deploy_canvas = None
 bdg_handler = None
 topo_handler = None
 nlp_handler = None
 nlp_help_str = "Type Natural English Language Here. E.g.:\n\"After the bad host begins the attack, the good host will deploy defences.\""
+deploy_handler = None
 
 acn=0
 tcn=0

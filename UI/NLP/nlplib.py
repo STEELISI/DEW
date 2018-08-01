@@ -175,7 +175,12 @@ def findCondClauses(tokens):
                 # during
                 elif any(word in clause.lower() for word in ['at', 'when', 'during']):
                     dep = "<<SAMETIME>>"
-                clauses.append((condcl, dep))
+                
+                includesTime = False
+                if any(word in clause.lower() for word in ['minute', 'minutes', 'second', 'seconds', 'wait']):
+                    includesTime = True
+                
+                clauses.append((condcl, dep, includesTime))
             else:
                 print("WARNING: Unhandled clause: %s" % clause)
     return clauses
@@ -192,7 +197,10 @@ def findEntities(toks, sub=True, obj=False):
             if tok.dep in set([dobj, iobj, pobj]):
                 is_obj = True
         if is_obj:
-            print("OBJ span: %s" % str(span))
+            try:
+                print("OBJ span: %s" % str(span))
+            except Exception as e:
+                print(e)
         if is_nsubj:
             print("SUB span: %s" % str(span))
         if is_nsubj==sub and is_obj==obj:

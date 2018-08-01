@@ -47,16 +47,24 @@ class nlpHandler():
                             ent_str = ' '.join(ent_phrase)
                             ent_str = ''.join(x for x in ent_str.title() if not x.isspace())
                             print(ent_str)
-                            if ent_str not in self.submittedActors:
-                                globals.app.setTextArea("actor",ent_str+'\n', callFunction=actorentered)
-                                self.submittedActors.append(ent_str)
-                            actors.append(ent_str)
+                            if ent_str not in actors:
+                                actors.append(ent_str)
                         
                         # Generate Behavior Suggestions
                         suggested_hlb = self.generate_behavior(sentence, tokens, actors=actors)
                         if suggested_hlb != None:
+                            removetable = str.maketrans('', '', "'@#%")
+                            suggested_hlb = suggested_hlb.translate(removetable)
                             print(suggested_hlb)
                             globals.app.setTextArea("behavior", suggested_hlb, callFunction=behaviorentered)
+                        
+                        # We don't add actors ourselves. The code that extracts actors from behavior will 
+                        # end up doing what we want there.    
+                        #for ent_str in actors:
+                        #    if ent_str not in self.submittedActors and ent_str not in globals.actors:
+                        #        globals.app.setTextArea("actor",ent_str+'\n', callFunction=actorentered)
+                        #        self.submittedActors.append(ent_str)
+
                         
             elif len(split_text) < len(self.sentences):
                 print("Do not handle erasures yet.")
@@ -80,11 +88,16 @@ class nlpHandler():
         # Try and parse the main conditional clause (if we have one)
         # We only handle one clause. Others are ignored.
         clause_action_relation = ()
+        clause_includes_time = False
         if len(cond_clauses) > 0:
             clause_action_relation = actionRelation(cond_clauses[0][0])
             clause_action_dep = str(cond_clauses[0][1]) 
+            clause_inclues_time = cond_clauses[0][2]
             #print(clause_action_relation)
         if len(cond_clauses) > 1:
+            for cond in cond_clauses:
+                if cond_clauses[cond][2]:
+                    clause_inclues_time = True
             print("WARNING: We do not handle multiple conditional clauses in a sentence.")
         
         # Get the main action.
@@ -97,7 +110,10 @@ class nlpHandler():
             return None
         
         for objents in findEntities(self.dict(main_sen),sub=False, obj=True):
-            print("OBJECT ENT: %s" % str(objents))
+            try:
+                print("OBJECT ENT: %s" % str(objents))
+            except Exception as e:
+                print(e)
         main_hlb, main_trigger = self.hlbify(actor, action, object, actors=findEntities(self.dict(main_sen)), objects=findEntities(self.dict(main_sen),sub=False, obj=True))
         #print("MAIN HLB: %s. TRIGGER: %s" % (main_hlb, main_trigger))
         
@@ -112,11 +128,17 @@ class nlpHandler():
         cond_hlb, cond_trigger = self.hlbify(cond_actor, cond_action, cond_object, actors=findEntities(self.dict(cond_clauses[0][0])), objects=findEntities(self.dict(cond_clauses[0][0]),sub=False, obj=True))
         
         if clause_action_dep == "<<STARTS BEFORE MAIN CLAUSE>>":
-            main_hlb = "WHEN %s %s EMIT %s" % (cond_trigger,main_hlb,main_trigger)
+            if clause_inclues_time:
+                 main_hlb = "WHEN %s WAIT %d %s EMIT %s" % (cond_trigger,self.timeindex,main_hlb,main_trigger)
+            else:
+                main_hlb = "WHEN %s %s EMIT %s" % (cond_trigger,main_hlb,main_trigger)
             cond_hlb = "%s EMIT %s" %(cond_hlb, cond_trigger)
         elif clause_action_dep == "<<STARTS AFTER MAIN CLAUSE>>":
             main_hlb = "%s EMIT %s" %(main_hlb, main_trigger)
-            cond_hlb = "WHEN %s %s EMIT %s" % (main_trigger, cond_hlb, cond_trigger)
+            if clause_inclues_time:
+                cond_hlb = "WHEN %s WAIT %d %s EMIT %s" % (main_trigger, self.timeindex, cond_hlb, cond_trigger)
+            else:
+                cond_hlb = "WHEN %s %s EMIT %s" % (main_trigger, cond_hlb, cond_trigger)
         else:
             # We want to start these at the same time??
             cond_hlb = "WAIT X%d %s EMIT %s" % (self.timeindex, cond_hlb, cond_trigger)

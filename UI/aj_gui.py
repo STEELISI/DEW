@@ -26,6 +26,7 @@ except:
 
 from dependencyGraph.dg import dependencyGraphHandler
 from topology.topo import topoHandler
+from deploy.constraints import deployHandler
 import globals
 
 
@@ -42,10 +43,9 @@ def fixYoffsets():
     toolbarHeight = int(tb.master.winfo_height())
     tabbedHeight = int(ta.tabContainer.winfo_height())
     #print("Y offset total: %s and %s" % (str(tabbedHeight), str(toolbarHeight)))
-    
-    globals.bdg_handler.setoffsets(yoffset=tabbedHeight+toolbarHeight)
+    globals.bdg_handler.setoffsets(yoffset=tabbedHeight+toolbarHeight, height=globals.app.appWindow.winfo_screenheight(), width=globals.app.appWindow.winfo_screenwidth())
+    #globals.topo_handler.setoffsets(yoffset=tabbedHeight+toolbarHeight, height=globals.app.appWindow.winfo_screenheight(), width=globals.app.appWindow.winfo_screenwidth())
     globals.topo_handler.setoffsets(yoffset=tabbedHeight+toolbarHeight)
-
 
 # create a GUI variable and assign our app var
 globals.app = gui("Experiment","800x600")
@@ -68,19 +68,21 @@ tabbed_frame = globals.app.startTabbedFrame("TabbedArea")
 globals.app.setFont(size=12)
 
 ## Tab1
+#"row=1\ncolumn=2\ncolspan=1\nrowspan=2"
 globals.app.startTab("HLB")
-globals.app.startLabelFrame("Actors", 0,0)
+globals.app.startLabelFrame("Actors", 0,0,1,1)
 globals.app.setSticky("ew")
 globals.app.setStretch("both")
 globals.app.addScrolledTextArea("actor")
 globals.app.setTextAreaTooltip("actor","actors")
+
 #globals.app.setTextAreaOverFunction("actor",[entered, left])
 globals.app.getTextAreaWidget("actor").bind("<FocusOut>", actorleft, add="+")
 globals.app.getTextAreaWidget("actor").bind("<FocusIn>", actorentered, add="+")
 globals.app.stopLabelFrame()
-globals.app.startLabelFrame("Behavior", 1,0)
+globals.app.startLabelFrame("Behavior", 1,0,1,1)
 globals.app.setSticky("ew")
-globals.app.setStretch("column")
+globals.app.setStretch("both")
 globals.app.addScrolledTextArea("behavior")
 globals.app.setTextAreaTooltip("behavior","behavior")
 globals.app.getTextAreaWidget("behavior").bind("<FocusOut>", behaviorleft, add="+")
@@ -88,9 +90,9 @@ globals.app.getTextAreaWidget("behavior").bind("<FocusIn>", behaviorentered, add
 #globals.app.setTextAreaOverFunction("behavior",[entered, left])
 globals.app.setTextAreaChangeFunction("behavior",changed)
 globals.app.stopLabelFrame()
-globals.app.startLabelFrame("Constraints", 2,0)
+globals.app.startLabelFrame("Constraints", 2,0,1,1)
 globals.app.setSticky("ew")
-globals.app.setStretch("column")
+globals.app.setStretch("both")
 globals.app.addScrolledTextArea("constraints")
 globals.app.setTextAreaTooltip("constraints","constraints")
 #globals.app.setTextAreaOverFunction("constraints",[entered, left])
@@ -98,11 +100,18 @@ globals.app.getTextAreaWidget("constraints").bind("<FocusOut>", constraintsleft,
 globals.app.getTextAreaWidget("constraints").bind("<FocusIn>", constraintsentered, add="+")
 globals.app.setTextAreaChangeFunction("constraints",changed)
 globals.app.stopLabelFrame()
-globals.app.startLabelFrame("Suggestions", 0,1,3,3)
-globals.app.setSticky("ew")
-globals.app.setStretch("column")
+# Suggestion
+globals.app.startLabelFrame("Suggestions", 0,2,1,3)
 globals.app.setLabelFrameOverFunction("Suggestions",[None, left])
+globals.app.setSticky("news")
+globals.app.startScrollPane("Suggestions")
+globals.app.setPadding(0,0)
+globals.app.setInPadding(0,0)
+globals.app.setSticky("nesw")
+globals.app.setStretch("both")
+globals.app.stopScrollPane()
 globals.app.stopLabelFrame()
+globals.app.setAllScrollPaneWidths(50)
 globals.app.stopTab()
 
 ## TAB 2
@@ -118,8 +127,8 @@ globals.app.stopTab()
 ## TAB 3
 globals.app.startTab("Behavior Dependency Graph")
 globals.bdg_canvas = globals.app.addCanvas("Behavior Dependency Graph")
-init_width = int(globals.app.appWindow.winfo_screenwidth()*.75)
-init_height = int(globals.app.appWindow.winfo_screenheight()*.75)
+init_height = globals.app.appWindow.winfo_reqheight() * 2 
+init_width = globals.app.appWindow.winfo_reqwidth() * 2 + 30
 globals.bdg_canvas.config(width=init_width,height=init_height)
 print("Width of GUI: %d" % globals.app.appWindow.winfo_screenwidth())
 print("Requesting canvas width of %d" % init_width)
@@ -130,12 +139,22 @@ globals.app.stopTab()
 ## TAB 4
 globals.app.startTab("Topology")
 globals.app.topo_canvas = globals.app.addCanvas("Topology")
-init_width = int(globals.app.appWindow.winfo_screenwidth()*.75)
-init_height = int(globals.app.appWindow.winfo_screenheight()*.75)
+print("Requested hight/width (reqheight/width) is %dx%d" % (init_width, init_height))
 globals.app.topo_canvas.config(width=init_width,height=init_height)
 globals.topo_handler = topoHandler(globals.app.topo_canvas, width=init_width, height=init_height)
 #globals.app.setTextAreaChangeFunction("constraints",globals.topo_handler.process_constraints)
 globals.app.stopTab()
+
+## TAB 5
+globals.app.startTab("Deployment")
+globals.deploy_handler = deployHandler()
+#
+globals.app.startLabelFrame("Given Constraints", 0,0)
+globals.app.setSticky("ew")
+globals.app.stopLabelFrame()
+
+globals.app.stopTab()
+
 
 globals.app.stopTabbedFrame()
 

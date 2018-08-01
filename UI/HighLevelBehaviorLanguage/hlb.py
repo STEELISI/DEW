@@ -164,6 +164,7 @@ def save_docker(f):
 
 def save(f):
     if NOXIR:
+        print("No xir.")
         return
 
     top = xir.Xir()
@@ -182,7 +183,8 @@ def save(f):
             top.structure.connect([nodes[i], lan], {
                     "stack": eq("ip")})
  
-    f.write(top.xir())
+    #f.write(top.xir())
+    print(top.xir())
 
 
 
@@ -274,14 +276,13 @@ def tbFunc(button):
     print(button)
     if (button == "SAVE"):
         # create another window for setting bindings for actions 
-        gather_bindings();
-
-        #save(file_path)
+        #gather_bindings();
+        save("xxx")
     elif (button == "Submit"):
         # take and save all the input
         globals.app.hideSubWindow("Dialogue")
         #file_path = tkFileDialog.asksaveasfile(mode='w', defaultextension=".xir")
-        #save(file_path)
+        save("xxx")
         f = open("docker-compose.yml", "w")
         save_docker(f)
     pass
@@ -308,7 +309,7 @@ def Centry(button):
     pass
 
 def addSuggestions(evtype, pb):
-    globals.app.openLabelFrame("Suggestions")
+    globals.app.openScrollPane("Suggestions")
     if evtype == "actors_only":
         for a in globals.actors:
             if a != "" and a not in globals.sbuttons:
@@ -353,7 +354,8 @@ def addSuggestions(evtype, pb):
     else: # it was text to be displayed as label
         globals.app.addLabel(evtype,evtype)
         globals.slabels[evtype] = 1
-    globals.app.stopLabelFrame()
+    #globals.app.stopLabelFrame()
+    globals.app.stopScrollPane()
 
 def prefix(mystring):
     p = 0
@@ -365,7 +367,7 @@ def prefix(mystring):
 
 def processConstraints():
         print("Entered constraints")
-        globals.app.openLabelFrame("Suggestions")
+        globals.app.openScrollPane("Suggestions")
         for t in globals.sbuttons:
             globals.app.removeButton(t)
         globals.sbuttons.clear()
@@ -381,7 +383,7 @@ def processConstraints():
         globals.constraints.clear()
         globals.links.clear()
         globals.lans.clear()
-        globals.lans["lan0"] = dict()
+        #globals.lans["lan0"] = dict()
         globals.nodes.clear()
         for a in globals.actors:
             globals.nodes[a] = 0
@@ -423,6 +425,7 @@ def processConstraints():
 
         # Now find all nodes that are not part of any link or lan and put them
         # into one lan
+        globals.lans["lan0"] = dict()
         for n in globals.nodes:
             if globals.nodes[n] == 0:
                 globals.lans["lan0"][n] = 1
@@ -463,9 +466,16 @@ def processConstraints():
                 addSuggestions("enter digit", Centry)
             elif item == "os" and (items[-1] in globals.actors 
                                    or items[-1] in globals.nodes):
+                for os in globals.deploy_handler.getSuggestions(type='os'):
+                    #addSuggestions(os, Centry)
+                    globals.app.addButton(os,Centry)
+                    globals.sbuttons[os]=1
                 addSuggestions("enter OS", Centry)
             elif item == "nodetype" and (items[-1] in globals.actors 
                                         or items[-1] in globals.nodes):
+                for nodetype in globals.deploy_handler.getSuggestions(type='nodetype'):
+                    globals.app.addButton(nodetype,Centry)
+                    globals.sbuttons[nodetype]=1
                 addSuggestions("enter node type", Centry)
             elif item == "link" and (items[-1] in globals.actors or 
                                      items[-1] in globals.nodes):
@@ -480,7 +490,8 @@ def processConstraints():
                addSuggestions("constraints_enter", Centry)
         else:
             addSuggestions("constraints_enter", Centry)
-        globals.app.stopLabelFrame()
+        #globals.app.stopLabelFrame()
+        globals.app.stopScrollPane()
 
         for n in globals.nodes:
             print("Node %s" % n)
@@ -492,6 +503,7 @@ def processConstraints():
             for b in globals.lans[a]:
                 lanstring += (b+ " ")
             print("Lan %s:%s" %( a,lanstring))
+        globals.deploy_handler.process_constraints()
         globals.topo_handler.process_constraints()
 
 def transitionBstate(ll):
@@ -595,7 +607,7 @@ def addactor(item):
 
 def processBehavior():
         #print("Entered behavior")
-        globals.app.openLabelFrame("Suggestions")
+        globals.app.openScrollPane("Suggestions")
         for t in globals.sbuttons:
             globals.app.removeButton(t)
         globals.sbuttons.clear()
@@ -668,7 +680,8 @@ def processBehavior():
         elif (type == HLBHintType.REQ_EMIT_LIST):
             addSuggestions("enter event name(s)", Bentry)
 
-        globals.app.stopLabelFrame()
+        #globals.app.stopLabelFrame()
+        globals.app.stopScrollPane()
 
 def regenerateSuggestions(evtype):
     print("Event %s" % evtype)
@@ -678,14 +691,15 @@ def regenerateSuggestions(evtype):
         processBehavior()
     elif evtype == "globals.actors_enter":
         print("Entered actors")
-        globals.app.openLabelFrame("Suggestions")
+        globals.app.openScrollPane("Suggestions")
         for t in globals.sbuttons:
             globals.app.removeButton(t)
         globals.sbuttons.clear()
         for t in globals.slabels:
             globals.app.removeLabel(t)
         globals.slabels.clear()
-        globals.app.stopLabelFrame()
+        #globals.app.stopLabelFrame()
+        globals.app.stopScrollPane()
     elif evtype == "constraints_enter":
         processConstraints()
 

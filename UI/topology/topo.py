@@ -26,23 +26,23 @@ class topoStyle(NodeClass):
     def render(self, data, node_name):
         label_txt = data.get('label', None)
         font = Font(family="Helvetica", size=12)
-        h = font.metrics("linespace") + 2
+        h = font.metrics("linespace") + 6
         if label_txt:
-            w = font.measure(label_txt) + 4
+            w = font.measure(label_txt) + 8
         else:
             w = font.measure("....") + 2
         self.config(width=w, height=h)
-        marker_options = {'fill': data.get('color','orange'), 'outline': 'white'}
+        marker_options = {'fill': data.get('color','orange'), 'outline': 'orange'}
             
         if data.get('circle', False) or data.get('type', 'NOTLAN') == 'LAN':
-            self.create_oval(0,0,w,h, **marker_options)
+            self.create_oval(0,0,w-1,h-1, **marker_options)
             self.config(width=w, height=h)
             if label_txt:
-                self.create_text(w/2, h/2, text=label_txt, font=font, fill="white")
+                self.create_text((w)/2, (h)/2, text=label_txt, font=font, fill="black")
         else:
             self.create_rectangle(0,0,w,h, **marker_options)
             if label_txt:
-                self.create_text(w/2, h/2, text=label_txt, font=font, fill="white")
+                self.create_text(w/2, h/2, text=label_txt, font=font, fill="black")
 
 class topoHandler(GraphCanvas, object):
     def __init__(self, canvas, width=0, height=0, **kwargs):
@@ -61,14 +61,24 @@ class topoHandler(GraphCanvas, object):
             super(topoHandler, self).__init__(G, master=canvas, width=width, height=height, NodeClass=topoStyle, home_node = 'lan0', **kwargs)
         self.pack()
     
-    def setoffsets(self, xoffset=0, yoffset=0):
+    def setoffsets(self, xoffset=0, yoffset=0, width=0, height=0):
         self.xoffset = xoffset
         self.yoffset = yoffset
+        if width!=0:
+            self.width = width
+        if height!=0:
+            self.height = height
     
 
     def process_constraints(self):
+        print("CONSTRAINTS")
+        print(globals.constraints)
         print("Process constraints. NODES LIST:")
         print(globals.nodes)
+        print("Links:")
+        print(globals.links)
+        print("Lans:")
+        print(globals.lans)
         new_nodes = []
         new_lans = []
         remove_nodes = []

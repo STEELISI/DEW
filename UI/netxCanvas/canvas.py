@@ -67,6 +67,7 @@ class GraphCanvas(tk.Canvas):
         if width != 0 and height != 0:
             print("Making canvas size: %dx%d" % (width, height))
             tk.Canvas.__init__(self, master=master, width=width, height=height, **kwargs)
+            #tk.Canvas.__init__(self, master=master, **kwargs)
         else:
             print("Given %d and %d for width and height" % (width, height))
             tk.Canvas.__init__(self, master=master, **kwargs)
@@ -76,6 +77,8 @@ class GraphCanvas(tk.Canvas):
         self.y0 = self.winfo_rooty()
         #print("(0,0) at (%d,%d)" % (self.x0, self.y0))
         
+        self.config(bg='white')
+
         self._plot_graph(graph, home_node=home_node)
         self.center_on_node(home_node or graph.nodes()[0])
         
@@ -90,7 +93,7 @@ class GraphCanvas(tk.Canvas):
         self.bind('<B1-Motion>', self.onPanMotion)
         self.bind_all('<MouseWheel>', self.onZoom)
         #self.bind("<Configure>", self.configure)
-
+        
     def configure(self, event):
         print("Configure called.")
         self.delete("all")
@@ -407,24 +410,22 @@ class GraphCanvas(tk.Canvas):
             #if w == 0:
             #    w = int(self['width'])/2
             #    h = int(self['height'])/2
+            
             w = int(int(self.width)/2)
             h = int(int(self.height)/2)
-            #print("Moving by %d %d" % (w,h))
+            print("Moving by %d %d" % (w,h))
             self.move(tk.ALL, w, h+self.yoffset)
             return
+        
         x,y = self.coords(self.dispG.nodes[disp_node]['token_id'])
         
-        w = self.winfo_width()/2
-        h = self.winfo_height()/2
-        #w = int(self.canvas['width'])/2
-        #h = int(self.canvas['height'])/2
-        if w == 0:
-            w = int(self['width'])/2
-            h = int(self['height'])/2
-        print("Measured canvas w/h: %dx%d" % (w*2,h*2))
-        delta_x = w + x
-        delta_y = h + y
+        w = int(self['width'])
+        h = int(self['height'])
+        print("Measured canvas w/h: %dx%d, offsets are: %d, %d"  % (w*2,h*2, self.xoffset, self.yoffset))
         
+        delta_x = w/2 + x 
+        delta_y = h/2 + y
+    
         self.move(tk.ALL, delta_x, delta_y)
     
     def onEdgeRightClick(self, event):
@@ -553,12 +554,11 @@ class GraphCanvas(tk.Canvas):
     
     def _plot_graph(self, graph, home_node=0):
         scale = int(min(self.width, self.height))
-        if scale < 2:
-            scale = min(self.winfo_width(), self.winfo_height())
         scale = scale/100
+        print("SCALE IS: %d " % scale)
         #scale -= 50
         if len(graph) > 1:
-            layout = self.create_layout(graph, scale=scale, min_distance=50)
+            layout = self.create_layout(graph, scale=scale, min_distance=10)
             for n in graph.nodes():
                 self._draw_node(layout[n]+20, n)
         else:
@@ -670,7 +670,7 @@ class GraphCanvas(tk.Canvas):
         A = nx.to_numpy_matrix(G)
         nnodes,_ = A.shape
         
-        # Occupy 2/3s of the window 
+        # WAS .66 (ODcupy 2/3s of the window), now much less.
         if fixed is not None:
             k = (min(self.width, self.height)*.66)/np.sqrt(nnodes)
         else:

@@ -61,21 +61,24 @@ class dependencyGraphHandler(GraphCanvas, object):
         G.node[0]['triggeredby'] = []
         G.node[0]['color'] = 'green'
         G.node[0]['circle'] = True
-        
+
         try:
             # Python3
-            super().__init__(G, master=canvas, width=width, height=height, NodeClass=dgStyle, **kwargs)
+            super().__init__(G, master=canvas, width=width, height=height, NodeClass=dgStyle,  **kwargs)
         except TypeError:
             # Python 2
-            super(dependencyGraphHandler, self).__init__(G, master=canvas, width=width, height=height, NodeClass=dgStyle, **kwargs)
+            super(dependencyGraphHandler, self).__init__(G, master=canvas, width=width, height=height, NodeClass=dgStyle, home_node=0, **kwargs)
 
         #self._draw_node((width, height), 0)
         self.pack()  
         self.parser = HLBParser()
+        
     
-    def setoffsets(self, xoffset=0, yoffset=0):
+    def setoffsets(self, xoffset=0, yoffset=0, width=0, height=0):
         self.xoffset = xoffset
         self.yoffset = yoffset
+        self.height = height
+        self.width = width
         
     def dict_from_behaviors(self):
         # Creates a graph from the current listed behaviors.
@@ -187,6 +190,8 @@ class dependencyGraphHandler(GraphCanvas, object):
                 new.append(new_id)
 
         if len(new) > 0:
+            print("Plotting dg nodes:")
+            print(new)
             self._plot_additional(new)
     
         print("Plotted addtional")

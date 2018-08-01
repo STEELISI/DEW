@@ -8,6 +8,7 @@ except ImportError:
 class NodeClass(tk.Canvas):
     def __init__(self, host_canvas, data, node_name):
         tk.Canvas.__init__(self, width=20, height=20, highlightthickness=0)
+        self.config(bg='white')
 
         self._host_canvas = host_canvas
         self._complete = True
