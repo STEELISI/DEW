@@ -150,11 +150,17 @@ globals.app.startTab("Deployment")
 globals.deploy_handler = deployHandler()
 #
 globals.app.startLabelFrame("Given Constraints", 0,0)
-globals.app.setSticky("ew")
+#globals.app.setLabelFrameChangeFunction("Given Constraints", globals.deploy_handler.checkConstraints)
+globals.app.setStretch("both")
+globals.app.setSticky("nesw")
 globals.app.stopLabelFrame()
-
+globals.app.startLabelFrame("Site Solutions", 1,0)
+globals.app.setStretch("both")
+globals.app.setSticky("nesw")
+globals.app.addListBox("solution list", [])
+globals.app.setStretch("both")
+globals.app.stopLabelFrame()
 globals.app.stopTab()
-
 
 globals.app.stopTabbedFrame()
 

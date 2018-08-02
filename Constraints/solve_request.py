@@ -1,9 +1,17 @@
-import pycosat.pycosat
+import itertools
+import sys
+
+if sys.version_info >= (3,0):
+    import pycosat
+else:
+    #import pycosat.pycosat
+    import pycosat
 import json
 import copy
 import time
 import collections
 
+### XXX working to make not global?
 var_map = dict()
 num_to_var = dict()
 
@@ -21,40 +29,58 @@ def solve(request, resources, print_debug=False, print_vars=False, print_names=F
     clauses = generate_clauses(request, resources, print_debug)
     create = time.time()
     if print_timing:
-        print 'Creating', len(clauses), 'clauses and', len(var_map), 'variables took', (create-start)
-    solution = pycosat.pycosat.solve(clauses)
+        # Print 2.x
+        #print 'Creating', len(clauses), 'clauses and', len(var_map), 'variables took', (create-start)
+        # 
+        # Print 3.x
+        print("Creating %d clauses and %d variables took %.2f" % (len(clauses),len(var_map),create-start))
+    #solution = pycosat.pycosat.solve(clauses)
+    solution = pycosat.solve(clauses)
     if print_timing:
-        print 'Solving took', (time.time()-create)
+        # Print 2.x
+        #print 'Solving took', (time.time()-create)
+        # 
+        # Print 3.x
+        print('Solving took %.2f' % (time.time()-create))
     #print solution  # , list(clauses)
     if print_vars:
-        print 'True vars:'
+        #print 'True vars:'
+        print('True vars:')
     # Just print the match vars and variables about matched resources and topos, and say how many are true in total
     num_true = 0
     names = []
     if solution == 'UNSAT':
-        print 'no solution found for', len(clauses), 'clauses'
+        #print 'no solution found for', len(clauses), 'clauses'
+        print('No solution found for %d clauses' % len(clauses))
         return None, None
+    #return None, None
+    
     for variable in solution:
         if variable > 0:
             num_true += 1
             var = num_to_var[variable]
             if 'matched_to' in var:
                 if print_vars:
-                    print variable, var
+                    #print variable, var
+                    print("%d %s" % (variable, var))
                 names.append((var[0:var.index("_matched")], var[var.index("matched_to_") + 11:]))
     if print_vars:
         for variable in solution:
             if variable > 0 and [x for (x, y) in names if x in num_to_var[variable]]:
-                print num_to_var[variable]
-        print num_true, 'were true'
+                #print num_to_var[variable]
+                print(num_to_var[variable])
+        #print num_true, 'were true'
+        print("%d were true" % num_true)
     if print_names:
-        print 'names:', names
+        #print 'names:', names
+        print("Name: ")
+        print(names)
     # Print the ids of the matched pairs for verification. This is slow, probably need another dict or two
     if print_assignment:
         for pair in names:
-            print [n['props']['name'] for n in request['nodes'] if n['id'] == pair[0]][0],  # skip id pair[0]
+            #print [n['props']['name'] for n in request['nodes'] if n['id'] == pair[0]][0],  # skip id pair[0]
             matches = [[n['props']['name'] for n in rsrc['nodes'] if n['id'] == pair[1]] for rsrc in resources]
-            print 'matched to', [(m[0], i) for i, m in enumerate(matches) if m != []]
+            #print 'matched to', [(m[0], i) for i, m in enumerate(matches) if m != []]
     return names, solution
 
 
@@ -75,8 +101,14 @@ def generate_clauses(request, resources, print_debug=False):
     # the resource can be a container.
     # Then, the matching node should be able to satisfy the constraints of the topo node.
     resource_nodes = sum([resource['nodes'] for resource in resources], [])
+    #print(resource_nodes)
+    #for resource in resources:
+    #    print(resource['nodes'])
+    #    print("NEXT")
+    #exit(1)
     if print_debug:
-        print len(request['nodes']), 'request nodes and', len(resource_nodes), 'resource nodes'
+        #print len(request['nodes']), 'request nodes and', len(resource_nodes), 'resource nodes'
+        print("%d request nodes and %d resource nodes" % (len(request['nodes']), len(resource_nodes)))
     for node in request['nodes']:
         #print 'checking request node', node['props']
         # Pairwise exclusivity for query nodes (node bound to at most one resource)
@@ -85,7 +117,10 @@ def generate_clauses(request, resources, print_debug=False):
         #print 'finding clauses from', node['props']['name'], node['props']
         request_clauses = walk_props_for_constraints(node['props'], [])  # path was node.name() but now anonymized
         if print_debug:
-            print 'clauses for', node['props']['name'], request_clauses
+            #print 'clauses for', node['props']['name'], request_clauses
+            print("Clauses for")
+            print(node['props']['name'])
+            print(request_clauses)
         # Combine the constraints into every matchable resource node and check which can match
         potential_matches = []
         for rsrc in resource_nodes:
@@ -128,13 +163,17 @@ def generate_clauses(request, resources, print_debug=False):
                 id_link_map[ep['id']] = link
     for link in request['links']:
         if print_debug:
-            print 'link:', link['id'], link['props']
+            #print 'link:', link['id'], link['props']
+            print("link: %s %s" % (link['id'], link['props']))
         endpoints = [e['id'] for e in link['endpoints']]
         if print_debug:
-            print '  endpoints:', endpoints
+            #print '  endpoints:', endpoints
+            print(endpoints)
         link_nodes = [n for n in request['nodes'] if [id for id in [en['id'] for en in n['endpoints']] if id in endpoints]]
         if print_debug:
-            print '    matches:', [ln['props']['name'] for ln in link_nodes]
+            #print '    matches:', [ln['props']['name'] for ln in link_nodes]
+            print("	matches:" )
+            print([ln['props']['name'] for ln in link_nodes])
         # for every pair of possible matches for the two request nodes, check the link exists and matches the specs,
         #  and if not add a mutually exclusive constraint
         some_link_ok = False
@@ -146,7 +185,7 @@ def generate_clauses(request, resources, print_debug=False):
                 else:
                     some_link_ok = True
         if not some_link_ok and print_debug:
-            print '  link unmatched'
+            print('  link unmatched')
     return clauses
 
 
@@ -169,7 +208,11 @@ def walk_props_for_constraints(desc, path):
             elif desc[key][0] in ['>=', '>', '<=', '<']:  # Add a token for a generic value satisfying the inequality
                 res += [[(1, new_var_path, "|" + desc[key][0] + str(desc[key][1]) + "|")]]  # Was the var with this name
             else:
-                print 'not currently translating the constraint:', path, key, desc[key]
+                #print 'not currently translating the constraint:', path, key, desc[key]
+                print("not currently translating the constraint: ")
+                print(path)
+                print(key)
+                print(desc[key])
         elif isinstance(desc[key], dict) and 'constraint__' in desc[key]:  # This is a constraint
             res.append([(1, path + [key], desc[key])])
         elif isinstance(desc[key], dict):
@@ -187,7 +230,8 @@ def grounded_clause(constraint_clause, resource):
     return [x for x in [grounded_prop(prop, resource) for prop in constraint_clause] if x != [] and x is not False]
 
 
-def grounded_prop((truth, path, value), resource, indent=""):
+def grounded_prop(triple, resource, indent=""):
+    (truth, path, value) = triple
     s = short_ids(resource)
     #print indent+'need to ground', (truth, path, value), '\n  '+indent+'with', follow_path(path, s['props'])
     props = resource['props']
@@ -216,7 +260,11 @@ def grounded_prop((truth, path, value), resource, indent=""):
             elif value['constraint__'] == '<':
                 return res_val < value['value__']  # brittle right now
         else:
-            print 'not currently translating the constraint:', value, 'on', props
+            #print 'not currently translating the constraint:', value, 'on', props
+            print("not currently translating the constraint:")
+            print(value)
+            #print(on)
+            print(props)
             # Will crash
     else:
         return 1
@@ -252,7 +300,8 @@ def walk_resource_for_truth(d, path, value):
 # Define a variable stating that this resource satisfies this constraint
 def resource_constraint_var(resource, path, value):
     if isinstance(value, dict):
-        print 'dict is', value
+        #print 'dict is', value
+        print("dict is %s" % value)
     else:
         return find_or_add_var(resource['id'] + path, value)  # Equality variable
 
@@ -303,7 +352,8 @@ def find_or_add_var(path, value, relation="="):
 # Functions that help manipulate sets of solutions.
 def count_solutions(request, resources):
     clauses = generate_clauses(request, resources)
-    iter = pycosat.pycosat.itersolve(clauses)
+    #iter = pycosat.pycosat.itersolve(clauses)
+    iter = pycosat.itersolve(clauses)
     count = 0
     try:
         while True:
@@ -323,7 +373,8 @@ def sub_enclave_solution(request, resources):
         sublist.remove(res)
         names, solution = solve(request, sublist)
         if solution is not None:
-            print 'found a sub-enclave solution leaving out', res
+            #print 'found a sub-enclave solution leaving out', res
+            print("found a sub-enclave solution leaving out %s " % res)
             sub_solutions.append((names, solution))
     return sub_solutions
 
@@ -391,6 +442,35 @@ def rec_shorten_ids(d):
                 if isinstance(v, dict):
                     rec_shorten_ids(v)
 
+def trySubsets(request, resources):
+    indexSet = set([])
+    indexSet.update(range(0, len(resources)))
+    combos = set([])
+    for i in range(1, len(resources)):
+        combos.update(set(itertools.combinations(indexSet, i)))
+    
+    solutions = []
+    
+    for combo in combos:
+        subresourcelist = []
+        for x in combo:
+            subresourcelist.append(resources[x])
+        names, solution = solve(request, subresourcelist)
+        print(list(combo))
+        comboResult = {}
+        comboResult['site_combo'] = list(combo)
+        if names != None:
+            print("Has solution:")
+            print(names)
+            comboResult['solution'] = True
+        else:
+            print("Has no solution")
+            comboResult['solution'] = False
+        solutions.append(comboResult)
+        
+    print(solutions)
+        
+    
 
 if __name__ == "__main__":
 
@@ -403,20 +483,42 @@ if __name__ == "__main__":
         cellular_json = json.load(f)
     with open(root + "sites/iot.json") as f:
         iot_json = json.load(f)
-    with open(root + "experiments/small-world.json") as f:
+    #with open(root + "experiments/small-world.json") as f:
+    #    small_world_json = json.load(f)
+    with open(root + "experiments/test0.json") as f:
         small_world_json = json.load(f)
+    
 
     resources = [emu_json, cellular_json, iot_json]
 
+    r = gather_properties(resources)
+    #print(r['image'])
+    #exit()
+
+    trySubsets(small_world_json, resources)
+    exit()
+    
     # Solve the problem and look for solutions with fewer enclaves
+    print(small_world_json)
+    print(resources)
     names, solution = solve(small_world_json, resources)
-    print '\n** Seeking solutions with fewer groups of resources'
+    print("Names: ")
+    print(names)
+    print("Solutions ")
+    print(solution)
+
+    #print '\n** Seeking solutions with fewer groups of resources'
+    print("\n** Seeking solutions with fewer groups of resources")
     sub_solutions = sub_enclave_solution(small_world_json, resources)
 
     # Create ranges of possible values for features of requested nodes and networks based on the resources
     ranges = gather_properties(resources)
 
     # To count the number of solutions call this (may take time, not yet smart about combinatorics)
-    print '\n** Counting solutions'
+    #print '\n** Counting solutions'
+    print("\n** Counting solutions")
     count = count_solutions(small_world_json, resources)
-    print 'found', count, 'solutions'
+    #print 'found', count, 'solutions'
+    print("Found %d solutions" % (count))
+    
+    

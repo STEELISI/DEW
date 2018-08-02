@@ -1,5 +1,6 @@
 import re
 import sys
+import appJar
 
 sys.path.append('../')
 from HighLevelBehaviorLanguage.hlb_parser import HLBParser, HLBHintType
@@ -503,8 +504,25 @@ def processConstraints():
             for b in globals.lans[a]:
                 lanstring += (b+ " ")
             print("Lan %s:%s" %( a,lanstring))
-        globals.deploy_handler.process_constraints()
+            
+        newCheckBoxes = globals.deploy_handler.process_constraints()
         globals.topo_handler.process_constraints()
+        
+        globals.app.openLabelFrame("Given Constraints")
+        globals.app.setStretch("both")
+        globals.app.setSticky("nesw")
+        for checkBox in newCheckBoxes:
+            try:
+                globals.app.setStretch("both")
+                globals.app.setSticky("nesw")
+
+                globals.app.addCheckBox(checkBox)
+                globals.app.setCheckBox(checkBox, ticked=True, callFunction=globals.deploy_handler.checkConstraints)
+                globals.app.setCheckBoxChangeFunction(checkBox, globals.deploy_handler.checkConstraints)
+            except appJar.appjar.ItemLookupError:
+                pass
+        globals.deploy_handler.checkConstraints(None)
+            
 
 def transitionBstate(ll):
 
