@@ -81,6 +81,13 @@ class requestSolver():
     def solve(self, request, resources, print_debug=False, print_vars=False, print_names=False, print_assignment=True, print_timing=True):
         start = time.time()
         clauses = self.generate_clauses(request, resources, print_debug)
+        
+        # It's going to take us too much time to solve this for a GUI demo,
+        # so skip.
+        if len(clauses) > 3000:
+            print("Too many clauses, not returning a solution. (%d clauses)" % len(clauses))
+            return None, None
+        
         create = time.time()
         if print_timing:
             # Print 2.x
@@ -508,12 +515,13 @@ if __name__ == "__main__":
         cellular_json = json.load(f)
     with open(root + "sites/iot.json") as f:
         iot_json = json.load(f)
-    with open(root + "experiments/small-world.json") as f:
+    with open(root + "experiments/test.json") as f:
         small_world_json = json.load(f)
 
     resources = [emu_json, cellular_json, iot_json]
-
-    trySubsets(small_world_json, resources, resource_names=['EMU', 'Cellular', 'IoT'])
+    
+    mySolver = requestSolver()
+    mySolver.trySubsets(small_world_json, resources, resource_names=['EMU', 'Cellular', 'IoT'])
 
     exit()
 

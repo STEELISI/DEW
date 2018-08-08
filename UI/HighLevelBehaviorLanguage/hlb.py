@@ -4,6 +4,7 @@ import appJar
 
 sys.path.append('../')
 from HighLevelBehaviorLanguage.hlb_parser import HLBParser, HLBHintType
+from deploy.constraints import removeEndDigit
 import globals
 try:
     from tkinter import filedialog
@@ -429,10 +430,24 @@ def processConstraints():
         globals.lans["lan0"] = dict()
         for n in globals.nodes:
             if globals.nodes[n] == 0:
-                globals.lans["lan0"][n] = 1
-                globals.nodes[n] = 2
+                # Are we in some other specified lan?
+                inOtherLan = False
+                otherLan = ""
+                for l in globals.lans:
+                    if l != "lan0":
+                        if removeEndDigit(n) in globals.lans[l]:
+                            inOtherLan = True
+                            otherLan = l
+                            break
+                if not inOtherLan:
+                    globals.lans["lan0"][n] = 1
+                    globals.nodes[n] = 2
+                else:
+                    globals.lans[l][n] = 1
+                    globals.nodes[n] = 2
 
         # Then join this lan with a node that is the most similar to nodes in the lan
+        # XXX Not sure the below is working?
         if (len(globals.lans["lan0"]) > 0):
             prefs = dict()
             maxc = 0
