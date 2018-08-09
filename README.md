@@ -1,14 +1,14 @@
-# DEW-R (Doer!): Distributed Eperiment Workflows Representation
+# DEW (Doer!): Distributed Eperiment Workflows Representation
 
-DEW-R unifies behavior and topology of an experiment, but captures only relevant topological details. 
+DEW unifies behavior and topology of an experiment, but captures only relevant topological details. 
 
 # Design overview 
 
-DEW-R has several design goals:
+DEW has several design goals:
 
 ## High-level representation
 
-It was important to us that DEW-R contains a human-readable, short
+It was important to us that DEW contains a human-readable, short
 description of what the experiment is supposed to do.  Such a
 description facilitates reuse, because researchers could, at a glance,
 understand the experiment's actions and judge if this experiment is useful
@@ -18,13 +18,13 @@ mind, and eases experiment design.
 
 ## Generic language
 
-DEW-R should support many diverse experiments, and thus its language must be
+DEW should support many diverse experiments, and thus its language must be
 expressive enough to be broadly applicable, regardless of the experiment's
 goal or testbed infrastructure where it will be realized.
 
 ## Self-contained representation
 
-We wanted DEW-R to contain sufficient details to facilitate automated
+We wanted DEW to contain sufficient details to facilitate automated
 generation of experimental topologies and scripts, which would run on these
 topologies.  If we could achieve this, then researchers could work with
 experiments at a high level, delegating tedious, detail-oriented and
@@ -36,14 +36,14 @@ testbed infrastructures, enabling portability.
 
 We wanted to decouple the intended behavior from the topology where it will
 be realized, thus enabling the same experiment to be scaled up and down
-easily, by changing a few lines of DEW-R.  Our goal was to capture only the
+easily, by changing a few lines of DEW.  Our goal was to capture only the
 necessary topology details in the form of constraints the behavior must
 place on resources.
 
 ## Structured representation
 
-We wanted to impose some natural structure on DEW-R, enabling researchers to
-easily locate and focus on the important pieces for their goal.  This
+We wanted to impose some natural structure on DEW, enabling researchers to
+easily locate and focus on the important pieces for their goal(s).  This
 structure should facilitate experiment design and running, which are aligned
 with human cognitive process.
 
@@ -59,8 +59,11 @@ You'll need:
 Optionally you'll also want:
 	- spaCy (for Natural Language Processing)
 	- spaCy english model (en)
-	- CEFTB Xir description language support for constraint processing
-	and saving experiment descriptions
+	- CEFTB Xir description language (for constraint processing
+	and saving experiment descriptions)
+
+See the readme in the Constraints directory for setting up and using the
+constraint server. 
 
 For spaCY install and model install instructions see:
 	https://spacy.io/usage/
@@ -69,6 +72,10 @@ For spaCY install and model install instructions see:
 For installing Xir see:
 	https://github.com/ceftb/xir
 	https://github.com/ceftb/xir/tree/master/lang/python
+
+# Running
+
+To run the GUI: % python dew_gui.py
 
 # Organization
 
