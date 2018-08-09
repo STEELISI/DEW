@@ -53,13 +53,22 @@ You'll need:
 	- Python (either 2.x or 3.x)
 	- pyparsing
 	- networkx 2+
+	- Enum
+	- numpy
+
 Optionally you'll also want:
 	- spaCy (for Natural Language Processing)
 	- spaCy english model (en)
+	- CEFTB Xir description language support for constraint processing
+	and saving experiment descriptions
 
 For spaCY install and model install instructions see:
 	https://spacy.io/usage/
 	https://spacy.io/usage/models
+
+For installing Xir see:
+	https://github.com/ceftb/xir
+	https://github.com/ceftb/xir/tree/master/lang/python
 
 # Organization
 

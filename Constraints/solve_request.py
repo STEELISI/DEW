@@ -485,7 +485,7 @@ if __name__ == "__main__":
         iot_json = json.load(f)
     #with open(root + "experiments/small-world.json") as f:
     #    small_world_json = json.load(f)
-    with open(root + "experiments/test0.json") as f:
+    with open(root + "experiments/test.json") as f:
         small_world_json = json.load(f)
     
 

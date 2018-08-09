@@ -1,4 +1,3 @@
-import xir
 import json
 import requests
 import sys
@@ -6,6 +5,13 @@ sys.path.append('../')
 import globals
 
 import appJar
+
+try:
+    import xir
+    from xir import eq, choice, gt, ge, select
+    NOXIR=False
+except ImportError:
+    NOXIR=True
 
 mainUrl = 'http://127.0.0.1:5000/'
 
@@ -107,6 +113,13 @@ class deployHandler():
     def checkConstraints(button):
         globals.app.clearListBox("solution list", callFunction=False)
         json_constraints = deployHandler.specifyCheckedConstraintsInXIR()
+        
+        if json_constraints == None:
+            if NOXIR:
+                globals.app.addListItem("solution list","Need Xir support to process constraints.")
+            else:
+                globals.app.addListItem("solution list","Unable to process constraints.")
+            return
 
         print(json.dumps(json_constraints, sort_keys=False))
     
@@ -121,18 +134,23 @@ class deployHandler():
                         print("Solution from %s" % " ".join(result['site_combo']))
                         globals.app.addListItem("solution list"," ".join(result['site_combo']))
                         possibleSolutions = True
-            
             if not possibleSolutions:
                 globals.app.addListItem("solution list","NO SOLUTIONS")
         except requests.exceptions.ReadTimeout:
             globals.app.addListItem("solution list","Solution not calculated yet.")
-        
-            
-        
+            return
+        except requests.exceptions.RequestException as e:
+            globals.app.addListItem("solution list","Constraint server unreachable (assumed to be at %s)." % (mainUrl))
+            return
+        except Exception as e:
+            print(e)
+            return
 
     @staticmethod
     def specifyCheckedConstraintsInXIR():
-        
+        if NOXIR:
+            return None
+            
         top = xir.Xir()
         nodes = {}
     
