@@ -287,7 +287,14 @@ def tbFunc(button):
         save("xxx")
         f = open("docker-compose.yml", "w")
         save_docker(f)
-    pass
+    elif(button == "REFRESH"):
+        # Refresh topology, output and DG.
+        #if globals.bdg_handler != None:
+            
+        if globals.topo_handler != None:
+            globals.topo_handler.process_constraints()
+        if globals.out_handler != None:
+            globals.out_handler.produceOutput()
 
 def Bentry(button):
     pressed = button
@@ -519,24 +526,25 @@ def processConstraints():
             for b in globals.lans[a]:
                 lanstring += (b+ " ")
             print("Lan %s:%s" %( a,lanstring))
-            
-        newCheckBoxes = globals.deploy_handler.process_constraints()
-        globals.topo_handler.process_constraints()
         
-        globals.app.openLabelFrame("Given Constraints")
-        globals.app.setStretch("both")
-        globals.app.setSticky("nesw")
-        for checkBox in newCheckBoxes:
-            try:
-                globals.app.setStretch("both")
-                globals.app.setSticky("nesw")
+        globals.topo_handler.process_constraints()
+        if globals.deploy_handler != None:
+            newCheckBoxes = globals.deploy_handler.process_constraints()        
+        
+            globals.app.openLabelFrame("Given Constraints")
+            globals.app.setStretch("both")
+            globals.app.setSticky("nesw")
+            for checkBox in newCheckBoxes:
+                try:
+                    globals.app.setStretch("both")
+                    globals.app.setSticky("nesw")
 
-                globals.app.addCheckBox(checkBox)
-                globals.app.setCheckBox(checkBox, ticked=True, callFunction=globals.deploy_handler.checkConstraints)
-                globals.app.setCheckBoxChangeFunction(checkBox, globals.deploy_handler.checkConstraints)
-            except appJar.appjar.ItemLookupError:
-                pass
-        globals.deploy_handler.checkConstraints(None)
+                    globals.app.addCheckBox(checkBox)
+                    globals.app.setCheckBox(checkBox, ticked=True, callFunction=globals.deploy_handler.checkConstraints)
+                    globals.app.setCheckBoxChangeFunction(checkBox, globals.deploy_handler.checkConstraints)
+                except appJar.appjar.ItemLookupError:
+                    pass
+            globals.deploy_handler.checkConstraints(None)
             
 
 def transitionBstate(ll):
