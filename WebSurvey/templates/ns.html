@@ -12,16 +12,20 @@
  
 <div class="container">
   <h2>Structure - NS File</h2>
-  <p>
-     Below is a description of a simple experiment. 
-  </p>
-  {% block content %} 	 
-      {% include 'experiment.html' %}
-  {% endblock %}
+
   
-  {% if scale != '1' %}
-    Next please modify your NSFile to specify having four "Machine Z"s instead of a single Machine
-    Z.
+  {% if  scale  != '1' %}
+    <b>Below is the NS file you submitted.</b>
+  {% else %}
+      <p>
+       Below is a description of a simple experiment. 
+       </p>
+       {% block content %} 	 
+       {% include 'experiment.html' %}
+       {% endblock %}
+       <p>
+       Please take up to ten minutes to write an NS File for this basic set
+       up.
   {% endif %}
   
   <form  action="" method="post" role="form">

@@ -21,7 +21,7 @@
   <p>
   For your reference, you can click below to open the UI help and hints
   information you were show earlier.
-  <a href="/template/uihelp.html"  target='_blank'>UI Help Info</a>
+  <a href="/UIHelp"  target='_blank'>UI Help Info</a>
   </p>
 
   <p>
@@ -44,12 +44,16 @@
   <p>
   Please download, unzip and start the prototype UI.
   </p>
-  <form  action="" method="post" role="form">
+  <form  action="" method="post" enctype="multipart/form-data">
     {{ form.csrf }}
     {{ form.csrf_token }}
     <div class="form-group">
+    <table>
+    <tr><td>{{ form.nsfile.label }} </td><td> {{ form.nsfile() }} </td></tr>
+    <tr><td>{{ form.inputSummary.label }} </td><td> {{ form.inputSummary() }} </td></tr>
+    </table>
+    <button type="submit" class="btn btn-success">Continue</button>
     </div>
-    <button type="submit" class="btn btn-success">Save and Continue</button>
   </form>
  
   <br>

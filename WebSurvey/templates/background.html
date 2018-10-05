@@ -18,11 +18,11 @@
     {{ form.csrf_token }}
     <div class="form-group">
       <table>
-      <tr><td>{{ form.numdeteryears.label }}</td><td>{{ form.numdeteryears }}</td></tr>
-      <tr><td>{{ form.numdeterexps.label }}</td><td>{{ form.numdeterexps }}</td></tr>
+      <tr><td>{{ form.numdeteryears.label }}</td><td>{{ form.numdeteryears(rows='1',cols='2') }} years and {{ form.numdetermonths(rows='1',cols='2') }} months</td></tr>
+      <tr><td>{{ form.numdeterexps.label }}</td><td>{{ form.numdeterexps(rows='1',cols='4')|safe }}</td></tr>
       <tr><td>{{ form.deterExperience.label }}</td><td>{{ form.deterExperience }}</td></tr>
-      <tr><td>{{ form.numyears.label }}</td><td>{{ form.numyears }}</td></tr>
-      <tr><td>{{ form.numexps.label }}</td><td>{{ form.numexps }}</td></tr>
+      <tr><td>{{ form.numyears.label }}</td><td>{{ form.numyears(rows='1',cols='2') }} years and {{ form.nummonths(rows='1',cols='2') }} months</td></tr>
+      <tr><td>{{ form.numexps.label }}</td><td>{{ form.numexps(rows='1',cols='4') }}</td></tr>
       <tr><td>{{ form.testbedExperience.label }}</td><td>{{ form.testbedExperience }}</td></tr>
       </table>
     </div>

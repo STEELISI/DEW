@@ -27,10 +27,8 @@
     <tr><td>{{ ScriptsForm.scripts(multiple="") }} </td></tr>
     </table>
     <button type="submit" name="upload" value="UploadFile" class="btn btn-success" >Upload File</button>
-  </form>
-  {{ ToolsForm.csrf }}
-  {{ ToolsForm.csrf_token }}
-  <form  id="ToolsForm" name="ToolsForm"  action="" method="post" role="form">
+    {{ ToolsForm.csrf }}
+    {{ ToolsForm.csrf_token }}
     <table>
     <tr><th>{{ ToolsForm.tooldescription.label }}</th></tr>
     <tr><td>{{ ToolsForm.tooldescription(rows='15',cols='60') }}</td></tr>
