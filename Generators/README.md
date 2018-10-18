@@ -57,10 +57,10 @@ directory. By default, scripts are generated in /tmp.
 
 # Organization of this directory
 
-README.md 	- this file
-example.hlb 	- example of HLB+Constraints input file for generators
-generator.py 	- superclass for generators which handles commmon functions
-XXX/XXX.py	- generator directory format, e.g. bash/bash.py
+* README.md 	- this file
+* example.hlb 	- example of HLB+Constraints input file for generators
+* generator.py 	- superclass for generators which handles commmon functions
+* XXX/XXX.py	- generator directory format, e.g. bash/bash.py
 
 
 
