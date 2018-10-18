@@ -1,0 +1,6 @@
+[HLB]
+thing1 runAThing emit trigger1
+when trigger1 thing2 runAnotherThing
+[Constraints]
+num thing1 3
+os thing2 anOStype
