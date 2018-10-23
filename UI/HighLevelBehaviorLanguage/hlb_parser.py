@@ -17,6 +17,49 @@ class HLBHintType(Enum):
     REQ_ACTORS_HAVEWAIT = 9 # We need actors, but we have a 'wait xxx' or 'when xxx wait xxx'
     UNKNOWN_ERROR  = 10 # Catch all
 
+
+class ConstraintParser():
+    wsp = White().suppress()
+    comma = Literal(",").suppress()
+    num_keyword  = CaselessKeyword("num")
+    os_keyword   = CaselessKeyword("os")
+    link_keyword = CaselessKeyword("link")
+    lan_keyword  = CaselessKeyword("lan")
+    interfaces_keyword = CaselessKeyword("interfaces")
+    location_keyword = CaselessKeyword("location")
+    nodetype_keyword = CaselessKeyword("nodetype")
+    not_akeyword = (NotAny(num_keyword) + NotAny(os_keyword) + NotAny(link_keyword) + NotAny(lan_keyword) + NotAny(interfaces_keyword) + NotAny(location_keyword) + NotAny(nodetype_keyword))
+    
+    actor = (not_akeyword + Word(alphanums))
+    actors = actor + ZeroOrMore(wsp + actor)
+    actor_pair = actor + wsp + actor
+    strValue = (not_akeyword + Word(alphanums))
+    numValue = (not_akeyword + Word(nums))
+    
+    single_entity_num_constraint = num_keyword
+    single_entity_constraint = os_keyword | interfaces_keyword | location_keyword | nodetype_keyword
+    
+    single_entity_num_stmt = (single_entity_num_constraint("constraint") + wsp + actor("target") + wsp + numValue("value"))
+    single_entity_str_stmt = (single_entity_constraint("constraint") + wsp + actor("target") + wsp + strValue("value"))
+    link_stmt = (link_keyword("constraint") + wsp + actor_pair("target"))
+    lan_stmt = (lan_keyword("constraint") + wsp + actors("target"))
+    
+    constraint_statement = (single_entity_num_stmt | single_entity_str_stmt | link_stmt | lan_stmt) + LineEnd()
+    
+    def parse_stmt(self, statement):
+        """Parses an HLB statement and returns a tuple: (triggers, actors, action, e_events)
+        Values are returned as "None" if they cannot be extracted.
+        """
+        try:
+            parsed = self.constraint_statement.parseString(statement)
+        except ParseException as pe:
+            #print("WARNING: Could not parse HLB statement:\n\t%s" % (statement))
+            return(None, None, None)
+        if parsed.e_events == None:
+            parsed.e_events = []
+        return_tuple = (str(parsed.constraint), list(parsed.target), list(parsed.value))
+        return(tuple(r if r != [] and r != "" else None for r in return_tuple))
+
 class HLBParser():
     when_keyword = CaselessKeyword("when").suppress()
     wait_keyword = CaselessKeyword("wait").suppress() 

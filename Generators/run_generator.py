@@ -11,9 +11,10 @@ if __name__ == "__main__":
     argparser.add_argument('-o', '--outdir', default="/tmp", help="Directory to produce output. If the directory does not exist, this program will attempt to create it.")
     args = argparser.parse_args()
     
-    # We're cheating and using config parser so we can keep
-    # separate sections for HLB and constraints
+    # We're cheating and using configparser (ConfigParser in 2.x) so we can
+    # keep separate sections for HLB and constraints 
     # XXX We should think about combining constraints with the HLB language.
+    # XXX For now, constraints and HLB each have their own parsers.
     hlbFullParser = configparser.ConfigParser(allow_no_value=True)
     hlbFullParser.readfp(args.inputFileName)
     constraints = [x[0] for x in hlbFullParser.items('Constraints')]
@@ -29,6 +30,7 @@ if __name__ == "__main__":
 
     chosenGenerator = __import__(args.generatorType, fromlist=['Generator'])
     generator = chosenGenerator.Generator(hlb, constraints=constraints)
+    generator.generate()
     
     
     
