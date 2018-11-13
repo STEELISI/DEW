@@ -1,0 +1,49 @@
+# CEF Tool Template:
+
+**Name:** [ DEW ]
+
+**Purpose/Description:**
+
+[
+DEW unifies behavior and topology of an experiment, but captures only relevant topological details. 
+]
+
+**Link to Source:** [ https://github.com/gbartlet/DEW ]
+
+**How to Cite:**
+[ 
+@inproceedings {220237,
+author = {Jelena Mirkovic and Genevieve Bartlett and Jim Blythe},
+title = {{DEW}: Distributed Experiment Workflows},
+booktitle = {11th {USENIX} Workshop on Cyber Security Experimentation and Test ({CSET} 18)},
+year = {2018},
+address = {Baltimore, MD},
+url = {https://www.usenix.org/conference/cset18/presentation/mirkovic},
+publisher = {{USENIX} Association},
+}
+]
+
+**Language(s):** [ python2, python3 ]
+
+**License:** [ Apache License 2.0 ] 
+
+**Requirements/Constraints:**
+
+  - [ code requires a python2 or python3 interpreter ]
+  - [ spaCy Natural Language Processing in Python ]
+  - [ networkx 2+ ]
+  - [ pyparsing ]
+
+**How to build:**
+	
+  - [ run pip install -r requirements.txt ]
+  - [ python -m spacy download en ] 
+
+**How to run:**
+
+  - [ python dew_gui.py ]
+
+**See also:**
+
+  - [ None at this time. ]
+
