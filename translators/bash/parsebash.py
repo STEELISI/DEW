@@ -200,5 +200,11 @@ for a in actions:
 
 outFile.close()
 
+# There is an issue with duplicate lines when passing .hlb into the generator. The setup.sh sample script has a
+# duplicated line in the 'attacker setup' section. This seems like a simple typo in the original script (need to verify)
+# However, there is an issue in that this creates duplicate lines for that step in the outputted HLB. When i pass the
+# output to Generator the configparser throws an error because of the duplicate.
+#
+# Should duplicate lines just be searched for and cleaned? This can happen either in the input file or the output file.
 
 
