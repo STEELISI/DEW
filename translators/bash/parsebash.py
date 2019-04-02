@@ -11,7 +11,7 @@ if (len(sys.argv) < 2):
     print (usage)
     sys.exit(1)
 
-filename = sys.argv[1]
+filepath = sys.argv[1]
 ti = 0
 trigger = ""
 event = ""
@@ -19,7 +19,13 @@ emit = ""
 na = 0
 linecount = 0
 
-with open(filename, 'r+') as fh:
+filepathSplit = filepath.split('/')
+baseFileName = filepathSplit[-1]
+baseFileName = re.sub("\.[a-z]+", "", baseFileName)
+outFile = open("./out/" + baseFileName + ".hlb", 'w+')
+outFile.write("[HLB]\n")
+
+with open(filepath, 'r+') as fh:
     for line in fh:
         linecount += 1
         line = re.sub("^\s+", "", line)
@@ -169,12 +175,12 @@ with open(filename, 'r+') as fh:
                     event = action + "_done"
 
                 if trigger != "":
-                    print (trigger),
+                    outFile.write(trigger)
 
-                print ("actor" + str(actors[actor]) + " " + action),
+                outFile.write("actor" + str(actors[actor]) + " " + action + " ")
                 if emit != "":
-                    print (emit + " " + event),
-                print
+                    outFile.write(emit + " " + event)
+                outFile.write("\n")
 
                 if trigger != "":
                     trigger = ""
@@ -187,10 +193,18 @@ with open(filename, 'r+') as fh:
             trigger = "wait t" + str(ti)
             ti += 1
 
-print ("bindings:")
+outFile.write("\n")
+outFile.write("[Bindings]\n")
 for a in actions:
-    print ("\t" + a + " " + actions[a])
+    outFile.write(a + " " + actions[a] + "\n")
 
+outFile.close()
 
+# There is an issue with duplicate lines when passing .hlb into the generator. The setup.sh sample script has a
+# duplicated line in the 'attacker setup' section. This seems like a simple typo in the original script (need to verify)
+# However, there is an issue in that this creates duplicate lines for that step in the outputted HLB. When i pass the
+# output to Generator the configparser throws an error because of the duplicate.
+#
+# Should duplicate lines just be searched for and cleaned? This can happen either in the input file or the output file.
 
 
