@@ -14,7 +14,7 @@ def yaml_dump(filepath,data):
 
 if __name__=="__main__":
     #filepath="test.yaml"
-    filepath="aal1.txt"
+    filepath="simple_aal_import.aal"
     data=yaml_loader(filepath)
     print(data)
     
@@ -47,6 +47,7 @@ if __name__=="__main__":
                                 if(type(_v)==type(dict())):
                                     for _k,_v1 in _v.iteritems():
                                         print key + "=>" + k + "=>" + _k + "," + _v1
+                                        #print key + k + _k + _v1
                         else:
                             print key + "=>" + str(k) +"," + str(v)
                             
@@ -77,7 +78,7 @@ if __name__=="__main__":
     res_data['scenario']=triggerList
     print(res_data)
 
-    with open("DEWtry.txt","w") as output:
+    with open("DEWtry2.txt","w") as output:
         for key,val in res_data.iteritems():
             if key=="binding":
                 output.write(key + "\n")
