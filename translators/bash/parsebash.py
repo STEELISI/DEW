@@ -22,8 +22,8 @@ linecount = 0
 filepathSplit = filepath.split('/')
 baseFileName = filepathSplit[-1]
 baseFileName = re.sub("\.[a-z]+", "", baseFileName)
-outFile = open("./out/" + baseFileName + ".hlb", 'w+')
-outFile.write("[HLB]\n")
+outFile = open("./out/" + baseFileName + ".dew", 'w+')
+outFile.write("[Scenario]\n")
 
 with open(filepath, 'r+') as fh:
     for line in fh:

@@ -1,4 +1,4 @@
-[HLB]
+[Scenario]
 actor0 setup_victim emit setup_victim_done
 actor1 apparmor_parser emit apparmor_parser_done
 actor1 mkdir emit mkdir_done

@@ -1,4 +1,4 @@
-[HLB]
+[Scenario]
 actor0 start_log 
 actor1 start_log_2 
 actor0 restart_server 
