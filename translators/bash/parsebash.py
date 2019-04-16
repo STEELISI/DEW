@@ -163,6 +163,13 @@ with open(filepath, 'r+') as fh:
 
             action = re.sub("\..*$", "", action)
             if action != "":
+                if action in actions and cmd != actions[action][1]:
+                    actions[action][0] += 1
+                    action += '_' + str(actions[action][0])
+                    actions[action] = [1, cmd]
+                else:
+                    actions[action] = [1, cmd]
+
                 if event != "":
                     temp = "when " + event
 
@@ -175,7 +182,7 @@ with open(filepath, 'r+') as fh:
                     event = action + "_done"
 
                 if trigger != "":
-                    outFile.write(trigger)
+                    outFile.write(trigger + " ")
 
                 outFile.write("actor" + str(actors[actor]) + " " + action + " ")
                 if emit != "":
@@ -187,8 +194,6 @@ with open(filepath, 'r+') as fh:
                 else:
                     event = ""
 
-                actions[action] = cmd
-
         if re.search("^sleep", line):
             trigger = "wait t" + str(ti)
             ti += 1
@@ -196,7 +201,7 @@ with open(filepath, 'r+') as fh:
 outFile.write("\n")
 outFile.write("[Bindings]\n")
 for a in actions:
-    outFile.write(a + " " + actions[a] + "\n")
+    outFile.write(a + " " + actions[a][1] + "\n")
 
 outFile.close()
 
