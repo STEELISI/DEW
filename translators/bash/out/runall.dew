@@ -12,6 +12,8 @@ when stop_python_done actor0 ipset emit ipset_done
 when ipset_done actor0 stop_tcpdump emit stop_tcpdump_done
 when stop_tcpdump_done actor1 stop_tcpdump emit stop_tcpdump_done
 
+[Constraints]
+
 [Bindings]
 stop_legitimate sudo killall python3.4
 stop_attack sudo pkill -9 python3

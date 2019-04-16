@@ -1,3 +1,4 @@
+import os
 import re
 import sys
 
@@ -19,8 +20,9 @@ emit = ""
 na = 0
 linecount = 0
 
+cwd = os.path.dirname(os.path.realpath(__file__))
 baseFileName = re.sub("\.[a-z]+", "", filepath.split('/')[-1])
-outFile = open("./out/" + baseFileName + ".dew", 'w+')
+outFile = open(cwd + "/out/" + baseFileName + ".dew", 'w+')
 outFile.write("[Scenario]\n")
 
 with open(filepath, 'r+') as fh:
@@ -201,6 +203,10 @@ with open(filepath, 'r+') as fh:
         if re.search("^sleep", line):
             trigger = "wait t" + str(ti)
             ti += 1
+
+outFile.write("\n")
+outFile.write("[Constraints]\n")
+# TODO next step is to add support for numbered constraints. After that we can add support for other constraint types
 
 outFile.write("\n")
 outFile.write("[Bindings]\n")

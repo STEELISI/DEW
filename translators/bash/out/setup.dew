@@ -5,6 +5,8 @@ actor1 mkdir emit mkdir_done
 actor2 install emit install_done
 actor2 install_2 emit install_2_done
 
+[Constraints]
+
 [Bindings]
 install_2 cd ~/frade/traffic/flood_attacker; sudo bash install
 mkdir sudo mkdir /zfs; sudo mkdir /zfs/FRADE; sudo mount -t nfs -o tcp,vers=3 zfs:/zfs/FRADE /zfs/FRADE
