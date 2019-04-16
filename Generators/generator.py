@@ -5,7 +5,7 @@ sys.path.insert(0, '../UI/HighLevelBehaviorLanguage/')
 sys.path.insert(0, '../UI/')
 from hlb_parser import HLBParser, ConstraintParser
 
-class GeneralGenerator():
+class GeneralGenerator(object):
     # scenario and constraints given as a list.
     def __init__(self, scenario, constraints=None, name='Generic Class'):
         # For debugging. Subclass should set this to something meaningful. e.g. "bash"

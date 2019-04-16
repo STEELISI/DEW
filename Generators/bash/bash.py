@@ -4,6 +4,6 @@ from generator import GeneralGenerator
 
 class Generator(GeneralGenerator):
     def __init__(self, *args, **kwargs):
-        super(Generator, self).__init__(*args, **kwargs, name="bash")
+        super(Generator, self).__init__(*args, name="bash", **kwargs)
         print("Hi there. My name is: %s" % self.name)
         pass
