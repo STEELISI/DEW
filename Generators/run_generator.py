@@ -23,7 +23,7 @@ if __name__ == "__main__":
     if os.path.isdir(args.generatorType) and os.path.isfile(args.generatorType + '/' + args.generatorType + '.py'):
         sys.path.insert(0, args.generatorType)
     else:
-        print("\nERROR:\tExpecting generator type (%s) to match {generator}/{generator}.py\n\t(e.g. %s/%s.py) in this directory.\n\n" % (args.generatorType, args.generatorType, args.generatorType))
+        print("\nERROR:\tExpecting generator type (%s) to match {generator}/{generator}.py\n\t(e.g. %s/%s.py) in this directory.\n\n" %(args.generatorType, args.generatorType, args.generatorType))
         argparser.print_help()
         print("\n")
         exit(1)

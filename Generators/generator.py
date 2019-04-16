@@ -37,12 +37,12 @@ class GeneralGenerator(object):
             try:
                 parsedTuple = self.ConstParser.parse_stmt(c)
             except:
-                print("ERROR:\tCannot parse the following constraint: %s" % (c))
+                print("ERROR:\tCannot parse the following constraint: %s\n" % c)
                 return False
             # Because we use parsing for UI suggestions, we don't throw exceptions
             # when we can't parse a statement, instead the parser returns a tuplet of Nones.
             if all(x == None for x in parsedTuple):
-                print("ERROR:\tUn-parsable constraint: %s" % (c))
+                print("ERROR:\tUnparsable constraint: %s\n" % c)
                 return False
 
             # XXX Right now, for generation we only care about 'num' constraints.
@@ -50,15 +50,15 @@ class GeneralGenerator(object):
             if 'num' == parsedTuple[0]:
                 self.constraints_parsed.append(parsedTuple)
 
-        for h in self.scenario:
+        for s in self.scenario:
             try:
-                parsedTuple = self.HLBparser.parse_stmt(h)
+                parsedTuple = self.HLBparser.parse_stmt(s)
             except:
-                print("ERROR:\tConnot parse the following Scenario statement: %s" %(h))
+                print("ERROR:\tCannot parse the following Scenario statement: %s\n" % s)
                 return False
             # See above comment - we return all Nones if statement is un-parsable.
             if all(x == None for x in parsedTuple):
-                print("ERROR:\tUn-parsable Scenario statement: %s" % (h))
+                print("ERROR:\tUnparsable Scenario statement: %s\n" % s)
                 return False
             self.scenario_parsed.append(parsedTuple)
 
