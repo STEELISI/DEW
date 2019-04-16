@@ -57,7 +57,7 @@ with open(filepath, 'r+') as fh:
             if items[1] == '-lt':
                 value -= 1
             if var not in loopvars.keys():
-                print ("Error: Line " + str(linecount) + " - variable $" + var + " not initialized before while loop")
+                print ("ERROR: Line %d - variable $%s not initialized before while loop" % (linecount, var))
                 sys.exit(1)
             else:
                 loopvars[var][1] = int(value)
