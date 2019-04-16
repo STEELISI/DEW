@@ -5,5 +5,12 @@ from generator import GeneralGenerator
 class Generator(GeneralGenerator):
     def __init__(self, *args, **kwargs):
         super(Generator, self).__init__(*args, name="bash", **kwargs)
-        print("Hi there. My name is: %s" % self.name)
-        pass
+        self.scenario = args[0]
+        self.constraints = kwargs
+
+    def parse(self):
+        print("Scenario:")
+        for scenario in self.scenario:
+            print("\t" + scenario)
+        print("Constraints:")
+        print("\t" + str(self.constraints))
