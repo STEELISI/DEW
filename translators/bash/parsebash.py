@@ -19,9 +19,7 @@ emit = ""
 na = 0
 linecount = 0
 
-filepathSplit = filepath.split('/')
-baseFileName = filepathSplit[-1]
-baseFileName = re.sub("\.[a-z]+", "", baseFileName)
+baseFileName = re.sub("\.[a-z]+", "", filepath.split('/')[-1])
 outFile = open("./out/" + baseFileName + ".dew", 'w+')
 outFile.write("[Scenario]\n")
 
@@ -163,6 +161,12 @@ with open(filepath, 'r+') as fh:
 
             action = re.sub("\..*$", "", action)
             if action != "":
+
+                # Check if this action name has been used before; and, if the command is new or has been seen before.
+                # If the action is the same, but the command is unique, then concat a number to the action to make it
+                #       unique.
+                # This is to ensure that dictionary entries in 'actions' are not overwritten. For example, if a 'mkdir'
+                #       appears multiple times to make unique folders, then there will be 'mkdir' and 'mkdir_2'
                 if action in actions and cmd != actions[action][1]:
                     actions[action][0] += 1
                     action += '_' + str(actions[action][0])
@@ -202,14 +206,4 @@ outFile.write("\n")
 outFile.write("[Bindings]\n")
 for a in actions:
     outFile.write(a + " " + actions[a][1] + "\n")
-
 outFile.close()
-
-# There is an issue with duplicate lines when passing .hlb into the generator. The setup.sh sample script has a
-# duplicated line in the 'attacker setup' section. This seems like a simple typo in the original script (need to verify)
-# However, there is an issue in that this creates duplicate lines for that step in the outputted HLB. When i pass the
-# output to Generator the configparser throws an error because of the duplicate.
-#
-# Should duplicate lines just be searched for and cleaned? This can happen either in the input file or the output file.
-
-
