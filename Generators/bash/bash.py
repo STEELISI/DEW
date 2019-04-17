@@ -1,5 +1,8 @@
+import os.path
 import sys
-sys.path.insert(0, '../')
+cwd = os.path.dirname(os.path.realpath(__file__))
+parentDir = os.path.abspath(os.path.join(cwd, os.pardir))
+sys.path.insert(0, parentDir)
 from generator import GeneralGenerator
 
 class Generator(GeneralGenerator):

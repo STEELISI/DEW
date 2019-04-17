@@ -20,10 +20,12 @@ if __name__ == "__main__":
     constraints = [x[0] for x in hlbFullParser.items('Constraints')]
     scenario = [x[0] for x in hlbFullParser.items('Scenario')]
 
-    if os.path.isdir(args.generatorType) and os.path.isfile(args.generatorType + '/' + args.generatorType + '.py'):
-        sys.path.insert(0, args.generatorType)
+    cwd = os.path.dirname(os.path.realpath(__file__))
+    parentDirectory = os.path.abspath(os.path.join(cwd, os.pardir))
+    if os.path.isdir(cwd + "/" + args.generatorType) and os.path.isfile(cwd + "/" + args.generatorType + '/' + args.generatorType + '.py'):
+        sys.path.insert(0, cwd + "/" + args.generatorType)
     else:
-        print("\nERROR:\tExpecting generator type (%s) to match {generator}/{generator}.py\n\t(e.g. %s/%s.py) in this directory.\n\n" %(args.generatorType, args.generatorType, args.generatorType))
+        print("\nERROR:\tExpecting generator type (%s) to match {generator}/{generator}.py\n\t(e.g. %s/%s.py) in %s/ directory.\n\n" %(args.generatorType, args.generatorType, args.generatorType, cwd))
         argparser.print_help()
         print("\n")
         exit(1)

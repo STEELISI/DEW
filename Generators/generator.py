@@ -1,8 +1,11 @@
 # XXX We need to redo the directory structure so core functions (like Scenario parsing) are more central.
 # In the meantime:
+import os.path
 import sys
-sys.path.insert(0, '../UI/HighLevelBehaviorLanguage/')
-sys.path.insert(0, '../UI/')
+cwd = os.path.dirname(os.path.realpath(__file__))
+parentDir = os.path.abspath(os.path.join(cwd, os.pardir))
+sys.path.insert(0, parentDir + '/UI/HighLevelBehaviorLanguage/')
+sys.path.insert(0, parentDir + '/UI/')
 from hlb_parser import HLBParser, ConstraintParser
 
 class GeneralGenerator(object):
