@@ -210,6 +210,6 @@ outFile.write("[Constraints]\n")
 
 outFile.write("\n")
 outFile.write("[Bindings]\n")
-for a in actions:
+for a in sorted(actions):
     outFile.write(a + " " + actions[a][1] + "\n")
 outFile.close()
