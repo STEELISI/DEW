@@ -25,9 +25,10 @@ class nlpHandler():
             t = t.replace(d, '|')
         return(t.split('|'))
 
-    def nlpChanged(self, widget):
-        current_text = globals.app.getTextArea("NLP Input")
+    def extractActorsAndBehaviors(self, current_text):
         split_text = self.splitText(current_text)
+        suggested_hlb = None
+        extracted_data = []
         if len(split_text) != len(self.sentences) and len(split_text) > 1:
             if len(split_text) > len(self.sentences):
                 # We have a new sentence.
@@ -56,7 +57,8 @@ class nlpHandler():
                             removetable = str.maketrans('', '', "'@#%")
                             suggested_hlb = suggested_hlb.translate(removetable)
                             print(suggested_hlb)
-                            globals.app.setTextArea("behavior", suggested_hlb, callFunction=behaviorentered)
+                            extracted_data.append({'behavior': suggested_hlb, 'actors': actors})
+                            # globals.app.setTextArea("behavior", suggested_hlb, callFunction=behaviorentered)
                         
                         # We don't add actors ourselves. The code that extracts actors from behavior will 
                         # end up doing what we want there.    
@@ -64,12 +66,64 @@ class nlpHandler():
                         #    if ent_str not in self.submittedActors and ent_str not in globals.actors:
                         #        globals.app.setTextArea("actor",ent_str+'\n', callFunction=actorentered)
                         #        self.submittedActors.append(ent_str)
+                        # After the server starts the listener and the measure script, the client will start its traffic.
 
                         
             elif len(split_text) < len(self.sentences):
                 print("Do not handle erasures yet.")
                 # We have lost a sentence.
             self.sentences = [s.strip() for s in split_text]
+        return extracted_data
+
+    def nlpChanged(self, widget):
+        current_text = globals.app.getTextArea("NLP Input")
+        x = self.extractActorsAndBehaviors(current_text)
+        print(x)
+        if x is not None:
+            globals.app.setTextArea("behavior", '\n'.join([y['behavior'] for y in x]), callFunction=behaviorentered)
+        # split_text = self.splitText(current_text)
+        # if len(split_text) != len(self.sentences) and len(split_text) > 1:
+        #     if len(split_text) > len(self.sentences):
+        #         # We have a new sentence.
+        #         for sentence in split_text:
+        #             if sentence.strip() not in  self.sentences and sentence.strip() != "":
+        #                 print("New to process: %s" % sentence)
+                        
+        #                 tokens = self.dict(sentence)
+                        
+        #                 # Entities.
+        #                 entities = findEntities(tokens, sub=True, obj=False)
+        #                 actors = []
+        #                 for ent in entities:
+        #                     ent_phrase = str(ent).split()
+        #                     print(ent_phrase)
+        #                     ent_phrase = [x for x in ent_phrase if x.lower() not in STOP_WORDS]
+        #                     ent_str = ' '.join(ent_phrase)
+        #                     ent_str = ''.join(x for x in ent_str.title() if not x.isspace())
+        #                     print(ent_str)
+        #                     if ent_str not in actors:
+        #                         actors.append(ent_str)
+                        
+        #                 # Generate Behavior Suggestions
+        #                 suggested_hlb = self.generate_behavior(sentence, tokens, actors=actors)
+        #                 if suggested_hlb != None:
+        #                     removetable = str.maketrans('', '', "'@#%")
+        #                     suggested_hlb = suggested_hlb.translate(removetable)
+        #                     print(suggested_hlb)
+        #                     globals.app.setTextArea("behavior", suggested_hlb, callFunction=behaviorentered)
+                        
+        #                 # We don't add actors ourselves. The code that extracts actors from behavior will 
+        #                 # end up doing what we want there.    
+        #                 #for ent_str in actors:
+        #                 #    if ent_str not in self.submittedActors and ent_str not in globals.actors:
+        #                 #        globals.app.setTextArea("actor",ent_str+'\n', callFunction=actorentered)
+        #                 #        self.submittedActors.append(ent_str)
+
+                        
+        #     elif len(split_text) < len(self.sentences):
+        #         print("Do not handle erasures yet.")
+        #         # We have lost a sentence.
+        #     self.sentences = [s.strip() for s in split_text]
     
     def generate_behavior(self, sentence, tokens, actors=[]):
         
