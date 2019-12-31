@@ -278,7 +278,7 @@ def tbFunc(button):
     print(button)
     if (button == "SAVE"):
         # create another window for setting bindings for actions 
-        #gather_bindings();
+        # gather_bindings();
         save("xxx")
     elif (button == "Submit"):
         # take and save all the input
@@ -317,52 +317,100 @@ def Centry(button):
     globals.app.setTextArea("constraints", delim+button, True, True)
     pass
 
-def addSuggestions(evtype, pb):
-    globals.app.openScrollPane("Suggestions")
+def getSuggestionsForEvent(evtype):
+    print("In api")
+    suggestions = []
     if evtype == "actors_only":
         for a in globals.actors:
             if a != "" and a not in globals.sbuttons:
                 print("add actor %s" % a)
-                globals.sbuttons[a] = 1
-                globals.app.addButton(a, pb)
+                suggestions.append(a)
     elif evtype == "actions_only":
         for a in globals.actions:
             if a != "" and a not in globals.sbuttons:
                 print("add action %s" % a)
-                globals.sbuttons[a] = 1
-                globals.app.addButton(a, pb)
+                suggestions.append(a)
     elif evtype == "methods_only":
         pass
     elif evtype == "events_only":
         for e in globals.events:
             if e != "":
-                globals.sbuttons[e] = 1
-                globals.app.addButton(e, pb)
+                suggestions.append(e)
     elif evtype == "behaviors_enter" or evtype == "when_enter":
         print("Actors %d" % len(globals.actors))
         for a in globals.actors:
             if a != "":
                 print("add actor %s" % a)
-                globals.sbuttons[a] = 1
-                globals.app.addButton(a, pb)
+                suggestions.append(a)
         if evtype == "behaviors_enter":
             for e in globals.events:
                 eline="when "+e
-                globals.sbuttons[eline] = 1
-                globals.app.addButton(eline, pb)
+                suggestions.append(eline)
         for s in ["wait t"]:
-            globals.sbuttons[s] = 1
-            globals.app.addButton(s, pb)
+            suggestions.append(s)
     elif evtype == "constraints_enter":
-        for l in ["num", "os","link","lan","interfaces","location","nodetype"]:
-            globals.app.addButton(l,Centry)
-            globals.sbuttons[l]=1
+        suggestions = suggestions + ["num", "os","link","lan","interfaces","location","nodetype"]
     elif evtype == "emit":
-        globals.sbuttons["emit"] = 1
-        globals.app.addButton("emit", pb)
+        suggestions.append("emit")
+        # globals.sbuttons["emit"] = 1
+        # globals.app.addButton("emit", pb)
     else: # it was text to be displayed as label
-        globals.app.addLabel(evtype,evtype)
-        globals.slabels[evtype] = 1
+        suggestions.append(evtype)
+    #globals.app.stopLabelFrame()
+    # globals.app.stopScrollPane()
+    return suggestions
+
+def addSuggestions(evtype, pb):
+    globals.app.openScrollPane("Suggestions")
+    suggestions = getSuggestionsForEvent(evtype)
+    for s in suggestions:
+        globals.sbuttons[s] = 1
+        globals.app.addButton(s, pb)
+    print("Output from api", suggestions)
+    # if evtype == "actors_only":
+    #     for a in globals.actors:
+    #         if a != "" and a not in globals.sbuttons:
+    #             print("add actor %s" % a)
+    #             globals.sbuttons[a] = 1
+    #             globals.app.addButton(a, pb)
+    # elif evtype == "actions_only":
+    #     for a in globals.actions:
+    #         if a != "" and a not in globals.sbuttons:
+    #             print("add action %s" % a)
+    #             globals.sbuttons[a] = 1
+    #             globals.app.addButton(a, pb)
+    # elif evtype == "methods_only":
+    #     pass
+    # elif evtype == "events_only":
+    #     for e in globals.events:
+    #         if e != "":
+    #             globals.sbuttons[e] = 1
+    #             globals.app.addButton(e, pb)
+    # elif evtype == "behaviors_enter" or evtype == "when_enter":
+    #     print("Actors %d" % len(globals.actors))
+    #     for a in globals.actors:
+    #         if a != "":
+    #             print("add actor %s" % a)
+    #             globals.sbuttons[a] = 1
+    #             globals.app.addButton(a, pb)
+    #     if evtype == "behaviors_enter":
+    #         for e in globals.events:
+    #             eline="when "+e
+    #             globals.sbuttons[eline] = 1
+    #             globals.app.addButton(eline, pb)
+    #     for s in ["wait t"]:
+    #         globals.sbuttons[s] = 1
+    #         globals.app.addButton(s, pb)
+    # elif evtype == "constraints_enter":
+    #     for l in ["num", "os","link","lan","interfaces","location","nodetype"]:
+    #         globals.app.addButton(l,Centry)
+    #         globals.sbuttons[l]=1
+    # elif evtype == "emit":
+    #     globals.sbuttons["emit"] = 1
+    #     globals.app.addButton("emit", pb)
+    # else: # it was text to be displayed as label
+    #     globals.app.addLabel(evtype,evtype)
+    #     globals.slabels[evtype] = 1
     #globals.app.stopLabelFrame()
     globals.app.stopScrollPane()
 
@@ -644,7 +692,6 @@ def addactor(item):
     if (not text.endswith("\n") and text != ""):
         delim="\n"
     globals.app.setTextArea("actor", delim+item, True, True)
-    
 
 def processBehavior():
         #print("Entered behavior")
