@@ -1,3 +1,0 @@
-([('dew_gui',
-   '/Users/gbartlet/Research/DEWR/SurveyVersion/dist/dew_gui',
-   'EXECUTABLE')],)

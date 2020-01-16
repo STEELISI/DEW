@@ -1,0 +1,135 @@
+<div class="row">
+<div class="col-md-8">
+  <div class="container">
+  <div class="row" style="margin: .5em;">
+      <div class="col-md-12">
+
+          <mat-card> Actors
+              <hr>
+              <div class="row">
+              <div class="col-md-12" (click)="selectTextBox(1)">
+                  <div style="margin: .6em;" [hidden]="!isEnable(1)">
+                      <span>Suggestions:</span>
+                      <button type="button" class="btn btn-outline-primary word-bubble-button" *ngFor="let word of wordlist | textfilter:actorTextFilter"  (click)="insertValue(word.value)">{{word.value}}</button>
+                      
+               
+                   </div>
+                  <div class="flex-container">
+                    
+                      <quill-editor 
+                     
+                      [styles]="{height: '100px'}"
+                      [modules]="{  counter: { container: '#editor1'} ,toolbar: false }"
+                      [(ngModel)]="actors" 
+                      (onContentChanged)="logChange($event,1);"
+                      (onEditorCreated)="created($event,1)"></quill-editor>
+                    </div>
+                     
+                  </div>
+                  </div>
+          </mat-card>
+  
+      </div>
+    </div>
+    <div class="row" style="margin: .5em;">
+        <div class="col-md-12">
+            <mat-card> 
+               
+                    Behavior
+               <hr>
+               <div class="row" >
+                  <div class="col-md-12">
+                    <div [ngClass]="{disabled:isEditModeEnable()}">
+                      <ul cdkDropList class="behavior-list grabbable" (cdkDropListDropped)="drop($event)">
+                          <li class="behavior-box " *ngFor="let item of behaviorList;let index=index" cdkDrag><div>
+                            <i class="fas fa-grip-vertical"></i>
+                            <span>
+                            {{item.text}} </span>
+                            <div class="actions">
+                          
+                              <i class="fas fa-edit" (click)="edit(index)"></i>
+                              <i class="far fa-trash-alt" (click)="delete(index)"></i>
+
+                            </div>
+                          </div>
+                            </li>
+                      </ul>
+                    </div>
+                  </div>
+                </div>
+               <div class="row">
+               <div class="col-md-12" (click)="selectTextBox(2)">
+                  <div style="margin: .6em;" [hidden]="!isEnable(2)">
+                      <span>Suggestions:</span>
+                     
+                      <button type="button" class="btn btn-outline-primary word-bubble-button" *ngFor="let word of wordlist | textfilter:behaviorTextFilter "  (click)="insertValue(word.value)">{{word.value}}</button>
+                      
+                   </div>
+                <div class="flex-container">
+                    
+                      <quill-editor 
+                     
+                      [styles]="{height: '100px'}"
+                      [modules]="{  counter: { container: '#editor1'} ,toolbar: false }"
+                      [(ngModel)]="behaviorText" 
+                      (onContentChanged)="logChange($event,2);"
+                      (onEditorCreated)="created($event,2)"></quill-editor>
+                    </div>
+                     
+                  
+                  </div>
+                  </div>
+                  <div class="row">
+                      <div class="col-md-12" style="    margin: 0.1em;text-align: right;">
+                        <div >
+                            <button type="button" class="btn btn-outline-primary word-bubble-button" (click)="clear()">Clear</button>
+                            <button type="button" class="btn btn-outline-primary word-bubble-button" *ngIf="!isEditModeEnable()" (click)="add()">ADD</button>
+                            <button type="button" class="btn btn-outline-primary word-bubble-button" *ngIf="isEditModeEnable()" (click)="update()">UPDATE</button>
+                            <button type="button" class="btn btn-outline-primary word-bubble-button" *ngIf="isEditModeEnable()" (click)="Cancel()">Cancel</button>
+
+                        </div>
+                      </div>
+                  </div>
+                 
+            </mat-card>
+   
+        </div>
+      </div> 
+      <div class="row" style="margin: .5em;">
+          <div class="col-md-12">
+              <mat-card> Constraints
+                  <hr>
+                  <div class="row">
+                  <div class="col-md-12" (click)="selectTextBox(3)">
+                    <div style="margin: .6em;" [hidden]="!isEnable(3)">
+                       <span>Suggestions:</span>
+                       <button type="button" class="btn btn-outline-primary word-bubble-button" *ngFor="let word of wordlist | textfilter:constraintTextFilter"  (click)="insertValue(word.value)">{{word.value}}</button>
+                           
+                
+                    </div>
+                      <div class="flex-container">
+                    
+                          <quill-editor 
+                         
+                          [styles]="{height: '100px'}"
+                          [modules]="{  counter: { container: '#editor1'} ,toolbar: false }"
+                          [(ngModel)]="constraints" 
+                          (onContentChanged)="logChange($event,3);"
+                          (onEditorCreated)="created($event,3)"></quill-editor>
+                        </div>
+                      </div>
+                      </div>
+              </mat-card>
+          </div>
+        </div>
+    </div>
+  </div>
+<div class="col-md-3">
+<div >
+  <mat-card style="height:600px;margin: .5em;">
+    <span *ngFor="let word of wordlist" class="word-bubble float-left" (click)="insertValue(word.value)">{{word.value}}</span>
+   
+  </mat-card>
+</div>
+  </div>
+</div>

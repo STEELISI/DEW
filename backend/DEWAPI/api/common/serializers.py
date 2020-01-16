@@ -1,0 +1,58 @@
+from flask_restplus import fields
+from DEWAPI.api.restplus import api
+
+blog_post = api.model('Blog post', {
+    'id': fields.Integer(readOnly=True, description='The unique identifier of a blog post'),
+    'title': fields.String(required=True, description='Article title'),
+    'body': fields.String(required=True, description='Article content'),
+    'pub_date': fields.DateTime,
+    'category_id': fields.Integer(attribute='category.id'),
+    'category': fields.String(attribute='category.name'),
+})
+
+pagination = api.model('A page of results', {
+    'page': fields.Integer(description='Number of this page of results'),
+    'pages': fields.Integer(description='Total number of pages of results'),
+    'per_page': fields.Integer(description='Number of items per page of results'),
+    'total': fields.Integer(description='Total number of results'),
+})
+
+page_of_blog_posts = api.inherit('Page of blog posts', pagination, {
+    'items': fields.List(fields.Nested(blog_post))
+})
+
+category = api.model('Blog category', {
+    'id': fields.Integer(readOnly=True, description='The unique identifier of a blog category'),
+    'name': fields.String(required=True, description='Category name'),
+})
+
+category_with_posts = api.inherit('Blog category with posts', category, {
+    'posts': fields.List(fields.Nested(blog_post))
+})
+
+nlp_text = api.model('NLP input', {
+  'text': fields.String(description='The text to be parsed by the NLP')
+})
+
+ns_object = api.model('NS object', {
+  'actors': fields.List(fields.String, description="Actors involved"),
+  'behaviors': fields.List(fields.String, description="Behaviors"),
+  'constraints': fields.List(fields.String, description="Constraints"),
+  'bindings': fields.List(fields.String, description="Bindings")
+})
+
+parse_request = api.model('Parser object', {
+  'ParseType': fields.String(enum=['bash', 'magi', 'go'], description="type of script to be parsed"),
+  'Scenario': fields.List(fields.String, description="Scenario"),
+  'Constraints': fields.List(fields.String, description="Constraints")
+})
+
+translate_request = api.model('Translate request', {
+  'Script': fields.String(description="Content of the script to be translated, script type could be bash, magi, and go")
+})
+
+suggestion_object = api.model('Suggestion request', {
+  'type': fields.String(description="Type of suggestions required",required=True),
+  'suggestion_for': fields.String(description="Partial string for which suggestion is required"),
+  'data': fields.List(fields.String, description="List of strings used as data to make suggestions")
+})
