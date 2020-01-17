@@ -111,7 +111,27 @@ function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _d
     /* harmony default export */
 
 
-    __webpack_exports__["default"] = "\n  <mat-tab-group>\n    <mat-tab *ngFor=\"let x of menuList\" label=\"{{ x.name }}\">\n   <div *ngIf=\"x.id ==1\">\n        <hlb></hlb>\n      </div>\n\n      <div *ngIf=\"x.id ==2\">\n        <nlp></nlp>\n      </div>\n\n      <div *ngIf=\"x.id ==4\">\n        <upload></upload>\n      </div> \n    </mat-tab>\n  </mat-tab-group> \n\n";
+    __webpack_exports__["default"] = "\n  <mat-tab-group>\n    <mat-tab *ngFor=\"let x of menuList\" label=\"{{ x.name }}\">\n   <div *ngIf=\"x.id ==1\">\n        <hlb></hlb>\n      </div>\n\n      <div *ngIf=\"x.id ==2\">\n        <nlp></nlp>\n      </div>\n\n      <div *ngIf=\"x.id ==3\">\n        <dependency-graph></dependency-graph>\n      </div> \n\n      <div *ngIf=\"x.id ==4\">\n        <upload></upload>\n      </div> \n      \n    </mat-tab>\n  </mat-tab-group> \n\n";
+    /***/
+  },
+
+  /***/
+  "./node_modules/raw-loader/dist/cjs.js!./src/app/pages/dashboard/dependency-graph/dependency-graph.component.html":
+  /*!************************************************************************************************************************!*\
+    !*** ./node_modules/raw-loader/dist/cjs.js!./src/app/pages/dashboard/dependency-graph/dependency-graph.component.html ***!
+    \************************************************************************************************************************/
+
+  /*! exports provided: default */
+
+  /***/
+  function node_modulesRawLoaderDistCjsJsSrcAppPagesDashboardDependencyGraphDependencyGraphComponentHtml(module, __webpack_exports__, __webpack_require__) {
+    "use strict";
+
+    __webpack_require__.r(__webpack_exports__);
+    /* harmony default export */
+
+
+    __webpack_exports__["default"] = "<div class=\"row\">\n  <div class=\"col-md-12\" style=\"background-color: grey;\"> \n  <ngx-graph\n  class=\"chart-container\"\n  [view]=\"[500, 700]\"\n  [links]=\"[\n    {\n      id: 'a',\n      source: 'first',\n      target: 'second',\n      label: 'is parent of'\n    },{\n      id: 'b',\n      source: 'first',\n      target: 'third',\n      label: 'is parent of'\n    },{\n      id: 'c',\n      source: 'fourth',\n      target: 'first',\n      label: 'is parent of'\n    },{\n      id: 'd',\n      source: 'fourth',\n      target: 'third',\n      label: 'is parent of'\n    }\n    ,{\n      id: 'e',\n      source: 'fourth',\n      target: 'second',\n      label: 'is parent of'\n    }\n    ,{\n      id: 'f',\n      source: 'fourth',\n      target: 'fifth',\n      label: 'is parent of'\n    }\n  ]\"\n  [nodes]=\"[\n    {\n      id: 'first',\n      label: 'A'\n    }, {\n      id: 'second',\n      label: 'B'\n    }, {\n      id: 'third',\n      label: 'C'\n    }\n    , {\n      id: 'fourth',\n      label: 'D'\n    }\n    , {\n      id: 'fifth',\n      label: 'E'\n    }\n    , {\n      id: 'six',\n      label: 'F'\n    }\n  ]\"\n>\n\n</ngx-graph>\n</div>\n</div>";
     /***/
   },
 
@@ -2187,51 +2207,63 @@ function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _d
     /* harmony import */
 
 
-    var _angular_common__WEBPACK_IMPORTED_MODULE_14__ = __webpack_require__(
+    var _swimlane_ngx_graph__WEBPACK_IMPORTED_MODULE_14__ = __webpack_require__(
+    /*! @swimlane/ngx-graph */
+    "./node_modules/@swimlane/ngx-graph/fesm2015/swimlane-ngx-graph.js");
+    /* harmony import */
+
+
+    var _angular_common__WEBPACK_IMPORTED_MODULE_15__ = __webpack_require__(
     /*! @angular/common */
     "./node_modules/@angular/common/fesm2015/common.js");
     /* harmony import */
 
 
-    var _dashboard_routing_module__WEBPACK_IMPORTED_MODULE_15__ = __webpack_require__(
+    var _dashboard_routing_module__WEBPACK_IMPORTED_MODULE_16__ = __webpack_require__(
     /*! ./dashboard-routing.module */
     "./src/app/pages/dashboard/dashboard-routing.module.ts");
     /* harmony import */
 
 
-    var _angular_router__WEBPACK_IMPORTED_MODULE_16__ = __webpack_require__(
+    var _angular_router__WEBPACK_IMPORTED_MODULE_17__ = __webpack_require__(
     /*! @angular/router */
     "./node_modules/@angular/router/fesm2015/router.js");
     /* harmony import */
 
 
-    var _hlb_hlb_component__WEBPACK_IMPORTED_MODULE_17__ = __webpack_require__(
+    var _hlb_hlb_component__WEBPACK_IMPORTED_MODULE_18__ = __webpack_require__(
     /*! ./hlb/hlb.component */
     "./src/app/pages/dashboard/hlb/hlb.component.ts");
     /* harmony import */
 
 
-    var _nlp_nlp_component__WEBPACK_IMPORTED_MODULE_18__ = __webpack_require__(
+    var _nlp_nlp_component__WEBPACK_IMPORTED_MODULE_19__ = __webpack_require__(
     /*! ./nlp/nlp.component */
     "./src/app/pages/dashboard/nlp/nlp.component.ts");
     /* harmony import */
 
 
-    var _common_text_filter_pipe__WEBPACK_IMPORTED_MODULE_19__ = __webpack_require__(
+    var _common_text_filter_pipe__WEBPACK_IMPORTED_MODULE_20__ = __webpack_require__(
     /*! ./common/text-filter.pipe */
     "./src/app/pages/dashboard/common/text-filter.pipe.ts");
     /* harmony import */
 
 
-    var _upload_upload_component__WEBPACK_IMPORTED_MODULE_20__ = __webpack_require__(
+    var _upload_upload_component__WEBPACK_IMPORTED_MODULE_21__ = __webpack_require__(
     /*! ./upload/upload.component */
     "./src/app/pages/dashboard/upload/upload.component.ts");
     /* harmony import */
 
 
-    var src_app_authentication_auth_module__WEBPACK_IMPORTED_MODULE_21__ = __webpack_require__(
+    var src_app_authentication_auth_module__WEBPACK_IMPORTED_MODULE_22__ = __webpack_require__(
     /*! src/app/@authentication/auth.module */
     "./src/app/@authentication/auth.module.ts");
+    /* harmony import */
+
+
+    var _dependency_graph_dependency_graph_component__WEBPACK_IMPORTED_MODULE_23__ = __webpack_require__(
+    /*! ./dependency-graph/dependency-graph.component */
+    "./src/app/pages/dashboard/dependency-graph/dependency-graph.component.ts");
 
     var DashboardModule = function DashboardModule() {
       _classCallCheck(this, DashboardModule);
@@ -2239,12 +2271,80 @@ function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _d
 
     DashboardModule = tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"]([Object(_angular_core__WEBPACK_IMPORTED_MODULE_1__["NgModule"])({
       exports: [_dashboard_component__WEBPACK_IMPORTED_MODULE_13__["DashboardComponent"]],
-      declarations: [_dashboard_component__WEBPACK_IMPORTED_MODULE_13__["DashboardComponent"], _hlb_hlb_component__WEBPACK_IMPORTED_MODULE_17__["HlbComponent"], _nlp_nlp_component__WEBPACK_IMPORTED_MODULE_18__["NlpComponent"], _common_text_filter_pipe__WEBPACK_IMPORTED_MODULE_19__["TextFilterPipe"], _upload_upload_component__WEBPACK_IMPORTED_MODULE_20__["UploadComponent"], _upload_upload_component__WEBPACK_IMPORTED_MODULE_20__["FilePreviewComponent"]],
-      imports: [_angular_common__WEBPACK_IMPORTED_MODULE_14__["CommonModule"], src_app_authentication_auth_module__WEBPACK_IMPORTED_MODULE_21__["AuthModule"].forRoot(), _angular_router__WEBPACK_IMPORTED_MODULE_16__["RouterModule"], _angular_material__WEBPACK_IMPORTED_MODULE_11__["MatDialogModule"], _angular_material__WEBPACK_IMPORTED_MODULE_11__["MatButtonModule"], _angular_material__WEBPACK_IMPORTED_MODULE_11__["MatSnackBarModule"], _fortawesome_angular_fontawesome__WEBPACK_IMPORTED_MODULE_9__["FontAwesomeModule"], _angular_material_tabs__WEBPACK_IMPORTED_MODULE_2__["MatTabsModule"], _angular_cdk_drag_drop__WEBPACK_IMPORTED_MODULE_7__["DragDropModule"], _angular_forms__WEBPACK_IMPORTED_MODULE_3__["FormsModule"], _angular_material__WEBPACK_IMPORTED_MODULE_11__["MatTableModule"], _angular_material_expansion__WEBPACK_IMPORTED_MODULE_4__["MatExpansionModule"], _angular_material_card__WEBPACK_IMPORTED_MODULE_6__["MatCardModule"], ngx_quill__WEBPACK_IMPORTED_MODULE_8__["QuillModule"].forRoot(), _dashboard_routing_module__WEBPACK_IMPORTED_MODULE_15__["DashboardRoutingModule"], _angular_material_input__WEBPACK_IMPORTED_MODULE_5__["MatInputModule"], ngx_file_drop__WEBPACK_IMPORTED_MODULE_12__["NgxFileDropModule"]],
-      entryComponents: [_upload_upload_component__WEBPACK_IMPORTED_MODULE_20__["FilePreviewComponent"]],
+      declarations: [_dashboard_component__WEBPACK_IMPORTED_MODULE_13__["DashboardComponent"], _hlb_hlb_component__WEBPACK_IMPORTED_MODULE_18__["HlbComponent"], _nlp_nlp_component__WEBPACK_IMPORTED_MODULE_19__["NlpComponent"], _dependency_graph_dependency_graph_component__WEBPACK_IMPORTED_MODULE_23__["DependencyGraphComponent"], _common_text_filter_pipe__WEBPACK_IMPORTED_MODULE_20__["TextFilterPipe"], _upload_upload_component__WEBPACK_IMPORTED_MODULE_21__["UploadComponent"], _upload_upload_component__WEBPACK_IMPORTED_MODULE_21__["FilePreviewComponent"]],
+      imports: [_angular_common__WEBPACK_IMPORTED_MODULE_15__["CommonModule"], src_app_authentication_auth_module__WEBPACK_IMPORTED_MODULE_22__["AuthModule"].forRoot(), _angular_router__WEBPACK_IMPORTED_MODULE_17__["RouterModule"], _swimlane_ngx_graph__WEBPACK_IMPORTED_MODULE_14__["NgxGraphModule"], _angular_material__WEBPACK_IMPORTED_MODULE_11__["MatDialogModule"], _angular_material__WEBPACK_IMPORTED_MODULE_11__["MatButtonModule"], _angular_material__WEBPACK_IMPORTED_MODULE_11__["MatSnackBarModule"], _fortawesome_angular_fontawesome__WEBPACK_IMPORTED_MODULE_9__["FontAwesomeModule"], _angular_material_tabs__WEBPACK_IMPORTED_MODULE_2__["MatTabsModule"], _angular_cdk_drag_drop__WEBPACK_IMPORTED_MODULE_7__["DragDropModule"], _angular_forms__WEBPACK_IMPORTED_MODULE_3__["FormsModule"], _angular_material__WEBPACK_IMPORTED_MODULE_11__["MatTableModule"], _angular_material_expansion__WEBPACK_IMPORTED_MODULE_4__["MatExpansionModule"], _angular_material_card__WEBPACK_IMPORTED_MODULE_6__["MatCardModule"], ngx_quill__WEBPACK_IMPORTED_MODULE_8__["QuillModule"].forRoot(), _dashboard_routing_module__WEBPACK_IMPORTED_MODULE_16__["DashboardRoutingModule"], _angular_material_input__WEBPACK_IMPORTED_MODULE_5__["MatInputModule"], ngx_file_drop__WEBPACK_IMPORTED_MODULE_12__["NgxFileDropModule"]],
+      entryComponents: [_upload_upload_component__WEBPACK_IMPORTED_MODULE_21__["FilePreviewComponent"]],
       providers: [_common_state_service_service__WEBPACK_IMPORTED_MODULE_10__["StateService"]],
       bootstrap: [_dashboard_component__WEBPACK_IMPORTED_MODULE_13__["DashboardComponent"]]
     })], DashboardModule);
+    /***/
+  },
+
+  /***/
+  "./src/app/pages/dashboard/dependency-graph/dependency-graph.component.scss":
+  /*!**********************************************************************************!*\
+    !*** ./src/app/pages/dashboard/dependency-graph/dependency-graph.component.scss ***!
+    \**********************************************************************************/
+
+  /*! exports provided: default */
+
+  /***/
+  function srcAppPagesDashboardDependencyGraphDependencyGraphComponentScss(module, __webpack_exports__, __webpack_require__) {
+    "use strict";
+
+    __webpack_require__.r(__webpack_exports__);
+    /* harmony default export */
+
+
+    __webpack_exports__["default"] = ".chart-container {\n  width: 100%;\n  height: 100%;\n  background-color: grey;\n}\n/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbIi9Vc2Vycy9TaGFiYmlyL3Byb2plY3RzL0RFV19VSS9zcmMvREVXLVVJL3NyYy9hcHAvcGFnZXMvZGFzaGJvYXJkL2RlcGVuZGVuY3ktZ3JhcGgvZGVwZW5kZW5jeS1ncmFwaC5jb21wb25lbnQuc2NzcyIsInNyYy9hcHAvcGFnZXMvZGFzaGJvYXJkL2RlcGVuZGVuY3ktZ3JhcGgvZGVwZW5kZW5jeS1ncmFwaC5jb21wb25lbnQuc2NzcyJdLCJuYW1lcyI6W10sIm1hcHBpbmdzIjoiQUFBQTtFQUNJLFdBQUE7RUFDQSxZQUFBO0VBQ0Esc0JBQUE7QUNDSiIsImZpbGUiOiJzcmMvYXBwL3BhZ2VzL2Rhc2hib2FyZC9kZXBlbmRlbmN5LWdyYXBoL2RlcGVuZGVuY3ktZ3JhcGguY29tcG9uZW50LnNjc3MiLCJzb3VyY2VzQ29udGVudCI6WyIuY2hhcnQtY29udGFpbmVye1xuICAgIHdpZHRoOiAxMDAlO1xuICAgIGhlaWdodDogMTAwJTtcbiAgICBiYWNrZ3JvdW5kLWNvbG9yOiBncmV5O1xufSIsIi5jaGFydC1jb250YWluZXIge1xuICB3aWR0aDogMTAwJTtcbiAgaGVpZ2h0OiAxMDAlO1xuICBiYWNrZ3JvdW5kLWNvbG9yOiBncmV5O1xufSJdfQ== */";
+    /***/
+  },
+
+  /***/
+  "./src/app/pages/dashboard/dependency-graph/dependency-graph.component.ts":
+  /*!********************************************************************************!*\
+    !*** ./src/app/pages/dashboard/dependency-graph/dependency-graph.component.ts ***!
+    \********************************************************************************/
+
+  /*! exports provided: DependencyGraphComponent */
+
+  /***/
+  function srcAppPagesDashboardDependencyGraphDependencyGraphComponentTs(module, __webpack_exports__, __webpack_require__) {
+    "use strict";
+
+    __webpack_require__.r(__webpack_exports__);
+    /* harmony export (binding) */
+
+
+    __webpack_require__.d(__webpack_exports__, "DependencyGraphComponent", function () {
+      return DependencyGraphComponent;
+    });
+    /* harmony import */
+
+
+    var tslib__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(
+    /*! tslib */
+    "./node_modules/tslib/tslib.es6.js");
+    /* harmony import */
+
+
+    var _angular_core__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(
+    /*! @angular/core */
+    "./node_modules/@angular/core/fesm2015/core.js");
+
+    var DependencyGraphComponent = function DependencyGraphComponent() {
+      _classCallCheck(this, DependencyGraphComponent);
+    };
+
+    DependencyGraphComponent = tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"]([Object(_angular_core__WEBPACK_IMPORTED_MODULE_1__["Component"])({
+      selector: 'dependency-graph',
+      template: tslib__WEBPACK_IMPORTED_MODULE_0__["__importDefault"](__webpack_require__(
+      /*! raw-loader!./dependency-graph.component.html */
+      "./node_modules/raw-loader/dist/cjs.js!./src/app/pages/dashboard/dependency-graph/dependency-graph.component.html")).default,
+      styles: [tslib__WEBPACK_IMPORTED_MODULE_0__["__importDefault"](__webpack_require__(
+      /*! ./dependency-graph.component.scss */
+      "./src/app/pages/dashboard/dependency-graph/dependency-graph.component.scss")).default]
+    })], DependencyGraphComponent);
     /***/
   },
 
@@ -2362,6 +2462,7 @@ function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _d
         }, {
           value: "actors"
         }];
+        this.actors = "";
       }
 
       _createClass(HlbComponent, [{
@@ -2374,10 +2475,19 @@ function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _d
             console.log(data);
 
             if (data != null) {
-              data.forEach(function (element) {
-                _this5.behaviorList.push({
+              data.split("\n").forEach(function (element) {
+                if (element.trim() != '') _this5.behaviorList.push({
                   text: element
                 });
+              });
+            }
+          });
+          this.stateservice.getActors().subscribe(function (data) {
+            console.log(data);
+
+            if (data != null) {
+              data.forEach(function (element) {
+                _this5.actors += element + "\n";
               });
             }
           });
@@ -2722,12 +2832,16 @@ function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _d
 
             _this7.stateservice.disableLoader();
 
-            _this7.stateservice.setBehavior(data.Scenario); // this.stateservice.setActors(data.Scenario);
+            _this7.stateservice.setBehavior(data.behavior);
 
+            _this7.stateservice.setActors(data.actors);
 
-            _this7.stateservice.setConstraints(data.Constraints);
+            _this7.stateservice.setConstraints(data.constraints);
 
-            _this7.stateservice.setBindings(data.Bindings);
+            _this7._snackBar.open("Successfully Translated.", "close", {
+              duration: 2000
+            }); // this.stateservice.setBindings(data.Bindings);
+
           }, function (error) {
             _this7.stateservice.disableLoader();
 
