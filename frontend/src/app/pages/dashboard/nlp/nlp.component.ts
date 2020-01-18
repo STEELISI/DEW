@@ -72,10 +72,13 @@ export class NlpComponent {
         console.log(data);
         this.stateservice.disableLoader();
        
-        this.stateservice.setBehavior(data.Scenario);
-       // this.stateservice.setActors(data.Scenario);
-        this.stateservice.setConstraints(data.Constraints);
-        this.stateservice.setBindings(data.Bindings);
+        this.stateservice.setBehavior(data.behavior);
+       this.stateservice.setActors(data.actors);
+        this.stateservice.setConstraints(data.constraints);
+        this._snackBar.open("Successfully Translated.", "close", {
+          duration: 2000,
+        });
+       // this.stateservice.setBindings(data.Bindings);
       },error=>{
         this.stateservice.disableLoader();
         this._snackBar.open(error, "close", {

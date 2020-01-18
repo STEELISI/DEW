@@ -12,7 +12,7 @@ import { StateService } from './common/state-service.service';
 import { MatButtonModule, MatSnackBarModule, MatDialogModule, MatTableModule } from '@angular/material';
 import { NgxFileDropModule } from 'ngx-file-drop';
 import { DashboardComponent } from './dashboard.component';
-
+import {NgxGraphModule} from "@swimlane/ngx-graph"
 import { CommonModule } from '@angular/common';
 import { DashboardRoutingModule } from './dashboard-routing.module';
 import { RouterModule } from '@angular/router';
@@ -22,12 +22,14 @@ import { TextFilterPipe } from './common/text-filter.pipe';
 import { UploadComponent, FilePreviewComponent } from './upload/upload.component';
 import { AuthGuard } from 'src/app/@authentication/auth.guard';
 import { AuthModule } from 'src/app/@authentication/auth.module';
+import { DependencyGraphComponent } from './dependency-graph/dependency-graph.component';
 @NgModule({
   exports:[DashboardComponent],
   declarations: [
     DashboardComponent,
      HlbComponent,
      NlpComponent,
+     DependencyGraphComponent,
      TextFilterPipe,
      UploadComponent,
      FilePreviewComponent
@@ -36,6 +38,7 @@ import { AuthModule } from 'src/app/@authentication/auth.module';
     CommonModule,
     AuthModule.forRoot(),
     RouterModule,
+    NgxGraphModule,
     MatDialogModule,
     MatButtonModule,
     MatSnackBarModule,

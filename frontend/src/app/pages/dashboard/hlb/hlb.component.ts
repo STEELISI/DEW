@@ -41,6 +41,7 @@ export class HlbComponent implements OnInit{
 }
 ];
 
+actors:String ="";
 constructor(private stateservice:StateService,private _snackBar: MatSnackBar){}
 ngOnInit(): void {
 
@@ -48,11 +49,21 @@ ngOnInit(): void {
   this.stateservice.getBehavior().subscribe(data=>{
       console.log(data);
     if(data != null){
-      data.forEach(element => {
+      data.split("\n").forEach(element => {
+        if(element.trim()!='')
         this.behaviorList.push({text:element});
       });
     }
   });
+
+  this.stateservice.getActors().subscribe(data=>{
+    console.log(data);
+  if(data != null){
+    data.forEach(element => {
+      this.actors+=element+"\n";
+    });
+  }
+});
 
   this.stateservice.getBindings().subscribe(data=>{
     
