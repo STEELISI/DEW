@@ -52,7 +52,7 @@ translate_request = api.model('Translate request', {
 })
 
 suggestion_object = api.model('Suggestion request', {
-  'type': fields.String(description="Type of suggestions required",required=True),
+  'type': fields.String(description="Type of suggestions required",required=True, enum=['behavior', 'constraint']),
   'suggestion_for': fields.String(description="Partial string for which suggestion is required"),
-  'data': fields.List(fields.String, description="List of strings used as data to make suggestions")
+  'data': fields.List(fields.String, description="List of behaviors/constraints used as data to make suggestions")
 })
