@@ -56,7 +56,7 @@ class HandleSuggestions(Resource):
           Gets suggestions for given input
         """
         json_data = request.get_json(force=True)
-        if json_data["type"] == "suggestions":
+        if json_data["type"] == "behavior":
           return { 'suggestions': obj.HandleBehaviorSuggestions(json_data["data"], json_data['suggestion_for'])}
         else:
           pass

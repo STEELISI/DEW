@@ -56,8 +56,7 @@ class nlpHandler():
                 if suggested_hlb != None:
                     removetable = str.maketrans('', '', "'@#%")
                     suggested_hlb = suggested_hlb.translate(removetable)
-                    print(suggested_hlb)
-                    extracted_data['behavior'] = suggested_hlb
+                    extracted_data['behavior'] = [x for x in suggested_hlb.split("\n") if x]
                     extracted_data['actors'] = actors
                     # globals.app.setTextArea("behavior", suggested_hlb, callFunction=behaviorentered)
 
