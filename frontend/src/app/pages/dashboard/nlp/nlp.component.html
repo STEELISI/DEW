@@ -1,7 +1,6 @@
-<div class="container">
-  <mat-card>
+
     <div class="row">
-      <div class="col-md-12" >
+      <div class="col-md-12" style="padding: 2em;">
         <div style="margin: .6em;" >
           <span>Suggestions:</span>
           <button
@@ -15,7 +14,7 @@
         </div>
         <div class="flex-container">
           <quill-editor
-            [styles]="{ height: '500px' }"
+            [styles]="{ height: '100px' }"
             [modules]="{ counter: { container: '#editor1' }, toolbar: false }"
             [(ngModel)]="nlpText"
             (onContentChanged)="logChange($event, 1)"
@@ -24,12 +23,11 @@
         </div>
       </div>
     </div>
-    <div class="row">
-      <div class="col-md-12">
+    <div class="col-md-12">
+    
         <div style="float:right">
-          <button type="button" class="btn btn-outline-primary word-bubble-button" (click)="save()">Save</button>
-        </div>
+          <button mat-stroked-button  (click)="save()">Generate HLB</button>
+        
       </div>
     </div>
-  </mat-card>
-</div>
+

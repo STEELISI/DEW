@@ -21,14 +21,16 @@ export class DashboardComponent {
   */
     menuList:any=[
       {
-        name:"HLB",
+        name:"Configuration",
         id:1,
         html:"<hlb></hlb>"
-      },{
-        name:"NLP",
-        id:2,
-        html:"<nlp></nlp>"
-      }  ,{
+      }
+      // ,{
+      //   name:"NLP",
+      //   id:2,
+      //   html:"<nlp></nlp>"
+      // }
+        ,{
         name:"Behavior Dependency Graph",
         id:3,
         html:"<p>In Progress.....</p>"

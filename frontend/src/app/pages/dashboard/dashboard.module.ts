@@ -23,6 +23,8 @@ import { UploadComponent, FilePreviewComponent } from './upload/upload.component
 import { AuthGuard } from 'src/app/@authentication/auth.guard';
 import { AuthModule } from 'src/app/@authentication/auth.module';
 import { DependencyGraphComponent } from './dependency-graph/dependency-graph.component';
+import {MatRadioModule} from '@angular/material/radio';
+
 @NgModule({
   exports:[DashboardComponent],
   declarations: [
@@ -38,6 +40,7 @@ import { DependencyGraphComponent } from './dependency-graph/dependency-graph.co
     CommonModule,
     AuthModule.forRoot(),
     RouterModule,
+    MatRadioModule,
     NgxGraphModule,
     MatDialogModule,
     MatButtonModule,

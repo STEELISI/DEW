@@ -32,11 +32,15 @@
 .actions{
     float:right;
     cursor: pointer;
+    display: none;
+}
+
+.behavior-list:hover .actions{
+    display: block;
 }
 
 .disabled{
-    pointer-events: none;
-    background-color: grey;
+    pointer-events: none;   
 }
 
 .grabbable {
@@ -52,3 +56,26 @@
     cursor: -moz-grabbing;
     cursor: -webkit-grabbing;
 }
+
+.mat-radio-button ~ .mat-radio-button {
+    margin-left: 16px;
+  }
+
+  .padding-left-right{
+      padding-left: 5px;
+      padding-right: 5px;
+  }
+
+ 
+  .button-padding{
+      margin-left: .1em;
+  }
+
+  .expand{
+      float: right;
+      cursor: pointer;
+  }
+
+  .hide{
+      display: none;
+  }
