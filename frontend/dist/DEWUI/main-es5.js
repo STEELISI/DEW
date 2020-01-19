@@ -51,7 +51,7 @@ function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _d
     /* harmony default export */
 
 
-    __webpack_exports__["default"] = "<div class=\"header\">\n  <nav class=\"navbar navbar-expand-lg navbar-dark bg-dark static-top\">\n    <div class=\"container\">\n      <a class=\"navbar-brand\" href=\"#\">\n            <img src=\"./assets/isi_logo.gif\" alt=\"\">\n          </a>\n      <button class=\"navbar-toggler\" type=\"button\" data-toggle=\"collapse\" data-target=\"#navbarResponsive\" aria-controls=\"navbarResponsive\" aria-expanded=\"false\" aria-label=\"Toggle navigation\">\n            <span class=\"navbar-toggler-icon\"></span>\n          </button>\n      <!-- <div class=\"collapse navbar-collapse\" id=\"navbarResponsive\">\n        <ul class=\"navbar-nav ml-auto\">\n          <li class=\"nav-item active\">\n            <a class=\"nav-link\" href=\"#\">Home\n                  <span class=\"sr-only\">(current)</span>\n                </a>\n          </li>\n          <li class=\"nav-item\">\n            <a class=\"nav-link\" href=\"#\">About</a>\n          </li>\n          <li class=\"nav-item\">\n            <a class=\"nav-link\" href=\"#\">Services</a>\n          </li>\n          <li class=\"nav-item\">\n            <a class=\"nav-link\" href=\"#\">Contact</a>\n          </li>\n        </ul>\n      </div> -->\n      <div class=\"navbar-nav pointer\" [matMenuTriggerFor]=\"menu\">\n        <div class=\"profile\"></div>\n        <span class=\"username\">Login / Sign Up!</span>\n        <mat-menu #menu=\"matMenu\">\n          <button mat-menu-item>Login</button>\n          <button mat-menu-item>Sign Up</button>\n        </mat-menu>\n      </div>\n\n    </div>\n    \n  </nav>\n\n</div>\n";
+    __webpack_exports__["default"] = "<div class=\"header\">\n  <nav class=\"navbar navbar-expand-lg navbar-dark bg-dark static-top\">\n    <div class=\"container\">\n      <a class=\"navbar-brand\" href=\"#\">\n            <img src=\"./assets/isi_logo.gif\" class=\"img-thumbnail\" alt=\"\" >\n          </a>\n      <button class=\"navbar-toggler\" type=\"button\" data-toggle=\"collapse\" data-target=\"#navbarResponsive\" aria-controls=\"navbarResponsive\" aria-expanded=\"false\" aria-label=\"Toggle navigation\">\n            <span class=\"navbar-toggler-icon\"></span>\n          </button>\n      \n      <div class=\"navbar-nav pointer\" [matMenuTriggerFor]=\"menu\">\n        <div class=\"profile\"></div>\n        <span class=\"username\">Login / Sign Up!</span>\n        <mat-menu #menu=\"matMenu\">\n          <button mat-menu-item>Login</button>\n          <button mat-menu-item>Sign Up</button>\n        </mat-menu>\n      </div>\n\n    </div>\n    <!-- <div class=\"collapse navbar-collapse\" id=\"navbarResponsive\">\n        <ul class=\"navbar-nav ml-auto\">\n          <li class=\"nav-item active\">\n            <a class=\"nav-link\" href=\"#\">Home\n                  <span class=\"sr-only\">(current)</span>\n                </a>\n          </li>\n          <li class=\"nav-item\">\n            <a class=\"nav-link\" href=\"#\">About</a>\n          </li>\n          <li class=\"nav-item\">\n            <a class=\"nav-link\" href=\"#\">Services</a>\n          </li>\n          <li class=\"nav-item\">\n            <a class=\"nav-link\" href=\"#\">Contact</a>\n          </li>\n        </ul>\n      </div> -->\n    \n  </nav>\n\n</div>\n";
     /***/
   },
 
@@ -71,7 +71,7 @@ function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _d
     /* harmony default export */
 
 
-    __webpack_exports__["default"] = "<div class=\"container\" windowMode>\n<div class=\"row\">\n  <div class=\"col-md-12\">\n    <header></header>\n \n  </div>\n\n</div>\n\n<div class=\"row\">\n  <div class=\"col-md-12\">\n  <ng-content select=\"router-outlet\"></ng-content>\n</div>\n</div></div>";
+    __webpack_exports__["default"] = "\n<div class=\"row\">\n  <div class=\"col-md-12\">\n    <header></header>\n \n  </div>\n\n</div>\n\n<div class=\"row\">\n  <div class=\"col-md-12\">\n  <ng-content select=\"router-outlet\"></ng-content>\n</div>\n</div>";
     /***/
   },
 
@@ -151,7 +151,7 @@ function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _d
     /* harmony default export */
 
 
-    __webpack_exports__["default"] = "<div class=\"row\">\n<div class=\"col-md-8\">\n  <div class=\"container\">\n  <div class=\"row\" style=\"margin: .5em;\">\n      <div class=\"col-md-12\">\n\n          <mat-card> Actors\n              <hr>\n              <div class=\"row\">\n              <div class=\"col-md-12\" (click)=\"selectTextBox(1)\">\n                  <div style=\"margin: .6em;\" [hidden]=\"!isEnable(1)\">\n                      <span>Suggestions:</span>\n                      <button type=\"button\" class=\"btn btn-outline-primary word-bubble-button\" *ngFor=\"let word of wordlist | textfilter:actorTextFilter\"  (click)=\"insertValue(word.value)\">{{word.value}}</button>\n                      \n               \n                   </div>\n                  <div class=\"flex-container\">\n                    \n                      <quill-editor \n                     \n                      [styles]=\"{height: '100px'}\"\n                      [modules]=\"{  counter: { container: '#editor1'} ,toolbar: false }\"\n                      [(ngModel)]=\"actors\" \n                      (onContentChanged)=\"logChange($event,1);\"\n                      (onEditorCreated)=\"created($event,1)\"></quill-editor>\n                    </div>\n                     \n                  </div>\n                  </div>\n          </mat-card>\n  \n      </div>\n    </div>\n    <div class=\"row\" style=\"margin: .5em;\">\n        <div class=\"col-md-12\">\n            <mat-card> \n               \n                    Behavior\n               <hr>\n               <div class=\"row\" >\n                  <div class=\"col-md-12\">\n                    <div [ngClass]=\"{disabled:isEditModeEnable()}\">\n                      <ul cdkDropList class=\"behavior-list grabbable\" (cdkDropListDropped)=\"drop($event)\">\n                          <li class=\"behavior-box \" *ngFor=\"let item of behaviorList;let index=index\" cdkDrag><div>\n                            <i class=\"fas fa-grip-vertical\"></i>\n                            <span>\n                            {{item.text}} </span>\n                            <div class=\"actions\">\n                          \n                              <i class=\"fas fa-edit\" (click)=\"edit(index)\"></i>\n                              <i class=\"far fa-trash-alt\" (click)=\"delete(index)\"></i>\n\n                            </div>\n                          </div>\n                            </li>\n                      </ul>\n                    </div>\n                  </div>\n                </div>\n               <div class=\"row\">\n               <div class=\"col-md-12\" (click)=\"selectTextBox(2)\">\n                  <div style=\"margin: .6em;\" [hidden]=\"!isEnable(2)\">\n                      <span>Suggestions:</span>\n                     \n                      <button type=\"button\" class=\"btn btn-outline-primary word-bubble-button\" *ngFor=\"let word of wordlist | textfilter:behaviorTextFilter \"  (click)=\"insertValue(word.value)\">{{word.value}}</button>\n                      \n                   </div>\n                <div class=\"flex-container\">\n                    \n                      <quill-editor \n                     \n                      [styles]=\"{height: '100px'}\"\n                      [modules]=\"{  counter: { container: '#editor1'} ,toolbar: false }\"\n                      [(ngModel)]=\"behaviorText\" \n                      (onContentChanged)=\"logChange($event,2);\"\n                      (onEditorCreated)=\"created($event,2)\"></quill-editor>\n                    </div>\n                     \n                  \n                  </div>\n                  </div>\n                  <div class=\"row\">\n                      <div class=\"col-md-12\" style=\"    margin: 0.1em;text-align: right;\">\n                        <div >\n                            <button type=\"button\" class=\"btn btn-outline-primary word-bubble-button\" (click)=\"clear()\">Clear</button>\n                            <button type=\"button\" class=\"btn btn-outline-primary word-bubble-button\" *ngIf=\"!isEditModeEnable()\" (click)=\"add()\">ADD</button>\n                            <button type=\"button\" class=\"btn btn-outline-primary word-bubble-button\" *ngIf=\"isEditModeEnable()\" (click)=\"update()\">UPDATE</button>\n                            <button type=\"button\" class=\"btn btn-outline-primary word-bubble-button\" *ngIf=\"isEditModeEnable()\" (click)=\"Cancel()\">Cancel</button>\n\n                        </div>\n                      </div>\n                  </div>\n                 \n            </mat-card>\n   \n        </div>\n      </div> \n      <div class=\"row\" style=\"margin: .5em;\">\n          <div class=\"col-md-12\">\n              <mat-card> Constraints\n                  <hr>\n                  <div class=\"row\">\n                  <div class=\"col-md-12\" (click)=\"selectTextBox(3)\">\n                    <div style=\"margin: .6em;\" [hidden]=\"!isEnable(3)\">\n                       <span>Suggestions:</span>\n                       <button type=\"button\" class=\"btn btn-outline-primary word-bubble-button\" *ngFor=\"let word of wordlist | textfilter:constraintTextFilter\"  (click)=\"insertValue(word.value)\">{{word.value}}</button>\n                           \n                \n                    </div>\n                      <div class=\"flex-container\">\n                    \n                          <quill-editor \n                         \n                          [styles]=\"{height: '100px'}\"\n                          [modules]=\"{  counter: { container: '#editor1'} ,toolbar: false }\"\n                          [(ngModel)]=\"constraints\" \n                          (onContentChanged)=\"logChange($event,3);\"\n                          (onEditorCreated)=\"created($event,3)\"></quill-editor>\n                        </div>\n                      </div>\n                      </div>\n              </mat-card>\n          </div>\n        </div>\n    </div>\n  </div>\n<div class=\"col-md-3\">\n<div >\n  <mat-card style=\"height:600px;margin: .5em;\">\n    <span *ngFor=\"let word of wordlist\" class=\"word-bubble float-left\" (click)=\"insertValue(word.value)\">{{word.value}}</span>\n   \n  </mat-card>\n</div>\n  </div>\n</div>";
+    __webpack_exports__["default"] = "<!-- <div class=\"row\">\n<div class=\"col-md-8\">\n  <div class=\"container\">\n  <div class=\"row\" style=\"margin: .5em;\">\n      <div class=\"col-md-12\">\n\n          <mat-card> Actors\n              <hr>\n              <div class=\"row\">\n              <div class=\"col-md-12\" (click)=\"selectTextBox(1)\">\n                  <div style=\"margin: .6em;\" [hidden]=\"!isEnable(1)\">\n                      <span>Suggestions:</span>\n                      <button type=\"button\" class=\"btn btn-outline-primary word-bubble-button\" *ngFor=\"let word of wordlist | textfilter:actorTextFilter\"  (click)=\"insertValue(word.value)\">{{word.value}}</button>\n                      \n               \n                   </div>\n                  <div class=\"flex-container\">\n                    \n                      <quill-editor \n                     \n                      [styles]=\"{height: '100px'}\"\n                      [modules]=\"{  counter: { container: '#editor1'} ,toolbar: false }\"\n                      [(ngModel)]=\"actors\" \n                      (onContentChanged)=\"logChange($event,1);\"\n                      (onEditorCreated)=\"created($event,1)\"></quill-editor>\n                    </div>\n                     \n                  </div>\n                  </div>\n          </mat-card>\n  \n      </div>\n    </div>\n    <div class=\"row\" style=\"margin: .5em;\">\n        <div class=\"col-md-12\">\n            <mat-card> \n               \n                    Behavior\n               <hr>\n               <div class=\"row\" >\n                  <div class=\"col-md-12\">\n                    <div [ngClass]=\"{disabled:isEditModeEnable()}\">\n                      <ul cdkDropList class=\"behavior-list grabbable\" (cdkDropListDropped)=\"drop($event)\">\n                          <li class=\"behavior-box \" *ngFor=\"let item of behaviorList;let index=index\" cdkDrag><div>\n                            <i class=\"fas fa-grip-vertical\"></i>\n                            <span>\n                            {{item.text}} </span>\n                            <div class=\"actions\">\n                          \n                              <i class=\"fas fa-edit\" (click)=\"edit(index)\"></i>\n                              <i class=\"far fa-trash-alt\" (click)=\"delete(index)\"></i>\n\n                            </div>\n                          </div>\n                            </li>\n                      </ul>\n                    </div>\n                  </div>\n                </div>\n               <div class=\"row\">\n               <div class=\"col-md-12\" (click)=\"selectTextBox(2)\">\n                  <div style=\"margin: .6em;\" [hidden]=\"!isEnable(2)\">\n                      <span>Suggestions:</span>\n                     \n                      <button type=\"button\" class=\"btn btn-outline-primary word-bubble-button\" *ngFor=\"let word of wordlist | textfilter:behaviorTextFilter \"  (click)=\"insertValue(word.value)\">{{word.value}}</button>\n                      \n                   </div>\n                <div class=\"flex-container\">\n                    \n                      <quill-editor \n                     \n                      [styles]=\"{height: '100px'}\"\n                      [modules]=\"{  counter: { container: '#editor1'} ,toolbar: false }\"\n                      [(ngModel)]=\"behaviorText\" \n                      (onContentChanged)=\"logChange($event,2);\"\n                      (onEditorCreated)=\"created($event,2)\"></quill-editor>\n                    </div>\n                     \n                  \n                  </div>\n                  </div>\n                  <div class=\"row\">\n                      <div class=\"col-md-12\" style=\"    margin: 0.1em;text-align: right;\">\n                        <div >\n                            <button type=\"button\" class=\"btn btn-outline-primary word-bubble-button\" (click)=\"clear()\">Clear</button>\n                            <button type=\"button\" class=\"btn btn-outline-primary word-bubble-button\" *ngIf=\"!isEditModeEnable()\" (click)=\"add()\">ADD</button>\n                            <button type=\"button\" class=\"btn btn-outline-primary word-bubble-button\" *ngIf=\"isEditModeEnable()\" (click)=\"update()\">UPDATE</button>\n                            <button type=\"button\" class=\"btn btn-outline-primary word-bubble-button\" *ngIf=\"isEditModeEnable()\" (click)=\"Cancel()\">Cancel</button>\n\n                        </div>\n                      </div>\n                  </div>\n                 \n            </mat-card>\n   \n        </div>\n      </div> \n      <div class=\"row\" style=\"margin: .5em;\">\n          <div class=\"col-md-12\">\n              <mat-card> Constraints\n                  <hr>\n                  <div class=\"row\">\n                  <div class=\"col-md-12\" (click)=\"selectTextBox(3)\">\n                    <div style=\"margin: .6em;\" [hidden]=\"!isEnable(3)\">\n                       <span>Suggestions:</span>\n                       <button type=\"button\" class=\"btn btn-outline-primary word-bubble-button\" *ngFor=\"let word of wordlist | textfilter:constraintTextFilter\"  (click)=\"insertValue(word.value)\">{{word.value}}</button>\n                           \n                \n                    </div>\n                      <div class=\"flex-container\">\n                    \n                          <quill-editor \n                         \n                          [styles]=\"{height: '100px'}\"\n                          [modules]=\"{  counter: { container: '#editor1'} ,toolbar: false }\"\n                          [(ngModel)]=\"constraints\" \n                          (onContentChanged)=\"logChange($event,3);\"\n                          (onEditorCreated)=\"created($event,3)\"></quill-editor>\n                        </div>\n                      </div>\n                      </div>\n              </mat-card>\n          </div>\n        </div>\n    </div>\n  </div>\n<div class=\"col-md-3\">\n\n  </div>\n</div> -->\n\n\n\n<div class=\"col-md-12\">\n    \n  <div style=\"float: right;padding: 1em;\">      <button mat-stroked-button (click)=\"generateNs()\" >Generate Ns File</button>\n\n</div>\n</div>\n\n<mat-tab-group [(selectedIndex)]=\"selectedIndex\">\n  <mat-tab label=\"English\" >\n    <nlp></nlp>\n  </mat-tab>\n  <mat-tab label=\"Manual\">\n    \n\n<div class=\"row\">\n\n  <div class=\"col-md-12\" style=\"padding: 2em;\">\n   \n  \n    <div class=\"row\" [ngClass]=\"{disabled:isEditModeEnable()}\">\n      <div class=\"col-md-8\" >\n      <mat-radio-group aria-label=\"Select an option\" [(ngModel)]=\"hlbOptions\">\n        <mat-radio-button [value]=\"1\" >Actors</mat-radio-button>\n        <mat-radio-button [value]=\"2\">Behavior</mat-radio-button>\n        <mat-radio-button [value]=\"3\">Constraints</mat-radio-button>\n        <mat-radio-button [value]=\"4\">Bindings</mat-radio-button>\n\n      </mat-radio-group>\n    </div>\n   \n      </div> \n      <div class=\"row\">\n        <div class=\"col-md-12\" >\n      <div class=\"flex-container\" (click)=\"selectTextBox(4)\"> \n    <quill-editor \n                         \n    [styles]=\"{height: '100px'}\"\n    [modules]=\"{  counter: { container: '#editor1'} ,toolbar: false }\"\n    [(ngModel)]=\"inputText\" \n    (onContentChanged)=\"logChange($event,4);\"\n    (onEditorCreated)=\"created($event,4)\"></quill-editor></div></div></div>\n    </div>\n  </div>\n  <div class=\"col-md-12\" >\n    <div style=\"float:right\">\n        <button mat-stroked-button (click)=\"clear()\" class=\"button-padding\">Clear</button>\n        <button mat-stroked-button *ngIf=\"!isEditModeEnable()\" (click)=\"add()\" class=\"button-padding\">ADD</button>\n        <button  mat-stroked-button *ngIf=\"isEditModeEnable()\" (click)=\"update()\" class=\"button-padding\">UPDATE</button>\n        <button mat-stroked-button *ngIf=\"isEditModeEnable()\" (click)=\"Cancel()\" class=\"button-padding\">Cancel</button>\n\n    </div>\n    </div>\n</mat-tab>\n</mat-tab-group> \n  <div class=\"row\">\n    <div class=\"col-md-12\" style=\"padding: 2em;\">\n      <div class=\"row\" [ngClass]=\"{disabled:isEditModeEnable()}\">\n    \n      <div class=\"padding-left-right\" [ngClass]=\"{'col-md-2':isExpandDisabled,'hide':(!isExpandDisabled && !isExpandable(1)),'col-md-12':(!isExpandDisabled && isExpandable(1))}\">\n        <mat-card>  \n          <div style=\"text-align: center;\">Actors\n          <span class=\"expand\" (click)=\"expand(1)\" *ngIf=\"isExpandDisabled\"><i class=\"fas fa-expand-alt\"></i></span>\n          <span class=\"expand\" (click)=\"collapse(1)\" *ngIf=\"!isExpandDisabled\"> <i class=\"fas fa-compress-alt\"></i></span>\n            </div>\n\n          \n          <hr>\n          <div *ngIf=\"actorsList.length==0\" style=\"font-size: .8em;text-align: center;\">\n            <span ><i>No Actors</i></span>\n          </div>\n            <div *ngIf=\"actorsList.length!=0\">\n          <ul  class=\"behavior-list \" >\n            <li class=\"behavior-box \" *ngFor=\"let item of actorsList;let index=index\" ><div>\n            \n              <span>\n              {{item.text}} </span>\n              <div class=\"actions\">\n            \n                <i class=\"fas fa-edit\" (click)=\"edit(index,1)\"></i>\n                <i class=\"far fa-trash-alt\" (click)=\"delete(index,1)\"></i>\n\n              </div>\n            </div>\n              </li>\n        </ul>\n        </div>\n        </mat-card>\n      </div>\n      <div class=\"padding-left-right\" [ngClass]=\"{'col-md-4':isExpandDisabled,'hide':(!isExpandDisabled && !isExpandable(2)),'col-md-12':(!isExpandDisabled && isExpandable(2))}\">\n        <mat-card>   \n          <div style=\"text-align: center;\">Behavior \n            <span class=\"expand\" (click)=\"collapse(2)\" *ngIf=\"!isExpandDisabled\"> <i class=\"fas fa-compress-alt\"></i></span>\n            \n            <span class=\"expand\" (click)=\"expand(2)\" *ngIf=\"isExpandDisabled\"><i class=\"fas fa-expand-alt\"></i></span></div>\n\n          \n          <hr>\n          <div *ngIf=\"behaviorList.length==0\" style=\"font-size: .8em;text-align: center;\">\n            <span ><i>No Behavior</i></span>\n          </div>\n          <div *ngIf=\"behaviorList.length!=0\">\n          <ul cdkDropList class=\"behavior-list grabbable\" (cdkDropListDropped)=\"drop($event,behaviorList)\">\n            <li class=\"behavior-box \" *ngFor=\"let item of behaviorList;let index=index\" cdkDrag><div>\n              <i class=\"fas fa-grip-vertical\"></i>\n              <span>\n              {{item.text}} </span>\n              <div class=\"actions\">\n            \n                <i class=\"fas fa-edit\" (click)=\"edit(index,2)\"></i>\n                <i class=\"far fa-trash-alt\" (click)=\"delete(index,2)\"></i>\n\n              </div>\n            </div>\n              </li>\n        </ul>\n          </div>\n        </mat-card>\n      </div>\n      <div class=\"padding-left-right\" [ngClass]=\"{'col-md-3':isExpandDisabled,'hide':(!isExpandDisabled && !isExpandable(3)),'col-md-12':(!isExpandDisabled && isExpandable(3))}\">\n        <mat-card>    \n          <div style=\"text-align: center;\">Constraints \n            <span class=\"expand\" (click)=\"collapse(3)\" *ngIf=\"!isExpandDisabled\"> <i class=\"fas fa-compress-alt\"></i></span>\n            \n            <span class=\"expand\" (click)=\"expand(3)\" *ngIf=\"isExpandDisabled\"><i class=\"fas fa-expand-alt\"></i></span></div>\n\n          \n          <hr>\n          <div *ngIf=\"contraintList.length==0\" style=\"font-size: .8em;text-align: center;\">\n            <span ><i>No Constraints</i></span>\n          </div>\n          \n          <div *ngIf=\"contraintList.length!=0\">\n          <ul  class=\"behavior-list \" >\n            <li class=\"behavior-box \" *ngFor=\"let item of contraintList;let index=index\" ><div>\n             \n              <span>\n              {{item.text}} </span>\n              <div class=\"actions\">\n            \n                <i class=\"fas fa-edit\" (click)=\"edit(index,3)\"></i>\n                <i class=\"far fa-trash-alt\" (click)=\"delete(index,3)\"></i>\n\n              </div>\n            </div>\n              </li>\n        </ul>\n        </div></mat-card>\n      </div>\n      <div class=\"padding-left-right\" [ngClass]=\"{'col-md-3 ':isExpandDisabled,'hide':(!isExpandDisabled && !isExpandable(4)),'col-md-12':(!isExpandDisabled && isExpandable(4))}\">\n        <mat-card>     \n          <div style=\"text-align: center;\">Bindings \n            <span class=\"expand\" (click)=\"expand(4)\" *ngIf=\"isExpandDisabled\"><i class=\"fas fa-expand-alt\"></i></span>\n            <span class=\"expand\" (click)=\"collapse(4)\" *ngIf=\"!isExpandDisabled\"> <i class=\"fas fa-compress-alt\"></i></span>\n          </div>\n\n          \n          <hr>\n          <div *ngIf=\"bindingList.length==0\" style=\"font-size: .8em;text-align: center;\">\n            <span ><i>No Bindings</i></span>\n          </div>\n          \n          <div *ngIf=\"bindingList.length!=0\">\n          <ul  class=\"behavior-list \" >\n            <li class=\"behavior-box \" *ngFor=\"let item of bindingList;let index=index\" ><div>\n              \n              <span>\n              {{item.text}} </span>\n              <div class=\"actions\">\n            \n                <i class=\"fas fa-edit\" (click)=\"edit(index,4)\"></i>\n                <i class=\"far fa-trash-alt\" (click)=\"delete(index,4)\"></i>\n\n              </div>\n            </div>\n              </li>\n        </ul>\n        </div></mat-card>\n      </div>\n    </div>\n      </div>\n      </div>\n\n";
     /***/
   },
 
@@ -171,7 +171,7 @@ function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _d
     /* harmony default export */
 
 
-    __webpack_exports__["default"] = "<div class=\"container\">\n  <mat-card>\n    <div class=\"row\">\n      <div class=\"col-md-12\" >\n        <div style=\"margin: .6em;\" >\n          <span>Suggestions:</span>\n          <button\n            type=\"button\"\n            class=\"btn btn-outline-primary word-bubble-button\"\n            *ngFor=\"let word of wordlist | textfilter: nlpTextFilter\"\n            (click)=\"insertValue(word.value)\"\n          >\n            {{ word.value }}\n          </button>\n        </div>\n        <div class=\"flex-container\">\n          <quill-editor\n            [styles]=\"{ height: '500px' }\"\n            [modules]=\"{ counter: { container: '#editor1' }, toolbar: false }\"\n            [(ngModel)]=\"nlpText\"\n            (onContentChanged)=\"logChange($event, 1)\"\n            (onEditorCreated)=\"created($event)\"\n          ></quill-editor>\n        </div>\n      </div>\n    </div>\n    <div class=\"row\">\n      <div class=\"col-md-12\">\n        <div style=\"float:right\">\n          <button type=\"button\" class=\"btn btn-outline-primary word-bubble-button\" (click)=\"save()\">Save</button>\n        </div>\n      </div>\n    </div>\n  </mat-card>\n</div>\n";
+    __webpack_exports__["default"] = "\n    <div class=\"row\">\n      <div class=\"col-md-12\" style=\"padding: 2em;\">\n        <div style=\"margin: .6em;\" >\n          <span>Suggestions:</span>\n          <button\n            type=\"button\"\n            class=\"btn btn-outline-primary word-bubble-button\"\n            *ngFor=\"let word of wordlist | textfilter: nlpTextFilter\"\n            (click)=\"insertValue(word.value)\"\n          >\n            {{ word.value }}\n          </button>\n        </div>\n        <div class=\"flex-container\">\n          <quill-editor\n            [styles]=\"{ height: '100px' }\"\n            [modules]=\"{ counter: { container: '#editor1' }, toolbar: false }\"\n            [(ngModel)]=\"nlpText\"\n            (onContentChanged)=\"logChange($event, 1)\"\n            (onEditorCreated)=\"created($event)\"\n          ></quill-editor>\n        </div>\n      </div>\n    </div>\n    <div class=\"col-md-12\">\n    \n        <div style=\"float:right\">\n          <button mat-stroked-button  (click)=\"save()\">Generate HLB</button>\n        \n      </div>\n    </div>\n\n";
     /***/
   },
 
@@ -1158,7 +1158,7 @@ function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _d
     /* harmony default export */
 
 
-    __webpack_exports__["default"] = ".container {\n  margin: 0;\n}\n\n.profilePhoto {\n  vertical-align: middle;\n  width: 50px;\n  height: 50px;\n  border-radius: 50%;\n}\n\n.profile {\n  background: url('profilephoto.svg');\n  vertical-align: middle;\n  width: 50px;\n  height: 50px;\n  border-radius: 50%;\n  background-color: white;\n}\n\n.pointer {\n  cursor: pointer;\n}\n\n.username {\n  vertical-align: middle;\n  color: #eee;\n  padding: 0.8em;\n}\n/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbIi9Vc2Vycy9TaGFiYmlyL3Byb2plY3RzL0RFV19VSS9zcmMvREVXLVVJL3NyYy9hcHAvQGNvcmUvaGVhZGVyL2hlYWRlci5jb21wb25lbnQuc2NzcyIsInNyYy9hcHAvQGNvcmUvaGVhZGVyL2hlYWRlci5jb21wb25lbnQuc2NzcyJdLCJuYW1lcyI6W10sIm1hcHBpbmdzIjoiQUFBQTtFQUNJLFNBQUE7QUNDSjs7QURFQTtFQUNJLHNCQUFBO0VBQ0EsV0FBQTtFQUNBLFlBQUE7RUFDQSxrQkFBQTtBQ0NKOztBREVBO0VBQ0ksbUNBQUE7RUFDQSxzQkFBQTtFQUNBLFdBQUE7RUFDQSxZQUFBO0VBQ0Esa0JBQUE7RUFFQSx1QkFBQTtBQ0FKOztBREdBO0VBQ0ksZUFBQTtBQ0FKOztBREdBO0VBQ0ksc0JBQUE7RUFDQSxXQUFBO0VBQ0EsY0FBQTtBQ0FKIiwiZmlsZSI6InNyYy9hcHAvQGNvcmUvaGVhZGVyL2hlYWRlci5jb21wb25lbnQuc2NzcyIsInNvdXJjZXNDb250ZW50IjpbIi5jb250YWluZXJ7XG4gICAgbWFyZ2luOiAwO1xufVxuXG4ucHJvZmlsZVBob3Rve1xuICAgIHZlcnRpY2FsLWFsaWduOiBtaWRkbGU7XG4gICAgd2lkdGg6IDUwcHg7XG4gICAgaGVpZ2h0OiA1MHB4O1xuICAgIGJvcmRlci1yYWRpdXM6IDUwJTtcbn1cblxuLnByb2ZpbGV7XG4gICAgYmFja2dyb3VuZDogdXJsKFwiYXNzZXRzL3Byb2ZpbGVwaG90by5zdmdcIik7XG4gICAgdmVydGljYWwtYWxpZ246IG1pZGRsZTtcbiAgICB3aWR0aDogNTBweDtcbiAgICBoZWlnaHQ6IDUwcHg7XG4gICAgYm9yZGVyLXJhZGl1czogNTAlO1xuXG4gICAgYmFja2dyb3VuZC1jb2xvcjogd2hpdGU7XG59XG5cbi5wb2ludGVye1xuICAgIGN1cnNvcjogcG9pbnRlcjtcbn1cblxuLnVzZXJuYW1le1xuICAgIHZlcnRpY2FsLWFsaWduOiBtaWRkbGU7XG4gICAgY29sb3I6I2VlZTtcbiAgICBwYWRkaW5nOiAwLjhlbTtcbn0iLCIuY29udGFpbmVyIHtcbiAgbWFyZ2luOiAwO1xufVxuXG4ucHJvZmlsZVBob3RvIHtcbiAgdmVydGljYWwtYWxpZ246IG1pZGRsZTtcbiAgd2lkdGg6IDUwcHg7XG4gIGhlaWdodDogNTBweDtcbiAgYm9yZGVyLXJhZGl1czogNTAlO1xufVxuXG4ucHJvZmlsZSB7XG4gIGJhY2tncm91bmQ6IHVybChcImFzc2V0cy9wcm9maWxlcGhvdG8uc3ZnXCIpO1xuICB2ZXJ0aWNhbC1hbGlnbjogbWlkZGxlO1xuICB3aWR0aDogNTBweDtcbiAgaGVpZ2h0OiA1MHB4O1xuICBib3JkZXItcmFkaXVzOiA1MCU7XG4gIGJhY2tncm91bmQtY29sb3I6IHdoaXRlO1xufVxuXG4ucG9pbnRlciB7XG4gIGN1cnNvcjogcG9pbnRlcjtcbn1cblxuLnVzZXJuYW1lIHtcbiAgdmVydGljYWwtYWxpZ246IG1pZGRsZTtcbiAgY29sb3I6ICNlZWU7XG4gIHBhZGRpbmc6IDAuOGVtO1xufSJdfQ== */";
+    __webpack_exports__["default"] = ".container {\n  margin: 0;\n}\n\n.profilePhoto {\n  vertical-align: middle;\n  width: 50px;\n  height: 50px;\n  border-radius: 50%;\n}\n\n.profile {\n  background: url('profilephoto.svg');\n  vertical-align: middle;\n  width: 50px;\n  height: 50px;\n  border-radius: 50%;\n  background-color: white;\n}\n\n.pointer {\n  cursor: pointer;\n}\n\n.username {\n  vertical-align: middle;\n  color: #eee;\n  padding: 0.8em;\n}\n/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbIi9Vc2Vycy9TaGFiYmlyL3Byb2plY3RzL0RFV19VSS9zcmMvc3RlZWwvV0VCLUFQUExJQ0FUSU9OL2Zyb250ZW5kL3NyYy9hcHAvQGNvcmUvaGVhZGVyL2hlYWRlci5jb21wb25lbnQuc2NzcyIsInNyYy9hcHAvQGNvcmUvaGVhZGVyL2hlYWRlci5jb21wb25lbnQuc2NzcyJdLCJuYW1lcyI6W10sIm1hcHBpbmdzIjoiQUFBQTtFQUNJLFNBQUE7QUNDSjs7QURFQTtFQUNJLHNCQUFBO0VBQ0EsV0FBQTtFQUNBLFlBQUE7RUFDQSxrQkFBQTtBQ0NKOztBREVBO0VBQ0ksbUNBQUE7RUFDQSxzQkFBQTtFQUNBLFdBQUE7RUFDQSxZQUFBO0VBQ0Esa0JBQUE7RUFFQSx1QkFBQTtBQ0FKOztBREdBO0VBQ0ksZUFBQTtBQ0FKOztBREdBO0VBQ0ksc0JBQUE7RUFDQSxXQUFBO0VBQ0EsY0FBQTtBQ0FKIiwiZmlsZSI6InNyYy9hcHAvQGNvcmUvaGVhZGVyL2hlYWRlci5jb21wb25lbnQuc2NzcyIsInNvdXJjZXNDb250ZW50IjpbIi5jb250YWluZXJ7XG4gICAgbWFyZ2luOiAwO1xufVxuXG4ucHJvZmlsZVBob3Rve1xuICAgIHZlcnRpY2FsLWFsaWduOiBtaWRkbGU7XG4gICAgd2lkdGg6IDUwcHg7XG4gICAgaGVpZ2h0OiA1MHB4O1xuICAgIGJvcmRlci1yYWRpdXM6IDUwJTtcbn1cblxuLnByb2ZpbGV7XG4gICAgYmFja2dyb3VuZDogdXJsKFwiYXNzZXRzL3Byb2ZpbGVwaG90by5zdmdcIik7XG4gICAgdmVydGljYWwtYWxpZ246IG1pZGRsZTtcbiAgICB3aWR0aDogNTBweDtcbiAgICBoZWlnaHQ6IDUwcHg7XG4gICAgYm9yZGVyLXJhZGl1czogNTAlO1xuXG4gICAgYmFja2dyb3VuZC1jb2xvcjogd2hpdGU7XG59XG5cbi5wb2ludGVye1xuICAgIGN1cnNvcjogcG9pbnRlcjtcbn1cblxuLnVzZXJuYW1le1xuICAgIHZlcnRpY2FsLWFsaWduOiBtaWRkbGU7XG4gICAgY29sb3I6I2VlZTtcbiAgICBwYWRkaW5nOiAwLjhlbTtcbn0iLCIuY29udGFpbmVyIHtcbiAgbWFyZ2luOiAwO1xufVxuXG4ucHJvZmlsZVBob3RvIHtcbiAgdmVydGljYWwtYWxpZ246IG1pZGRsZTtcbiAgd2lkdGg6IDUwcHg7XG4gIGhlaWdodDogNTBweDtcbiAgYm9yZGVyLXJhZGl1czogNTAlO1xufVxuXG4ucHJvZmlsZSB7XG4gIGJhY2tncm91bmQ6IHVybChcImFzc2V0cy9wcm9maWxlcGhvdG8uc3ZnXCIpO1xuICB2ZXJ0aWNhbC1hbGlnbjogbWlkZGxlO1xuICB3aWR0aDogNTBweDtcbiAgaGVpZ2h0OiA1MHB4O1xuICBib3JkZXItcmFkaXVzOiA1MCU7XG4gIGJhY2tncm91bmQtY29sb3I6IHdoaXRlO1xufVxuXG4ucG9pbnRlciB7XG4gIGN1cnNvcjogcG9pbnRlcjtcbn1cblxuLnVzZXJuYW1lIHtcbiAgdmVydGljYWwtYWxpZ246IG1pZGRsZTtcbiAgY29sb3I6ICNlZWU7XG4gIHBhZGRpbmc6IDAuOGVtO1xufSJdfQ== */";
     /***/
   },
 
@@ -1226,7 +1226,7 @@ function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _d
     /* harmony default export */
 
 
-    __webpack_exports__["default"] = ".container {\n  margin: 0;\n}\n/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbIi9Vc2Vycy9TaGFiYmlyL3Byb2plY3RzL0RFV19VSS9zcmMvREVXLVVJL3NyYy9hcHAvQGNvcmUvbGF5b3V0L2xheW91dC5jb21wb25lbnQuc2NzcyIsInNyYy9hcHAvQGNvcmUvbGF5b3V0L2xheW91dC5jb21wb25lbnQuc2NzcyJdLCJuYW1lcyI6W10sIm1hcHBpbmdzIjoiQUFBQTtFQUNJLFNBQUE7QUNDSiIsImZpbGUiOiJzcmMvYXBwL0Bjb3JlL2xheW91dC9sYXlvdXQuY29tcG9uZW50LnNjc3MiLCJzb3VyY2VzQ29udGVudCI6WyIuY29udGFpbmVye1xuICAgIG1hcmdpbjogMDtcbn0iLCIuY29udGFpbmVyIHtcbiAgbWFyZ2luOiAwO1xufSJdfQ== */";
+    __webpack_exports__["default"] = ".container {\n  margin: 0;\n}\n/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbIi9Vc2Vycy9TaGFiYmlyL3Byb2plY3RzL0RFV19VSS9zcmMvc3RlZWwvV0VCLUFQUExJQ0FUSU9OL2Zyb250ZW5kL3NyYy9hcHAvQGNvcmUvbGF5b3V0L2xheW91dC5jb21wb25lbnQuc2NzcyIsInNyYy9hcHAvQGNvcmUvbGF5b3V0L2xheW91dC5jb21wb25lbnQuc2NzcyJdLCJuYW1lcyI6W10sIm1hcHBpbmdzIjoiQUFBQTtFQUNJLFNBQUE7QUNDSiIsImZpbGUiOiJzcmMvYXBwL0Bjb3JlL2xheW91dC9sYXlvdXQuY29tcG9uZW50LnNjc3MiLCJzb3VyY2VzQ29udGVudCI6WyIuY29udGFpbmVye1xuICAgIG1hcmdpbjogMDtcbn0iLCIuY29udGFpbmVyIHtcbiAgbWFyZ2luOiAwO1xufSJdfQ== */";
     /***/
   },
 
@@ -1377,7 +1377,7 @@ function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _d
     /* harmony default export */
 
 
-    __webpack_exports__["default"] = ".loading {\n  width: 100%;\n  height: 100%;\n  position: fixed;\n  top: 0;\n  right: 0;\n  bottom: 0;\n  left: 0;\n  z-index: 1;\n  background-color: rgba(0, 0, 0, 0.5);\n}\n\n.loading-wheel {\n  width: 20px;\n  height: 20px;\n  margin-top: -40px;\n  margin-left: -40px;\n  position: absolute;\n  top: 50%;\n  left: 50%;\n  border-width: 30px;\n  border-radius: 50%;\n  -webkit-animation: spin 1s linear infinite;\n}\n\n.style-2 .loading-wheel {\n  border-style: double;\n  border-color: #ccc transparent;\n}\n\n@-webkit-keyframes spin {\n  0% {\n    -webkit-transform: rotate(0);\n  }\n  100% {\n    -webkit-transform: rotate(-360deg);\n  }\n}\n/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbIi9Vc2Vycy9TaGFiYmlyL3Byb2plY3RzL0RFV19VSS9zcmMvREVXLVVJL3NyYy9hcHAvYXBwLmNvbXBvbmVudC5zY3NzIiwic3JjL2FwcC9hcHAuY29tcG9uZW50LnNjc3MiXSwibmFtZXMiOltdLCJtYXBwaW5ncyI6IkFBQUE7RUFDSSxXQUFBO0VBQ0EsWUFBQTtFQUNBLGVBQUE7RUFDQSxNQUFBO0VBQ0EsUUFBQTtFQUNBLFNBQUE7RUFDQSxPQUFBO0VBQ0EsVUFBQTtFQUNBLG9DQUFBO0FDQ0o7O0FEQ0E7RUFDSSxXQUFBO0VBQ0EsWUFBQTtFQUNBLGlCQUFBO0VBQ0Esa0JBQUE7RUFFQSxrQkFBQTtFQUNBLFFBQUE7RUFDQSxTQUFBO0VBRUEsa0JBQUE7RUFDQSxrQkFBQTtFQUNBLDBDQUFBO0FDQUo7O0FERUE7RUFDSSxvQkFBQTtFQUNBLDhCQUFBO0FDQ0o7O0FEQ0E7RUFDSTtJQUNJLDRCQUFBO0VDRU47RURBRTtJQUNJLGtDQUFBO0VDRU47QUFDRiIsImZpbGUiOiJzcmMvYXBwL2FwcC5jb21wb25lbnQuc2NzcyIsInNvdXJjZXNDb250ZW50IjpbIi5sb2FkaW5nIHtcbiAgICB3aWR0aDogMTAwJTtcbiAgICBoZWlnaHQ6IDEwMCU7XG4gICAgcG9zaXRpb246IGZpeGVkO1xuICAgIHRvcDogMDtcbiAgICByaWdodDogMDtcbiAgICBib3R0b206IDA7XG4gICAgbGVmdDogMDtcbiAgICB6LWluZGV4OiAxO1xuICAgIGJhY2tncm91bmQtY29sb3I6IHJnYmEoMCwwLDAsLjUpO1xufVxuLmxvYWRpbmctd2hlZWwge1xuICAgIHdpZHRoOiAyMHB4O1xuICAgIGhlaWdodDogMjBweDtcbiAgICBtYXJnaW4tdG9wOiAtNDBweDtcbiAgICBtYXJnaW4tbGVmdDogLTQwcHg7XG4gICAgXG4gICAgcG9zaXRpb246IGFic29sdXRlO1xuICAgIHRvcDogNTAlO1xuICAgIGxlZnQ6IDUwJTtcbiAgICBcbiAgICBib3JkZXItd2lkdGg6IDMwcHg7XG4gICAgYm9yZGVyLXJhZGl1czogNTAlO1xuICAgIC13ZWJraXQtYW5pbWF0aW9uOiBzcGluIDFzIGxpbmVhciBpbmZpbml0ZTtcbn1cbi5zdHlsZS0yIC5sb2FkaW5nLXdoZWVsIHtcbiAgICBib3JkZXItc3R5bGU6IGRvdWJsZTtcbiAgICBib3JkZXItY29sb3I6ICNjY2MgdHJhbnNwYXJlbnQ7XG59XG5ALXdlYmtpdC1rZXlmcmFtZXMgc3BpbiB7XG4gICAgMCUge1xuICAgICAgICAtd2Via2l0LXRyYW5zZm9ybTogcm90YXRlKDApO1xuICAgIH1cbiAgICAxMDAlIHtcbiAgICAgICAgLXdlYmtpdC10cmFuc2Zvcm06IHJvdGF0ZSgtMzYwZGVnKTtcbiAgICB9XG59IiwiLmxvYWRpbmcge1xuICB3aWR0aDogMTAwJTtcbiAgaGVpZ2h0OiAxMDAlO1xuICBwb3NpdGlvbjogZml4ZWQ7XG4gIHRvcDogMDtcbiAgcmlnaHQ6IDA7XG4gIGJvdHRvbTogMDtcbiAgbGVmdDogMDtcbiAgei1pbmRleDogMTtcbiAgYmFja2dyb3VuZC1jb2xvcjogcmdiYSgwLCAwLCAwLCAwLjUpO1xufVxuXG4ubG9hZGluZy13aGVlbCB7XG4gIHdpZHRoOiAyMHB4O1xuICBoZWlnaHQ6IDIwcHg7XG4gIG1hcmdpbi10b3A6IC00MHB4O1xuICBtYXJnaW4tbGVmdDogLTQwcHg7XG4gIHBvc2l0aW9uOiBhYnNvbHV0ZTtcbiAgdG9wOiA1MCU7XG4gIGxlZnQ6IDUwJTtcbiAgYm9yZGVyLXdpZHRoOiAzMHB4O1xuICBib3JkZXItcmFkaXVzOiA1MCU7XG4gIC13ZWJraXQtYW5pbWF0aW9uOiBzcGluIDFzIGxpbmVhciBpbmZpbml0ZTtcbn1cblxuLnN0eWxlLTIgLmxvYWRpbmctd2hlZWwge1xuICBib3JkZXItc3R5bGU6IGRvdWJsZTtcbiAgYm9yZGVyLWNvbG9yOiAjY2NjIHRyYW5zcGFyZW50O1xufVxuXG5ALXdlYmtpdC1rZXlmcmFtZXMgc3BpbiB7XG4gIDAlIHtcbiAgICAtd2Via2l0LXRyYW5zZm9ybTogcm90YXRlKDApO1xuICB9XG4gIDEwMCUge1xuICAgIC13ZWJraXQtdHJhbnNmb3JtOiByb3RhdGUoLTM2MGRlZyk7XG4gIH1cbn0iXX0= */";
+    __webpack_exports__["default"] = ".loading {\n  width: 100%;\n  height: 100%;\n  position: fixed;\n  top: 0;\n  right: 0;\n  bottom: 0;\n  left: 0;\n  z-index: 1;\n  background-color: rgba(0, 0, 0, 0.5);\n}\n\n.loading-wheel {\n  width: 20px;\n  height: 20px;\n  margin-top: -40px;\n  margin-left: -40px;\n  position: absolute;\n  top: 50%;\n  left: 50%;\n  border-width: 30px;\n  border-radius: 50%;\n  -webkit-animation: spin 1s linear infinite;\n}\n\n.style-2 .loading-wheel {\n  border-style: double;\n  border-color: #ccc transparent;\n}\n\n@-webkit-keyframes spin {\n  0% {\n    -webkit-transform: rotate(0);\n  }\n  100% {\n    -webkit-transform: rotate(-360deg);\n  }\n}\n/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbIi9Vc2Vycy9TaGFiYmlyL3Byb2plY3RzL0RFV19VSS9zcmMvc3RlZWwvV0VCLUFQUExJQ0FUSU9OL2Zyb250ZW5kL3NyYy9hcHAvYXBwLmNvbXBvbmVudC5zY3NzIiwic3JjL2FwcC9hcHAuY29tcG9uZW50LnNjc3MiXSwibmFtZXMiOltdLCJtYXBwaW5ncyI6IkFBQUE7RUFDSSxXQUFBO0VBQ0EsWUFBQTtFQUNBLGVBQUE7RUFDQSxNQUFBO0VBQ0EsUUFBQTtFQUNBLFNBQUE7RUFDQSxPQUFBO0VBQ0EsVUFBQTtFQUNBLG9DQUFBO0FDQ0o7O0FEQ0E7RUFDSSxXQUFBO0VBQ0EsWUFBQTtFQUNBLGlCQUFBO0VBQ0Esa0JBQUE7RUFFQSxrQkFBQTtFQUNBLFFBQUE7RUFDQSxTQUFBO0VBRUEsa0JBQUE7RUFDQSxrQkFBQTtFQUNBLDBDQUFBO0FDQUo7O0FERUE7RUFDSSxvQkFBQTtFQUNBLDhCQUFBO0FDQ0o7O0FEQ0E7RUFDSTtJQUNJLDRCQUFBO0VDRU47RURBRTtJQUNJLGtDQUFBO0VDRU47QUFDRiIsImZpbGUiOiJzcmMvYXBwL2FwcC5jb21wb25lbnQuc2NzcyIsInNvdXJjZXNDb250ZW50IjpbIi5sb2FkaW5nIHtcbiAgICB3aWR0aDogMTAwJTtcbiAgICBoZWlnaHQ6IDEwMCU7XG4gICAgcG9zaXRpb246IGZpeGVkO1xuICAgIHRvcDogMDtcbiAgICByaWdodDogMDtcbiAgICBib3R0b206IDA7XG4gICAgbGVmdDogMDtcbiAgICB6LWluZGV4OiAxO1xuICAgIGJhY2tncm91bmQtY29sb3I6IHJnYmEoMCwwLDAsLjUpO1xufVxuLmxvYWRpbmctd2hlZWwge1xuICAgIHdpZHRoOiAyMHB4O1xuICAgIGhlaWdodDogMjBweDtcbiAgICBtYXJnaW4tdG9wOiAtNDBweDtcbiAgICBtYXJnaW4tbGVmdDogLTQwcHg7XG4gICAgXG4gICAgcG9zaXRpb246IGFic29sdXRlO1xuICAgIHRvcDogNTAlO1xuICAgIGxlZnQ6IDUwJTtcbiAgICBcbiAgICBib3JkZXItd2lkdGg6IDMwcHg7XG4gICAgYm9yZGVyLXJhZGl1czogNTAlO1xuICAgIC13ZWJraXQtYW5pbWF0aW9uOiBzcGluIDFzIGxpbmVhciBpbmZpbml0ZTtcbn1cbi5zdHlsZS0yIC5sb2FkaW5nLXdoZWVsIHtcbiAgICBib3JkZXItc3R5bGU6IGRvdWJsZTtcbiAgICBib3JkZXItY29sb3I6ICNjY2MgdHJhbnNwYXJlbnQ7XG59XG5ALXdlYmtpdC1rZXlmcmFtZXMgc3BpbiB7XG4gICAgMCUge1xuICAgICAgICAtd2Via2l0LXRyYW5zZm9ybTogcm90YXRlKDApO1xuICAgIH1cbiAgICAxMDAlIHtcbiAgICAgICAgLXdlYmtpdC10cmFuc2Zvcm06IHJvdGF0ZSgtMzYwZGVnKTtcbiAgICB9XG59IiwiLmxvYWRpbmcge1xuICB3aWR0aDogMTAwJTtcbiAgaGVpZ2h0OiAxMDAlO1xuICBwb3NpdGlvbjogZml4ZWQ7XG4gIHRvcDogMDtcbiAgcmlnaHQ6IDA7XG4gIGJvdHRvbTogMDtcbiAgbGVmdDogMDtcbiAgei1pbmRleDogMTtcbiAgYmFja2dyb3VuZC1jb2xvcjogcmdiYSgwLCAwLCAwLCAwLjUpO1xufVxuXG4ubG9hZGluZy13aGVlbCB7XG4gIHdpZHRoOiAyMHB4O1xuICBoZWlnaHQ6IDIwcHg7XG4gIG1hcmdpbi10b3A6IC00MHB4O1xuICBtYXJnaW4tbGVmdDogLTQwcHg7XG4gIHBvc2l0aW9uOiBhYnNvbHV0ZTtcbiAgdG9wOiA1MCU7XG4gIGxlZnQ6IDUwJTtcbiAgYm9yZGVyLXdpZHRoOiAzMHB4O1xuICBib3JkZXItcmFkaXVzOiA1MCU7XG4gIC13ZWJraXQtYW5pbWF0aW9uOiBzcGluIDFzIGxpbmVhciBpbmZpbml0ZTtcbn1cblxuLnN0eWxlLTIgLmxvYWRpbmctd2hlZWwge1xuICBib3JkZXItc3R5bGU6IGRvdWJsZTtcbiAgYm9yZGVyLWNvbG9yOiAjY2NjIHRyYW5zcGFyZW50O1xufVxuXG5ALXdlYmtpdC1rZXlmcmFtZXMgc3BpbiB7XG4gIDAlIHtcbiAgICAtd2Via2l0LXRyYW5zZm9ybTogcm90YXRlKDApO1xuICB9XG4gIDEwMCUge1xuICAgIC13ZWJraXQtdHJhbnNmb3JtOiByb3RhdGUoLTM2MGRlZyk7XG4gIH1cbn0iXX0= */";
     /***/
   },
 
@@ -1599,6 +1599,8 @@ function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _d
     /*! rxjs */
     "./node_modules/rxjs/_esm2015/index.js");
 
+    var Keyboard = quill__WEBPACK_IMPORTED_MODULE_1__["import"]('modules/keyboard');
+
     var EditorService =
     /*#__PURE__*/
     function () {
@@ -1617,7 +1619,15 @@ function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _d
           }
         });
         this.quill.on("text-change", function (delta, oldDelta, source) {
+          //  console.log(delta);
           instance.index = instance.quill.getText().length - 1;
+        }); // console.log(Keyboard);
+
+        this.quill.keyboard.addBinding({
+          key: Keyboard.keys.ENTER,
+          shiftKey: true
+        }, function (range, context) {
+          console.log("inside binding");
         });
       }
 
@@ -2071,14 +2081,15 @@ function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _d
            </div>
        */
       this.menuList = [{
-        name: "HLB",
+        name: "Configuration",
         id: 1,
         html: "<hlb></hlb>"
-      }, {
-        name: "NLP",
-        id: 2,
-        html: "<nlp></nlp>"
-      }, {
+      } // ,{
+      //   name:"NLP",
+      //   id:2,
+      //   html:"<nlp></nlp>"
+      // }
+      , {
         name: "Behavior Dependency Graph",
         id: 3,
         html: "<p>In Progress.....</p>"
@@ -2264,6 +2275,12 @@ function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _d
     var _dependency_graph_dependency_graph_component__WEBPACK_IMPORTED_MODULE_23__ = __webpack_require__(
     /*! ./dependency-graph/dependency-graph.component */
     "./src/app/pages/dashboard/dependency-graph/dependency-graph.component.ts");
+    /* harmony import */
+
+
+    var _angular_material_radio__WEBPACK_IMPORTED_MODULE_24__ = __webpack_require__(
+    /*! @angular/material/radio */
+    "./node_modules/@angular/material/esm2015/radio.js");
 
     var DashboardModule = function DashboardModule() {
       _classCallCheck(this, DashboardModule);
@@ -2272,7 +2289,7 @@ function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _d
     DashboardModule = tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"]([Object(_angular_core__WEBPACK_IMPORTED_MODULE_1__["NgModule"])({
       exports: [_dashboard_component__WEBPACK_IMPORTED_MODULE_13__["DashboardComponent"]],
       declarations: [_dashboard_component__WEBPACK_IMPORTED_MODULE_13__["DashboardComponent"], _hlb_hlb_component__WEBPACK_IMPORTED_MODULE_18__["HlbComponent"], _nlp_nlp_component__WEBPACK_IMPORTED_MODULE_19__["NlpComponent"], _dependency_graph_dependency_graph_component__WEBPACK_IMPORTED_MODULE_23__["DependencyGraphComponent"], _common_text_filter_pipe__WEBPACK_IMPORTED_MODULE_20__["TextFilterPipe"], _upload_upload_component__WEBPACK_IMPORTED_MODULE_21__["UploadComponent"], _upload_upload_component__WEBPACK_IMPORTED_MODULE_21__["FilePreviewComponent"]],
-      imports: [_angular_common__WEBPACK_IMPORTED_MODULE_15__["CommonModule"], src_app_authentication_auth_module__WEBPACK_IMPORTED_MODULE_22__["AuthModule"].forRoot(), _angular_router__WEBPACK_IMPORTED_MODULE_17__["RouterModule"], _swimlane_ngx_graph__WEBPACK_IMPORTED_MODULE_14__["NgxGraphModule"], _angular_material__WEBPACK_IMPORTED_MODULE_11__["MatDialogModule"], _angular_material__WEBPACK_IMPORTED_MODULE_11__["MatButtonModule"], _angular_material__WEBPACK_IMPORTED_MODULE_11__["MatSnackBarModule"], _fortawesome_angular_fontawesome__WEBPACK_IMPORTED_MODULE_9__["FontAwesomeModule"], _angular_material_tabs__WEBPACK_IMPORTED_MODULE_2__["MatTabsModule"], _angular_cdk_drag_drop__WEBPACK_IMPORTED_MODULE_7__["DragDropModule"], _angular_forms__WEBPACK_IMPORTED_MODULE_3__["FormsModule"], _angular_material__WEBPACK_IMPORTED_MODULE_11__["MatTableModule"], _angular_material_expansion__WEBPACK_IMPORTED_MODULE_4__["MatExpansionModule"], _angular_material_card__WEBPACK_IMPORTED_MODULE_6__["MatCardModule"], ngx_quill__WEBPACK_IMPORTED_MODULE_8__["QuillModule"].forRoot(), _dashboard_routing_module__WEBPACK_IMPORTED_MODULE_16__["DashboardRoutingModule"], _angular_material_input__WEBPACK_IMPORTED_MODULE_5__["MatInputModule"], ngx_file_drop__WEBPACK_IMPORTED_MODULE_12__["NgxFileDropModule"]],
+      imports: [_angular_common__WEBPACK_IMPORTED_MODULE_15__["CommonModule"], src_app_authentication_auth_module__WEBPACK_IMPORTED_MODULE_22__["AuthModule"].forRoot(), _angular_router__WEBPACK_IMPORTED_MODULE_17__["RouterModule"], _angular_material_radio__WEBPACK_IMPORTED_MODULE_24__["MatRadioModule"], _swimlane_ngx_graph__WEBPACK_IMPORTED_MODULE_14__["NgxGraphModule"], _angular_material__WEBPACK_IMPORTED_MODULE_11__["MatDialogModule"], _angular_material__WEBPACK_IMPORTED_MODULE_11__["MatButtonModule"], _angular_material__WEBPACK_IMPORTED_MODULE_11__["MatSnackBarModule"], _fortawesome_angular_fontawesome__WEBPACK_IMPORTED_MODULE_9__["FontAwesomeModule"], _angular_material_tabs__WEBPACK_IMPORTED_MODULE_2__["MatTabsModule"], _angular_cdk_drag_drop__WEBPACK_IMPORTED_MODULE_7__["DragDropModule"], _angular_forms__WEBPACK_IMPORTED_MODULE_3__["FormsModule"], _angular_material__WEBPACK_IMPORTED_MODULE_11__["MatTableModule"], _angular_material_expansion__WEBPACK_IMPORTED_MODULE_4__["MatExpansionModule"], _angular_material_card__WEBPACK_IMPORTED_MODULE_6__["MatCardModule"], ngx_quill__WEBPACK_IMPORTED_MODULE_8__["QuillModule"].forRoot(), _dashboard_routing_module__WEBPACK_IMPORTED_MODULE_16__["DashboardRoutingModule"], _angular_material_input__WEBPACK_IMPORTED_MODULE_5__["MatInputModule"], ngx_file_drop__WEBPACK_IMPORTED_MODULE_12__["NgxFileDropModule"]],
       entryComponents: [_upload_upload_component__WEBPACK_IMPORTED_MODULE_21__["FilePreviewComponent"]],
       providers: [_common_state_service_service__WEBPACK_IMPORTED_MODULE_10__["StateService"]],
       bootstrap: [_dashboard_component__WEBPACK_IMPORTED_MODULE_13__["DashboardComponent"]]
@@ -2296,7 +2313,7 @@ function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _d
     /* harmony default export */
 
 
-    __webpack_exports__["default"] = ".chart-container {\n  width: 100%;\n  height: 100%;\n  background-color: grey;\n}\n/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbIi9Vc2Vycy9TaGFiYmlyL3Byb2plY3RzL0RFV19VSS9zcmMvREVXLVVJL3NyYy9hcHAvcGFnZXMvZGFzaGJvYXJkL2RlcGVuZGVuY3ktZ3JhcGgvZGVwZW5kZW5jeS1ncmFwaC5jb21wb25lbnQuc2NzcyIsInNyYy9hcHAvcGFnZXMvZGFzaGJvYXJkL2RlcGVuZGVuY3ktZ3JhcGgvZGVwZW5kZW5jeS1ncmFwaC5jb21wb25lbnQuc2NzcyJdLCJuYW1lcyI6W10sIm1hcHBpbmdzIjoiQUFBQTtFQUNJLFdBQUE7RUFDQSxZQUFBO0VBQ0Esc0JBQUE7QUNDSiIsImZpbGUiOiJzcmMvYXBwL3BhZ2VzL2Rhc2hib2FyZC9kZXBlbmRlbmN5LWdyYXBoL2RlcGVuZGVuY3ktZ3JhcGguY29tcG9uZW50LnNjc3MiLCJzb3VyY2VzQ29udGVudCI6WyIuY2hhcnQtY29udGFpbmVye1xuICAgIHdpZHRoOiAxMDAlO1xuICAgIGhlaWdodDogMTAwJTtcbiAgICBiYWNrZ3JvdW5kLWNvbG9yOiBncmV5O1xufSIsIi5jaGFydC1jb250YWluZXIge1xuICB3aWR0aDogMTAwJTtcbiAgaGVpZ2h0OiAxMDAlO1xuICBiYWNrZ3JvdW5kLWNvbG9yOiBncmV5O1xufSJdfQ== */";
+    __webpack_exports__["default"] = ".chart-container {\n  width: 100%;\n  height: 100%;\n  background-color: grey;\n}\n/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbIi9Vc2Vycy9TaGFiYmlyL3Byb2plY3RzL0RFV19VSS9zcmMvc3RlZWwvV0VCLUFQUExJQ0FUSU9OL2Zyb250ZW5kL3NyYy9hcHAvcGFnZXMvZGFzaGJvYXJkL2RlcGVuZGVuY3ktZ3JhcGgvZGVwZW5kZW5jeS1ncmFwaC5jb21wb25lbnQuc2NzcyIsInNyYy9hcHAvcGFnZXMvZGFzaGJvYXJkL2RlcGVuZGVuY3ktZ3JhcGgvZGVwZW5kZW5jeS1ncmFwaC5jb21wb25lbnQuc2NzcyJdLCJuYW1lcyI6W10sIm1hcHBpbmdzIjoiQUFBQTtFQUNJLFdBQUE7RUFDQSxZQUFBO0VBQ0Esc0JBQUE7QUNDSiIsImZpbGUiOiJzcmMvYXBwL3BhZ2VzL2Rhc2hib2FyZC9kZXBlbmRlbmN5LWdyYXBoL2RlcGVuZGVuY3ktZ3JhcGguY29tcG9uZW50LnNjc3MiLCJzb3VyY2VzQ29udGVudCI6WyIuY2hhcnQtY29udGFpbmVye1xuICAgIHdpZHRoOiAxMDAlO1xuICAgIGhlaWdodDogMTAwJTtcbiAgICBiYWNrZ3JvdW5kLWNvbG9yOiBncmV5O1xufSIsIi5jaGFydC1jb250YWluZXIge1xuICB3aWR0aDogMTAwJTtcbiAgaGVpZ2h0OiAxMDAlO1xuICBiYWNrZ3JvdW5kLWNvbG9yOiBncmV5O1xufSJdfQ== */";
     /***/
   },
 
@@ -2364,7 +2381,7 @@ function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _d
     /* harmony default export */
 
 
-    __webpack_exports__["default"] = ".behavior-list {\n  margin: 0.1em;\n  list-style: none;\n  padding: 0;\n}\n\n.behavior-box {\n  margin: 0.5em;\n  border: 1px solid #ccc;\n  padding: 0.5em;\n}\n\n.word-bubble {\n  border: 1px dotted black;\n  border-radius: 1em;\n  padding: 0.4em;\n  margin: 0.1em;\n  cursor: pointer;\n}\n\n.word-bubble-button {\n  border-radius: 1em;\n  padding: 0.4em;\n  margin: 0.1em;\n  cursor: pointer;\n}\n\n.float-left {\n  float: left;\n}\n\n.actions {\n  float: right;\n  cursor: pointer;\n}\n\n.disabled {\n  pointer-events: none;\n  background-color: grey;\n}\n\n.grabbable {\n  cursor: move;\n  /* fallback if grab cursor is unsupported */\n  cursor: grab;\n  cursor: -webkit-grab;\n}\n\n/* (Optional) Apply a \"closed-hand\" cursor during drag operation. */\n\n.grabbable:active {\n  cursor: grabbing;\n  cursor: -webkit-grabbing;\n}\n/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbIi9Vc2Vycy9TaGFiYmlyL3Byb2plY3RzL0RFV19VSS9zcmMvREVXLVVJL3NyYy9hcHAvcGFnZXMvZGFzaGJvYXJkL2hsYi9obGIuY29tcG9uZW50LnNjc3MiLCJzcmMvYXBwL3BhZ2VzL2Rhc2hib2FyZC9obGIvaGxiLmNvbXBvbmVudC5zY3NzIl0sIm5hbWVzIjpbXSwibWFwcGluZ3MiOiJBQUFBO0VBQ0ksYUFBQTtFQUNBLGdCQUFBO0VBQ0EsVUFBQTtBQ0NKOztBREVBO0VBQ0ksYUFBQTtFQUNBLHNCQUFBO0VBQ0EsY0FBQTtBQ0NKOztBREVBO0VBQ0ksd0JBQUE7RUFDQSxrQkFBQTtFQUNBLGNBQUE7RUFDQSxhQUFBO0VBQ0EsZUFBQTtBQ0NKOztBREVBO0VBQ0ksa0JBQUE7RUFDQSxjQUFBO0VBQ0EsYUFBQTtFQUNBLGVBQUE7QUNDSjs7QURFQTtFQUNJLFdBQUE7QUNDSjs7QURFQTtFQUNJLFlBQUE7RUFDQSxlQUFBO0FDQ0o7O0FERUE7RUFDSSxvQkFBQTtFQUNBLHNCQUFBO0FDQ0o7O0FERUE7RUFDSSxZQUFBO0VBQWMsMkNBQUE7RUFDZCxZQUFBO0VBRUEsb0JBQUE7QUNFSjs7QURDQyxtRUFBQTs7QUFDRDtFQUNJLGdCQUFBO0VBRUEsd0JBQUE7QUNFSiIsImZpbGUiOiJzcmMvYXBwL3BhZ2VzL2Rhc2hib2FyZC9obGIvaGxiLmNvbXBvbmVudC5zY3NzIiwic291cmNlc0NvbnRlbnQiOlsiLmJlaGF2aW9yLWxpc3R7XG4gICAgbWFyZ2luOi4xZW07XG4gICAgbGlzdC1zdHlsZTogbm9uZTtcbiAgICBwYWRkaW5nOiAwO1xufVxuXG4uYmVoYXZpb3ItYm94e1xuICAgIG1hcmdpbjogLjVlbTtcbiAgICBib3JkZXI6IDFweCBzb2xpZCAjY2NjO1xuICAgIHBhZGRpbmc6IC41ZW07XG59XG5cbi53b3JkLWJ1YmJsZXtcbiAgICBib3JkZXI6IDFweCBkb3R0ZWQgYmxhY2s7XG4gICAgYm9yZGVyLXJhZGl1czogMWVtO1xuICAgIHBhZGRpbmc6IDAuNGVtO1xuICAgIG1hcmdpbjogMC4xZW07XG4gICAgY3Vyc29yOiBwb2ludGVyO1xuIFxufVxuLndvcmQtYnViYmxlLWJ1dHRvbntcbiAgICBib3JkZXItcmFkaXVzOiAxZW07XG4gICAgcGFkZGluZzogMC40ZW07XG4gICAgbWFyZ2luOiAwLjFlbTtcbiAgICBjdXJzb3I6IHBvaW50ZXI7XG4gXG59XG4uZmxvYXQtbGVmdHtcbiAgICBmbG9hdDpsZWZ0O1xufVxuXG4uYWN0aW9uc3tcbiAgICBmbG9hdDpyaWdodDtcbiAgICBjdXJzb3I6IHBvaW50ZXI7XG59XG5cbi5kaXNhYmxlZHtcbiAgICBwb2ludGVyLWV2ZW50czogbm9uZTtcbiAgICBiYWNrZ3JvdW5kLWNvbG9yOiBncmV5O1xufVxuXG4uZ3JhYmJhYmxlIHtcbiAgICBjdXJzb3I6IG1vdmU7IC8qIGZhbGxiYWNrIGlmIGdyYWIgY3Vyc29yIGlzIHVuc3VwcG9ydGVkICovXG4gICAgY3Vyc29yOiBncmFiO1xuICAgIGN1cnNvcjogLW1vei1ncmFiO1xuICAgIGN1cnNvcjogLXdlYmtpdC1ncmFiO1xufVxuXG4gLyogKE9wdGlvbmFsKSBBcHBseSBhIFwiY2xvc2VkLWhhbmRcIiBjdXJzb3IgZHVyaW5nIGRyYWcgb3BlcmF0aW9uLiAqL1xuLmdyYWJiYWJsZTphY3RpdmUge1xuICAgIGN1cnNvcjogZ3JhYmJpbmc7XG4gICAgY3Vyc29yOiAtbW96LWdyYWJiaW5nO1xuICAgIGN1cnNvcjogLXdlYmtpdC1ncmFiYmluZztcbn0iLCIuYmVoYXZpb3ItbGlzdCB7XG4gIG1hcmdpbjogMC4xZW07XG4gIGxpc3Qtc3R5bGU6IG5vbmU7XG4gIHBhZGRpbmc6IDA7XG59XG5cbi5iZWhhdmlvci1ib3gge1xuICBtYXJnaW46IDAuNWVtO1xuICBib3JkZXI6IDFweCBzb2xpZCAjY2NjO1xuICBwYWRkaW5nOiAwLjVlbTtcbn1cblxuLndvcmQtYnViYmxlIHtcbiAgYm9yZGVyOiAxcHggZG90dGVkIGJsYWNrO1xuICBib3JkZXItcmFkaXVzOiAxZW07XG4gIHBhZGRpbmc6IDAuNGVtO1xuICBtYXJnaW46IDAuMWVtO1xuICBjdXJzb3I6IHBvaW50ZXI7XG59XG5cbi53b3JkLWJ1YmJsZS1idXR0b24ge1xuICBib3JkZXItcmFkaXVzOiAxZW07XG4gIHBhZGRpbmc6IDAuNGVtO1xuICBtYXJnaW46IDAuMWVtO1xuICBjdXJzb3I6IHBvaW50ZXI7XG59XG5cbi5mbG9hdC1sZWZ0IHtcbiAgZmxvYXQ6IGxlZnQ7XG59XG5cbi5hY3Rpb25zIHtcbiAgZmxvYXQ6IHJpZ2h0O1xuICBjdXJzb3I6IHBvaW50ZXI7XG59XG5cbi5kaXNhYmxlZCB7XG4gIHBvaW50ZXItZXZlbnRzOiBub25lO1xuICBiYWNrZ3JvdW5kLWNvbG9yOiBncmV5O1xufVxuXG4uZ3JhYmJhYmxlIHtcbiAgY3Vyc29yOiBtb3ZlO1xuICAvKiBmYWxsYmFjayBpZiBncmFiIGN1cnNvciBpcyB1bnN1cHBvcnRlZCAqL1xuICBjdXJzb3I6IGdyYWI7XG4gIGN1cnNvcjogLW1vei1ncmFiO1xuICBjdXJzb3I6IC13ZWJraXQtZ3JhYjtcbn1cblxuLyogKE9wdGlvbmFsKSBBcHBseSBhIFwiY2xvc2VkLWhhbmRcIiBjdXJzb3IgZHVyaW5nIGRyYWcgb3BlcmF0aW9uLiAqL1xuLmdyYWJiYWJsZTphY3RpdmUge1xuICBjdXJzb3I6IGdyYWJiaW5nO1xuICBjdXJzb3I6IC1tb3otZ3JhYmJpbmc7XG4gIGN1cnNvcjogLXdlYmtpdC1ncmFiYmluZztcbn0iXX0= */";
+    __webpack_exports__["default"] = ".behavior-list {\n  margin: 0.1em;\n  list-style: none;\n  padding: 0;\n}\n\n.behavior-box {\n  margin: 0.5em;\n  border: 1px solid #ccc;\n  padding: 0.5em;\n}\n\n.word-bubble {\n  border: 1px dotted black;\n  border-radius: 1em;\n  padding: 0.4em;\n  margin: 0.1em;\n  cursor: pointer;\n}\n\n.word-bubble-button {\n  border-radius: 1em;\n  padding: 0.4em;\n  margin: 0.1em;\n  cursor: pointer;\n}\n\n.float-left {\n  float: left;\n}\n\n.actions {\n  float: right;\n  cursor: pointer;\n  display: none;\n}\n\n.behavior-list:hover .actions {\n  display: block;\n}\n\n.disabled {\n  pointer-events: none;\n}\n\n.grabbable {\n  cursor: move;\n  /* fallback if grab cursor is unsupported */\n  cursor: grab;\n  cursor: -webkit-grab;\n}\n\n/* (Optional) Apply a \"closed-hand\" cursor during drag operation. */\n\n.grabbable:active {\n  cursor: grabbing;\n  cursor: -webkit-grabbing;\n}\n\n.mat-radio-button ~ .mat-radio-button {\n  margin-left: 16px;\n}\n\n.padding-left-right {\n  padding-left: 5px;\n  padding-right: 5px;\n}\n\n.button-padding {\n  margin-left: 0.1em;\n}\n\n.expand {\n  float: right;\n  cursor: pointer;\n}\n\n.hide {\n  display: none;\n}\n/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbIi9Vc2Vycy9TaGFiYmlyL3Byb2plY3RzL0RFV19VSS9zcmMvc3RlZWwvV0VCLUFQUExJQ0FUSU9OL2Zyb250ZW5kL3NyYy9hcHAvcGFnZXMvZGFzaGJvYXJkL2hsYi9obGIuY29tcG9uZW50LnNjc3MiLCJzcmMvYXBwL3BhZ2VzL2Rhc2hib2FyZC9obGIvaGxiLmNvbXBvbmVudC5zY3NzIl0sIm5hbWVzIjpbXSwibWFwcGluZ3MiOiJBQUFBO0VBQ0ksYUFBQTtFQUNBLGdCQUFBO0VBQ0EsVUFBQTtBQ0NKOztBREVBO0VBQ0ksYUFBQTtFQUNBLHNCQUFBO0VBQ0EsY0FBQTtBQ0NKOztBREVBO0VBQ0ksd0JBQUE7RUFDQSxrQkFBQTtFQUNBLGNBQUE7RUFDQSxhQUFBO0VBQ0EsZUFBQTtBQ0NKOztBREVBO0VBQ0ksa0JBQUE7RUFDQSxjQUFBO0VBQ0EsYUFBQTtFQUNBLGVBQUE7QUNDSjs7QURFQTtFQUNJLFdBQUE7QUNDSjs7QURFQTtFQUNJLFlBQUE7RUFDQSxlQUFBO0VBQ0EsYUFBQTtBQ0NKOztBREVBO0VBQ0ksY0FBQTtBQ0NKOztBREVBO0VBQ0ksb0JBQUE7QUNDSjs7QURFQTtFQUNJLFlBQUE7RUFBYywyQ0FBQTtFQUNkLFlBQUE7RUFFQSxvQkFBQTtBQ0VKOztBRENDLG1FQUFBOztBQUNEO0VBQ0ksZ0JBQUE7RUFFQSx3QkFBQTtBQ0VKOztBRENBO0VBQ0ksaUJBQUE7QUNFSjs7QURDRTtFQUNJLGlCQUFBO0VBQ0Esa0JBQUE7QUNFTjs7QURFRTtFQUNJLGtCQUFBO0FDQ047O0FERUU7RUFDSSxZQUFBO0VBQ0EsZUFBQTtBQ0NOOztBREVFO0VBQ0ksYUFBQTtBQ0NOIiwiZmlsZSI6InNyYy9hcHAvcGFnZXMvZGFzaGJvYXJkL2hsYi9obGIuY29tcG9uZW50LnNjc3MiLCJzb3VyY2VzQ29udGVudCI6WyIuYmVoYXZpb3ItbGlzdHtcbiAgICBtYXJnaW46LjFlbTtcbiAgICBsaXN0LXN0eWxlOiBub25lO1xuICAgIHBhZGRpbmc6IDA7XG59XG5cbi5iZWhhdmlvci1ib3h7XG4gICAgbWFyZ2luOiAuNWVtO1xuICAgIGJvcmRlcjogMXB4IHNvbGlkICNjY2M7XG4gICAgcGFkZGluZzogLjVlbTtcbn1cblxuLndvcmQtYnViYmxle1xuICAgIGJvcmRlcjogMXB4IGRvdHRlZCBibGFjaztcbiAgICBib3JkZXItcmFkaXVzOiAxZW07XG4gICAgcGFkZGluZzogMC40ZW07XG4gICAgbWFyZ2luOiAwLjFlbTtcbiAgICBjdXJzb3I6IHBvaW50ZXI7XG4gXG59XG4ud29yZC1idWJibGUtYnV0dG9ue1xuICAgIGJvcmRlci1yYWRpdXM6IDFlbTtcbiAgICBwYWRkaW5nOiAwLjRlbTtcbiAgICBtYXJnaW46IDAuMWVtO1xuICAgIGN1cnNvcjogcG9pbnRlcjtcbiBcbn1cbi5mbG9hdC1sZWZ0e1xuICAgIGZsb2F0OmxlZnQ7XG59XG5cbi5hY3Rpb25ze1xuICAgIGZsb2F0OnJpZ2h0O1xuICAgIGN1cnNvcjogcG9pbnRlcjtcbiAgICBkaXNwbGF5OiBub25lO1xufVxuXG4uYmVoYXZpb3ItbGlzdDpob3ZlciAuYWN0aW9uc3tcbiAgICBkaXNwbGF5OiBibG9jaztcbn1cblxuLmRpc2FibGVke1xuICAgIHBvaW50ZXItZXZlbnRzOiBub25lOyAgIFxufVxuXG4uZ3JhYmJhYmxlIHtcbiAgICBjdXJzb3I6IG1vdmU7IC8qIGZhbGxiYWNrIGlmIGdyYWIgY3Vyc29yIGlzIHVuc3VwcG9ydGVkICovXG4gICAgY3Vyc29yOiBncmFiO1xuICAgIGN1cnNvcjogLW1vei1ncmFiO1xuICAgIGN1cnNvcjogLXdlYmtpdC1ncmFiO1xufVxuXG4gLyogKE9wdGlvbmFsKSBBcHBseSBhIFwiY2xvc2VkLWhhbmRcIiBjdXJzb3IgZHVyaW5nIGRyYWcgb3BlcmF0aW9uLiAqL1xuLmdyYWJiYWJsZTphY3RpdmUge1xuICAgIGN1cnNvcjogZ3JhYmJpbmc7XG4gICAgY3Vyc29yOiAtbW96LWdyYWJiaW5nO1xuICAgIGN1cnNvcjogLXdlYmtpdC1ncmFiYmluZztcbn1cblxuLm1hdC1yYWRpby1idXR0b24gfiAubWF0LXJhZGlvLWJ1dHRvbiB7XG4gICAgbWFyZ2luLWxlZnQ6IDE2cHg7XG4gIH1cblxuICAucGFkZGluZy1sZWZ0LXJpZ2h0e1xuICAgICAgcGFkZGluZy1sZWZ0OiA1cHg7XG4gICAgICBwYWRkaW5nLXJpZ2h0OiA1cHg7XG4gIH1cblxuIFxuICAuYnV0dG9uLXBhZGRpbmd7XG4gICAgICBtYXJnaW4tbGVmdDogLjFlbTtcbiAgfVxuXG4gIC5leHBhbmR7XG4gICAgICBmbG9hdDogcmlnaHQ7XG4gICAgICBjdXJzb3I6IHBvaW50ZXI7XG4gIH1cblxuICAuaGlkZXtcbiAgICAgIGRpc3BsYXk6IG5vbmU7XG4gIH0iLCIuYmVoYXZpb3ItbGlzdCB7XG4gIG1hcmdpbjogMC4xZW07XG4gIGxpc3Qtc3R5bGU6IG5vbmU7XG4gIHBhZGRpbmc6IDA7XG59XG5cbi5iZWhhdmlvci1ib3gge1xuICBtYXJnaW46IDAuNWVtO1xuICBib3JkZXI6IDFweCBzb2xpZCAjY2NjO1xuICBwYWRkaW5nOiAwLjVlbTtcbn1cblxuLndvcmQtYnViYmxlIHtcbiAgYm9yZGVyOiAxcHggZG90dGVkIGJsYWNrO1xuICBib3JkZXItcmFkaXVzOiAxZW07XG4gIHBhZGRpbmc6IDAuNGVtO1xuICBtYXJnaW46IDAuMWVtO1xuICBjdXJzb3I6IHBvaW50ZXI7XG59XG5cbi53b3JkLWJ1YmJsZS1idXR0b24ge1xuICBib3JkZXItcmFkaXVzOiAxZW07XG4gIHBhZGRpbmc6IDAuNGVtO1xuICBtYXJnaW46IDAuMWVtO1xuICBjdXJzb3I6IHBvaW50ZXI7XG59XG5cbi5mbG9hdC1sZWZ0IHtcbiAgZmxvYXQ6IGxlZnQ7XG59XG5cbi5hY3Rpb25zIHtcbiAgZmxvYXQ6IHJpZ2h0O1xuICBjdXJzb3I6IHBvaW50ZXI7XG4gIGRpc3BsYXk6IG5vbmU7XG59XG5cbi5iZWhhdmlvci1saXN0OmhvdmVyIC5hY3Rpb25zIHtcbiAgZGlzcGxheTogYmxvY2s7XG59XG5cbi5kaXNhYmxlZCB7XG4gIHBvaW50ZXItZXZlbnRzOiBub25lO1xufVxuXG4uZ3JhYmJhYmxlIHtcbiAgY3Vyc29yOiBtb3ZlO1xuICAvKiBmYWxsYmFjayBpZiBncmFiIGN1cnNvciBpcyB1bnN1cHBvcnRlZCAqL1xuICBjdXJzb3I6IGdyYWI7XG4gIGN1cnNvcjogLW1vei1ncmFiO1xuICBjdXJzb3I6IC13ZWJraXQtZ3JhYjtcbn1cblxuLyogKE9wdGlvbmFsKSBBcHBseSBhIFwiY2xvc2VkLWhhbmRcIiBjdXJzb3IgZHVyaW5nIGRyYWcgb3BlcmF0aW9uLiAqL1xuLmdyYWJiYWJsZTphY3RpdmUge1xuICBjdXJzb3I6IGdyYWJiaW5nO1xuICBjdXJzb3I6IC1tb3otZ3JhYmJpbmc7XG4gIGN1cnNvcjogLXdlYmtpdC1ncmFiYmluZztcbn1cblxuLm1hdC1yYWRpby1idXR0b24gfiAubWF0LXJhZGlvLWJ1dHRvbiB7XG4gIG1hcmdpbi1sZWZ0OiAxNnB4O1xufVxuXG4ucGFkZGluZy1sZWZ0LXJpZ2h0IHtcbiAgcGFkZGluZy1sZWZ0OiA1cHg7XG4gIHBhZGRpbmctcmlnaHQ6IDVweDtcbn1cblxuLmJ1dHRvbi1wYWRkaW5nIHtcbiAgbWFyZ2luLWxlZnQ6IDAuMWVtO1xufVxuXG4uZXhwYW5kIHtcbiAgZmxvYXQ6IHJpZ2h0O1xuICBjdXJzb3I6IHBvaW50ZXI7XG59XG5cbi5oaWRlIHtcbiAgZGlzcGxheTogbm9uZTtcbn0iXX0= */";
     /***/
   },
 
@@ -2435,22 +2452,35 @@ function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _d
     var _angular_material__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(
     /*! @angular/material */
     "./node_modules/@angular/material/esm2015/material.js");
+    /* harmony import */
+
+
+    var _common_http_service_service__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(
+    /*! ../common/http-service.service */
+    "./src/app/pages/dashboard/common/http-service.service.ts");
 
     quill__WEBPACK_IMPORTED_MODULE_3__["register"]("modules/counter", _common_editor_service__WEBPACK_IMPORTED_MODULE_4__["default"]);
 
     var HlbComponent =
     /*#__PURE__*/
     function () {
-      function HlbComponent(stateservice, _snackBar) {
+      function HlbComponent(http, stateservice, _snackBar) {
         _classCallCheck(this, HlbComponent);
 
+        this.http = http;
         this.stateservice = stateservice;
         this._snackBar = _snackBar;
+        this.hlbOptions = 1;
+        this.isExpandDisabled = true;
+        this.activeExpandIndex = 1;
         this.editMode = false;
         this.actorTextFilter = "";
         this.behaviorTextFilter = "";
         this.constraintTextFilter = "";
         this.behaviorList = [];
+        this.actorsList = [];
+        this.contraintList = [];
+        this.bindingList = [];
         this.wordlist = [{
           value: "Hello"
         }, {
@@ -2462,7 +2492,9 @@ function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _d
         }, {
           value: "actors"
         }];
+        this.inputText = "";
         this.actors = "";
+        this.selectedIndex = 0;
       }
 
       _createClass(HlbComponent, [{
@@ -2488,6 +2520,10 @@ function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _d
             if (data != null) {
               data.forEach(function (element) {
                 _this5.actors += element + "\n";
+
+                _this5.actorsList.push({
+                  text: element
+                });
               });
             }
           });
@@ -2495,8 +2531,8 @@ function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _d
         }
       }, {
         key: "drop",
-        value: function drop(event) {
-          Object(_angular_cdk_drag_drop__WEBPACK_IMPORTED_MODULE_2__["moveItemInArray"])(this.behaviorList, event.previousIndex, event.currentIndex);
+        value: function drop(event, list) {
+          Object(_angular_cdk_drag_drop__WEBPACK_IMPORTED_MODULE_2__["moveItemInArray"])(list, event.previousIndex, event.currentIndex);
         }
       }, {
         key: "created",
@@ -2515,7 +2551,27 @@ function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _d
             case 3:
               this.constraintService = editor.getModule("counter");
               break;
+
+            case 4:
+              this.editorService = editor.getModule("counter");
+              break;
           }
+        }
+      }, {
+        key: "isExpandable",
+        value: function isExpandable(option) {
+          return option == this.activeExpandIndex;
+        }
+      }, {
+        key: "expand",
+        value: function expand(option) {
+          this.activeExpandIndex = option;
+          this.isExpandDisabled = false;
+        }
+      }, {
+        key: "collapse",
+        value: function collapse(option) {
+          this.isExpandDisabled = true;
         }
       }, {
         key: "logChange",
@@ -2565,6 +2621,10 @@ function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _d
             case 3:
               this.service = this.constraintService;
               break;
+
+            case 4:
+              this.service = this.editorService;
+              break;
           }
         }
       }, {
@@ -2574,24 +2634,109 @@ function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _d
         }
       }, {
         key: "delete",
-        value: function _delete(index) {
-          this._snackBar.open(this.behaviorList[index].text + " is deleted.", "close", {
+        value: function _delete(index, radioOption) {
+          var text = "";
+
+          switch (radioOption) {
+            case 1:
+              text = this.actorsList[index].text;
+              this.actorsList.splice(index, 1);
+              break;
+
+            case 2:
+              text = this.behaviorList[index].text;
+              this.behaviorList.splice(index, 1);
+              break;
+
+            case 3:
+              text = this.contraintList[index].text;
+              this.contraintList.splice(index, 1);
+              break;
+
+            case 4:
+              text = this.bindingList[index].text;
+              this.bindingList.splice(index, 1);
+              break;
+          }
+
+          this._snackBar.open(text + " is deleted.", "close", {
             duration: 2000
           });
-
-          this.behaviorList.splice(index, 1);
         }
       }, {
         key: "add",
         value: function add() {
-          console.log("inside add");
-          if (this.behaviorService.getText().trim() === "") return;
-          this.behaviorList.push({
-            text: this.behaviorService.getText()
-          }); //this.behaviorText="";
+          var _this6 = this;
 
-          this.updateWordList();
-          this.clear();
+          if (this.editorService.getText().trim() === "") return;
+          var data = {
+            ParseType: "bash",
+            Scenario: [],
+            Constraints: []
+          };
+
+          switch (this.hlbOptions) {
+            case 1:
+              this.actorsList.push({
+                text: this.editorService.getText().trim()
+              });
+              break;
+
+            case 2:
+              this.behaviorList.push({
+                text: this.editorService.getText().trim()
+              });
+              data.Scenario.push(this.editorService.getText().trim());
+              break;
+
+            case 3:
+              data.Constraints.push(this.editorService.getText().trim());
+              this.contraintList.push({
+                text: this.editorService.getText().trim()
+              });
+              break;
+
+            case 4:
+              this.bindingList.push({
+                text: this.editorService.getText().trim()
+              });
+              break;
+          }
+
+          this.http.put("v1/hlb/parse", data).subscribe(function (data) {
+            //console.log(data);
+            _this6.extractActors(data.parsedScenario.length != 0 ? data.parsedScenario : []);
+          });
+          this.clear(); // console.log("inside add");
+          // if(this.behaviorService.getText().trim()==="")
+          //   return;
+          // this.behaviorList.push({text:this.behaviorService.getText()})
+          // //this.behaviorText="";
+          // this.updateWordList();
+          // this.clear();
+        }
+      }, {
+        key: "extractActors",
+        value: function extractActors(data) {
+          var _this7 = this;
+
+          data.forEach(function (element) {
+            element[1].forEach(function (element) {
+              //console.log(element);
+              _this7.insertActor(element);
+            });
+          });
+        }
+      }, {
+        key: "insertActor",
+        value: function insertActor(actor) {
+          var t = this.actorsList.find(function (element) {
+            return element.text === actor;
+          }); // console.log(t);
+
+          if (t == undefined) this.actorsList.push({
+            text: actor
+          });
         }
       }, {
         key: "clear",
@@ -2602,18 +2747,69 @@ function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _d
         }
       }, {
         key: "edit",
-        value: function edit(index) {
+        value: function edit(index, radioValue) {
+          // console.log(this.selectedIndex);
+          this.hlbOptions = radioValue;
           this.editMode = true;
           this.editIndex = index;
-          this.behaviorText = this.behaviorList[index].text;
+          this.selectedTab(1);
+
+          switch (radioValue) {
+            case 1:
+              this.inputText = this.actorsList[index].text;
+              break;
+
+            case 2:
+              this.inputText = this.behaviorList[index].text;
+              break;
+
+            case 3:
+              this.inputText = this.contraintList[index].text;
+              break;
+
+            case 4:
+              this.inputText = this.bindingList[index].text;
+              break;
+          } // this.behaviorText = this.behaviorList[index].text;
+
         }
       }, {
         key: "update",
         value: function update() {
-          this.behaviorList[this.editIndex].text = this.behaviorService.getText();
+          var _this8 = this;
+
+          var data = {
+            ParseType: "bash",
+            Scenario: [],
+            Constraints: []
+          };
+
+          switch (this.hlbOptions) {
+            case 1:
+              this.actorsList[this.editIndex].text = this.editorService.getText().trim();
+              break;
+
+            case 2:
+              data.Scenario.push(this.editorService.getText().trim());
+              this.behaviorList[this.editIndex].text = this.editorService.getText().trim();
+              break;
+
+            case 3:
+              data.Constraints.push(this.editorService.getText().trim());
+              this.contraintList[this.editIndex].text = this.editorService.getText().trim();
+              break;
+
+            case 4:
+              this.bindingList[this.editIndex].text = this.editorService.getText().trim();
+              break;
+          }
+
+          this.http.put("v1/hlb/parse", data).subscribe(function (data) {
+            //console.log(data);
+            _this8.extractActors(data.parsedScenario.length != 0 ? data.parsedScenario : []);
+          });
           this.editMode = false;
-          this.clear();
-          this.updateWordList();
+          this.clear(); // this.updateWordList();
         }
       }, {
         key: "isEditModeEnable",
@@ -2627,9 +2823,14 @@ function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _d
           this.clear();
         }
       }, {
+        key: "selectedTab",
+        value: function selectedTab(index) {
+          this.selectedIndex = index;
+        }
+      }, {
         key: "updateWordList",
         value: function updateWordList() {
-          var _this6 = this;
+          var _this9 = this;
 
           this.localWordList = [];
           var dict = new Map();
@@ -2639,7 +2840,7 @@ function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _d
             wordlist.forEach(function (element) {
               if (element.trim() !== "") {
                 if (!dict.has(element.trim())) {
-                  _this6.localWordList.push({
+                  _this9.localWordList.push({
                     value: element.trim()
                   });
 
@@ -2651,6 +2852,80 @@ function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _d
           this.wordlist = this.wordlist.concat(this.localWordList);
           console.log(this.localWordList);
         }
+      }, {
+        key: "generateNs",
+        value: function generateNs() {
+          var _this10 = this;
+
+          var data = {
+            actors: [],
+            behaviors: [],
+            constraints: [],
+            bindings: []
+          };
+          this.actorsList.forEach(function (element) {
+            data.actors.push(element.text);
+          });
+          this.behaviorList.forEach(function (element) {
+            data.behaviors.push(element.text);
+          });
+          this.contraintList.forEach(function (element) {
+            data.constraints.push(element.text);
+          });
+          this.bindingList.forEach(function (element) {
+            data.bindings.push(element.text);
+          });
+          this.stateservice.enableLoader();
+          this.http.put("v1/hlb/generateNs", data, null).subscribe(function (data) {
+            console.log(data);
+
+            _this10.stateservice.disableLoader();
+
+            _this10.downLoadFile(data.script);
+
+            _this10._snackBar.open("Successfully Downloaded.", "close", {
+              duration: 2000
+            }); // this.stateservice.setBindings(data.Bindings);
+
+          }, function (error) {
+            _this10.stateservice.disableLoader();
+
+            _this10._snackBar.open(error, "close", {
+              duration: 2000
+            });
+          });
+        }
+      }, {
+        key: "downLoadFile",
+        value: function downLoadFile(data) {
+          var blob = new Blob([data], {
+            type: "text/plain"
+          });
+          console.log(blob); // var url = (window.URL || window.webkitURL).createObjectURL(blob);
+
+          var fileName = "experiment.txt";
+
+          if ('msSaveOrOpenBlob' in navigator) {
+            navigator.msSaveOrOpenBlob(blob, fileName);
+          } else {
+            var downloadLink = document.createElement('a');
+            downloadLink.download = fileName;
+            downloadLink.innerHTML = 'Download File'; // if ('webkitURL' in window) {
+            // Chrome allows the link to be clicked
+            // without actually adding it to the DOM.
+            //  downloadLink.href = window.webkitURL.createObjectURL(blob);
+            // } else {
+            // Firefox requires the link to be added to the DOM
+            // before it can be clicked.
+
+            downloadLink.href = window.URL.createObjectURL(blob); //downloadLink.onclick = destroyClickedElement;
+
+            downloadLink.style.display = 'none';
+            document.body.appendChild(downloadLink); //  }
+
+            downloadLink.click();
+          }
+        }
       }]);
 
       return HlbComponent;
@@ -2658,6 +2933,8 @@ function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _d
 
     HlbComponent.ctorParameters = function () {
       return [{
+        type: _common_http_service_service__WEBPACK_IMPORTED_MODULE_7__["HttpService"]
+      }, {
         type: _common_state_service_service__WEBPACK_IMPORTED_MODULE_5__["StateService"]
       }, {
         type: _angular_material__WEBPACK_IMPORTED_MODULE_6__["MatSnackBar"]
@@ -2692,7 +2969,7 @@ function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _d
     /* harmony default export */
 
 
-    __webpack_exports__["default"] = ".behavior-list {\n  margin: 0.1em;\n  list-style: none;\n  padding: 0;\n}\n\n.behavior-box {\n  margin: 0.5em;\n  border: 1px solid #ccc;\n  padding: 0.5em;\n}\n\n.word-bubble {\n  border: 1px dotted black;\n  border-radius: 1em;\n  padding: 0.4em;\n  margin: 0.1em;\n  cursor: pointer;\n}\n\n.word-bubble-button {\n  border-radius: 1em;\n  padding: 0.4em;\n  margin: 0.1em;\n  cursor: pointer;\n}\n\n.float-left {\n  float: left;\n}\n\n.actions {\n  float: right;\n}\n\n.disabled {\n  pointer-events: none;\n  background-color: grey;\n}\n/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbIi9Vc2Vycy9TaGFiYmlyL3Byb2plY3RzL0RFV19VSS9zcmMvREVXLVVJL3NyYy9hcHAvcGFnZXMvZGFzaGJvYXJkL25scC9ubHAuY29tcG9uZW50LnNjc3MiLCJzcmMvYXBwL3BhZ2VzL2Rhc2hib2FyZC9ubHAvbmxwLmNvbXBvbmVudC5zY3NzIl0sIm5hbWVzIjpbXSwibWFwcGluZ3MiOiJBQUFBO0VBQ0ksYUFBQTtFQUNBLGdCQUFBO0VBQ0EsVUFBQTtBQ0NKOztBREVBO0VBQ0ksYUFBQTtFQUNBLHNCQUFBO0VBQ0EsY0FBQTtBQ0NKOztBREVBO0VBQ0ksd0JBQUE7RUFDQSxrQkFBQTtFQUNBLGNBQUE7RUFDQSxhQUFBO0VBQ0EsZUFBQTtBQ0NKOztBREVBO0VBQ0ksa0JBQUE7RUFDQSxjQUFBO0VBQ0EsYUFBQTtFQUNBLGVBQUE7QUNDSjs7QURFQTtFQUNJLFdBQUE7QUNDSjs7QURFQTtFQUNJLFlBQUE7QUNDSjs7QURFQTtFQUNJLG9CQUFBO0VBQ0Esc0JBQUE7QUNDSiIsImZpbGUiOiJzcmMvYXBwL3BhZ2VzL2Rhc2hib2FyZC9ubHAvbmxwLmNvbXBvbmVudC5zY3NzIiwic291cmNlc0NvbnRlbnQiOlsiLmJlaGF2aW9yLWxpc3R7XG4gICAgbWFyZ2luOi4xZW07XG4gICAgbGlzdC1zdHlsZTogbm9uZTtcbiAgICBwYWRkaW5nOiAwO1xufVxuXG4uYmVoYXZpb3ItYm94e1xuICAgIG1hcmdpbjogLjVlbTtcbiAgICBib3JkZXI6IDFweCBzb2xpZCAjY2NjO1xuICAgIHBhZGRpbmc6IC41ZW07XG59XG5cbi53b3JkLWJ1YmJsZXtcbiAgICBib3JkZXI6IDFweCBkb3R0ZWQgYmxhY2s7XG4gICAgYm9yZGVyLXJhZGl1czogMWVtO1xuICAgIHBhZGRpbmc6IDAuNGVtO1xuICAgIG1hcmdpbjogMC4xZW07XG4gICAgY3Vyc29yOiBwb2ludGVyO1xuIFxufVxuLndvcmQtYnViYmxlLWJ1dHRvbntcbiAgICBib3JkZXItcmFkaXVzOiAxZW07XG4gICAgcGFkZGluZzogMC40ZW07XG4gICAgbWFyZ2luOiAwLjFlbTtcbiAgICBjdXJzb3I6IHBvaW50ZXI7XG4gXG59XG4uZmxvYXQtbGVmdHtcbiAgICBmbG9hdDpsZWZ0O1xufVxuXG4uYWN0aW9uc3tcbiAgICBmbG9hdDpyaWdodDtcbn1cblxuLmRpc2FibGVke1xuICAgIHBvaW50ZXItZXZlbnRzOiBub25lO1xuICAgIGJhY2tncm91bmQtY29sb3I6IGdyZXk7XG59XG4iLCIuYmVoYXZpb3ItbGlzdCB7XG4gIG1hcmdpbjogMC4xZW07XG4gIGxpc3Qtc3R5bGU6IG5vbmU7XG4gIHBhZGRpbmc6IDA7XG59XG5cbi5iZWhhdmlvci1ib3gge1xuICBtYXJnaW46IDAuNWVtO1xuICBib3JkZXI6IDFweCBzb2xpZCAjY2NjO1xuICBwYWRkaW5nOiAwLjVlbTtcbn1cblxuLndvcmQtYnViYmxlIHtcbiAgYm9yZGVyOiAxcHggZG90dGVkIGJsYWNrO1xuICBib3JkZXItcmFkaXVzOiAxZW07XG4gIHBhZGRpbmc6IDAuNGVtO1xuICBtYXJnaW46IDAuMWVtO1xuICBjdXJzb3I6IHBvaW50ZXI7XG59XG5cbi53b3JkLWJ1YmJsZS1idXR0b24ge1xuICBib3JkZXItcmFkaXVzOiAxZW07XG4gIHBhZGRpbmc6IDAuNGVtO1xuICBtYXJnaW46IDAuMWVtO1xuICBjdXJzb3I6IHBvaW50ZXI7XG59XG5cbi5mbG9hdC1sZWZ0IHtcbiAgZmxvYXQ6IGxlZnQ7XG59XG5cbi5hY3Rpb25zIHtcbiAgZmxvYXQ6IHJpZ2h0O1xufVxuXG4uZGlzYWJsZWQge1xuICBwb2ludGVyLWV2ZW50czogbm9uZTtcbiAgYmFja2dyb3VuZC1jb2xvcjogZ3JleTtcbn0iXX0= */";
+    __webpack_exports__["default"] = ".behavior-list {\n  margin: 0.1em;\n  list-style: none;\n  padding: 0;\n}\n\n.behavior-box {\n  margin: 0.5em;\n  border: 1px solid #ccc;\n  padding: 0.5em;\n}\n\n.word-bubble {\n  border: 1px dotted black;\n  border-radius: 1em;\n  padding: 0.4em;\n  margin: 0.1em;\n  cursor: pointer;\n}\n\n.word-bubble-button {\n  border-radius: 1em;\n  padding: 0.4em;\n  margin: 0.1em;\n  cursor: pointer;\n}\n\n.float-left {\n  float: left;\n}\n\n.actions {\n  float: right;\n}\n\n.disabled {\n  pointer-events: none;\n  background-color: grey;\n}\n/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbIi9Vc2Vycy9TaGFiYmlyL3Byb2plY3RzL0RFV19VSS9zcmMvc3RlZWwvV0VCLUFQUExJQ0FUSU9OL2Zyb250ZW5kL3NyYy9hcHAvcGFnZXMvZGFzaGJvYXJkL25scC9ubHAuY29tcG9uZW50LnNjc3MiLCJzcmMvYXBwL3BhZ2VzL2Rhc2hib2FyZC9ubHAvbmxwLmNvbXBvbmVudC5zY3NzIl0sIm5hbWVzIjpbXSwibWFwcGluZ3MiOiJBQUFBO0VBQ0ksYUFBQTtFQUNBLGdCQUFBO0VBQ0EsVUFBQTtBQ0NKOztBREVBO0VBQ0ksYUFBQTtFQUNBLHNCQUFBO0VBQ0EsY0FBQTtBQ0NKOztBREVBO0VBQ0ksd0JBQUE7RUFDQSxrQkFBQTtFQUNBLGNBQUE7RUFDQSxhQUFBO0VBQ0EsZUFBQTtBQ0NKOztBREVBO0VBQ0ksa0JBQUE7RUFDQSxjQUFBO0VBQ0EsYUFBQTtFQUNBLGVBQUE7QUNDSjs7QURFQTtFQUNJLFdBQUE7QUNDSjs7QURFQTtFQUNJLFlBQUE7QUNDSjs7QURFQTtFQUNJLG9CQUFBO0VBQ0Esc0JBQUE7QUNDSiIsImZpbGUiOiJzcmMvYXBwL3BhZ2VzL2Rhc2hib2FyZC9ubHAvbmxwLmNvbXBvbmVudC5zY3NzIiwic291cmNlc0NvbnRlbnQiOlsiLmJlaGF2aW9yLWxpc3R7XG4gICAgbWFyZ2luOi4xZW07XG4gICAgbGlzdC1zdHlsZTogbm9uZTtcbiAgICBwYWRkaW5nOiAwO1xufVxuXG4uYmVoYXZpb3ItYm94e1xuICAgIG1hcmdpbjogLjVlbTtcbiAgICBib3JkZXI6IDFweCBzb2xpZCAjY2NjO1xuICAgIHBhZGRpbmc6IC41ZW07XG59XG5cbi53b3JkLWJ1YmJsZXtcbiAgICBib3JkZXI6IDFweCBkb3R0ZWQgYmxhY2s7XG4gICAgYm9yZGVyLXJhZGl1czogMWVtO1xuICAgIHBhZGRpbmc6IDAuNGVtO1xuICAgIG1hcmdpbjogMC4xZW07XG4gICAgY3Vyc29yOiBwb2ludGVyO1xuIFxufVxuLndvcmQtYnViYmxlLWJ1dHRvbntcbiAgICBib3JkZXItcmFkaXVzOiAxZW07XG4gICAgcGFkZGluZzogMC40ZW07XG4gICAgbWFyZ2luOiAwLjFlbTtcbiAgICBjdXJzb3I6IHBvaW50ZXI7XG4gXG59XG4uZmxvYXQtbGVmdHtcbiAgICBmbG9hdDpsZWZ0O1xufVxuXG4uYWN0aW9uc3tcbiAgICBmbG9hdDpyaWdodDtcbn1cblxuLmRpc2FibGVke1xuICAgIHBvaW50ZXItZXZlbnRzOiBub25lO1xuICAgIGJhY2tncm91bmQtY29sb3I6IGdyZXk7XG59XG4iLCIuYmVoYXZpb3ItbGlzdCB7XG4gIG1hcmdpbjogMC4xZW07XG4gIGxpc3Qtc3R5bGU6IG5vbmU7XG4gIHBhZGRpbmc6IDA7XG59XG5cbi5iZWhhdmlvci1ib3gge1xuICBtYXJnaW46IDAuNWVtO1xuICBib3JkZXI6IDFweCBzb2xpZCAjY2NjO1xuICBwYWRkaW5nOiAwLjVlbTtcbn1cblxuLndvcmQtYnViYmxlIHtcbiAgYm9yZGVyOiAxcHggZG90dGVkIGJsYWNrO1xuICBib3JkZXItcmFkaXVzOiAxZW07XG4gIHBhZGRpbmc6IDAuNGVtO1xuICBtYXJnaW46IDAuMWVtO1xuICBjdXJzb3I6IHBvaW50ZXI7XG59XG5cbi53b3JkLWJ1YmJsZS1idXR0b24ge1xuICBib3JkZXItcmFkaXVzOiAxZW07XG4gIHBhZGRpbmc6IDAuNGVtO1xuICBtYXJnaW46IDAuMWVtO1xuICBjdXJzb3I6IHBvaW50ZXI7XG59XG5cbi5mbG9hdC1sZWZ0IHtcbiAgZmxvYXQ6IGxlZnQ7XG59XG5cbi5hY3Rpb25zIHtcbiAgZmxvYXQ6IHJpZ2h0O1xufVxuXG4uZGlzYWJsZWQge1xuICBwb2ludGVyLWV2ZW50czogbm9uZTtcbiAgYmFja2dyb3VuZC1jb2xvcjogZ3JleTtcbn0iXX0= */";
     /***/
   },
 
@@ -2820,7 +3097,7 @@ function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _d
       }, {
         key: "save",
         value: function save() {
-          var _this7 = this;
+          var _this11 = this;
 
           var text = this.service.getText();
           var data = {
@@ -2830,22 +3107,22 @@ function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _d
           this.http.put("v1/nlp/behavior", data, null).subscribe(function (data) {
             console.log(data);
 
-            _this7.stateservice.disableLoader();
+            _this11.stateservice.disableLoader();
 
-            _this7.stateservice.setBehavior(data.behavior);
+            _this11.stateservice.setBehavior(data.behavior);
 
-            _this7.stateservice.setActors(data.actors);
+            _this11.stateservice.setActors(data.actors);
 
-            _this7.stateservice.setConstraints(data.constraints);
+            _this11.stateservice.setConstraints(data.constraints);
 
-            _this7._snackBar.open("Successfully Translated.", "close", {
+            _this11._snackBar.open("Successfully Translated.", "close", {
               duration: 2000
             }); // this.stateservice.setBindings(data.Bindings);
 
           }, function (error) {
-            _this7.stateservice.disableLoader();
+            _this11.stateservice.disableLoader();
 
-            _this7._snackBar.open(error, "close", {
+            _this11._snackBar.open(error, "close", {
               duration: 2000
             });
           });
@@ -2853,7 +3130,7 @@ function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _d
       }, {
         key: "updateWordList",
         value: function updateWordList() {
-          var _this8 = this;
+          var _this12 = this;
 
           this.localWordList = [];
           var dict = new Map();
@@ -2863,7 +3140,7 @@ function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _d
             wordlist.forEach(function (element) {
               if (element.trim() !== "") {
                 if (!dict.has(element.trim())) {
-                  _this8.localWordList.push({
+                  _this12.localWordList.push({
                     value: element.trim()
                   });
 
@@ -2917,7 +3194,7 @@ function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _d
     /* harmony default export */
 
 
-    __webpack_exports__["default"] = ".pointer {\n  cursor: pointer;\n  padding: 0.2em;\n}\n\n.cdk-overlay-pane {\n  max-width: 80%;\n}\n\n.upload-name {\n  text-align: center;\n}\n/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbIi9Vc2Vycy9TaGFiYmlyL3Byb2plY3RzL0RFV19VSS9zcmMvREVXLVVJL3NyYy9hcHAvcGFnZXMvZGFzaGJvYXJkL3VwbG9hZC91cGxvYWQuY29tcG9uZW50LnNjc3MiLCJzcmMvYXBwL3BhZ2VzL2Rhc2hib2FyZC91cGxvYWQvdXBsb2FkLmNvbXBvbmVudC5zY3NzIl0sIm5hbWVzIjpbXSwibWFwcGluZ3MiOiJBQUFBO0VBQ0ksZUFBQTtFQUNBLGNBQUE7QUNDSjs7QURFQTtFQUNJLGNBQUE7QUNDSjs7QURFQTtFQUNJLGtCQUFBO0FDQ0oiLCJmaWxlIjoic3JjL2FwcC9wYWdlcy9kYXNoYm9hcmQvdXBsb2FkL3VwbG9hZC5jb21wb25lbnQuc2NzcyIsInNvdXJjZXNDb250ZW50IjpbIi5wb2ludGVye1xuICAgIGN1cnNvcjogcG9pbnRlcjtcbiAgICBwYWRkaW5nOiAuMmVtO1xufVxuXG4uY2RrLW92ZXJsYXktcGFuZXtcbiAgICBtYXgtd2lkdGg6IDgwJTtcbn1cblxuLnVwbG9hZC1uYW1le1xuICAgIHRleHQtYWxpZ246IGNlbnRlcjtcbn0iLCIucG9pbnRlciB7XG4gIGN1cnNvcjogcG9pbnRlcjtcbiAgcGFkZGluZzogMC4yZW07XG59XG5cbi5jZGstb3ZlcmxheS1wYW5lIHtcbiAgbWF4LXdpZHRoOiA4MCU7XG59XG5cbi51cGxvYWQtbmFtZSB7XG4gIHRleHQtYWxpZ246IGNlbnRlcjtcbn0iXX0= */";
+    __webpack_exports__["default"] = ".pointer {\n  cursor: pointer;\n  padding: 0.2em;\n}\n\n.cdk-overlay-pane {\n  max-width: 80%;\n}\n\n.upload-name {\n  text-align: center;\n}\n/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbIi9Vc2Vycy9TaGFiYmlyL3Byb2plY3RzL0RFV19VSS9zcmMvc3RlZWwvV0VCLUFQUExJQ0FUSU9OL2Zyb250ZW5kL3NyYy9hcHAvcGFnZXMvZGFzaGJvYXJkL3VwbG9hZC91cGxvYWQuY29tcG9uZW50LnNjc3MiLCJzcmMvYXBwL3BhZ2VzL2Rhc2hib2FyZC91cGxvYWQvdXBsb2FkLmNvbXBvbmVudC5zY3NzIl0sIm5hbWVzIjpbXSwibWFwcGluZ3MiOiJBQUFBO0VBQ0ksZUFBQTtFQUNBLGNBQUE7QUNDSjs7QURFQTtFQUNJLGNBQUE7QUNDSjs7QURFQTtFQUNJLGtCQUFBO0FDQ0oiLCJmaWxlIjoic3JjL2FwcC9wYWdlcy9kYXNoYm9hcmQvdXBsb2FkL3VwbG9hZC5jb21wb25lbnQuc2NzcyIsInNvdXJjZXNDb250ZW50IjpbIi5wb2ludGVye1xuICAgIGN1cnNvcjogcG9pbnRlcjtcbiAgICBwYWRkaW5nOiAuMmVtO1xufVxuXG4uY2RrLW92ZXJsYXktcGFuZXtcbiAgICBtYXgtd2lkdGg6IDgwJTtcbn1cblxuLnVwbG9hZC1uYW1le1xuICAgIHRleHQtYWxpZ246IGNlbnRlcjtcbn0iLCIucG9pbnRlciB7XG4gIGN1cnNvcjogcG9pbnRlcjtcbiAgcGFkZGluZzogMC4yZW07XG59XG5cbi5jZGstb3ZlcmxheS1wYW5lIHtcbiAgbWF4LXdpZHRoOiA4MCU7XG59XG5cbi51cGxvYWQtbmFtZSB7XG4gIHRleHQtYWxpZ246IGNlbnRlcjtcbn0iXX0= */";
     /***/
   },
 
@@ -2986,7 +3263,7 @@ function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _d
       _createClass(UploadComponent, [{
         key: "dropped",
         value: function dropped(files) {
-          var _this9 = this;
+          var _this13 = this;
 
           //this.files = files;
           var _iteratorNormalCompletion = true;
@@ -3001,7 +3278,7 @@ function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _d
               if (droppedFile.fileEntry.isFile) {
                 var fileEntry = droppedFile.fileEntry;
                 fileEntry.file(function (file) {
-                  _this9.filename = file.name; // Here you can access the real file
+                  _this13.filename = file.name; // Here you can access the real file
 
                   var reader = new FileReader();
 
@@ -3252,7 +3529,7 @@ function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _d
     /* harmony default export */
 
 
-    __webpack_exports__["default"] = ".container {\n  margin: 0;\n}\n/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbIi9Vc2Vycy9TaGFiYmlyL3Byb2plY3RzL0RFV19VSS9zcmMvREVXLVVJL3NyYy9hcHAvcGFnZXMvcGFnZXMuY29tcG9uZW50LnNjc3MiLCJzcmMvYXBwL3BhZ2VzL3BhZ2VzLmNvbXBvbmVudC5zY3NzIl0sIm5hbWVzIjpbXSwibWFwcGluZ3MiOiJBQUFBO0VBQ0ksU0FBQTtBQ0NKIiwiZmlsZSI6InNyYy9hcHAvcGFnZXMvcGFnZXMuY29tcG9uZW50LnNjc3MiLCJzb3VyY2VzQ29udGVudCI6WyIuY29udGFpbmVye1xuICAgIG1hcmdpbjogMDtcbn0iLCIuY29udGFpbmVyIHtcbiAgbWFyZ2luOiAwO1xufSJdfQ== */";
+    __webpack_exports__["default"] = ".container {\n  margin: 0;\n}\n/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbIi9Vc2Vycy9TaGFiYmlyL3Byb2plY3RzL0RFV19VSS9zcmMvc3RlZWwvV0VCLUFQUExJQ0FUSU9OL2Zyb250ZW5kL3NyYy9hcHAvcGFnZXMvcGFnZXMuY29tcG9uZW50LnNjc3MiLCJzcmMvYXBwL3BhZ2VzL3BhZ2VzLmNvbXBvbmVudC5zY3NzIl0sIm5hbWVzIjpbXSwibWFwcGluZ3MiOiJBQUFBO0VBQ0ksU0FBQTtBQ0NKIiwiZmlsZSI6InNyYy9hcHAvcGFnZXMvcGFnZXMuY29tcG9uZW50LnNjc3MiLCJzb3VyY2VzQ29udGVudCI6WyIuY29udGFpbmVye1xuICAgIG1hcmdpbjogMDtcbn0iLCIuY29udGFpbmVyIHtcbiAgbWFyZ2luOiAwO1xufSJdfQ== */";
     /***/
   },
 
@@ -3513,7 +3790,7 @@ function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _d
   /***/
   function _(module, exports, __webpack_require__) {
     module.exports = __webpack_require__(
-    /*! /Users/Shabbir/projects/DEW_UI/src/DEW-UI/src/main.ts */
+    /*! /Users/Shabbir/projects/DEW_UI/src/steel/WEB-APPLICATION/frontend/src/main.ts */
     "./src/main.ts");
     /***/
   }
