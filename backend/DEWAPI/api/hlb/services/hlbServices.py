@@ -7,6 +7,7 @@ sys.path.append('./DewFunctions/Translators/bash')
 sys.path.append('./DewFunctions/Translators/magi')
 import globals
 import hlb
+import re
 from parsebash import GeneralParseBash
 from generator import GeneralGenerator
 from generator import GeneralGenerator
@@ -63,8 +64,8 @@ class HLBService():
         elif(type == HLBHintType.REQ_ACTORS):
             return self.addSuggestions("actors_only")
         elif(type == HLBHintType.REQ_ACTION):
-            if (ll.endswith(" ")):
-                items = ll.strip().split(" ")
+            if (last_behavior.endswith(" ")):
+                items = last_behavior.strip().split(" ")
                 item = items[-1].strip(",")
                 if item not in globals.actors:
                     self.addactor(item)
@@ -72,8 +73,8 @@ class HLBService():
             return self.addSuggestions("actions_only")
             return self.addSuggestions("actors_only")
         elif(type == HLBHintType.OPT_EMIT_STMT):
-            if (ll.endswith(" ")):
-                items = ll.strip().split(" ")
+            if (last_behavior.endswith(" ")):
+                items = last_behavior.strip().split(" ")
                 item = items[-1].strip(",")
                 if item not in globals.actions:
                     globals.actions[item] = 1
@@ -98,8 +99,38 @@ class HLBService():
     def addSuggestions(self, event):
         return hlb.getSuggestionsForEvent(event)
 
-    def HandleConstraintSuggestions(self, constraints, last_constraint):
-      pass
+    def HandleConstraintSuggestions(self, constraints, actors, last_constraint):
+        suggestions = []
+      
+        items = re.split("[\s,]",last_constraint.strip())
+        item = items.pop(0)
+        if item in ["num", "os","nodetype", "interfaces", "location", "link","lan"] and len(items) == 0:
+            return {'suggestionList': actors}
+        elif len(items) >= 1:
+            if (item == "num" or item == "interfaces") and items[-1] in actors:
+                return self.addSuggestions("enter digit")
+            elif item == "os" and (items[-1] in actors):
+                # for os in globals.deploy_handler.getSuggestions(type='os'):
+                    #addSuggestions(os, Centry)
+                    # globals.app.addButton(os,Centry)
+                    # globals.sbuttons[os]=1
+                return self.addSuggestions("enter OS")
+            elif item == "nodetype" and (items[-1] in actors):
+                # for nodetype in globals.deploy_handler.getSuggestions(type='nodetype'):
+                #     globals.app.addButton(nodetype,Centry)
+                #     globals.sbuttons[nodetype]=1
+                return self.addSuggestions("enter node type")
+            elif item == "link" and (items[-1] in actors):
+                return self.addSuggestions("actors_only")
+            elif item == "lan" and (items[-1] in actors):
+                return self.addSuggestions("actors_only")
+            elif item == "location" and (items[-1] in globals.actors):
+                return self.addSuggestions("enter testbed")
+            else:
+               return self.addSuggestions("constraints_enter")
+        else:
+            return self.addSuggestions("constraints_enter")
+
     # Handle Translator
     def HandleTranslator(self,format, data):
 
