@@ -1,4 +1,4 @@
-<div class="row">
+<!-- <div class="row">
 <div class="col-md-8">
   <div class="container">
   <div class="row" style="margin: .5em;">
@@ -125,11 +125,191 @@
     </div>
   </div>
 <div class="col-md-3">
-<div >
-  <mat-card style="height:600px;margin: .5em;">
-    <span *ngFor="let word of wordlist" class="word-bubble float-left" (click)="insertValue(word.value)">{{word.value}}</span>
-   
-  </mat-card>
-</div>
+
   </div>
+</div> -->
+
+
+
+<div class="col-md-12">
+    
+  <div style="float: right;padding: 1em;">      <button mat-stroked-button (click)="generateNs()" >Generate Ns File</button>
+
 </div>
+</div>
+
+<mat-tab-group [(selectedIndex)]="selectedIndex">
+  <mat-tab label="English" >
+    <nlp></nlp>
+  </mat-tab>
+  <mat-tab label="Manual">
+    
+
+<div class="row">
+
+  <div class="col-md-12" style="padding: 2em;">
+   
+  
+    <div class="row" [ngClass]="{disabled:isEditModeEnable()}">
+      <div class="col-md-8" >
+      <mat-radio-group aria-label="Select an option" [(ngModel)]="hlbOptions">
+        <mat-radio-button [value]="1" >Actors</mat-radio-button>
+        <mat-radio-button [value]="2">Behavior</mat-radio-button>
+        <mat-radio-button [value]="3">Constraints</mat-radio-button>
+        <mat-radio-button [value]="4">Bindings</mat-radio-button>
+
+      </mat-radio-group>
+    </div>
+   
+      </div> 
+      <div class="row">
+        <div class="col-md-12" >
+      <div class="flex-container" (click)="selectTextBox(4)"> 
+    <quill-editor 
+                         
+    [styles]="{height: '100px'}"
+    [modules]="{  counter: { container: '#editor1'} ,toolbar: false }"
+    [(ngModel)]="inputText" 
+    (onContentChanged)="logChange($event,4);"
+    (onEditorCreated)="created($event,4)"></quill-editor></div></div></div>
+    </div>
+  </div>
+  <div class="col-md-12" >
+    <div style="float:right">
+        <button mat-stroked-button (click)="clear()" class="button-padding">Clear</button>
+        <button mat-stroked-button *ngIf="!isEditModeEnable()" (click)="add()" class="button-padding">ADD</button>
+        <button  mat-stroked-button *ngIf="isEditModeEnable()" (click)="update()" class="button-padding">UPDATE</button>
+        <button mat-stroked-button *ngIf="isEditModeEnable()" (click)="Cancel()" class="button-padding">Cancel</button>
+
+    </div>
+    </div>
+</mat-tab>
+</mat-tab-group> 
+  <div class="row">
+    <div class="col-md-12" style="padding: 2em;">
+      <div class="row" [ngClass]="{disabled:isEditModeEnable()}">
+    
+      <div class="padding-left-right" [ngClass]="{'col-md-2':isExpandDisabled,'hide':(!isExpandDisabled && !isExpandable(1)),'col-md-12':(!isExpandDisabled && isExpandable(1))}">
+        <mat-card>  
+          <div style="text-align: center;">Actors
+          <span class="expand" (click)="expand(1)" *ngIf="isExpandDisabled"><i class="fas fa-expand-alt"></i></span>
+          <span class="expand" (click)="collapse(1)" *ngIf="!isExpandDisabled"> <i class="fas fa-compress-alt"></i></span>
+            </div>
+
+          
+          <hr>
+          <div *ngIf="actorsList.length==0" style="font-size: .8em;text-align: center;">
+            <span ><i>No Actors</i></span>
+          </div>
+            <div *ngIf="actorsList.length!=0">
+          <ul  class="behavior-list " >
+            <li class="behavior-box " *ngFor="let item of actorsList;let index=index" ><div>
+            
+              <span>
+              {{item.text}} </span>
+              <div class="actions">
+            
+                <i class="fas fa-edit" (click)="edit(index,1)"></i>
+                <i class="far fa-trash-alt" (click)="delete(index,1)"></i>
+
+              </div>
+            </div>
+              </li>
+        </ul>
+        </div>
+        </mat-card>
+      </div>
+      <div class="padding-left-right" [ngClass]="{'col-md-4':isExpandDisabled,'hide':(!isExpandDisabled && !isExpandable(2)),'col-md-12':(!isExpandDisabled && isExpandable(2))}">
+        <mat-card>   
+          <div style="text-align: center;">Behavior 
+            <span class="expand" (click)="collapse(2)" *ngIf="!isExpandDisabled"> <i class="fas fa-compress-alt"></i></span>
+            
+            <span class="expand" (click)="expand(2)" *ngIf="isExpandDisabled"><i class="fas fa-expand-alt"></i></span></div>
+
+          
+          <hr>
+          <div *ngIf="behaviorList.length==0" style="font-size: .8em;text-align: center;">
+            <span ><i>No Behavior</i></span>
+          </div>
+          <div *ngIf="behaviorList.length!=0">
+          <ul cdkDropList class="behavior-list grabbable" (cdkDropListDropped)="drop($event,behaviorList)">
+            <li class="behavior-box " *ngFor="let item of behaviorList;let index=index" cdkDrag><div>
+              <i class="fas fa-grip-vertical"></i>
+              <span>
+              {{item.text}} </span>
+              <div class="actions">
+            
+                <i class="fas fa-edit" (click)="edit(index,2)"></i>
+                <i class="far fa-trash-alt" (click)="delete(index,2)"></i>
+
+              </div>
+            </div>
+              </li>
+        </ul>
+          </div>
+        </mat-card>
+      </div>
+      <div class="padding-left-right" [ngClass]="{'col-md-3':isExpandDisabled,'hide':(!isExpandDisabled && !isExpandable(3)),'col-md-12':(!isExpandDisabled && isExpandable(3))}">
+        <mat-card>    
+          <div style="text-align: center;">Constraints 
+            <span class="expand" (click)="collapse(3)" *ngIf="!isExpandDisabled"> <i class="fas fa-compress-alt"></i></span>
+            
+            <span class="expand" (click)="expand(3)" *ngIf="isExpandDisabled"><i class="fas fa-expand-alt"></i></span></div>
+
+          
+          <hr>
+          <div *ngIf="contraintList.length==0" style="font-size: .8em;text-align: center;">
+            <span ><i>No Constraints</i></span>
+          </div>
+          
+          <div *ngIf="contraintList.length!=0">
+          <ul  class="behavior-list " >
+            <li class="behavior-box " *ngFor="let item of contraintList;let index=index" ><div>
+             
+              <span>
+              {{item.text}} </span>
+              <div class="actions">
+            
+                <i class="fas fa-edit" (click)="edit(index,3)"></i>
+                <i class="far fa-trash-alt" (click)="delete(index,3)"></i>
+
+              </div>
+            </div>
+              </li>
+        </ul>
+        </div></mat-card>
+      </div>
+      <div class="padding-left-right" [ngClass]="{'col-md-3 ':isExpandDisabled,'hide':(!isExpandDisabled && !isExpandable(4)),'col-md-12':(!isExpandDisabled && isExpandable(4))}">
+        <mat-card>     
+          <div style="text-align: center;">Bindings 
+            <span class="expand" (click)="expand(4)" *ngIf="isExpandDisabled"><i class="fas fa-expand-alt"></i></span>
+            <span class="expand" (click)="collapse(4)" *ngIf="!isExpandDisabled"> <i class="fas fa-compress-alt"></i></span>
+          </div>
+
+          
+          <hr>
+          <div *ngIf="bindingList.length==0" style="font-size: .8em;text-align: center;">
+            <span ><i>No Bindings</i></span>
+          </div>
+          
+          <div *ngIf="bindingList.length!=0">
+          <ul  class="behavior-list " >
+            <li class="behavior-box " *ngFor="let item of bindingList;let index=index" ><div>
+              
+              <span>
+              {{item.text}} </span>
+              <div class="actions">
+            
+                <i class="fas fa-edit" (click)="edit(index,4)"></i>
+                <i class="far fa-trash-alt" (click)="delete(index,4)"></i>
+
+              </div>
+            </div>
+              </li>
+        </ul>
+        </div></mat-card>
+      </div>
+    </div>
+      </div>
+      </div>
+
