@@ -28,6 +28,7 @@ from flask_restplus import Api
 from DEWAPI import settings
 from DEWAPI.api.hlb.endpoints.hlb import ns as hlb_namespace
 from DEWAPI.api.nlp.endpoints.nlp import ns as nlp_namespace
+from DEWAPI.api.upload.endpoints.parse_dew import ns as upload_namespace
 from DEWAPI.api.restplus import api
 app = Flask(__name__)
 # app.debug = true
@@ -49,6 +50,7 @@ def initialize_app(flask_app):
     api.init_app(blueprint)
     api.add_namespace(hlb_namespace)
     api.add_namespace(nlp_namespace)
+    api.add_namespace(upload_namespace)
     flask_app.register_blueprint(blueprint)
 
 

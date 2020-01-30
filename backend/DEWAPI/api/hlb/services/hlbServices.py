@@ -18,7 +18,7 @@ import werkzeug
 
 class HLBService():
     #   Handle Behavior Suggestions On Each Key Press
-    def HandleBehaviorSuggestions(self, behaviors, last_behavior):
+    def HandleBehaviorSuggestions(self, behaviors, given_actors, last_behavior):
         '''
         Takes an array of behaviors which are already completed and the last_behavior as the input and provides suggestion for the last behavior
         '''
@@ -86,7 +86,7 @@ class HLBService():
 
         return {'suggestionList': ['wait', 'emit', 'server', 'client', 'install_iperf', 'install_flooder', 'install_tcpdump', 'start_measure', 'start_server', 'mstarted', 'sstarted', 'when', 'mstarted', 'cstarted', 'astarted', 'astopped', 'attacker', 'start_traffic', 'start_attack', 'stop_attack', 'stop_traffic', 'cstopped', 'mstopped', 'calculate_entropy', 'stop_measure', 'COPY_TO_GITHUB']}
 
-    def addactor(self, actor):
+    def addactor(self, item):
         globals.actors[item] = 1
         globals.nodes[item] = 1
         if "lan0" not in globals.lans:

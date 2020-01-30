@@ -57,7 +57,7 @@ class HandleSuggestions(Resource):
         """
         json_data = request.get_json(force=True)
         if json_data["type"] == "behavior":
-          return { 'suggestions': obj.HandleBehaviorSuggestions(json_data["data"], json_data['suggestion_for'])}
+          return { 'suggestions': obj.HandleBehaviorSuggestions(json_data["behaviors"], json_data['actors'], json_data['suggestion_for'])}
         elif json_data["type"] == "constraint":
           return {'suggestions': obj.HandleConstraintSuggestions(json_data["constraints"], json_data["actors"], json_data["suggestion_for"])}
           pass
