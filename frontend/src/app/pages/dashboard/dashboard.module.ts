@@ -16,7 +16,7 @@ import {NgxGraphModule} from "@swimlane/ngx-graph"
 import { CommonModule } from '@angular/common';
 import { DashboardRoutingModule } from './dashboard-routing.module';
 import { RouterModule } from '@angular/router';
-import { HlbComponent } from './hlb/hlb.component';
+import { HlbComponent, BindingPopUp } from './hlb/hlb.component';
 import { NlpComponent } from './nlp/nlp.component';
 import { TextFilterPipe } from './common/text-filter.pipe';
 import { UploadComponent, FilePreviewComponent } from './upload/upload.component';
@@ -34,7 +34,8 @@ import {MatRadioModule} from '@angular/material/radio';
      DependencyGraphComponent,
      TextFilterPipe,
      UploadComponent,
-     FilePreviewComponent
+     FilePreviewComponent,
+     BindingPopUp
   ],
   imports: [
     CommonModule,
@@ -57,7 +58,7 @@ import {MatRadioModule} from '@angular/material/radio';
     MatInputModule,
     NgxFileDropModule
   ],
-  entryComponents: [FilePreviewComponent],
+  entryComponents: [FilePreviewComponent,BindingPopUp],
   providers: [StateService],
   bootstrap:[DashboardComponent]
 })

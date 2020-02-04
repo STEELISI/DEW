@@ -1,6 +1,6 @@
 import * as Quill from "quill";
 import { Observable, BehaviorSubject } from "rxjs";
-var Keyboard = Quill.import('modules/keyboard'); 
+//var Keyboard = Quill.import('modules/keyboard'); 
 export interface QuillInstance {
   on: any;
   keyboard:any;
@@ -8,11 +8,13 @@ export interface QuillInstance {
   getSelection: any;
   setText: any;
   insertText: any;
+  hasFocus:any;
 }
 
 export default class EditorService {
   private textData = new BehaviorSubject<any>("");
-
+  private onBlur=new BehaviorSubject<any>(false);
+  private onBlurFlag=false;
   getUpdatedValue(): Observable<any> {
     return this.textData.asObservable();
   }
@@ -31,16 +33,20 @@ export default class EditorService {
       if (range) {
         instance.index = range.index;
         instance.range = range.length;
+        if(instance.onBlurFlag){
+        instance.onBlur.next(false);
+        instance.onBlurFlag  =false;
+      }
+      }else{
+        instance.onBlurFlag  =true;
+        instance.onBlur.next(true);
       }
     });
     this.quill.on("text-change", function(delta, oldDelta, source) {
-    //  console.log(delta);
+      // console.log(delta);
       instance.index = instance.quill.getText().length - 1;
     });
-   // console.log(Keyboard);
-    this.quill.keyboard.addBinding({ key: Keyboard.keys.ENTER , shiftKey: true }, function(range,context) {
-        console.log("inside binding");
-    });
+  
   }
 
   insertVaue(text: String) {
@@ -53,5 +59,8 @@ export default class EditorService {
 
   clear() {
     this.quill.setText("");
+  }
+  isBlur():Observable<any>{
+    return this.onBlur.asObservable();
   }
 }
