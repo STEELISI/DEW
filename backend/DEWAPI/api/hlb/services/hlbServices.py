@@ -26,7 +26,7 @@ class HLBService():
         # parse out events, globals.actors, actions and methods
         # from every line but the last
 
-        parser = HLBParser()
+        parser = HLBParser(given_actors)
         for b in behaviors:
             globals.behaviors[i] = b
             i = i + 1

@@ -223,7 +223,7 @@ class HLBParser():
             
                 
 def testParser():
-    parser = HLBParser()
+    parser = HLBParser([])
     while True:
         line = raw_input("Input statement: ")
         print(line)

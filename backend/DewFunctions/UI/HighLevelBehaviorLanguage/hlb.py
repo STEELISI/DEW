@@ -710,7 +710,7 @@ def processBehavior():
         # from every line but the last
         globals.events.clear()
         ll = bhs.pop()
-        parser = HLBParser()
+        parser = HLBParser(globals.actors)
         for b in bhs:
             globals.behaviors[i] = b
             i = i + 1

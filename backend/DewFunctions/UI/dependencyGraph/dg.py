@@ -71,7 +71,7 @@ class dependencyGraphHandler(GraphCanvas, object):
 
         #self._draw_node((width, height), 0)
         self.pack()  
-        self.parser = HLBParser()
+        self.parser = HLBParser(globals.actors)
         
     
     def setoffsets(self, xoffset=0, yoffset=0, width=0, height=0):

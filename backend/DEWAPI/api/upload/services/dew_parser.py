@@ -13,11 +13,13 @@ class DEWParser(object):
         return {'behaviors': behaviors, 'constraints': constraints, 'bindings': bindings, 'actors': actors}
     
     def extract_actors(self, behaviors):
-        hlbparser = HLBParser()
-        actors = []
+        actors = set()
+        hlbparser = HLBParser(actors)
         for behavior in behaviors:
+            print(hlbparser.parse_stmt(behavior))
             type,vals,hints = hlbparser.extract_partial(behavior)
+            print(vals, hints, type, behavior)
             if "actors" in vals and vals["actors"] != None:
-                actors.extend(vals["actors"])
+                actors = actors.union(vals["actors"])
         return actors
         

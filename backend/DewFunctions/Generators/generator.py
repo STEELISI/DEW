@@ -2,6 +2,7 @@
 # In the meantime:
 import os.path
 import sys
+import globals
 # cwd = os.path.dirname(os.path.realpath(__file__))
 # parentDir = os.path.abspath(os.path.join(cwd, os.pardir))
 # # print(parentDir + '/UI/HighLevelBehaviorLanguage/')
@@ -27,7 +28,7 @@ class GeneralGenerator(object):
         self.scenario = scenario
 
         # Imported from hlb_parser.
-        self.HLBparser = HLBParser()
+        self.HLBparser = HLBParser(globals.actors)
         self.ConstParser = ConstraintParser()
 
         # After we parse statements, we store them as a list of tuples (one tuple per statement).
