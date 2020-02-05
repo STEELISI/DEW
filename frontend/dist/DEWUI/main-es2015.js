@@ -71,7 +71,7 @@ __webpack_require__.r(__webpack_exports__);
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony default export */ __webpack_exports__["default"] = ("\n  <mat-tab-group>\n    <mat-tab *ngFor=\"let x of menuList\" label=\"{{ x.name }}\">\n   <div *ngIf=\"x.id ==1\">\n        <hlb></hlb>\n      </div>\n\n      <div *ngIf=\"x.id ==2\">\n        <nlp></nlp>\n      </div>\n\n      <div *ngIf=\"x.id ==3\">\n        <dependency-graph></dependency-graph>\n      </div> \n\n      <div *ngIf=\"x.id ==4\">\n        <upload></upload>\n      </div> \n      \n    </mat-tab>\n  </mat-tab-group> \n\n");
+/* harmony default export */ __webpack_exports__["default"] = ("\n  <mat-tab-group>\n    <mat-tab *ngFor=\"let x of menuList\" label=\"{{ x.name }}\">\n   <div *ngIf=\"x.id ==1\" class=\"tab\">\n        <hlb></hlb>\n      </div>\n\n      <div *ngIf=\"x.id ==2\" class=\"tab\">\n        <nlp></nlp>\n      </div>\n\n      <div *ngIf=\"x.id ==3\" class=\"tab\">\n        <dependency-graph></dependency-graph>\n      </div> \n\n      <div *ngIf=\"x.id ==4\" class=\"tab\">\n        <upload></upload>\n      </div> \n      \n    </mat-tab>\n  </mat-tab-group> \n\n");
 
 /***/ }),
 
@@ -88,6 +88,19 @@ __webpack_require__.r(__webpack_exports__);
 
 /***/ }),
 
+/***/ "./node_modules/raw-loader/dist/cjs.js!./src/app/pages/dashboard/hlb/hlb-binding.component.html":
+/*!******************************************************************************************************!*\
+  !*** ./node_modules/raw-loader/dist/cjs.js!./src/app/pages/dashboard/hlb/hlb-binding.component.html ***!
+  \******************************************************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony default export */ __webpack_exports__["default"] = ("<!-- <h1 mat-dialog-title>Hi {{data.name}}</h1>\n<div mat-dialog-content>\n  <p>What's your favorite animal?</p>\n  <mat-form-field>\n    <input matInput [(ngModel)]=\"data.animal\">\n  </mat-form-field>\n</div>\n<div mat-dialog-actions>\n  <button mat-button (click)=\"onNoClick()\">No Thanks</button>\n  <button mat-button [mat-dialog-close]=\"data.animal\" cdkFocusInitial>Ok</button>\n</div> -->\n\n\n<div mat-dialog-content>\n<div class=\"row\" style=\"margin: .5em;\">\n    <div class=\"col-md-12\">\n    \n              \n        <div style=\"text-align: center;\">  Bindings</div> \n        \n          <hr>\n          <div *ngIf=\"bindingList.length==0\" style=\"font-size: .8em;text-align: center;\">\n            <span ><i>No Bindings Needed</i></span>\n          </div>\n            <div *ngIf=\"bindingList.length!=0\">\n          <ul  class=\"behavior-list \" >\n            <li class=\"binding-box\" *ngFor=\"let item of bindingList;let index=index\" ><div>\n            \n              <mat-form-field style=\"width:100%\">\n                <input matInput placeholder=\"{{item.key+' represents: '}}\" [(ngModel)]=\"item.value\">\n              </mat-form-field>\n\n              <span>\n              </span>\n             \n            </div>\n              </li>\n        </ul>\n        </div>\n\n        \n\n      </div>\n      </div></div>\n\n      <div mat-dialog-actions>\n        <button mat-button (click)=\"onNoClick()\">Back</button>\n        <button mat-button [mat-dialog-close]=\"bindingList\" cdkFocusInitial>Download</button>\n      </div> ");
+
+/***/ }),
+
 /***/ "./node_modules/raw-loader/dist/cjs.js!./src/app/pages/dashboard/hlb/hlb.component.html":
 /*!**********************************************************************************************!*\
   !*** ./node_modules/raw-loader/dist/cjs.js!./src/app/pages/dashboard/hlb/hlb.component.html ***!
@@ -97,7 +110,7 @@ __webpack_require__.r(__webpack_exports__);
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony default export */ __webpack_exports__["default"] = ("<!-- <div class=\"row\">\n<div class=\"col-md-8\">\n  <div class=\"container\">\n  <div class=\"row\" style=\"margin: .5em;\">\n      <div class=\"col-md-12\">\n\n          <mat-card> Actors\n              <hr>\n              <div class=\"row\">\n              <div class=\"col-md-12\" (click)=\"selectTextBox(1)\">\n                  <div style=\"margin: .6em;\" [hidden]=\"!isEnable(1)\">\n                      <span>Suggestions:</span>\n                      <button type=\"button\" class=\"btn btn-outline-primary word-bubble-button\" *ngFor=\"let word of wordlist | textfilter:actorTextFilter\"  (click)=\"insertValue(word.value)\">{{word.value}}</button>\n                      \n               \n                   </div>\n                  <div class=\"flex-container\">\n                    \n                      <quill-editor \n                     \n                      [styles]=\"{height: '100px'}\"\n                      [modules]=\"{  counter: { container: '#editor1'} ,toolbar: false }\"\n                      [(ngModel)]=\"actors\" \n                      (onContentChanged)=\"logChange($event,1);\"\n                      (onEditorCreated)=\"created($event,1)\"></quill-editor>\n                    </div>\n                     \n                  </div>\n                  </div>\n          </mat-card>\n  \n      </div>\n    </div>\n    <div class=\"row\" style=\"margin: .5em;\">\n        <div class=\"col-md-12\">\n            <mat-card> \n               \n                    Behavior\n               <hr>\n               <div class=\"row\" >\n                  <div class=\"col-md-12\">\n                    <div [ngClass]=\"{disabled:isEditModeEnable()}\">\n                      <ul cdkDropList class=\"behavior-list grabbable\" (cdkDropListDropped)=\"drop($event)\">\n                          <li class=\"behavior-box \" *ngFor=\"let item of behaviorList;let index=index\" cdkDrag><div>\n                            <i class=\"fas fa-grip-vertical\"></i>\n                            <span>\n                            {{item.text}} </span>\n                            <div class=\"actions\">\n                          \n                              <i class=\"fas fa-edit\" (click)=\"edit(index)\"></i>\n                              <i class=\"far fa-trash-alt\" (click)=\"delete(index)\"></i>\n\n                            </div>\n                          </div>\n                            </li>\n                      </ul>\n                    </div>\n                  </div>\n                </div>\n               <div class=\"row\">\n               <div class=\"col-md-12\" (click)=\"selectTextBox(2)\">\n                  <div style=\"margin: .6em;\" [hidden]=\"!isEnable(2)\">\n                      <span>Suggestions:</span>\n                     \n                      <button type=\"button\" class=\"btn btn-outline-primary word-bubble-button\" *ngFor=\"let word of wordlist | textfilter:behaviorTextFilter \"  (click)=\"insertValue(word.value)\">{{word.value}}</button>\n                      \n                   </div>\n                <div class=\"flex-container\">\n                    \n                      <quill-editor \n                     \n                      [styles]=\"{height: '100px'}\"\n                      [modules]=\"{  counter: { container: '#editor1'} ,toolbar: false }\"\n                      [(ngModel)]=\"behaviorText\" \n                      (onContentChanged)=\"logChange($event,2);\"\n                      (onEditorCreated)=\"created($event,2)\"></quill-editor>\n                    </div>\n                     \n                  \n                  </div>\n                  </div>\n                  <div class=\"row\">\n                      <div class=\"col-md-12\" style=\"    margin: 0.1em;text-align: right;\">\n                        <div >\n                            <button type=\"button\" class=\"btn btn-outline-primary word-bubble-button\" (click)=\"clear()\">Clear</button>\n                            <button type=\"button\" class=\"btn btn-outline-primary word-bubble-button\" *ngIf=\"!isEditModeEnable()\" (click)=\"add()\">ADD</button>\n                            <button type=\"button\" class=\"btn btn-outline-primary word-bubble-button\" *ngIf=\"isEditModeEnable()\" (click)=\"update()\">UPDATE</button>\n                            <button type=\"button\" class=\"btn btn-outline-primary word-bubble-button\" *ngIf=\"isEditModeEnable()\" (click)=\"Cancel()\">Cancel</button>\n\n                        </div>\n                      </div>\n                  </div>\n                 \n            </mat-card>\n   \n        </div>\n      </div> \n      <div class=\"row\" style=\"margin: .5em;\">\n          <div class=\"col-md-12\">\n              <mat-card> Constraints\n                  <hr>\n                  <div class=\"row\">\n                  <div class=\"col-md-12\" (click)=\"selectTextBox(3)\">\n                    <div style=\"margin: .6em;\" [hidden]=\"!isEnable(3)\">\n                       <span>Suggestions:</span>\n                       <button type=\"button\" class=\"btn btn-outline-primary word-bubble-button\" *ngFor=\"let word of wordlist | textfilter:constraintTextFilter\"  (click)=\"insertValue(word.value)\">{{word.value}}</button>\n                           \n                \n                    </div>\n                      <div class=\"flex-container\">\n                    \n                          <quill-editor \n                         \n                          [styles]=\"{height: '100px'}\"\n                          [modules]=\"{  counter: { container: '#editor1'} ,toolbar: false }\"\n                          [(ngModel)]=\"constraints\" \n                          (onContentChanged)=\"logChange($event,3);\"\n                          (onEditorCreated)=\"created($event,3)\"></quill-editor>\n                        </div>\n                      </div>\n                      </div>\n              </mat-card>\n          </div>\n        </div>\n    </div>\n  </div>\n<div class=\"col-md-3\">\n\n  </div>\n</div> -->\n\n\n\n<div class=\"col-md-12\">\n    \n  <div style=\"float: right;padding: 1em;\">      <button mat-stroked-button (click)=\"generateNs()\" >Generate Ns File</button>\n\n</div>\n</div>\n\n<mat-tab-group [(selectedIndex)]=\"selectedIndex\">\n  <mat-tab label=\"English\" >\n    <nlp></nlp>\n  </mat-tab>\n  <mat-tab label=\"Manual\">\n    \n\n<div class=\"row\">\n\n  <div class=\"col-md-12\" style=\"padding: 2em;\">\n   \n  \n    <div class=\"row\" [ngClass]=\"{disabled:isEditModeEnable()}\">\n      <div class=\"col-md-8\" >\n      <mat-radio-group aria-label=\"Select an option\" [(ngModel)]=\"hlbOptions\">\n        <mat-radio-button [value]=\"1\" >Actors</mat-radio-button>\n        <mat-radio-button [value]=\"2\">Behavior</mat-radio-button>\n        <mat-radio-button [value]=\"3\">Constraints</mat-radio-button>\n        <mat-radio-button [value]=\"4\">Bindings</mat-radio-button>\n\n      </mat-radio-group>\n    </div>\n   \n      </div> \n      <div class=\"row\">\n        <div class=\"col-md-12\" >\n      <div class=\"flex-container\" (click)=\"selectTextBox(4)\"> \n    <quill-editor \n                         \n    [styles]=\"{height: '100px'}\"\n    [modules]=\"{  counter: { container: '#editor1'} ,toolbar: false }\"\n    [(ngModel)]=\"inputText\" \n    (onContentChanged)=\"logChange($event,4);\"\n    (onEditorCreated)=\"created($event,4)\"></quill-editor></div></div></div>\n    </div>\n  </div>\n  <div class=\"col-md-12\" >\n    <div style=\"float:right\">\n        <button mat-stroked-button (click)=\"clear()\" class=\"button-padding\">Clear</button>\n        <button mat-stroked-button *ngIf=\"!isEditModeEnable()\" (click)=\"add()\" class=\"button-padding\">ADD</button>\n        <button  mat-stroked-button *ngIf=\"isEditModeEnable()\" (click)=\"update()\" class=\"button-padding\">UPDATE</button>\n        <button mat-stroked-button *ngIf=\"isEditModeEnable()\" (click)=\"Cancel()\" class=\"button-padding\">Cancel</button>\n\n    </div>\n    </div>\n</mat-tab>\n</mat-tab-group> \n  <div class=\"row\">\n    <div class=\"col-md-12\" style=\"padding: 2em;\">\n      <div class=\"row\" [ngClass]=\"{disabled:isEditModeEnable()}\">\n    \n      <div class=\"padding-left-right\" [ngClass]=\"{'col-md-2':isExpandDisabled,'hide':(!isExpandDisabled && !isExpandable(1)),'col-md-12':(!isExpandDisabled && isExpandable(1))}\">\n        <mat-card>  \n          <div style=\"text-align: center;\">Actors\n          <span class=\"expand\" (click)=\"expand(1)\" *ngIf=\"isExpandDisabled\"><i class=\"fas fa-expand-alt\"></i></span>\n          <span class=\"expand\" (click)=\"collapse(1)\" *ngIf=\"!isExpandDisabled\"> <i class=\"fas fa-compress-alt\"></i></span>\n            </div>\n\n          \n          <hr>\n          <div *ngIf=\"actorsList.length==0\" style=\"font-size: .8em;text-align: center;\">\n            <span ><i>No Actors</i></span>\n          </div>\n            <div *ngIf=\"actorsList.length!=0\">\n          <ul  class=\"behavior-list \" >\n            <li class=\"behavior-box \" *ngFor=\"let item of actorsList;let index=index\" ><div>\n            \n              <span>\n              {{item.text}} </span>\n              <div class=\"actions\">\n            \n                <i class=\"fas fa-edit\" (click)=\"edit(index,1)\"></i>\n                <i class=\"far fa-trash-alt\" (click)=\"delete(index,1)\"></i>\n\n              </div>\n            </div>\n              </li>\n        </ul>\n        </div>\n        </mat-card>\n      </div>\n      <div class=\"padding-left-right\" [ngClass]=\"{'col-md-4':isExpandDisabled,'hide':(!isExpandDisabled && !isExpandable(2)),'col-md-12':(!isExpandDisabled && isExpandable(2))}\">\n        <mat-card>   \n          <div style=\"text-align: center;\">Behavior \n            <span class=\"expand\" (click)=\"collapse(2)\" *ngIf=\"!isExpandDisabled\"> <i class=\"fas fa-compress-alt\"></i></span>\n            \n            <span class=\"expand\" (click)=\"expand(2)\" *ngIf=\"isExpandDisabled\"><i class=\"fas fa-expand-alt\"></i></span></div>\n\n          \n          <hr>\n          <div *ngIf=\"behaviorList.length==0\" style=\"font-size: .8em;text-align: center;\">\n            <span ><i>No Behavior</i></span>\n          </div>\n          <div *ngIf=\"behaviorList.length!=0\">\n          <ul cdkDropList class=\"behavior-list grabbable\" (cdkDropListDropped)=\"drop($event,behaviorList)\">\n            <li class=\"behavior-box \" *ngFor=\"let item of behaviorList;let index=index\" cdkDrag><div>\n              <i class=\"fas fa-grip-vertical\"></i>\n              <span>\n              {{item.text}} </span>\n              <div class=\"actions\">\n            \n                <i class=\"fas fa-edit\" (click)=\"edit(index,2)\"></i>\n                <i class=\"far fa-trash-alt\" (click)=\"delete(index,2)\"></i>\n\n              </div>\n            </div>\n              </li>\n        </ul>\n          </div>\n        </mat-card>\n      </div>\n      <div class=\"padding-left-right\" [ngClass]=\"{'col-md-3':isExpandDisabled,'hide':(!isExpandDisabled && !isExpandable(3)),'col-md-12':(!isExpandDisabled && isExpandable(3))}\">\n        <mat-card>    \n          <div style=\"text-align: center;\">Constraints \n            <span class=\"expand\" (click)=\"collapse(3)\" *ngIf=\"!isExpandDisabled\"> <i class=\"fas fa-compress-alt\"></i></span>\n            \n            <span class=\"expand\" (click)=\"expand(3)\" *ngIf=\"isExpandDisabled\"><i class=\"fas fa-expand-alt\"></i></span></div>\n\n          \n          <hr>\n          <div *ngIf=\"contraintList.length==0\" style=\"font-size: .8em;text-align: center;\">\n            <span ><i>No Constraints</i></span>\n          </div>\n          \n          <div *ngIf=\"contraintList.length!=0\">\n          <ul  class=\"behavior-list \" >\n            <li class=\"behavior-box \" *ngFor=\"let item of contraintList;let index=index\" ><div>\n             \n              <span>\n              {{item.text}} </span>\n              <div class=\"actions\">\n            \n                <i class=\"fas fa-edit\" (click)=\"edit(index,3)\"></i>\n                <i class=\"far fa-trash-alt\" (click)=\"delete(index,3)\"></i>\n\n              </div>\n            </div>\n              </li>\n        </ul>\n        </div></mat-card>\n      </div>\n      <div class=\"padding-left-right\" [ngClass]=\"{'col-md-3 ':isExpandDisabled,'hide':(!isExpandDisabled && !isExpandable(4)),'col-md-12':(!isExpandDisabled && isExpandable(4))}\">\n        <mat-card>     \n          <div style=\"text-align: center;\">Bindings \n            <span class=\"expand\" (click)=\"expand(4)\" *ngIf=\"isExpandDisabled\"><i class=\"fas fa-expand-alt\"></i></span>\n            <span class=\"expand\" (click)=\"collapse(4)\" *ngIf=\"!isExpandDisabled\"> <i class=\"fas fa-compress-alt\"></i></span>\n          </div>\n\n          \n          <hr>\n          <div *ngIf=\"bindingList.length==0\" style=\"font-size: .8em;text-align: center;\">\n            <span ><i>No Bindings</i></span>\n          </div>\n          \n          <div *ngIf=\"bindingList.length!=0\">\n          <ul  class=\"behavior-list \" >\n            <li class=\"behavior-box \" *ngFor=\"let item of bindingList;let index=index\" ><div>\n              \n              <span>\n              {{item.text}} </span>\n              <div class=\"actions\">\n            \n                <i class=\"fas fa-edit\" (click)=\"edit(index,4)\"></i>\n                <i class=\"far fa-trash-alt\" (click)=\"delete(index,4)\"></i>\n\n              </div>\n            </div>\n              </li>\n        </ul>\n        </div></mat-card>\n      </div>\n    </div>\n      </div>\n      </div>\n\n");
+/* harmony default export */ __webpack_exports__["default"] = ("\n <div class=\"row\">\n<div class=\"col-md-8\">\n  <div class=\"container\">\n  \n    <div class=\"row\" style=\"margin: .5em;\">\n        <div class=\"col-md-12\">\n            <mat-card> \n               \n                 <div style=\"text-align: center;\">  Behavior</div> \n               <hr>\n               <div class=\"row\">\n               <div class=\"col-md-12\" (click)=\"selectTextBox(2)\">\n                  <div style=\"margin: .6em;\" [hidden]=\"!isEnable(2)\">\n                      <span>Suggestions:</span>\n                     \n                      <button type=\"button\" class=\"btn btn-outline-primary word-bubble-button\" *ngFor=\"let word of wordlist | textfilter:behaviorTextFilter \"  (click)=\"insertValue(word.value)\">{{word.value}}</button>\n                      \n                   </div>\n                <div class=\"flex-container\" (blur)=\"onBlurMethod()\" >\n                    \n                      <quill-editor \n                     \n                      [styles]=\"{height: '100px'}\"\n                      [modules]=\"{  counter: { container: '#editor1'} ,toolbar: false }\"\n                      [(ngModel)]=\"behaviorText\" \n                      (onContentChanged)=\"logChangeBehavior($event);\"\n                      (onEditorCreated)=\"created($event,2)\"></quill-editor>\n                    </div>\n                     \n                  \n                  </div>\n                  </div>\n                 \n            </mat-card>\n   \n        </div>\n      </div> \n      <div class=\"row\" style=\"margin: .5em;\">\n          <div class=\"col-md-12\">\n              <mat-card> \n                \n                <div style=\"text-align: center;\">  Constraints</div> \n                \n                  <hr>\n                  <div class=\"row\">\n                  <div class=\"col-md-12\" (click)=\"selectTextBox(3)\">\n                    <div style=\"margin: .6em;\" [hidden]=\"!isEnable(3)\">\n                       <span>Suggestions:</span>\n                       <button type=\"button\" class=\"btn btn-outline-primary word-bubble-button\" *ngFor=\"let word of wordlist | textfilter:constraintTextFilter\"  (click)=\"insertValue(word.value)\">{{word.value}}</button>\n                           \n                \n                    </div>\n                      <div class=\"flex-container\">\n                    \n                          <quill-editor \n                         \n                          [styles]=\"{height: '100px'}\"\n                          [modules]=\"{  counter: { container: '#editor1'} ,toolbar: false }\"\n                          [(ngModel)]=\"constraints\" \n                          (onContentChanged)=\"logChangeConstraints($event);\"\n                          (onEditorCreated)=\"created($event,3)\"></quill-editor>\n                        </div>\n                      </div>\n                      </div>\n              </mat-card>\n          </div>\n        </div>\n  \n   \n\n      </div>\n  </div>\n<div class=\"col-md-3\">\n\n  <div class=\"row\">\n    <div class=\"col-md-12\">\n        \n      <div style=\"text-align: center;padding: 1em;\">     \n         <button mat-stroked-button (click)=\"addBindings()\" >Generate Ns File</button>\n    </div>\n    </div>\n    </div>\n  \n  <div class=\"row\" style=\"margin: .5em;\">\n    <div class=\"col-md-12\">\n\n      <mat-card>  \n        <div style=\"text-align: center;\">Actors\n         </div>\n\n        \n        <hr>\n        <div *ngIf=\"actorsList.length==0\" style=\"font-size: .8em;text-align: center;\">\n          <span ><i>No Actors</i></span>\n        </div>\n          <div *ngIf=\"actorsList.length!=0\">\n        <ul  class=\"behavior-list \" >\n          <li class=\"binding-box\" *ngFor=\"let item of actorsList;let index=index\" ><div>\n          \n            <span>\n            {{item.text}} </span>\n           \n          </div>\n            </li>\n      </ul>\n      </div>\n      </mat-card>\n\n    </div>\n  </div>\n\n  <div class=\"row\" style=\"margin: .5em;\">\n    <div class=\"col-md-12\">\n\n      <mat-card>  \n        <div style=\"text-align: center;\">Bindings Needed\n         </div>\n\n        \n        <hr>\n        <div *ngIf=\"bindingList.length==0\" style=\"font-size: .8em;text-align: center;\">\n          <span ><i>No Bindings Needed.</i></span>\n        </div>\n          <div *ngIf=\"bindingList.length!=0\">\n        <ul  class=\"behavior-list \" >\n          <li class=\"binding-box\" *ngFor=\"let item of bindingList;let index=index\" ><div>\n          \n            <span>\n            {{item.key}} </span>\n           \n          </div>\n            </li>\n      </ul>\n      </div>\n      </mat-card>\n\n    </div>\n  </div>\n  </div>\n</div> \n\n\n<!-- \n<div class=\"col-md-12\">\n    \n  <div style=\"float: right;padding: 1em;\">      <button mat-stroked-button (click)=\"generateNs()\" >Generate Ns File</button>\n\n</div>\n</div>\n\n<mat-tab-group [(selectedIndex)]=\"selectedIndex\">\n \n  <mat-tab label=\"Manual\">\n    \n\n<div class=\"row\">\n\n  <div class=\"col-md-12\" style=\"padding: 2em;\">\n   \n  \n    <div class=\"row\" [ngClass]=\"{disabled:isEditModeEnable()}\">\n      <div class=\"col-md-8\" >\n      <mat-radio-group aria-label=\"Select an option\" [(ngModel)]=\"hlbOptions\">\n        <mat-radio-button [value]=\"1\" >Actors</mat-radio-button>\n        <mat-radio-button [value]=\"2\">Behavior</mat-radio-button>\n        <mat-radio-button [value]=\"3\">Constraints</mat-radio-button>\n        <mat-radio-button [value]=\"4\">Bindings</mat-radio-button>\n\n      </mat-radio-group>\n    </div>\n   \n      </div> \n      <div class=\"row\">\n        <div class=\"col-md-12\" >\n      <div class=\"flex-container\" (click)=\"selectTextBox(4)\"> \n    <quill-editor \n                         \n    [styles]=\"{height: '100px'}\"\n    [modules]=\"{  counter: { container: '#editor1'} ,toolbar: false }\"\n    [(ngModel)]=\"inputText\" \n    (onContentChanged)=\"logChange($event,4);\"\n    (onEditorCreated)=\"created($event,4)\"></quill-editor></div></div></div>\n    </div>\n  </div>\n  <div class=\"col-md-12\" >\n    <div style=\"float:right\">\n        <button mat-stroked-button (click)=\"clear()\" class=\"button-padding\">Clear</button>\n        <button mat-stroked-button *ngIf=\"!isEditModeEnable()\" (click)=\"add()\" class=\"button-padding\">ADD</button>\n        <button  mat-stroked-button *ngIf=\"isEditModeEnable()\" (click)=\"update()\" class=\"button-padding\">UPDATE</button>\n        <button mat-stroked-button *ngIf=\"isEditModeEnable()\" (click)=\"Cancel()\" class=\"button-padding\">Cancel</button>\n\n    </div>\n    </div>\n</mat-tab>\n</mat-tab-group> \n  <div class=\"row\">\n    <div class=\"col-md-12\" style=\"padding: 2em;\">\n      <div class=\"row\" [ngClass]=\"{disabled:isEditModeEnable()}\">\n    \n      <div class=\"padding-left-right\" [ngClass]=\"{'col-md-2':isExpandDisabled,'hide':(!isExpandDisabled && !isExpandable(1)),'col-md-12':(!isExpandDisabled && isExpandable(1))}\">\n        <mat-card>  \n          <div style=\"text-align: center;\">Actors\n          <span class=\"expand\" (click)=\"expand(1)\" *ngIf=\"isExpandDisabled\"><i class=\"fas fa-expand-alt\"></i></span>\n          <span class=\"expand\" (click)=\"collapse(1)\" *ngIf=\"!isExpandDisabled\"> <i class=\"fas fa-compress-alt\"></i></span>\n            </div>\n\n          \n          <hr>\n          <div *ngIf=\"actorsList.length==0\" style=\"font-size: .8em;text-align: center;\">\n            <span ><i>No Actors</i></span>\n          </div>\n            <div *ngIf=\"actorsList.length!=0\">\n          <ul  class=\"behavior-list \" >\n            <li class=\"behavior-box \" *ngFor=\"let item of actorsList;let index=index\" ><div>\n            \n              <span>\n              {{item.text}} </span>\n              <div class=\"actions\">\n            \n                <i class=\"fas fa-edit\" (click)=\"edit(index,1)\"></i>\n                <i class=\"far fa-trash-alt\" (click)=\"delete(index,1)\"></i>\n\n              </div>\n            </div>\n              </li>\n        </ul>\n        </div>\n        </mat-card>\n      </div>\n      <div class=\"padding-left-right\" [ngClass]=\"{'col-md-4':isExpandDisabled,'hide':(!isExpandDisabled && !isExpandable(2)),'col-md-12':(!isExpandDisabled && isExpandable(2))}\">\n        <mat-card>   \n          <div style=\"text-align: center;\">Behavior \n            <span class=\"expand\" (click)=\"collapse(2)\" *ngIf=\"!isExpandDisabled\"> <i class=\"fas fa-compress-alt\"></i></span>\n            \n            <span class=\"expand\" (click)=\"expand(2)\" *ngIf=\"isExpandDisabled\"><i class=\"fas fa-expand-alt\"></i></span></div>\n\n          \n          <hr>\n          <div *ngIf=\"behaviorList.length==0\" style=\"font-size: .8em;text-align: center;\">\n            <span ><i>No Behavior</i></span>\n          </div>\n          <div *ngIf=\"behaviorList.length!=0\">\n          <ul cdkDropList class=\"behavior-list grabbable\" (cdkDropListDropped)=\"drop($event,behaviorList)\">\n            <li class=\"behavior-box \" *ngFor=\"let item of behaviorList;let index=index\" cdkDrag><div>\n              <i class=\"fas fa-grip-vertical\"></i>\n              <span>\n              {{item.text}} </span>\n              <div class=\"actions\">\n            \n                <i class=\"fas fa-edit\" (click)=\"edit(index,2)\"></i>\n                <i class=\"far fa-trash-alt\" (click)=\"delete(index,2)\"></i>\n\n              </div>\n            </div>\n              </li>\n        </ul>\n          </div>\n        </mat-card>\n      </div>\n      <div class=\"padding-left-right\" [ngClass]=\"{'col-md-3':isExpandDisabled,'hide':(!isExpandDisabled && !isExpandable(3)),'col-md-12':(!isExpandDisabled && isExpandable(3))}\">\n        <mat-card>    \n          <div style=\"text-align: center;\">Constraints \n            <span class=\"expand\" (click)=\"collapse(3)\" *ngIf=\"!isExpandDisabled\"> <i class=\"fas fa-compress-alt\"></i></span>\n            \n            <span class=\"expand\" (click)=\"expand(3)\" *ngIf=\"isExpandDisabled\"><i class=\"fas fa-expand-alt\"></i></span></div>\n\n          \n          <hr>\n          <div *ngIf=\"contraintList.length==0\" style=\"font-size: .8em;text-align: center;\">\n            <span ><i>No Constraints</i></span>\n          </div>\n          \n          <div *ngIf=\"contraintList.length!=0\">\n          <ul  class=\"behavior-list \" >\n            <li class=\"behavior-box \" *ngFor=\"let item of contraintList;let index=index\" ><div>\n             \n              <span>\n              {{item.text}} </span>\n              <div class=\"actions\">\n            \n                <i class=\"fas fa-edit\" (click)=\"edit(index,3)\"></i>\n                <i class=\"far fa-trash-alt\" (click)=\"delete(index,3)\"></i>\n\n              </div>\n            </div>\n              </li>\n        </ul>\n        </div></mat-card>\n      </div>\n      <div class=\"padding-left-right\" [ngClass]=\"{'col-md-3 ':isExpandDisabled,'hide':(!isExpandDisabled && !isExpandable(4)),'col-md-12':(!isExpandDisabled && isExpandable(4))}\">\n        <mat-card>     \n          <div style=\"text-align: center;\">Bindings \n            <span class=\"expand\" (click)=\"expand(4)\" *ngIf=\"isExpandDisabled\"><i class=\"fas fa-expand-alt\"></i></span>\n            <span class=\"expand\" (click)=\"collapse(4)\" *ngIf=\"!isExpandDisabled\"> <i class=\"fas fa-compress-alt\"></i></span>\n          </div>\n\n          \n          <hr>\n          <div *ngIf=\"bindingList.length==0\" style=\"font-size: .8em;text-align: center;\">\n            <span ><i>No Bindings</i></span>\n          </div>\n          \n          <div *ngIf=\"bindingList.length!=0\">\n          <ul  class=\"behavior-list \" >\n            <li class=\"behavior-box \" *ngFor=\"let item of bindingList;let index=index\" ><div>\n              \n              <span>\n              {{item.text}} </span>\n              <div class=\"actions\">\n            \n                <i class=\"fas fa-edit\" (click)=\"edit(index,4)\"></i>\n                <i class=\"far fa-trash-alt\" (click)=\"delete(index,4)\"></i>\n\n              </div>\n            </div>\n              </li>\n        </ul>\n        </div></mat-card>\n      </div>\n    </div>\n      </div>\n      </div>\n -->\n");
 
 /***/ }),
 
@@ -831,16 +844,14 @@ AppModule = tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"]([
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "default", function() { return EditorService; });
 /* harmony import */ var tslib__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! tslib */ "./node_modules/tslib/tslib.es6.js");
-/* harmony import */ var quill__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! quill */ "./node_modules/quill/dist/quill.js");
-/* harmony import */ var quill__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(quill__WEBPACK_IMPORTED_MODULE_1__);
-/* harmony import */ var rxjs__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! rxjs */ "./node_modules/rxjs/_esm2015/index.js");
+/* harmony import */ var rxjs__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! rxjs */ "./node_modules/rxjs/_esm2015/index.js");
 
 
-
-var Keyboard = quill__WEBPACK_IMPORTED_MODULE_1__["import"]('modules/keyboard');
 class EditorService {
     constructor(quill) {
-        this.textData = new rxjs__WEBPACK_IMPORTED_MODULE_2__["BehaviorSubject"]("");
+        this.textData = new rxjs__WEBPACK_IMPORTED_MODULE_1__["BehaviorSubject"]("");
+        this.onBlur = new rxjs__WEBPACK_IMPORTED_MODULE_1__["BehaviorSubject"](false);
+        this.onBlurFlag = false;
         this.index = 0;
         this.quill = quill;
         const index = 1;
@@ -849,15 +860,19 @@ class EditorService {
             if (range) {
                 instance.index = range.index;
                 instance.range = range.length;
+                if (instance.onBlurFlag) {
+                    instance.onBlur.next(false);
+                    instance.onBlurFlag = false;
+                }
+            }
+            else {
+                instance.onBlurFlag = true;
+                instance.onBlur.next(true);
             }
         });
         this.quill.on("text-change", function (delta, oldDelta, source) {
-            //  console.log(delta);
+            // console.log(delta);
             instance.index = instance.quill.getText().length - 1;
-        });
-        // console.log(Keyboard);
-        this.quill.keyboard.addBinding({ key: Keyboard.keys.ENTER, shiftKey: true }, function (range, context) {
-            console.log("inside binding");
         });
     }
     getUpdatedValue() {
@@ -874,6 +889,9 @@ class EditorService {
     }
     clear() {
         this.quill.setText("");
+    }
+    isBlur() {
+        return this.onBlur.asObservable();
     }
 }
 
@@ -1081,7 +1099,7 @@ DashboardRoutingModule = tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"]([
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony default export */ __webpack_exports__["default"] = ("\n/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbXSwibmFtZXMiOltdLCJtYXBwaW5ncyI6IiIsImZpbGUiOiJzcmMvYXBwL3BhZ2VzL2Rhc2hib2FyZC9kYXNoYm9hcmQuY29tcG9uZW50LnNjc3MifQ== */");
+/* harmony default export */ __webpack_exports__["default"] = (".tab {\n  overflow: hidden;\n}\n/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbIi9Vc2Vycy9TaGFiYmlyL3Byb2plY3RzL0RFV19VSS9zcmMvc3RlZWwvV0VCLUFQUExJQ0FUSU9OL2Zyb250ZW5kL3NyYy9hcHAvcGFnZXMvZGFzaGJvYXJkL2Rhc2hib2FyZC5jb21wb25lbnQuc2NzcyIsInNyYy9hcHAvcGFnZXMvZGFzaGJvYXJkL2Rhc2hib2FyZC5jb21wb25lbnQuc2NzcyJdLCJuYW1lcyI6W10sIm1hcHBpbmdzIjoiQUFBQTtFQUNJLGdCQUFBO0FDQ0oiLCJmaWxlIjoic3JjL2FwcC9wYWdlcy9kYXNoYm9hcmQvZGFzaGJvYXJkLmNvbXBvbmVudC5zY3NzIiwic291cmNlc0NvbnRlbnQiOlsiLnRhYntcbiAgICBvdmVyZmxvdzogaGlkZGVuO1xufSIsIi50YWIge1xuICBvdmVyZmxvdzogaGlkZGVuO1xufSJdfQ== */");
 
 /***/ }),
 
@@ -1101,31 +1119,17 @@ __webpack_require__.r(__webpack_exports__);
 
 let DashboardComponent = class DashboardComponent {
     constructor() {
-        /**\
-           <div *ngIf="x.id ==1">
-               <hlb></hlb>
-             </div>
-       
-             <div *ngIf="x.id ==2">
-               <nlp></nlp>
-             </div>
-       
-             <div *ngIf="x.id ==4">
-               <upload></upload>
-             </div>
-         */
         this.menuList = [
             {
                 name: "Configuration",
                 id: 1,
                 html: "<hlb></hlb>"
-            }
-            // ,{
-            //   name:"NLP",
-            //   id:2,
-            //   html:"<nlp></nlp>"
-            // }
-            ,
+            },
+            {
+                name: "NLP",
+                id: 2,
+                html: "<nlp></nlp>"
+            },
             {
                 name: "Behavior Dependency Graph",
                 id: 3,
@@ -1222,7 +1226,8 @@ DashboardModule = tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"]([
             _dependency_graph_dependency_graph_component__WEBPACK_IMPORTED_MODULE_23__["DependencyGraphComponent"],
             _common_text_filter_pipe__WEBPACK_IMPORTED_MODULE_20__["TextFilterPipe"],
             _upload_upload_component__WEBPACK_IMPORTED_MODULE_21__["UploadComponent"],
-            _upload_upload_component__WEBPACK_IMPORTED_MODULE_21__["FilePreviewComponent"]
+            _upload_upload_component__WEBPACK_IMPORTED_MODULE_21__["FilePreviewComponent"],
+            _hlb_hlb_component__WEBPACK_IMPORTED_MODULE_18__["BindingPopUp"]
         ],
         imports: [
             _angular_common__WEBPACK_IMPORTED_MODULE_15__["CommonModule"],
@@ -1245,7 +1250,7 @@ DashboardModule = tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"]([
             _angular_material_input__WEBPACK_IMPORTED_MODULE_5__["MatInputModule"],
             ngx_file_drop__WEBPACK_IMPORTED_MODULE_12__["NgxFileDropModule"]
         ],
-        entryComponents: [_upload_upload_component__WEBPACK_IMPORTED_MODULE_21__["FilePreviewComponent"]],
+        entryComponents: [_upload_upload_component__WEBPACK_IMPORTED_MODULE_21__["FilePreviewComponent"], _hlb_hlb_component__WEBPACK_IMPORTED_MODULE_18__["BindingPopUp"]],
         providers: [_common_state_service_service__WEBPACK_IMPORTED_MODULE_10__["StateService"]],
         bootstrap: [_dashboard_component__WEBPACK_IMPORTED_MODULE_13__["DashboardComponent"]]
     })
@@ -1305,7 +1310,7 @@ DependencyGraphComponent = tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"]([
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony default export */ __webpack_exports__["default"] = (".behavior-list {\n  margin: 0.1em;\n  list-style: none;\n  padding: 0;\n}\n\n.behavior-box {\n  margin: 0.5em;\n  border: 1px solid #ccc;\n  padding: 0.5em;\n}\n\n.word-bubble {\n  border: 1px dotted black;\n  border-radius: 1em;\n  padding: 0.4em;\n  margin: 0.1em;\n  cursor: pointer;\n}\n\n.word-bubble-button {\n  border-radius: 1em;\n  padding: 0.4em;\n  margin: 0.1em;\n  cursor: pointer;\n}\n\n.float-left {\n  float: left;\n}\n\n.actions {\n  float: right;\n  cursor: pointer;\n  display: none;\n}\n\n.behavior-list:hover .actions {\n  display: block;\n}\n\n.disabled {\n  pointer-events: none;\n}\n\n.grabbable {\n  cursor: move;\n  /* fallback if grab cursor is unsupported */\n  cursor: grab;\n  cursor: -webkit-grab;\n}\n\n/* (Optional) Apply a \"closed-hand\" cursor during drag operation. */\n\n.grabbable:active {\n  cursor: grabbing;\n  cursor: -webkit-grabbing;\n}\n\n.mat-radio-button ~ .mat-radio-button {\n  margin-left: 16px;\n}\n\n.padding-left-right {\n  padding-left: 5px;\n  padding-right: 5px;\n}\n\n.button-padding {\n  margin-left: 0.1em;\n}\n\n.expand {\n  float: right;\n  cursor: pointer;\n}\n\n.hide {\n  display: none;\n}\n/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbIi9Vc2Vycy9TaGFiYmlyL3Byb2plY3RzL0RFV19VSS9zcmMvc3RlZWwvV0VCLUFQUExJQ0FUSU9OL2Zyb250ZW5kL3NyYy9hcHAvcGFnZXMvZGFzaGJvYXJkL2hsYi9obGIuY29tcG9uZW50LnNjc3MiLCJzcmMvYXBwL3BhZ2VzL2Rhc2hib2FyZC9obGIvaGxiLmNvbXBvbmVudC5zY3NzIl0sIm5hbWVzIjpbXSwibWFwcGluZ3MiOiJBQUFBO0VBQ0ksYUFBQTtFQUNBLGdCQUFBO0VBQ0EsVUFBQTtBQ0NKOztBREVBO0VBQ0ksYUFBQTtFQUNBLHNCQUFBO0VBQ0EsY0FBQTtBQ0NKOztBREVBO0VBQ0ksd0JBQUE7RUFDQSxrQkFBQTtFQUNBLGNBQUE7RUFDQSxhQUFBO0VBQ0EsZUFBQTtBQ0NKOztBREVBO0VBQ0ksa0JBQUE7RUFDQSxjQUFBO0VBQ0EsYUFBQTtFQUNBLGVBQUE7QUNDSjs7QURFQTtFQUNJLFdBQUE7QUNDSjs7QURFQTtFQUNJLFlBQUE7RUFDQSxlQUFBO0VBQ0EsYUFBQTtBQ0NKOztBREVBO0VBQ0ksY0FBQTtBQ0NKOztBREVBO0VBQ0ksb0JBQUE7QUNDSjs7QURFQTtFQUNJLFlBQUE7RUFBYywyQ0FBQTtFQUNkLFlBQUE7RUFFQSxvQkFBQTtBQ0VKOztBRENDLG1FQUFBOztBQUNEO0VBQ0ksZ0JBQUE7RUFFQSx3QkFBQTtBQ0VKOztBRENBO0VBQ0ksaUJBQUE7QUNFSjs7QURDRTtFQUNJLGlCQUFBO0VBQ0Esa0JBQUE7QUNFTjs7QURFRTtFQUNJLGtCQUFBO0FDQ047O0FERUU7RUFDSSxZQUFBO0VBQ0EsZUFBQTtBQ0NOOztBREVFO0VBQ0ksYUFBQTtBQ0NOIiwiZmlsZSI6InNyYy9hcHAvcGFnZXMvZGFzaGJvYXJkL2hsYi9obGIuY29tcG9uZW50LnNjc3MiLCJzb3VyY2VzQ29udGVudCI6WyIuYmVoYXZpb3ItbGlzdHtcbiAgICBtYXJnaW46LjFlbTtcbiAgICBsaXN0LXN0eWxlOiBub25lO1xuICAgIHBhZGRpbmc6IDA7XG59XG5cbi5iZWhhdmlvci1ib3h7XG4gICAgbWFyZ2luOiAuNWVtO1xuICAgIGJvcmRlcjogMXB4IHNvbGlkICNjY2M7XG4gICAgcGFkZGluZzogLjVlbTtcbn1cblxuLndvcmQtYnViYmxle1xuICAgIGJvcmRlcjogMXB4IGRvdHRlZCBibGFjaztcbiAgICBib3JkZXItcmFkaXVzOiAxZW07XG4gICAgcGFkZGluZzogMC40ZW07XG4gICAgbWFyZ2luOiAwLjFlbTtcbiAgICBjdXJzb3I6IHBvaW50ZXI7XG4gXG59XG4ud29yZC1idWJibGUtYnV0dG9ue1xuICAgIGJvcmRlci1yYWRpdXM6IDFlbTtcbiAgICBwYWRkaW5nOiAwLjRlbTtcbiAgICBtYXJnaW46IDAuMWVtO1xuICAgIGN1cnNvcjogcG9pbnRlcjtcbiBcbn1cbi5mbG9hdC1sZWZ0e1xuICAgIGZsb2F0OmxlZnQ7XG59XG5cbi5hY3Rpb25ze1xuICAgIGZsb2F0OnJpZ2h0O1xuICAgIGN1cnNvcjogcG9pbnRlcjtcbiAgICBkaXNwbGF5OiBub25lO1xufVxuXG4uYmVoYXZpb3ItbGlzdDpob3ZlciAuYWN0aW9uc3tcbiAgICBkaXNwbGF5OiBibG9jaztcbn1cblxuLmRpc2FibGVke1xuICAgIHBvaW50ZXItZXZlbnRzOiBub25lOyAgIFxufVxuXG4uZ3JhYmJhYmxlIHtcbiAgICBjdXJzb3I6IG1vdmU7IC8qIGZhbGxiYWNrIGlmIGdyYWIgY3Vyc29yIGlzIHVuc3VwcG9ydGVkICovXG4gICAgY3Vyc29yOiBncmFiO1xuICAgIGN1cnNvcjogLW1vei1ncmFiO1xuICAgIGN1cnNvcjogLXdlYmtpdC1ncmFiO1xufVxuXG4gLyogKE9wdGlvbmFsKSBBcHBseSBhIFwiY2xvc2VkLWhhbmRcIiBjdXJzb3IgZHVyaW5nIGRyYWcgb3BlcmF0aW9uLiAqL1xuLmdyYWJiYWJsZTphY3RpdmUge1xuICAgIGN1cnNvcjogZ3JhYmJpbmc7XG4gICAgY3Vyc29yOiAtbW96LWdyYWJiaW5nO1xuICAgIGN1cnNvcjogLXdlYmtpdC1ncmFiYmluZztcbn1cblxuLm1hdC1yYWRpby1idXR0b24gfiAubWF0LXJhZGlvLWJ1dHRvbiB7XG4gICAgbWFyZ2luLWxlZnQ6IDE2cHg7XG4gIH1cblxuICAucGFkZGluZy1sZWZ0LXJpZ2h0e1xuICAgICAgcGFkZGluZy1sZWZ0OiA1cHg7XG4gICAgICBwYWRkaW5nLXJpZ2h0OiA1cHg7XG4gIH1cblxuIFxuICAuYnV0dG9uLXBhZGRpbmd7XG4gICAgICBtYXJnaW4tbGVmdDogLjFlbTtcbiAgfVxuXG4gIC5leHBhbmR7XG4gICAgICBmbG9hdDogcmlnaHQ7XG4gICAgICBjdXJzb3I6IHBvaW50ZXI7XG4gIH1cblxuICAuaGlkZXtcbiAgICAgIGRpc3BsYXk6IG5vbmU7XG4gIH0iLCIuYmVoYXZpb3ItbGlzdCB7XG4gIG1hcmdpbjogMC4xZW07XG4gIGxpc3Qtc3R5bGU6IG5vbmU7XG4gIHBhZGRpbmc6IDA7XG59XG5cbi5iZWhhdmlvci1ib3gge1xuICBtYXJnaW46IDAuNWVtO1xuICBib3JkZXI6IDFweCBzb2xpZCAjY2NjO1xuICBwYWRkaW5nOiAwLjVlbTtcbn1cblxuLndvcmQtYnViYmxlIHtcbiAgYm9yZGVyOiAxcHggZG90dGVkIGJsYWNrO1xuICBib3JkZXItcmFkaXVzOiAxZW07XG4gIHBhZGRpbmc6IDAuNGVtO1xuICBtYXJnaW46IDAuMWVtO1xuICBjdXJzb3I6IHBvaW50ZXI7XG59XG5cbi53b3JkLWJ1YmJsZS1idXR0b24ge1xuICBib3JkZXItcmFkaXVzOiAxZW07XG4gIHBhZGRpbmc6IDAuNGVtO1xuICBtYXJnaW46IDAuMWVtO1xuICBjdXJzb3I6IHBvaW50ZXI7XG59XG5cbi5mbG9hdC1sZWZ0IHtcbiAgZmxvYXQ6IGxlZnQ7XG59XG5cbi5hY3Rpb25zIHtcbiAgZmxvYXQ6IHJpZ2h0O1xuICBjdXJzb3I6IHBvaW50ZXI7XG4gIGRpc3BsYXk6IG5vbmU7XG59XG5cbi5iZWhhdmlvci1saXN0OmhvdmVyIC5hY3Rpb25zIHtcbiAgZGlzcGxheTogYmxvY2s7XG59XG5cbi5kaXNhYmxlZCB7XG4gIHBvaW50ZXItZXZlbnRzOiBub25lO1xufVxuXG4uZ3JhYmJhYmxlIHtcbiAgY3Vyc29yOiBtb3ZlO1xuICAvKiBmYWxsYmFjayBpZiBncmFiIGN1cnNvciBpcyB1bnN1cHBvcnRlZCAqL1xuICBjdXJzb3I6IGdyYWI7XG4gIGN1cnNvcjogLW1vei1ncmFiO1xuICBjdXJzb3I6IC13ZWJraXQtZ3JhYjtcbn1cblxuLyogKE9wdGlvbmFsKSBBcHBseSBhIFwiY2xvc2VkLWhhbmRcIiBjdXJzb3IgZHVyaW5nIGRyYWcgb3BlcmF0aW9uLiAqL1xuLmdyYWJiYWJsZTphY3RpdmUge1xuICBjdXJzb3I6IGdyYWJiaW5nO1xuICBjdXJzb3I6IC1tb3otZ3JhYmJpbmc7XG4gIGN1cnNvcjogLXdlYmtpdC1ncmFiYmluZztcbn1cblxuLm1hdC1yYWRpby1idXR0b24gfiAubWF0LXJhZGlvLWJ1dHRvbiB7XG4gIG1hcmdpbi1sZWZ0OiAxNnB4O1xufVxuXG4ucGFkZGluZy1sZWZ0LXJpZ2h0IHtcbiAgcGFkZGluZy1sZWZ0OiA1cHg7XG4gIHBhZGRpbmctcmlnaHQ6IDVweDtcbn1cblxuLmJ1dHRvbi1wYWRkaW5nIHtcbiAgbWFyZ2luLWxlZnQ6IDAuMWVtO1xufVxuXG4uZXhwYW5kIHtcbiAgZmxvYXQ6IHJpZ2h0O1xuICBjdXJzb3I6IHBvaW50ZXI7XG59XG5cbi5oaWRlIHtcbiAgZGlzcGxheTogbm9uZTtcbn0iXX0= */");
+/* harmony default export */ __webpack_exports__["default"] = (".behavior-list {\n  margin: 0.1em;\n  list-style: none;\n  padding: 0;\n}\n\n.behavior-box {\n  margin: 0.5em;\n  border: 1px solid #ccc;\n  padding: 0.5em;\n}\n\n.binding-box {\n  margin: 0.5em;\n  border-bottom: 1px solid #ccc;\n  padding: 0.5em;\n}\n\n.word-bubble {\n  border: 1px dotted black;\n  border-radius: 1em;\n  padding: 0.4em;\n  margin: 0.1em;\n  cursor: pointer;\n}\n\n.word-bubble-button {\n  border-radius: 1em;\n  padding: 0.4em;\n  margin: 0.1em;\n  cursor: pointer;\n}\n\n.float-left {\n  float: left;\n}\n\n.actions {\n  float: right;\n  cursor: pointer;\n  display: none;\n}\n\n.behavior-list:hover .actions {\n  display: block;\n}\n\n.disabled {\n  pointer-events: none;\n}\n\n.grabbable {\n  cursor: move;\n  /* fallback if grab cursor is unsupported */\n  cursor: grab;\n  cursor: -webkit-grab;\n}\n\n/* (Optional) Apply a \"closed-hand\" cursor during drag operation. */\n\n.grabbable:active {\n  cursor: grabbing;\n  cursor: -webkit-grabbing;\n}\n\n.mat-radio-button ~ .mat-radio-button {\n  margin-left: 16px;\n}\n\n.padding-left-right {\n  padding-left: 5px;\n  padding-right: 5px;\n}\n\n.button-padding {\n  margin-left: 0.1em;\n}\n\n.expand {\n  float: right;\n  cursor: pointer;\n}\n\n.hide {\n  display: none;\n}\n/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbIi9Vc2Vycy9TaGFiYmlyL3Byb2plY3RzL0RFV19VSS9zcmMvc3RlZWwvV0VCLUFQUExJQ0FUSU9OL2Zyb250ZW5kL3NyYy9hcHAvcGFnZXMvZGFzaGJvYXJkL2hsYi9obGIuY29tcG9uZW50LnNjc3MiLCJzcmMvYXBwL3BhZ2VzL2Rhc2hib2FyZC9obGIvaGxiLmNvbXBvbmVudC5zY3NzIl0sIm5hbWVzIjpbXSwibWFwcGluZ3MiOiJBQUFBO0VBQ0ksYUFBQTtFQUNBLGdCQUFBO0VBQ0EsVUFBQTtBQ0NKOztBREVBO0VBQ0ksYUFBQTtFQUNBLHNCQUFBO0VBQ0EsY0FBQTtBQ0NKOztBREVBO0VBQ0ksYUFBQTtFQUNBLDZCQUFBO0VBQ0EsY0FBQTtBQ0NKOztBREVBO0VBQ0ksd0JBQUE7RUFDQSxrQkFBQTtFQUNBLGNBQUE7RUFDQSxhQUFBO0VBQ0EsZUFBQTtBQ0NKOztBREVBO0VBQ0ksa0JBQUE7RUFDQSxjQUFBO0VBQ0EsYUFBQTtFQUNBLGVBQUE7QUNDSjs7QURFQTtFQUNJLFdBQUE7QUNDSjs7QURFQTtFQUNJLFlBQUE7RUFDQSxlQUFBO0VBQ0EsYUFBQTtBQ0NKOztBREVBO0VBQ0ksY0FBQTtBQ0NKOztBREVBO0VBQ0ksb0JBQUE7QUNDSjs7QURFQTtFQUNJLFlBQUE7RUFBYywyQ0FBQTtFQUNkLFlBQUE7RUFFQSxvQkFBQTtBQ0VKOztBRENDLG1FQUFBOztBQUNEO0VBQ0ksZ0JBQUE7RUFFQSx3QkFBQTtBQ0VKOztBRENBO0VBQ0ksaUJBQUE7QUNFSjs7QURDRTtFQUNJLGlCQUFBO0VBQ0Esa0JBQUE7QUNFTjs7QURFRTtFQUNJLGtCQUFBO0FDQ047O0FERUU7RUFDSSxZQUFBO0VBQ0EsZUFBQTtBQ0NOOztBREVFO0VBQ0ksYUFBQTtBQ0NOIiwiZmlsZSI6InNyYy9hcHAvcGFnZXMvZGFzaGJvYXJkL2hsYi9obGIuY29tcG9uZW50LnNjc3MiLCJzb3VyY2VzQ29udGVudCI6WyIuYmVoYXZpb3ItbGlzdHtcbiAgICBtYXJnaW46LjFlbTtcbiAgICBsaXN0LXN0eWxlOiBub25lO1xuICAgIHBhZGRpbmc6IDA7XG59XG5cbi5iZWhhdmlvci1ib3h7XG4gICAgbWFyZ2luOiAuNWVtO1xuICAgIGJvcmRlcjogMXB4IHNvbGlkICNjY2M7XG4gICAgcGFkZGluZzogLjVlbTtcbn1cblxuLmJpbmRpbmctYm94e1xuICAgIG1hcmdpbjogLjVlbTtcbiAgICBib3JkZXItYm90dG9tOiAxcHggc29saWQgI2NjYztcbiAgICBwYWRkaW5nOiAuNWVtO1xufVxuXG4ud29yZC1idWJibGV7XG4gICAgYm9yZGVyOiAxcHggZG90dGVkIGJsYWNrO1xuICAgIGJvcmRlci1yYWRpdXM6IDFlbTtcbiAgICBwYWRkaW5nOiAwLjRlbTtcbiAgICBtYXJnaW46IDAuMWVtO1xuICAgIGN1cnNvcjogcG9pbnRlcjtcbiBcbn1cbi53b3JkLWJ1YmJsZS1idXR0b257XG4gICAgYm9yZGVyLXJhZGl1czogMWVtO1xuICAgIHBhZGRpbmc6IDAuNGVtO1xuICAgIG1hcmdpbjogMC4xZW07XG4gICAgY3Vyc29yOiBwb2ludGVyO1xuIFxufVxuLmZsb2F0LWxlZnR7XG4gICAgZmxvYXQ6bGVmdDtcbn1cblxuLmFjdGlvbnN7XG4gICAgZmxvYXQ6cmlnaHQ7XG4gICAgY3Vyc29yOiBwb2ludGVyO1xuICAgIGRpc3BsYXk6IG5vbmU7XG59XG5cbi5iZWhhdmlvci1saXN0OmhvdmVyIC5hY3Rpb25ze1xuICAgIGRpc3BsYXk6IGJsb2NrO1xufVxuXG4uZGlzYWJsZWR7XG4gICAgcG9pbnRlci1ldmVudHM6IG5vbmU7ICAgXG59XG5cbi5ncmFiYmFibGUge1xuICAgIGN1cnNvcjogbW92ZTsgLyogZmFsbGJhY2sgaWYgZ3JhYiBjdXJzb3IgaXMgdW5zdXBwb3J0ZWQgKi9cbiAgICBjdXJzb3I6IGdyYWI7XG4gICAgY3Vyc29yOiAtbW96LWdyYWI7XG4gICAgY3Vyc29yOiAtd2Via2l0LWdyYWI7XG59XG5cbiAvKiAoT3B0aW9uYWwpIEFwcGx5IGEgXCJjbG9zZWQtaGFuZFwiIGN1cnNvciBkdXJpbmcgZHJhZyBvcGVyYXRpb24uICovXG4uZ3JhYmJhYmxlOmFjdGl2ZSB7XG4gICAgY3Vyc29yOiBncmFiYmluZztcbiAgICBjdXJzb3I6IC1tb3otZ3JhYmJpbmc7XG4gICAgY3Vyc29yOiAtd2Via2l0LWdyYWJiaW5nO1xufVxuXG4ubWF0LXJhZGlvLWJ1dHRvbiB+IC5tYXQtcmFkaW8tYnV0dG9uIHtcbiAgICBtYXJnaW4tbGVmdDogMTZweDtcbiAgfVxuXG4gIC5wYWRkaW5nLWxlZnQtcmlnaHR7XG4gICAgICBwYWRkaW5nLWxlZnQ6IDVweDtcbiAgICAgIHBhZGRpbmctcmlnaHQ6IDVweDtcbiAgfVxuXG4gXG4gIC5idXR0b24tcGFkZGluZ3tcbiAgICAgIG1hcmdpbi1sZWZ0OiAuMWVtO1xuICB9XG5cbiAgLmV4cGFuZHtcbiAgICAgIGZsb2F0OiByaWdodDtcbiAgICAgIGN1cnNvcjogcG9pbnRlcjtcbiAgfVxuXG4gIC5oaWRle1xuICAgICAgZGlzcGxheTogbm9uZTtcbiAgfSIsIi5iZWhhdmlvci1saXN0IHtcbiAgbWFyZ2luOiAwLjFlbTtcbiAgbGlzdC1zdHlsZTogbm9uZTtcbiAgcGFkZGluZzogMDtcbn1cblxuLmJlaGF2aW9yLWJveCB7XG4gIG1hcmdpbjogMC41ZW07XG4gIGJvcmRlcjogMXB4IHNvbGlkICNjY2M7XG4gIHBhZGRpbmc6IDAuNWVtO1xufVxuXG4uYmluZGluZy1ib3gge1xuICBtYXJnaW46IDAuNWVtO1xuICBib3JkZXItYm90dG9tOiAxcHggc29saWQgI2NjYztcbiAgcGFkZGluZzogMC41ZW07XG59XG5cbi53b3JkLWJ1YmJsZSB7XG4gIGJvcmRlcjogMXB4IGRvdHRlZCBibGFjaztcbiAgYm9yZGVyLXJhZGl1czogMWVtO1xuICBwYWRkaW5nOiAwLjRlbTtcbiAgbWFyZ2luOiAwLjFlbTtcbiAgY3Vyc29yOiBwb2ludGVyO1xufVxuXG4ud29yZC1idWJibGUtYnV0dG9uIHtcbiAgYm9yZGVyLXJhZGl1czogMWVtO1xuICBwYWRkaW5nOiAwLjRlbTtcbiAgbWFyZ2luOiAwLjFlbTtcbiAgY3Vyc29yOiBwb2ludGVyO1xufVxuXG4uZmxvYXQtbGVmdCB7XG4gIGZsb2F0OiBsZWZ0O1xufVxuXG4uYWN0aW9ucyB7XG4gIGZsb2F0OiByaWdodDtcbiAgY3Vyc29yOiBwb2ludGVyO1xuICBkaXNwbGF5OiBub25lO1xufVxuXG4uYmVoYXZpb3ItbGlzdDpob3ZlciAuYWN0aW9ucyB7XG4gIGRpc3BsYXk6IGJsb2NrO1xufVxuXG4uZGlzYWJsZWQge1xuICBwb2ludGVyLWV2ZW50czogbm9uZTtcbn1cblxuLmdyYWJiYWJsZSB7XG4gIGN1cnNvcjogbW92ZTtcbiAgLyogZmFsbGJhY2sgaWYgZ3JhYiBjdXJzb3IgaXMgdW5zdXBwb3J0ZWQgKi9cbiAgY3Vyc29yOiBncmFiO1xuICBjdXJzb3I6IC1tb3otZ3JhYjtcbiAgY3Vyc29yOiAtd2Via2l0LWdyYWI7XG59XG5cbi8qIChPcHRpb25hbCkgQXBwbHkgYSBcImNsb3NlZC1oYW5kXCIgY3Vyc29yIGR1cmluZyBkcmFnIG9wZXJhdGlvbi4gKi9cbi5ncmFiYmFibGU6YWN0aXZlIHtcbiAgY3Vyc29yOiBncmFiYmluZztcbiAgY3Vyc29yOiAtbW96LWdyYWJiaW5nO1xuICBjdXJzb3I6IC13ZWJraXQtZ3JhYmJpbmc7XG59XG5cbi5tYXQtcmFkaW8tYnV0dG9uIH4gLm1hdC1yYWRpby1idXR0b24ge1xuICBtYXJnaW4tbGVmdDogMTZweDtcbn1cblxuLnBhZGRpbmctbGVmdC1yaWdodCB7XG4gIHBhZGRpbmctbGVmdDogNXB4O1xuICBwYWRkaW5nLXJpZ2h0OiA1cHg7XG59XG5cbi5idXR0b24tcGFkZGluZyB7XG4gIG1hcmdpbi1sZWZ0OiAwLjFlbTtcbn1cblxuLmV4cGFuZCB7XG4gIGZsb2F0OiByaWdodDtcbiAgY3Vyc29yOiBwb2ludGVyO1xufVxuXG4uaGlkZSB7XG4gIGRpc3BsYXk6IG5vbmU7XG59Il19 */");
 
 /***/ }),
 
@@ -1313,12 +1318,13 @@ __webpack_require__.r(__webpack_exports__);
 /*!******************************************************!*\
   !*** ./src/app/pages/dashboard/hlb/hlb.component.ts ***!
   \******************************************************/
-/*! exports provided: HlbComponent */
+/*! exports provided: HlbComponent, BindingPopUp */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "HlbComponent", function() { return HlbComponent; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "BindingPopUp", function() { return BindingPopUp; });
 /* harmony import */ var tslib__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! tslib */ "./node_modules/tslib/tslib.es6.js");
 /* harmony import */ var _angular_core__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @angular/core */ "./node_modules/@angular/core/fesm2015/core.js");
 /* harmony import */ var _angular_cdk_drag_drop__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @angular/cdk/drag-drop */ "./node_modules/@angular/cdk/esm2015/drag-drop.js");
@@ -1327,7 +1333,9 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _common_editor_service__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../common/editor-service */ "./src/app/pages/dashboard/common/editor-service.ts");
 /* harmony import */ var _common_state_service_service__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../common/state-service.service */ "./src/app/pages/dashboard/common/state-service.service.ts");
 /* harmony import */ var _angular_material__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! @angular/material */ "./node_modules/@angular/material/esm2015/material.js");
-/* harmony import */ var _common_http_service_service__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ../common/http-service.service */ "./src/app/pages/dashboard/common/http-service.service.ts");
+/* harmony import */ var _angular_material_dialog__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! @angular/material/dialog */ "./node_modules/@angular/material/esm2015/dialog.js");
+/* harmony import */ var _common_http_service_service__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ../common/http-service.service */ "./src/app/pages/dashboard/common/http-service.service.ts");
+
 
 
 
@@ -1338,14 +1346,11 @@ __webpack_require__.r(__webpack_exports__);
 
 quill__WEBPACK_IMPORTED_MODULE_3__["register"]("modules/counter", _common_editor_service__WEBPACK_IMPORTED_MODULE_4__["default"]);
 let HlbComponent = class HlbComponent {
-    constructor(http, stateservice, _snackBar) {
+    constructor(http, dialog, stateservice, _snackBar) {
         this.http = http;
+        this.dialog = dialog;
         this.stateservice = stateservice;
         this._snackBar = _snackBar;
-        this.hlbOptions = 1;
-        this.isExpandDisabled = true;
-        this.activeExpandIndex = 1;
-        this.editMode = false;
         this.actorTextFilter = "";
         this.behaviorTextFilter = "";
         this.constraintTextFilter = "";
@@ -1353,6 +1358,7 @@ let HlbComponent = class HlbComponent {
         this.actorsList = [];
         this.contraintList = [];
         this.bindingList = [];
+        this.bindingMap = new Map();
         this.wordlist = [{
                 value: "Hello"
             },
@@ -1373,74 +1379,142 @@ let HlbComponent = class HlbComponent {
     ngOnInit() {
         this.behaviorList = [];
         this.stateservice.getBehavior().subscribe(data => {
-            console.log(data);
             if (data != null) {
-                data.split("\n").forEach(element => {
-                    if (element.trim() != '')
-                        this.behaviorList.push({ text: element });
+                console.log(data);
+                var text = '';
+                data.forEach(element => {
+                    text += element + '<br>';
+                });
+                this.behaviorText = text;
+            }
+        });
+        this.stateservice.getBindings().subscribe(data => {
+            if (data != null) {
+                data.forEach(element => {
+                    var list = element.trim().split(' ');
+                    console.log(list);
+                    var key = list[0];
+                    console.log(key);
+                    var value = list.splice(0).join(' ');
+                    console.log(value);
+                    this.bindingList.push({ key: key, value: value });
                 });
             }
         });
         this.stateservice.getActors().subscribe(data => {
-            console.log(data);
+            // console.log(data);
             if (data != null) {
                 data.forEach(element => {
-                    this.actors += element + "\n";
                     this.actorsList.push({ text: element });
                 });
             }
-        });
-        this.stateservice.getBindings().subscribe(data => {
         });
     }
     drop(event, list) {
         Object(_angular_cdk_drag_drop__WEBPACK_IMPORTED_MODULE_2__["moveItemInArray"])(list, event.previousIndex, event.currentIndex);
     }
     created(editor, id) {
-        console.log(id);
+        // console.log(id);
         switch (id) {
             case 1:
                 this.actorService = editor.getModule("counter");
                 break;
             case 2:
                 this.behaviorService = editor.getModule("counter");
+                this.behaviorService.isBlur().subscribe(data => {
+                    if (data)
+                        this.updateActors();
+                });
                 break;
             case 3:
                 this.constraintService = editor.getModule("counter");
+                this.constraintService.isBlur().subscribe(data => {
+                    console.log(data);
+                });
                 break;
-            case 4:
-                this.editorService = editor.getModule("counter");
-                break;
+            // case 4:
+            // this.editorService = editor.getModule("counter");
+            // break;
         }
     }
-    isExpandable(option) {
-        return option == this.activeExpandIndex;
-    }
-    expand(option) {
-        this.activeExpandIndex = option;
-        this.isExpandDisabled = false;
-    }
-    collapse(option) {
-        this.isExpandDisabled = true;
-    }
-    logChange(event, id) {
-        if (this.service.getText().trim() === "") {
-            this.clear();
+    updateActors() {
+        console.log('inside update Actors');
+        if (this.behaviorService.getText().trim() === "") {
+            this.actorsList = [];
             return;
         }
-        var text = this.service.getText().split(/\s/);
-        switch (id) {
-            case 1:
-                this.actorTextFilter = text[text.length - 2];
-                break;
-            case 2:
-                this.behaviorTextFilter = text[text.length - 2];
-                break;
-            case 3:
-                this.constraintTextFilter = text[text.length - 2];
-                break;
-        }
-        //console.log(this.behaviorTextFilter);
+        var data = {
+            ParseType: "bash",
+            Scenario: [],
+            Constraints: []
+        };
+        this.behaviorList = [];
+        var blist = this.behaviorService.getText().trim().split('\n');
+        blist.forEach(element => {
+            var text = element.trim();
+            if (text != '') {
+                data.Scenario.push(text);
+                this.behaviorList.push(text);
+            }
+        });
+        this.http.put("v1/hlb/parse", data).subscribe((data) => {
+            this.extractInfo(data);
+        });
+    }
+    extractInfo(data) {
+        this.extractScenario(data.parsedScenario);
+    }
+    extractScenario(scenario) {
+        console.log(scenario);
+        this.bindingMap = new Map();
+        this.actorsList = [];
+        this.bindingList = [];
+        scenario.forEach(element => {
+            this.extractActors(element[1] != null ? element[1] : []);
+            this.extractEvents(element[0], element[2], element[3]);
+        });
+        // this.loadBindings();
+    }
+    loadBindings() {
+        this.bindingMap.forEach((value, key) => {
+            this.bindingList.push(key);
+        });
+    }
+    extractEvents(triggers, actions, emitters) {
+        if (triggers != null)
+            triggers.forEach(element => {
+                if (!this.bindingMap.has(element)) {
+                    this.bindingMap.set(element, null);
+                    this.bindingList.push({ key: element });
+                }
+            });
+        if (actions != null)
+            actions.forEach(element => {
+                if (!this.bindingMap.has(element)) {
+                    this.bindingMap.set(element, null);
+                    this.bindingList.push({ key: element });
+                }
+            });
+        if (emitters != null)
+            emitters.forEach(element => {
+                if (!this.bindingMap.has(element)) {
+                    this.bindingMap.set(element, null);
+                    this.bindingList.push({ key: element });
+                }
+            });
+        // console.log(this.bindingMap);
+    }
+    logChangeBehavior(event) {
+        if (this.behaviorService.getText().trim() === "")
+            return;
+        var index = this.behaviorService.getText().length - 2;
+        if (this.behaviorService.getText().charAt(index) == '\n')
+            this.updateActors();
+    }
+    logChangeConstraints(event) {
+        if (this.constraintService.getText().trim() === "")
+            return;
+        console.log(this.constraintService.getText().charAt(this.constraintService.getText().length - 1));
     }
     insertValue(text) {
         //  var quill =  Quill.getModule('#t');
@@ -1465,73 +1539,10 @@ let HlbComponent = class HlbComponent {
     }
     isEnable(id) { return this.textBoxId == id; }
     ;
-    delete(index, radioOption) {
-        var text = "";
-        switch (radioOption) {
-            case 1:
-                text = this.actorsList[index].text;
-                this.actorsList.splice(index, 1);
-                break;
-            case 2:
-                text = this.behaviorList[index].text;
-                this.behaviorList.splice(index, 1);
-                break;
-            case 3:
-                text = this.contraintList[index].text;
-                this.contraintList.splice(index, 1);
-                break;
-            case 4:
-                text = this.bindingList[index].text;
-                this.bindingList.splice(index, 1);
-                break;
-        }
-        this._snackBar.open(text + " is deleted.", "close", {
-            duration: 2000,
-        });
-    }
-    add() {
-        if (this.editorService.getText().trim() === "")
-            return;
-        var data = {
-            ParseType: "bash",
-            Scenario: [],
-            Constraints: []
-        };
-        switch (this.hlbOptions) {
-            case 1:
-                this.actorsList.push({ text: this.editorService.getText().trim() });
-                break;
-            case 2:
-                this.behaviorList.push({ text: this.editorService.getText().trim() });
-                data.Scenario.push(this.editorService.getText().trim());
-                break;
-            case 3:
-                data.Constraints.push(this.editorService.getText().trim());
-                this.contraintList.push({ text: this.editorService.getText().trim() });
-                break;
-            case 4:
-                this.bindingList.push({ text: this.editorService.getText().trim() });
-                break;
-        }
-        this.http.put("v1/hlb/parse", data).subscribe(data => {
-            //console.log(data);
-            this.extractActors(data.parsedScenario.length != 0 ? data.parsedScenario : []);
-        });
-        this.clear();
-        // console.log("inside add");
-        // if(this.behaviorService.getText().trim()==="")
-        //   return;
-        // this.behaviorList.push({text:this.behaviorService.getText()})
-        // //this.behaviorText="";
-        // this.updateWordList();
-        // this.clear();
-    }
     extractActors(data) {
         data.forEach(element => {
-            element[1].forEach(element => {
-                //console.log(element);
-                this.insertActor(element);
-            });
+            //console.log(element);
+            this.insertActor(element);
         });
     }
     insertActor(actor) {
@@ -1546,65 +1557,6 @@ let HlbComponent = class HlbComponent {
         console.log(this.behaviorText);
         this.service.clear();
         this.behaviorText = "";
-    }
-    edit(index, radioValue) {
-        // console.log(this.selectedIndex);
-        this.hlbOptions = radioValue;
-        this.editMode = true;
-        this.editIndex = index;
-        this.selectedTab(1);
-        switch (radioValue) {
-            case 1:
-                this.inputText = this.actorsList[index].text;
-                break;
-            case 2:
-                this.inputText = this.behaviorList[index].text;
-                break;
-            case 3:
-                this.inputText = this.contraintList[index].text;
-                break;
-            case 4:
-                this.inputText = this.bindingList[index].text;
-                break;
-        }
-        // this.behaviorText = this.behaviorList[index].text;
-    }
-    update() {
-        var data = {
-            ParseType: "bash",
-            Scenario: [],
-            Constraints: []
-        };
-        switch (this.hlbOptions) {
-            case 1:
-                this.actorsList[this.editIndex].text = this.editorService.getText().trim();
-                break;
-            case 2:
-                data.Scenario.push(this.editorService.getText().trim());
-                this.behaviorList[this.editIndex].text = this.editorService.getText().trim();
-                break;
-            case 3:
-                data.Constraints.push(this.editorService.getText().trim());
-                this.contraintList[this.editIndex].text = this.editorService.getText().trim();
-                break;
-            case 4:
-                this.bindingList[this.editIndex].text = this.editorService.getText().trim();
-                break;
-        }
-        this.http.put("v1/hlb/parse", data).subscribe(data => {
-            //console.log(data);
-            this.extractActors(data.parsedScenario.length != 0 ? data.parsedScenario : []);
-        });
-        this.editMode = false;
-        this.clear();
-        // this.updateWordList();
-    }
-    isEditModeEnable() {
-        return this.editMode;
-    }
-    Cancel() {
-        this.editMode = false;
-        this.clear();
     }
     selectedTab(index) {
         this.selectedIndex = index;
@@ -1627,6 +1579,17 @@ let HlbComponent = class HlbComponent {
         this.wordlist = this.wordlist.concat(this.localWordList);
         console.log(this.localWordList);
     }
+    addBindings() {
+        console.log(this.bindingList);
+        var dialogRef = this.dialog.open(BindingPopUp, {
+            width: '70%',
+            data: this.bindingList
+        });
+        dialogRef.afterClosed().subscribe(result => {
+            console.log('The dialog was closed');
+            this.generateNs();
+        });
+    }
     generateNs() {
         var data = {
             actors: [],
@@ -1634,18 +1597,29 @@ let HlbComponent = class HlbComponent {
             constraints: [],
             bindings: []
         };
+        if (this.actorsList.length == 0)
+            return;
+        if (this.behaviorList.length == 0)
+            return;
         this.actorsList.forEach(element => {
             data.actors.push(element.text);
         });
+        var flag = false;
         this.behaviorList.forEach(element => {
-            data.behaviors.push(element.text);
+            data.behaviors.push(element);
         });
         this.contraintList.forEach(element => {
             data.constraints.push(element.text);
         });
         this.bindingList.forEach(element => {
-            data.bindings.push(element.text);
+            if (element.value == null || element.value.trim() == '') {
+                flag = true;
+                return;
+            }
+            data.bindings.push(element.key + " " + element.value);
         });
+        if (flag)
+            return;
         this.stateservice.enableLoader();
         this.http
             .put("v1/hlb/generateNs", data, null)
@@ -1693,7 +1667,8 @@ let HlbComponent = class HlbComponent {
     }
 };
 HlbComponent.ctorParameters = () => [
-    { type: _common_http_service_service__WEBPACK_IMPORTED_MODULE_7__["HttpService"] },
+    { type: _common_http_service_service__WEBPACK_IMPORTED_MODULE_8__["HttpService"] },
+    { type: _angular_material_dialog__WEBPACK_IMPORTED_MODULE_7__["MatDialog"] },
     { type: _common_state_service_service__WEBPACK_IMPORTED_MODULE_5__["StateService"] },
     { type: _angular_material__WEBPACK_IMPORTED_MODULE_6__["MatSnackBar"] }
 ];
@@ -1704,6 +1679,28 @@ HlbComponent = tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"]([
         styles: [tslib__WEBPACK_IMPORTED_MODULE_0__["__importDefault"](__webpack_require__(/*! ./hlb.component.scss */ "./src/app/pages/dashboard/hlb/hlb.component.scss")).default]
     })
 ], HlbComponent);
+
+let BindingPopUp = class BindingPopUp {
+    constructor(dialogRef, bindingList) {
+        this.dialogRef = dialogRef;
+        this.bindingList = bindingList;
+    }
+    onNoClick() {
+        this.dialogRef.close();
+    }
+};
+BindingPopUp.ctorParameters = () => [
+    { type: _angular_material_dialog__WEBPACK_IMPORTED_MODULE_7__["MatDialogRef"] },
+    { type: undefined, decorators: [{ type: _angular_core__WEBPACK_IMPORTED_MODULE_1__["Inject"], args: [_angular_material_dialog__WEBPACK_IMPORTED_MODULE_7__["MAT_DIALOG_DATA"],] }] }
+];
+BindingPopUp = tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"]([
+    Object(_angular_core__WEBPACK_IMPORTED_MODULE_1__["Component"])({
+        selector: 'hlb-binding',
+        template: tslib__WEBPACK_IMPORTED_MODULE_0__["__importDefault"](__webpack_require__(/*! raw-loader!./hlb-binding.component.html */ "./node_modules/raw-loader/dist/cjs.js!./src/app/pages/dashboard/hlb/hlb-binding.component.html")).default,
+        styles: [tslib__WEBPACK_IMPORTED_MODULE_0__["__importDefault"](__webpack_require__(/*! ./hlb.component.scss */ "./src/app/pages/dashboard/hlb/hlb.component.scss")).default]
+    }),
+    tslib__WEBPACK_IMPORTED_MODULE_0__["__param"](1, Object(_angular_core__WEBPACK_IMPORTED_MODULE_1__["Inject"])(_angular_material_dialog__WEBPACK_IMPORTED_MODULE_7__["MAT_DIALOG_DATA"]))
+], BindingPopUp);
 
 
 
@@ -1879,14 +1876,20 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _angular_core__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @angular/core */ "./node_modules/@angular/core/fesm2015/core.js");
 /* harmony import */ var _angular_material__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @angular/material */ "./node_modules/@angular/material/esm2015/material.js");
 /* harmony import */ var _angular_material_dialog__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! @angular/material/dialog */ "./node_modules/@angular/material/esm2015/dialog.js");
+/* harmony import */ var _common_http_service_service__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../common/http-service.service */ "./src/app/pages/dashboard/common/http-service.service.ts");
+/* harmony import */ var _common_state_service_service__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../common/state-service.service */ "./src/app/pages/dashboard/common/state-service.service.ts");
+
+
 
 
 
 
 let UploadComponent = class UploadComponent {
-    constructor(_snackBar, dialog) {
+    constructor(_snackBar, dialog, http, state) {
         this._snackBar = _snackBar;
         this.dialog = dialog;
+        this.http = http;
+        this.state = state;
         this.files = [];
         this.filename = "";
     }
@@ -1941,8 +1944,26 @@ let UploadComponent = class UploadComponent {
     }
     upload(item) {
         const fileEntry = item.fileEntry;
-        this._snackBar.open("File name " + fileEntry.name + " is uploaded!", "Close", {
-            duration: 2000,
+        fileEntry.file((file) => {
+            const formData = new FormData();
+            formData.append('file', file);
+            this.http.put('v1/upload/dew', formData, { responseType: 'blob' })
+                .subscribe(data => {
+                if (data.behaviors != undefined) {
+                    this.state.setActors(data.actors);
+                    this.state.setBehavior(data.behaviors);
+                    this.state.setBindings(data.bindings);
+                    this.state.setBindings(data.constraints);
+                    this._snackBar.open("File name " + fileEntry.name + " is uploaded!", "Close", {
+                        duration: 2000,
+                    });
+                }
+                else {
+                    this._snackBar.open("Error in uploading file name " + fileEntry.name, "Close", {
+                        duration: 2000,
+                    });
+                }
+            });
         });
         //   alert(fileEntry.name+" is uploaded!");
     }
@@ -1957,7 +1978,9 @@ let UploadComponent = class UploadComponent {
 };
 UploadComponent.ctorParameters = () => [
     { type: _angular_material__WEBPACK_IMPORTED_MODULE_2__["MatSnackBar"] },
-    { type: _angular_material_dialog__WEBPACK_IMPORTED_MODULE_3__["MatDialog"] }
+    { type: _angular_material_dialog__WEBPACK_IMPORTED_MODULE_3__["MatDialog"] },
+    { type: _common_http_service_service__WEBPACK_IMPORTED_MODULE_4__["HttpService"] },
+    { type: _common_state_service_service__WEBPACK_IMPORTED_MODULE_5__["StateService"] }
 ];
 UploadComponent = tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"]([
     Object(_angular_core__WEBPACK_IMPORTED_MODULE_1__["Component"])({

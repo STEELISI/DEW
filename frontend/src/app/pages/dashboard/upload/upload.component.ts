@@ -2,6 +2,8 @@ import { Component, Directive, Inject } from "@angular/core";
 import { NgxFileDropEntry, FileSystemFileEntry, FileSystemDirectoryEntry } from 'ngx-file-drop';
 import { MatSnackBar } from '@angular/material';
 import {MatDialog, MatDialogRef, MAT_DIALOG_DATA} from '@angular/material/dialog';
+import { HttpService } from '../common/http-service.service';
+import { StateService } from '../common/state-service.service';
 @Component({
   selector: "upload",
   templateUrl: "./upload.component.html",
@@ -11,7 +13,7 @@ export class UploadComponent {
   public files: NgxFileDropEntry[] = [];
   public filename:String="";
 
-  constructor(private _snackBar: MatSnackBar,public dialog: MatDialog){}
+  constructor(private _snackBar: MatSnackBar,public dialog: MatDialog,private http:HttpService,private state:StateService){}
   public dropped(files: NgxFileDropEntry[]) {
     //this.files = files;
     for (const droppedFile of files) {
@@ -71,9 +73,31 @@ export class UploadComponent {
 
   upload(item:NgxFileDropEntry){
     const fileEntry = item.fileEntry as FileSystemFileEntry;
-    this._snackBar.open("File name "+fileEntry.name+" is uploaded!", "Close", {
-      duration: 2000,
-    });
+    fileEntry.file((file: File) => {
+    const formData = new FormData()
+          formData.append('file', file)
+ 
+          
+ 
+          this.http.put('v1/upload/dew', formData, { responseType: 'blob' })
+          .subscribe(data => {
+
+            if(data.behaviors !=undefined){
+           this.state.setActors(data.actors);
+           this.state.setBehavior(data.behaviors);
+           this.state.setBindings(data.bindings);
+           this.state.setBindings(data.constraints);
+           this._snackBar.open("File name "+fileEntry.name+" is uploaded!", "Close", {
+            duration: 2000,
+          });
+            }else{
+              this._snackBar.open("Error in uploading file name "+fileEntry.name, "Close", {
+                duration: 2000,
+              });
+            }
+          })
+        });
+   
   //   alert(fileEntry.name+" is uploaded!");
   }
 

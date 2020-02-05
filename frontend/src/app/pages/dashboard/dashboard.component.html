@@ -1,19 +1,19 @@
 
   <mat-tab-group>
     <mat-tab *ngFor="let x of menuList" label="{{ x.name }}">
-   <div *ngIf="x.id ==1">
+   <div *ngIf="x.id ==1" class="tab">
         <hlb></hlb>
       </div>
 
-      <div *ngIf="x.id ==2">
+      <div *ngIf="x.id ==2" class="tab">
         <nlp></nlp>
       </div>
 
-      <div *ngIf="x.id ==3">
+      <div *ngIf="x.id ==3" class="tab">
         <dependency-graph></dependency-graph>
       </div> 
 
-      <div *ngIf="x.id ==4">
+      <div *ngIf="x.id ==4" class="tab">
         <upload></upload>
       </div> 
       
