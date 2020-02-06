@@ -2,7 +2,6 @@ from pyparsing import ParseException, NotAny, Empty, Group, Word, CaselessKeywor
 from enum import Enum
 import sys
 sys.path.append('../')
-import globals
 
 class HLBHintType(Enum):
     OPT_EMIT_STMT  = 0 # Statement
@@ -97,6 +96,10 @@ class HLBParser():
     hlb_missing_actors_waitstmt = wait_trigger + LineEnd() | when_trigger + wsp + wait_trigger + LineEnd()
     hlb_missing_action = (trigger("trigger") + wsp + actors("actors") + LineEnd() |  actors("actors") + LineEnd())
     hlb_missing_emit_list = (trigger("trigger") + wsp + actors("actors") | actors("actors")) + wsp + action("action") + emit_keyword + LineEnd()
+
+    def __init__(self, actors):
+        super().__init__()
+        self.actors = actors
     
     #hlb = hlb_statement + newline + hlb
     def new_return_dict(self, t_events=None, actors=None, action=None, e_events=None, wait_time=None):
@@ -133,8 +136,10 @@ class HLBParser():
         """
         try:
             parsed = self.hlb_statement.parseString(statement)
+            print(parsed)
         except ParseException as pe:
-            #print("WARNING: Could not parse HLB statement:\n\t%s" % (statement))
+            print("WARNING: Could not parse HLB statement:\n\t%s" % (statement))
+            print(pe)
             return(None, None, None, None, None)
         if parsed.e_events == None:
             parsed.e_events = []
@@ -158,7 +163,7 @@ class HLBParser():
         
         #print("Stmt: \"%s\"\n\ttransitionBstate2: %s\tReturn: %s" % (ll, type.name, translate[type]))
         rval = translate[type]
-        if (type == HLBHintType.REQ_ACTORS or type == HLBHintType.REQ_ACTION) and vals['actors'] != None and all(a.strip() in globals.actors for a in vals['actors']):
+        if (type == HLBHintType.REQ_ACTORS or type == HLBHintType.REQ_ACTION) and vals['actors'] != None and all(a.strip() in self.actors for a in vals['actors']):
             if type == HLBHintType.REQ_ACTORS: 
                 return "actor"
             else:
@@ -235,7 +240,7 @@ class HLBParser():
                 parsed = self.hlb_missing_action.parseString(partial)
                 #print("Missing action.")
                 hint_list = ['<METHOD_NAME>']
-                for a in globals.actors:
+                for a in self.actors:
                     if a != "":
                         hint_list.append(', ' + a.strip())
                 return(HLBHintType.REQ_ACTION, self.new_return_dict(t_events=parsed.t_events, actors=parsed.actors, wait_time=parsed.wait_time), hint_list)
@@ -244,9 +249,9 @@ class HLBParser():
             # Do we have a trigger, but no actors?
             try:
                 parsed = self.hlb_missing_actors.parseString(partial)
-                #print("Missing actors")
+                print("Missing actors", parsed)
                 hint_list = []
-                for a in globals.actors:
+                for a in self.actors:
                     if a != "":
                         hint_list.append(a.strip())
                 try:
