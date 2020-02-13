@@ -9,7 +9,7 @@ export class DashboardComponent {
 
     menuList:any=[
       {
-        name:"Configuration",
+        name:"HLB",
         id:1,
         html:"<hlb></hlb>"
       }

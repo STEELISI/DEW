@@ -14,9 +14,20 @@ export interface QuillInstance {
 export default class EditorService {
   private textData = new BehaviorSubject<any>("");
   private onBlur=new BehaviorSubject<any>(false);
+  private isEnterPress=new BehaviorSubject<any>(false);
   private onBlurFlag=false;
+  private currentword=new BehaviorSubject<any>('');
+  private currentsentence=new BehaviorSubject<any>(null);
+  private isTextChange:boolean=false;
   getUpdatedValue(): Observable<any> {
     return this.textData.asObservable();
+  }
+
+  getSuggestionData(): Observable<any> {
+    return this.currentsentence.asObservable();
+  }
+  isEnterPressed(): Observable<any> {
+    return this.isEnterPress.asObservable();
   }
   setUpdatedValue(Data: String) {
     this.textData.next(Data);
@@ -43,12 +54,126 @@ export default class EditorService {
       }
     });
     this.quill.on("text-change", function(delta, oldDelta, source) {
-      // console.log(delta);
-      instance.index = instance.quill.getText().length - 1;
+       //console.log(delta);
+       var position =0;
+       instance.isTextChange=true;
+        if(delta.ops!=undefined){
+          delta.ops.forEach(element => {
+            if(element.retain!=undefined)
+              position = element.retain;
+            if(element.insert!=undefined){
+              position+=element.insert.length;
+              if(element.insert == '\n')
+                  instance.pressedEntered();
+            }
+          });
+        }
+        //console.log(position);
+        var index = instance.quill.getText().length-1;
+        var text = instance.quill.getText().substr(0,index);
+      //  console.log(text);
+        //console.log();
+        instance.currentSentence( text,position);
+      instance.index = position;
     });
   
   }
+  currentWord(text,position){
+   var word = this.getWordAt(text,position);
+   if(word.trim() !=''){
+     this.currentword.next(word);
+   }
+  }
 
+   currentSentence(text,position){
+   var sentence = this.getSentenceTill(text,position);
+   var remainingSentences = this.getRemainingSentences(text,position);
+   //console.log(remainingSentences);
+   var obj ={
+     currentSentence:sentence,
+     remainingSentences:remainingSentences
+   }
+    if(sentence.length==0 || sentence.charAt(sentence.length-1)==" ")
+     this.currentsentence.next(obj);
+   
+  }
+  getRemainingSentences (str, pos){
+
+    str = String(str);
+    pos = Number(pos) >>> 0;
+    var left= str.slice(0, pos).search(/\n.*$/);
+    var list = [];
+    var temp;
+    //console.log(left);
+    if(left>0){
+      temp = str.slice(0, left).split("\n");
+      temp.forEach(element => {
+          if(element.trim()!='')
+              list.push(element);
+      });
+    }
+
+
+    temp= str.slice(left+1).split("\n");
+    temp.splice(0,1);
+   
+    temp.forEach(element => {
+      if(element.trim()!='')
+          list.push(element);
+  });
+  return list;
+  }
+
+  getWordAt (str, pos) {
+
+    str = String(str);
+    pos = Number(pos) >>> 0; 
+    var left = str.slice(0, pos).search(/\S+$/),
+        right = str.slice(pos).search(/\s/);
+       
+    if (right < 0) {
+        return str.slice(left);
+    }
+    return str.slice(left, right + pos);
+
+}
+
+getSentenceTill (str, pos) {
+
+  str = String(str);
+  pos = Number(pos) >>> 0;
+ 
+  var t = str.slice(0, pos).search(/\n.*$/);
+  
+  var right = str.slice(pos).search(/\s/);
+    
+      if (right < 0) {
+        return str.slice(t+1);
+    }
+   
+      return str.slice(t+1,right+ pos);
+  
+
+}
+getSentenceAt (str, pos) {
+
+  str = String(str);
+  pos = Number(pos) >>> 0;
+  var left= str.slice(0, pos).search(/\n.+$/);
+  return str.slice(left+1).split("\n")[0];
+  
+}
+  isTextChanged():boolean{
+    var flag = this.isTextChange;
+    this.resetTextChangeFlag();
+    return flag;
+  }
+  resetTextChangeFlag(){
+    this.isTextChange = false;
+  }
+  pressedEntered(){
+      this.isEnterPress.next(true);
+  }
   insertVaue(text: String) {
     let t: string = this.quill.insertText(this.index, " " + text + " ");
   }

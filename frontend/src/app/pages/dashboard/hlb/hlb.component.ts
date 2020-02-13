@@ -36,19 +36,7 @@ export class HlbComponent implements OnInit{
   bindingList:any=[];
   localWordList:any;
   bindingMap = new Map<String,any>();
-  wordlist:any=[{
-    value:"Hello"
-  }
-,{
-  value:"World"
-},{
-  value:"server"
-},{
-  value:"router"
-},{
-  value:"actors"
-}
-];
+  wordlist:any=[];
 inputText:string="";
 actors:String ="";
 selectedIndex:number=0;
@@ -58,6 +46,7 @@ ngOnInit(): void {
 
 
   this.behaviorList = [];
+  const instance =this;
   this.stateservice.getBehavior().subscribe(data=>{
     if(data != null){
       console.log(data);
@@ -65,49 +54,95 @@ ngOnInit(): void {
       data.forEach(element => {
         text+=element+'<br>';
       });
-     this.behaviorText = text;
+      instance.behaviorText = text;
     }
   });
   this.stateservice.getBindings().subscribe(data=>{
     if(data != null){
+      this.behaviorList=[];
+      
     data.forEach(element => {
       var list=element.trim().split(' ');
-      console.log(list);
+     // console.log(list);
       var key = list[0];
-      console.log(key);
+      //console.log(key);
 
       var value = list.splice(0).join(' ');
-      console.log(value);
-        
-      this.bindingList.push({key:key,value:value});
+      //console.log(value);
+      if (!this.bindingMap.has(key)){
+        this.bindingMap.set(key,null);
+        this.bindingList.push({key:key,value:value});
+      }
+      
     });
   }
   });
   this.stateservice.getActors().subscribe(data=>{
    // console.log(data);
   if(data != null){
+    instance.actorsList=[];
     data.forEach(element => {
       
       this.actorsList.push({text:element});
     });
   }
 });
+
+
+
+
 }
   drop(event: CdkDragDrop<string[]>,list:Array<any>) {
     moveItemInArray(list, event.previousIndex, event.currentIndex);
   }
   created(editor,id:number) {
    // console.log(id);
+   var instance = this;
     switch(id){
       case 1:
           this.actorService = editor.getModule("counter");
           break;
           case 2:
               this.behaviorService = editor.getModule("counter");
+              
               this.behaviorService.isBlur().subscribe(data=>{
-                if(data)
+                if(data  && instance.behaviorService.isTextChanged())
                 this.updateActors();
               })
+              this.behaviorService.isEnterPressed().subscribe(flag=>{
+                if(flag && instance.behaviorService.isTextChanged()){
+                if(this.behaviorService.getText().trim()==="")
+                   return;
+                  var index = this.behaviorService.getText().length-2;
+                  if (this.behaviorService.getText().charAt(index) == '\n')
+                      this.updateActors();
+                }
+              });
+
+              this.behaviorService.getSuggestionData().subscribe(data=>{
+                if(data!=null){
+                  
+                    var params = {
+                      type: "behavior",
+                      suggestion_for: data.currentSentence,
+                      behaviors: data.remainingSentences,
+                      constraints: [],
+                      actors: []
+                    }
+
+                    this.http.put("v1/hlb/suggestions",params).subscribe(data=>{
+
+                      var list =[];
+                      data.suggestions.forEach(element => {
+                        list.push({value:element,flag:false});
+                      });
+                      if(data.suggestion_text.trim()!='')
+                      list.push({value:data.suggestion_text,flag:true});
+                      this.wordlist = list;
+                    });
+                }
+
+              });
               break;
               case 3:
                   this.constraintService = editor.getModule("counter");
@@ -172,6 +207,12 @@ ngOnInit(): void {
      // this.loadBindings();
       
   }
+
+  isEmpty(binding):boolean{
+    if(binding.value == undefined)
+        return true;
+    return binding.value.trim() =='';
+  }
   loadBindings(){
     this.bindingMap.forEach((value,key) => {
       this.bindingList.push(key);
@@ -182,21 +223,21 @@ ngOnInit(): void {
       triggers.forEach(element => {
         if (!this.bindingMap.has(element)){
               this.bindingMap.set(element,null);
-              this.bindingList.push({key:element});
+              this.bindingList.push({key:element,value:""});
         }
       });
       if(actions!=null)
       actions.forEach(element => {
         if (!this.bindingMap.has(element)){
           this.bindingMap.set(element,null);
-          this.bindingList.push({key:element});
+          this.bindingList.push({key:element,value:""});
     }
       });
       if(emitters!=null)
       emitters.forEach(element => {
         if (!this.bindingMap.has(element)){
           this.bindingMap.set(element,null);
-          this.bindingList.push({key:element});
+          this.bindingList.push({key:element,value:""});
     }
       });
     
@@ -207,9 +248,9 @@ ngOnInit(): void {
       return;
 
    
-    var index = this.behaviorService.getText().length-2;
-    if (this.behaviorService.getText().charAt(index) == '\n')
-        this.updateActors();
+    // var index = this.behaviorService.getText().length-2;
+    // if (this.behaviorService.getText().charAt(index) == '\n')
+    //     this.updateActors();
 }
 logChangeConstraints(event){
   if(this.constraintService.getText().trim()==="")
