@@ -32,7 +32,7 @@ webpackEmptyAsyncContext.id = "./$$_lazy_route_resource lazy recursive";
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony default export */ __webpack_exports__["default"] = ("<div class=\"header\">\n  <nav class=\"navbar navbar-expand-lg navbar-dark bg-dark static-top\">\n    <div class=\"container\">\n      <a class=\"navbar-brand\" href=\"#\">\n            <img src=\"./assets/isi_logo.gif\" class=\"img-thumbnail\" alt=\"\" >\n          </a>\n      <button class=\"navbar-toggler\" type=\"button\" data-toggle=\"collapse\" data-target=\"#navbarResponsive\" aria-controls=\"navbarResponsive\" aria-expanded=\"false\" aria-label=\"Toggle navigation\">\n            <span class=\"navbar-toggler-icon\"></span>\n          </button>\n      \n      <div class=\"navbar-nav pointer\" [matMenuTriggerFor]=\"menu\">\n        <div class=\"profile\"></div>\n        <span class=\"username\">Login / Sign Up!</span>\n        <mat-menu #menu=\"matMenu\">\n          <button mat-menu-item>Login</button>\n          <button mat-menu-item>Sign Up</button>\n        </mat-menu>\n      </div>\n\n    </div>\n    <!-- <div class=\"collapse navbar-collapse\" id=\"navbarResponsive\">\n        <ul class=\"navbar-nav ml-auto\">\n          <li class=\"nav-item active\">\n            <a class=\"nav-link\" href=\"#\">Home\n                  <span class=\"sr-only\">(current)</span>\n                </a>\n          </li>\n          <li class=\"nav-item\">\n            <a class=\"nav-link\" href=\"#\">About</a>\n          </li>\n          <li class=\"nav-item\">\n            <a class=\"nav-link\" href=\"#\">Services</a>\n          </li>\n          <li class=\"nav-item\">\n            <a class=\"nav-link\" href=\"#\">Contact</a>\n          </li>\n        </ul>\n      </div> -->\n    \n  </nav>\n\n</div>\n");
+/* harmony default export */ __webpack_exports__["default"] = ("<div class=\"header\">\n  <nav class=\"navbar navbar-expand-lg static-top\" style=\"padding: 0;\">\n    <div class=\"container\">\n      <a class=\"navbar-brand\" href=\"#\">\n            <img src=\"./assets/isi_logo.gif\" class=\"img-thumbnail\" style=\"border:none;height: 35px;\" alt=\"\" >\n          </a>\n      <button class=\"navbar-toggler\" type=\"button\" data-toggle=\"collapse\" data-target=\"#navbarResponsive\" aria-controls=\"navbarResponsive\" aria-expanded=\"false\" aria-label=\"Toggle navigation\">\n            <span class=\"navbar-toggler-icon\"></span>\n          </button>\n      \n      <!-- <div class=\"navbar-nav pointer\" [matMenuTriggerFor]=\"menu\">\n        <div class=\"profile\"></div>\n        <span class=\"username\">Login / Sign Up!</span>\n        <mat-menu #menu=\"matMenu\">\n          <button mat-menu-item>Login</button>\n          <button mat-menu-item>Sign Up</button>\n        </mat-menu>\n      </div> -->\n\n    </div>\n    <!-- <div class=\"collapse navbar-collapse\" id=\"navbarResponsive\">\n        <ul class=\"navbar-nav ml-auto\">\n          <li class=\"nav-item active\">\n            <a class=\"nav-link\" href=\"#\">Home\n                  <span class=\"sr-only\">(current)</span>\n                </a>\n          </li>\n          <li class=\"nav-item\">\n            <a class=\"nav-link\" href=\"#\">About</a>\n          </li>\n          <li class=\"nav-item\">\n            <a class=\"nav-link\" href=\"#\">Services</a>\n          </li>\n          <li class=\"nav-item\">\n            <a class=\"nav-link\" href=\"#\">Contact</a>\n          </li>\n        </ul>\n      </div> -->\n    \n  </nav>\n\n</div>\n");
 
 /***/ }),
 
@@ -110,7 +110,7 @@ __webpack_require__.r(__webpack_exports__);
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony default export */ __webpack_exports__["default"] = ("\n <div class=\"row\">\n<div class=\"col-md-8\">\n  <div class=\"container\">\n  \n    <div class=\"row\" style=\"margin: .5em;\">\n        <div class=\"col-md-12\">\n            <mat-card> \n               \n                 <div style=\"text-align: center;\">  Behavior</div> \n               <hr>\n               <div class=\"row\">\n               <div class=\"col-md-12\" (click)=\"selectTextBox(2)\">\n                  <div style=\"margin: .6em;\" [hidden]=\"!isEnable(2)\">\n                      <span>Suggestions:</span>\n                     \n                      <button type=\"button\" class=\"btn btn-outline-primary word-bubble-button\" *ngFor=\"let word of wordlist | textfilter:behaviorTextFilter \"  (click)=\"insertValue(word.value)\">{{word.value}}</button>\n                      \n                   </div>\n                <div class=\"flex-container\" (blur)=\"onBlurMethod()\" >\n                    \n                      <quill-editor \n                     \n                      [styles]=\"{height: '100px'}\"\n                      [modules]=\"{  counter: { container: '#editor1'} ,toolbar: false }\"\n                      [(ngModel)]=\"behaviorText\" \n                      (onContentChanged)=\"logChangeBehavior($event);\"\n                      (onEditorCreated)=\"created($event,2)\"></quill-editor>\n                    </div>\n                     \n                  \n                  </div>\n                  </div>\n                 \n            </mat-card>\n   \n        </div>\n      </div> \n      <div class=\"row\" style=\"margin: .5em;\">\n          <div class=\"col-md-12\">\n              <mat-card> \n                \n                <div style=\"text-align: center;\">  Constraints</div> \n                \n                  <hr>\n                  <div class=\"row\">\n                  <div class=\"col-md-12\" (click)=\"selectTextBox(3)\">\n                    <div style=\"margin: .6em;\" [hidden]=\"!isEnable(3)\">\n                       <span>Suggestions:</span>\n                       <button type=\"button\" class=\"btn btn-outline-primary word-bubble-button\" *ngFor=\"let word of wordlist | textfilter:constraintTextFilter\"  (click)=\"insertValue(word.value)\">{{word.value}}</button>\n                           \n                \n                    </div>\n                      <div class=\"flex-container\">\n                    \n                          <quill-editor \n                         \n                          [styles]=\"{height: '100px'}\"\n                          [modules]=\"{  counter: { container: '#editor1'} ,toolbar: false }\"\n                          [(ngModel)]=\"constraints\" \n                          (onContentChanged)=\"logChangeConstraints($event);\"\n                          (onEditorCreated)=\"created($event,3)\"></quill-editor>\n                        </div>\n                      </div>\n                      </div>\n              </mat-card>\n          </div>\n        </div>\n  \n   \n\n      </div>\n  </div>\n<div class=\"col-md-3\">\n\n  <div class=\"row\">\n    <div class=\"col-md-12\">\n        \n      <div style=\"text-align: center;padding: 1em;\">     \n         <button mat-stroked-button (click)=\"addBindings()\" >Generate Ns File</button>\n    </div>\n    </div>\n    </div>\n  \n  <div class=\"row\" style=\"margin: .5em;\">\n    <div class=\"col-md-12\">\n\n      <mat-card>  \n        <div style=\"text-align: center;\">Actors\n         </div>\n\n        \n        <hr>\n        <div *ngIf=\"actorsList.length==0\" style=\"font-size: .8em;text-align: center;\">\n          <span ><i>No Actors</i></span>\n        </div>\n          <div *ngIf=\"actorsList.length!=0\">\n        <ul  class=\"behavior-list \" >\n          <li class=\"binding-box\" *ngFor=\"let item of actorsList;let index=index\" ><div>\n          \n            <span>\n            {{item.text}} </span>\n           \n          </div>\n            </li>\n      </ul>\n      </div>\n      </mat-card>\n\n    </div>\n  </div>\n\n  <div class=\"row\" style=\"margin: .5em;\">\n    <div class=\"col-md-12\">\n\n      <mat-card>  \n        <div style=\"text-align: center;\">Bindings Needed\n         </div>\n\n        \n        <hr>\n        <div *ngIf=\"bindingList.length==0\" style=\"font-size: .8em;text-align: center;\">\n          <span ><i>No Bindings Needed.</i></span>\n        </div>\n          <div *ngIf=\"bindingList.length!=0\">\n        <ul  class=\"behavior-list \" >\n          <li class=\"binding-box\" *ngFor=\"let item of bindingList;let index=index\" ><div>\n          \n            <span>\n            {{item.key}} </span>\n           \n          </div>\n            </li>\n      </ul>\n      </div>\n      </mat-card>\n\n    </div>\n  </div>\n  </div>\n</div> \n\n\n<!-- \n<div class=\"col-md-12\">\n    \n  <div style=\"float: right;padding: 1em;\">      <button mat-stroked-button (click)=\"generateNs()\" >Generate Ns File</button>\n\n</div>\n</div>\n\n<mat-tab-group [(selectedIndex)]=\"selectedIndex\">\n \n  <mat-tab label=\"Manual\">\n    \n\n<div class=\"row\">\n\n  <div class=\"col-md-12\" style=\"padding: 2em;\">\n   \n  \n    <div class=\"row\" [ngClass]=\"{disabled:isEditModeEnable()}\">\n      <div class=\"col-md-8\" >\n      <mat-radio-group aria-label=\"Select an option\" [(ngModel)]=\"hlbOptions\">\n        <mat-radio-button [value]=\"1\" >Actors</mat-radio-button>\n        <mat-radio-button [value]=\"2\">Behavior</mat-radio-button>\n        <mat-radio-button [value]=\"3\">Constraints</mat-radio-button>\n        <mat-radio-button [value]=\"4\">Bindings</mat-radio-button>\n\n      </mat-radio-group>\n    </div>\n   \n      </div> \n      <div class=\"row\">\n        <div class=\"col-md-12\" >\n      <div class=\"flex-container\" (click)=\"selectTextBox(4)\"> \n    <quill-editor \n                         \n    [styles]=\"{height: '100px'}\"\n    [modules]=\"{  counter: { container: '#editor1'} ,toolbar: false }\"\n    [(ngModel)]=\"inputText\" \n    (onContentChanged)=\"logChange($event,4);\"\n    (onEditorCreated)=\"created($event,4)\"></quill-editor></div></div></div>\n    </div>\n  </div>\n  <div class=\"col-md-12\" >\n    <div style=\"float:right\">\n        <button mat-stroked-button (click)=\"clear()\" class=\"button-padding\">Clear</button>\n        <button mat-stroked-button *ngIf=\"!isEditModeEnable()\" (click)=\"add()\" class=\"button-padding\">ADD</button>\n        <button  mat-stroked-button *ngIf=\"isEditModeEnable()\" (click)=\"update()\" class=\"button-padding\">UPDATE</button>\n        <button mat-stroked-button *ngIf=\"isEditModeEnable()\" (click)=\"Cancel()\" class=\"button-padding\">Cancel</button>\n\n    </div>\n    </div>\n</mat-tab>\n</mat-tab-group> \n  <div class=\"row\">\n    <div class=\"col-md-12\" style=\"padding: 2em;\">\n      <div class=\"row\" [ngClass]=\"{disabled:isEditModeEnable()}\">\n    \n      <div class=\"padding-left-right\" [ngClass]=\"{'col-md-2':isExpandDisabled,'hide':(!isExpandDisabled && !isExpandable(1)),'col-md-12':(!isExpandDisabled && isExpandable(1))}\">\n        <mat-card>  \n          <div style=\"text-align: center;\">Actors\n          <span class=\"expand\" (click)=\"expand(1)\" *ngIf=\"isExpandDisabled\"><i class=\"fas fa-expand-alt\"></i></span>\n          <span class=\"expand\" (click)=\"collapse(1)\" *ngIf=\"!isExpandDisabled\"> <i class=\"fas fa-compress-alt\"></i></span>\n            </div>\n\n          \n          <hr>\n          <div *ngIf=\"actorsList.length==0\" style=\"font-size: .8em;text-align: center;\">\n            <span ><i>No Actors</i></span>\n          </div>\n            <div *ngIf=\"actorsList.length!=0\">\n          <ul  class=\"behavior-list \" >\n            <li class=\"behavior-box \" *ngFor=\"let item of actorsList;let index=index\" ><div>\n            \n              <span>\n              {{item.text}} </span>\n              <div class=\"actions\">\n            \n                <i class=\"fas fa-edit\" (click)=\"edit(index,1)\"></i>\n                <i class=\"far fa-trash-alt\" (click)=\"delete(index,1)\"></i>\n\n              </div>\n            </div>\n              </li>\n        </ul>\n        </div>\n        </mat-card>\n      </div>\n      <div class=\"padding-left-right\" [ngClass]=\"{'col-md-4':isExpandDisabled,'hide':(!isExpandDisabled && !isExpandable(2)),'col-md-12':(!isExpandDisabled && isExpandable(2))}\">\n        <mat-card>   \n          <div style=\"text-align: center;\">Behavior \n            <span class=\"expand\" (click)=\"collapse(2)\" *ngIf=\"!isExpandDisabled\"> <i class=\"fas fa-compress-alt\"></i></span>\n            \n            <span class=\"expand\" (click)=\"expand(2)\" *ngIf=\"isExpandDisabled\"><i class=\"fas fa-expand-alt\"></i></span></div>\n\n          \n          <hr>\n          <div *ngIf=\"behaviorList.length==0\" style=\"font-size: .8em;text-align: center;\">\n            <span ><i>No Behavior</i></span>\n          </div>\n          <div *ngIf=\"behaviorList.length!=0\">\n          <ul cdkDropList class=\"behavior-list grabbable\" (cdkDropListDropped)=\"drop($event,behaviorList)\">\n            <li class=\"behavior-box \" *ngFor=\"let item of behaviorList;let index=index\" cdkDrag><div>\n              <i class=\"fas fa-grip-vertical\"></i>\n              <span>\n              {{item.text}} </span>\n              <div class=\"actions\">\n            \n                <i class=\"fas fa-edit\" (click)=\"edit(index,2)\"></i>\n                <i class=\"far fa-trash-alt\" (click)=\"delete(index,2)\"></i>\n\n              </div>\n            </div>\n              </li>\n        </ul>\n          </div>\n        </mat-card>\n      </div>\n      <div class=\"padding-left-right\" [ngClass]=\"{'col-md-3':isExpandDisabled,'hide':(!isExpandDisabled && !isExpandable(3)),'col-md-12':(!isExpandDisabled && isExpandable(3))}\">\n        <mat-card>    \n          <div style=\"text-align: center;\">Constraints \n            <span class=\"expand\" (click)=\"collapse(3)\" *ngIf=\"!isExpandDisabled\"> <i class=\"fas fa-compress-alt\"></i></span>\n            \n            <span class=\"expand\" (click)=\"expand(3)\" *ngIf=\"isExpandDisabled\"><i class=\"fas fa-expand-alt\"></i></span></div>\n\n          \n          <hr>\n          <div *ngIf=\"contraintList.length==0\" style=\"font-size: .8em;text-align: center;\">\n            <span ><i>No Constraints</i></span>\n          </div>\n          \n          <div *ngIf=\"contraintList.length!=0\">\n          <ul  class=\"behavior-list \" >\n            <li class=\"behavior-box \" *ngFor=\"let item of contraintList;let index=index\" ><div>\n             \n              <span>\n              {{item.text}} </span>\n              <div class=\"actions\">\n            \n                <i class=\"fas fa-edit\" (click)=\"edit(index,3)\"></i>\n                <i class=\"far fa-trash-alt\" (click)=\"delete(index,3)\"></i>\n\n              </div>\n            </div>\n              </li>\n        </ul>\n        </div></mat-card>\n      </div>\n      <div class=\"padding-left-right\" [ngClass]=\"{'col-md-3 ':isExpandDisabled,'hide':(!isExpandDisabled && !isExpandable(4)),'col-md-12':(!isExpandDisabled && isExpandable(4))}\">\n        <mat-card>     \n          <div style=\"text-align: center;\">Bindings \n            <span class=\"expand\" (click)=\"expand(4)\" *ngIf=\"isExpandDisabled\"><i class=\"fas fa-expand-alt\"></i></span>\n            <span class=\"expand\" (click)=\"collapse(4)\" *ngIf=\"!isExpandDisabled\"> <i class=\"fas fa-compress-alt\"></i></span>\n          </div>\n\n          \n          <hr>\n          <div *ngIf=\"bindingList.length==0\" style=\"font-size: .8em;text-align: center;\">\n            <span ><i>No Bindings</i></span>\n          </div>\n          \n          <div *ngIf=\"bindingList.length!=0\">\n          <ul  class=\"behavior-list \" >\n            <li class=\"behavior-box \" *ngFor=\"let item of bindingList;let index=index\" ><div>\n              \n              <span>\n              {{item.text}} </span>\n              <div class=\"actions\">\n            \n                <i class=\"fas fa-edit\" (click)=\"edit(index,4)\"></i>\n                <i class=\"far fa-trash-alt\" (click)=\"delete(index,4)\"></i>\n\n              </div>\n            </div>\n              </li>\n        </ul>\n        </div></mat-card>\n      </div>\n    </div>\n      </div>\n      </div>\n -->\n");
+/* harmony default export */ __webpack_exports__["default"] = ("\n <div class=\"row\">\n<div class=\"col-md-9\">\n\n  \n    <div class=\"row\" style=\"margin: .5em;\">\n        <div class=\"col-md-12\" style=\"padding: 0;\">\n            <mat-card> \n               \n                 <div style=\"text-align: center;\">  Behavior</div> \n               <hr>\n               <div class=\"row\">\n               <div class=\"col-md-12\" (click)=\"selectTextBox(2)\">\n                  <div style=\"margin: .6em;\" [hidden]=\"!isEnable(2)\">\n                      <span>Suggestions:</span>\n                     \n                      <button type=\"button\" class=\"btn btn-outline-primary word-bubble-button\" *ngFor=\"let word of wordlist | textfilter:behaviorTextFilter \"  (click)=\"insertValue(word.value)\" [disabled]=\"word.flag\">{{word.value}}</button>\n                      \n                   </div>\n                <div class=\"flex-container\" (blur)=\"onBlurMethod()\" >\n                    \n                      <quill-editor \n                     \n                      [styles]=\"{height: '400px',border:'1px dashed grey'}\"\n                      [modules]=\"{  counter: { container: '#editor1'} ,toolbar: false }\"\n                      [(ngModel)]=\"behaviorText\" \n                      (onContentChanged)=\"logChangeBehavior($event);\"\n                      (onEditorCreated)=\"created($event,2)\"></quill-editor>\n                    </div>\n                     \n                  \n                  </div>\n                  </div>\n                 \n            </mat-card>\n   \n        </div>\n      </div> \n      <div class=\"row\" style=\"margin: .5em;\">\n          <div class=\"col-md-12\" style=\"padding: 0;\">\n              <mat-card> \n                \n                <div style=\"text-align: center;\">  Constraints</div> \n                \n                  <hr>\n                  <div class=\"row\">\n                  <div class=\"col-md-12\" (click)=\"selectTextBox(3)\">\n                    <div style=\"margin: .6em;\" [hidden]=\"!isEnable(3)\">\n                       <span>Suggestions:</span>\n                       <button type=\"button\" class=\"btn btn-outline-primary word-bubble-button\" *ngFor=\"let word of wordlist | textfilter:constraintTextFilter\"  (click)=\"insertValue(word.value)\">{{word.value}}</button>\n                           \n                \n                    </div>\n                      <div class=\"flex-container\">\n                    \n                          <quill-editor \n                         \n                          [styles]=\"{height: '400px',border:'1px dashed grey'}\"\n                          [modules]=\"{  counter: { container: '#editor1'} ,toolbar: false }\"\n                          [(ngModel)]=\"constraints\" \n                          (onContentChanged)=\"logChangeConstraints($event);\"\n                          (onEditorCreated)=\"created($event,3)\"></quill-editor>\n                        </div>\n                      </div>\n                      </div>\n              </mat-card>\n          </div>\n        </div>\n         <div class=\"row\" style=\"margin: .5em;\">\n          <div class=\"col-md-12\" style=\"padding: 0;\">\n            <mat-card> \n                    \n              <div style=\"text-align: center;\">  Bindings</div> \n              \n                <hr>\n                <div *ngIf=\"bindingList.length==0\" style=\"font-size: .8em;text-align: center;\">\n                  <span ><i>No Bindings Needed</i></span>\n                </div>\n                  <div *ngIf=\"bindingList.length!=0\">\n                <ul  class=\"behavior-list \" >\n                  <li class=\"binding-box\" *ngFor=\"let item of bindingList;let index=index\" ><div>\n                  \n                    <mat-form-field style=\"width:100%\">\n                      <input matInput placeholder=\"{{item.key+' represents: '}}\" [(ngModel)]=\"item.value\">\n                    </mat-form-field>\n      \n                    <span>\n                    </span>\n                   \n                  </div>\n                    </li>\n              </ul>\n              </div>\n      \n              \n            </mat-card> \n            </div>\n            </div> \n   \n\n \n  </div>\n<div class=\"col-md-3\" style=\"margin: 0;\">\n\n  <div class=\"row\">\n    <div class=\"col-md-12\">\n        \n      <div style=\"text-align: center;padding: 1em;\">     \n         <button mat-stroked-button (click)=\"addBindings()\" >Generate Ns File</button>\n    </div>\n    </div>\n    </div>\n  \n  <div class=\"row\" style=\"margin-top: .1em;\n  margin-bottom: .1em;\">\n    <div class=\"col-md-12\" style=\"padding: 0;\">\n\n      <mat-card>  \n        <div style=\"text-align: center;\">Actors\n         </div>\n\n        \n        <hr>\n        <div *ngIf=\"actorsList.length==0\" style=\"font-size: .8em;text-align: center;\">\n          <span ><i>No Actors</i></span>\n        </div>\n          <div *ngIf=\"actorsList.length!=0\" style=\"  height: auto;\n          display: flow-root;\n          padding: 0;\">\n        \n\n      <div *ngFor=\"let item of actorsList;let index=index\" class=\"binding-word-bubble\" style=\"  border: 1px solid black;\">\n          \n        <span>\n        {{item.text}} </span>\n       \n        </div>\n      </div>\n      </mat-card>\n\n    </div>\n  </div>\n\n  <div class=\"row\" style=\"margin-top: .1em;\n  margin-bottom: .1em;\">\n    <div class=\"col-md-12\" style=\"padding: 0;\">\n\n      <mat-card>  \n        <div style=\"text-align: center;\">Bindings Needed\n\n        \n         </div>\n\n        \n        <hr>\n        <div *ngIf=\"bindingList.length==0\" style=\"font-size: .8em;text-align: center;\">\n          <span ><i>No Bindings Needed.</i></span>\n        </div>\n        \n          <div *ngIf=\"bindingList.length!=0\" style=\"  height: auto;\n          display: flow-root;\n          padding: 0;\">\n        \n          <div *ngFor=\"let item of bindingList;let index=index\" class=\"binding-word-bubble\" [ngClass]=\"{'binding-word-bubble-border-red':isEmpty(item),'binding-word-bubble-border-green':!isEmpty(item)}\">\n          \n            <span>\n            {{item.key}} </span>\n           \n            </div>\n      \n      </div>\n      </mat-card>\n\n    </div>\n  </div>\n  </div>\n</div> \n\n");
 
 /***/ }),
 
@@ -851,7 +851,11 @@ class EditorService {
     constructor(quill) {
         this.textData = new rxjs__WEBPACK_IMPORTED_MODULE_1__["BehaviorSubject"]("");
         this.onBlur = new rxjs__WEBPACK_IMPORTED_MODULE_1__["BehaviorSubject"](false);
+        this.isEnterPress = new rxjs__WEBPACK_IMPORTED_MODULE_1__["BehaviorSubject"](false);
         this.onBlurFlag = false;
+        this.currentword = new rxjs__WEBPACK_IMPORTED_MODULE_1__["BehaviorSubject"]('');
+        this.currentsentence = new rxjs__WEBPACK_IMPORTED_MODULE_1__["BehaviorSubject"](null);
+        this.isTextChange = false;
         this.index = 0;
         this.quill = quill;
         const index = 1;
@@ -871,15 +875,115 @@ class EditorService {
             }
         });
         this.quill.on("text-change", function (delta, oldDelta, source) {
-            // console.log(delta);
-            instance.index = instance.quill.getText().length - 1;
+            //console.log(delta);
+            var position = 0;
+            instance.isTextChange = true;
+            if (delta.ops != undefined) {
+                delta.ops.forEach(element => {
+                    if (element.retain != undefined)
+                        position = element.retain;
+                    if (element.insert != undefined) {
+                        position += element.insert.length;
+                        if (element.insert == '\n')
+                            instance.pressedEntered();
+                    }
+                });
+            }
+            //console.log(position);
+            var index = instance.quill.getText().length - 1;
+            var text = instance.quill.getText().substr(0, index);
+            //  console.log(text);
+            //console.log();
+            instance.currentSentence(text, position);
+            instance.index = position;
         });
     }
     getUpdatedValue() {
         return this.textData.asObservable();
     }
+    getSuggestionData() {
+        return this.currentsentence.asObservable();
+    }
+    isEnterPressed() {
+        return this.isEnterPress.asObservable();
+    }
     setUpdatedValue(Data) {
         this.textData.next(Data);
+    }
+    currentWord(text, position) {
+        var word = this.getWordAt(text, position);
+        if (word.trim() != '') {
+            this.currentword.next(word);
+        }
+    }
+    currentSentence(text, position) {
+        var sentence = this.getSentenceTill(text, position);
+        var remainingSentences = this.getRemainingSentences(text, position);
+        //console.log(remainingSentences);
+        var obj = {
+            currentSentence: sentence,
+            remainingSentences: remainingSentences
+        };
+        if (sentence.length == 0 || sentence.charAt(sentence.length - 1) == " ")
+            this.currentsentence.next(obj);
+    }
+    getRemainingSentences(str, pos) {
+        str = String(str);
+        pos = Number(pos) >>> 0;
+        var left = str.slice(0, pos).search(/\n.*$/);
+        var list = [];
+        var temp;
+        //console.log(left);
+        if (left > 0) {
+            temp = str.slice(0, left).split("\n");
+            temp.forEach(element => {
+                if (element.trim() != '')
+                    list.push(element);
+            });
+        }
+        temp = str.slice(left + 1).split("\n");
+        temp.splice(0, 1);
+        temp.forEach(element => {
+            if (element.trim() != '')
+                list.push(element);
+        });
+        return list;
+    }
+    getWordAt(str, pos) {
+        str = String(str);
+        pos = Number(pos) >>> 0;
+        var left = str.slice(0, pos).search(/\S+$/), right = str.slice(pos).search(/\s/);
+        if (right < 0) {
+            return str.slice(left);
+        }
+        return str.slice(left, right + pos);
+    }
+    getSentenceTill(str, pos) {
+        str = String(str);
+        pos = Number(pos) >>> 0;
+        var t = str.slice(0, pos).search(/\n.*$/);
+        var right = str.slice(pos).search(/\s/);
+        if (right < 0) {
+            return str.slice(t + 1);
+        }
+        return str.slice(t + 1, right + pos);
+    }
+    getSentenceAt(str, pos) {
+        str = String(str);
+        pos = Number(pos) >>> 0;
+        var left = str.slice(0, pos).search(/\n.+$/);
+        return str.slice(left + 1).split("\n")[0];
+    }
+    isTextChanged() {
+        var flag = this.isTextChange;
+        this.resetTextChangeFlag();
+        return flag;
+    }
+    resetTextChangeFlag() {
+        this.isTextChange = false;
+    }
+    pressedEntered() {
+        this.isEnterPress.next(true);
     }
     insertVaue(text) {
         let t = this.quill.insertText(this.index, " " + text + " ");
@@ -1121,7 +1225,7 @@ let DashboardComponent = class DashboardComponent {
     constructor() {
         this.menuList = [
             {
-                name: "Configuration",
+                name: "HLB",
                 id: 1,
                 html: "<hlb></hlb>"
             },
@@ -1310,7 +1414,7 @@ DependencyGraphComponent = tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"]([
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony default export */ __webpack_exports__["default"] = (".behavior-list {\n  margin: 0.1em;\n  list-style: none;\n  padding: 0;\n}\n\n.behavior-box {\n  margin: 0.5em;\n  border: 1px solid #ccc;\n  padding: 0.5em;\n}\n\n.binding-box {\n  margin: 0.5em;\n  border-bottom: 1px solid #ccc;\n  padding: 0.5em;\n}\n\n.word-bubble {\n  border: 1px dotted black;\n  border-radius: 1em;\n  padding: 0.4em;\n  margin: 0.1em;\n  cursor: pointer;\n}\n\n.word-bubble-button {\n  border-radius: 1em;\n  padding: 0.4em;\n  margin: 0.1em;\n  cursor: pointer;\n}\n\n.float-left {\n  float: left;\n}\n\n.actions {\n  float: right;\n  cursor: pointer;\n  display: none;\n}\n\n.behavior-list:hover .actions {\n  display: block;\n}\n\n.disabled {\n  pointer-events: none;\n}\n\n.grabbable {\n  cursor: move;\n  /* fallback if grab cursor is unsupported */\n  cursor: grab;\n  cursor: -webkit-grab;\n}\n\n/* (Optional) Apply a \"closed-hand\" cursor during drag operation. */\n\n.grabbable:active {\n  cursor: grabbing;\n  cursor: -webkit-grabbing;\n}\n\n.mat-radio-button ~ .mat-radio-button {\n  margin-left: 16px;\n}\n\n.padding-left-right {\n  padding-left: 5px;\n  padding-right: 5px;\n}\n\n.button-padding {\n  margin-left: 0.1em;\n}\n\n.expand {\n  float: right;\n  cursor: pointer;\n}\n\n.hide {\n  display: none;\n}\n/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbIi9Vc2Vycy9TaGFiYmlyL3Byb2plY3RzL0RFV19VSS9zcmMvc3RlZWwvV0VCLUFQUExJQ0FUSU9OL2Zyb250ZW5kL3NyYy9hcHAvcGFnZXMvZGFzaGJvYXJkL2hsYi9obGIuY29tcG9uZW50LnNjc3MiLCJzcmMvYXBwL3BhZ2VzL2Rhc2hib2FyZC9obGIvaGxiLmNvbXBvbmVudC5zY3NzIl0sIm5hbWVzIjpbXSwibWFwcGluZ3MiOiJBQUFBO0VBQ0ksYUFBQTtFQUNBLGdCQUFBO0VBQ0EsVUFBQTtBQ0NKOztBREVBO0VBQ0ksYUFBQTtFQUNBLHNCQUFBO0VBQ0EsY0FBQTtBQ0NKOztBREVBO0VBQ0ksYUFBQTtFQUNBLDZCQUFBO0VBQ0EsY0FBQTtBQ0NKOztBREVBO0VBQ0ksd0JBQUE7RUFDQSxrQkFBQTtFQUNBLGNBQUE7RUFDQSxhQUFBO0VBQ0EsZUFBQTtBQ0NKOztBREVBO0VBQ0ksa0JBQUE7RUFDQSxjQUFBO0VBQ0EsYUFBQTtFQUNBLGVBQUE7QUNDSjs7QURFQTtFQUNJLFdBQUE7QUNDSjs7QURFQTtFQUNJLFlBQUE7RUFDQSxlQUFBO0VBQ0EsYUFBQTtBQ0NKOztBREVBO0VBQ0ksY0FBQTtBQ0NKOztBREVBO0VBQ0ksb0JBQUE7QUNDSjs7QURFQTtFQUNJLFlBQUE7RUFBYywyQ0FBQTtFQUNkLFlBQUE7RUFFQSxvQkFBQTtBQ0VKOztBRENDLG1FQUFBOztBQUNEO0VBQ0ksZ0JBQUE7RUFFQSx3QkFBQTtBQ0VKOztBRENBO0VBQ0ksaUJBQUE7QUNFSjs7QURDRTtFQUNJLGlCQUFBO0VBQ0Esa0JBQUE7QUNFTjs7QURFRTtFQUNJLGtCQUFBO0FDQ047O0FERUU7RUFDSSxZQUFBO0VBQ0EsZUFBQTtBQ0NOOztBREVFO0VBQ0ksYUFBQTtBQ0NOIiwiZmlsZSI6InNyYy9hcHAvcGFnZXMvZGFzaGJvYXJkL2hsYi9obGIuY29tcG9uZW50LnNjc3MiLCJzb3VyY2VzQ29udGVudCI6WyIuYmVoYXZpb3ItbGlzdHtcbiAgICBtYXJnaW46LjFlbTtcbiAgICBsaXN0LXN0eWxlOiBub25lO1xuICAgIHBhZGRpbmc6IDA7XG59XG5cbi5iZWhhdmlvci1ib3h7XG4gICAgbWFyZ2luOiAuNWVtO1xuICAgIGJvcmRlcjogMXB4IHNvbGlkICNjY2M7XG4gICAgcGFkZGluZzogLjVlbTtcbn1cblxuLmJpbmRpbmctYm94e1xuICAgIG1hcmdpbjogLjVlbTtcbiAgICBib3JkZXItYm90dG9tOiAxcHggc29saWQgI2NjYztcbiAgICBwYWRkaW5nOiAuNWVtO1xufVxuXG4ud29yZC1idWJibGV7XG4gICAgYm9yZGVyOiAxcHggZG90dGVkIGJsYWNrO1xuICAgIGJvcmRlci1yYWRpdXM6IDFlbTtcbiAgICBwYWRkaW5nOiAwLjRlbTtcbiAgICBtYXJnaW46IDAuMWVtO1xuICAgIGN1cnNvcjogcG9pbnRlcjtcbiBcbn1cbi53b3JkLWJ1YmJsZS1idXR0b257XG4gICAgYm9yZGVyLXJhZGl1czogMWVtO1xuICAgIHBhZGRpbmc6IDAuNGVtO1xuICAgIG1hcmdpbjogMC4xZW07XG4gICAgY3Vyc29yOiBwb2ludGVyO1xuIFxufVxuLmZsb2F0LWxlZnR7XG4gICAgZmxvYXQ6bGVmdDtcbn1cblxuLmFjdGlvbnN7XG4gICAgZmxvYXQ6cmlnaHQ7XG4gICAgY3Vyc29yOiBwb2ludGVyO1xuICAgIGRpc3BsYXk6IG5vbmU7XG59XG5cbi5iZWhhdmlvci1saXN0OmhvdmVyIC5hY3Rpb25ze1xuICAgIGRpc3BsYXk6IGJsb2NrO1xufVxuXG4uZGlzYWJsZWR7XG4gICAgcG9pbnRlci1ldmVudHM6IG5vbmU7ICAgXG59XG5cbi5ncmFiYmFibGUge1xuICAgIGN1cnNvcjogbW92ZTsgLyogZmFsbGJhY2sgaWYgZ3JhYiBjdXJzb3IgaXMgdW5zdXBwb3J0ZWQgKi9cbiAgICBjdXJzb3I6IGdyYWI7XG4gICAgY3Vyc29yOiAtbW96LWdyYWI7XG4gICAgY3Vyc29yOiAtd2Via2l0LWdyYWI7XG59XG5cbiAvKiAoT3B0aW9uYWwpIEFwcGx5IGEgXCJjbG9zZWQtaGFuZFwiIGN1cnNvciBkdXJpbmcgZHJhZyBvcGVyYXRpb24uICovXG4uZ3JhYmJhYmxlOmFjdGl2ZSB7XG4gICAgY3Vyc29yOiBncmFiYmluZztcbiAgICBjdXJzb3I6IC1tb3otZ3JhYmJpbmc7XG4gICAgY3Vyc29yOiAtd2Via2l0LWdyYWJiaW5nO1xufVxuXG4ubWF0LXJhZGlvLWJ1dHRvbiB+IC5tYXQtcmFkaW8tYnV0dG9uIHtcbiAgICBtYXJnaW4tbGVmdDogMTZweDtcbiAgfVxuXG4gIC5wYWRkaW5nLWxlZnQtcmlnaHR7XG4gICAgICBwYWRkaW5nLWxlZnQ6IDVweDtcbiAgICAgIHBhZGRpbmctcmlnaHQ6IDVweDtcbiAgfVxuXG4gXG4gIC5idXR0b24tcGFkZGluZ3tcbiAgICAgIG1hcmdpbi1sZWZ0OiAuMWVtO1xuICB9XG5cbiAgLmV4cGFuZHtcbiAgICAgIGZsb2F0OiByaWdodDtcbiAgICAgIGN1cnNvcjogcG9pbnRlcjtcbiAgfVxuXG4gIC5oaWRle1xuICAgICAgZGlzcGxheTogbm9uZTtcbiAgfSIsIi5iZWhhdmlvci1saXN0IHtcbiAgbWFyZ2luOiAwLjFlbTtcbiAgbGlzdC1zdHlsZTogbm9uZTtcbiAgcGFkZGluZzogMDtcbn1cblxuLmJlaGF2aW9yLWJveCB7XG4gIG1hcmdpbjogMC41ZW07XG4gIGJvcmRlcjogMXB4IHNvbGlkICNjY2M7XG4gIHBhZGRpbmc6IDAuNWVtO1xufVxuXG4uYmluZGluZy1ib3gge1xuICBtYXJnaW46IDAuNWVtO1xuICBib3JkZXItYm90dG9tOiAxcHggc29saWQgI2NjYztcbiAgcGFkZGluZzogMC41ZW07XG59XG5cbi53b3JkLWJ1YmJsZSB7XG4gIGJvcmRlcjogMXB4IGRvdHRlZCBibGFjaztcbiAgYm9yZGVyLXJhZGl1czogMWVtO1xuICBwYWRkaW5nOiAwLjRlbTtcbiAgbWFyZ2luOiAwLjFlbTtcbiAgY3Vyc29yOiBwb2ludGVyO1xufVxuXG4ud29yZC1idWJibGUtYnV0dG9uIHtcbiAgYm9yZGVyLXJhZGl1czogMWVtO1xuICBwYWRkaW5nOiAwLjRlbTtcbiAgbWFyZ2luOiAwLjFlbTtcbiAgY3Vyc29yOiBwb2ludGVyO1xufVxuXG4uZmxvYXQtbGVmdCB7XG4gIGZsb2F0OiBsZWZ0O1xufVxuXG4uYWN0aW9ucyB7XG4gIGZsb2F0OiByaWdodDtcbiAgY3Vyc29yOiBwb2ludGVyO1xuICBkaXNwbGF5OiBub25lO1xufVxuXG4uYmVoYXZpb3ItbGlzdDpob3ZlciAuYWN0aW9ucyB7XG4gIGRpc3BsYXk6IGJsb2NrO1xufVxuXG4uZGlzYWJsZWQge1xuICBwb2ludGVyLWV2ZW50czogbm9uZTtcbn1cblxuLmdyYWJiYWJsZSB7XG4gIGN1cnNvcjogbW92ZTtcbiAgLyogZmFsbGJhY2sgaWYgZ3JhYiBjdXJzb3IgaXMgdW5zdXBwb3J0ZWQgKi9cbiAgY3Vyc29yOiBncmFiO1xuICBjdXJzb3I6IC1tb3otZ3JhYjtcbiAgY3Vyc29yOiAtd2Via2l0LWdyYWI7XG59XG5cbi8qIChPcHRpb25hbCkgQXBwbHkgYSBcImNsb3NlZC1oYW5kXCIgY3Vyc29yIGR1cmluZyBkcmFnIG9wZXJhdGlvbi4gKi9cbi5ncmFiYmFibGU6YWN0aXZlIHtcbiAgY3Vyc29yOiBncmFiYmluZztcbiAgY3Vyc29yOiAtbW96LWdyYWJiaW5nO1xuICBjdXJzb3I6IC13ZWJraXQtZ3JhYmJpbmc7XG59XG5cbi5tYXQtcmFkaW8tYnV0dG9uIH4gLm1hdC1yYWRpby1idXR0b24ge1xuICBtYXJnaW4tbGVmdDogMTZweDtcbn1cblxuLnBhZGRpbmctbGVmdC1yaWdodCB7XG4gIHBhZGRpbmctbGVmdDogNXB4O1xuICBwYWRkaW5nLXJpZ2h0OiA1cHg7XG59XG5cbi5idXR0b24tcGFkZGluZyB7XG4gIG1hcmdpbi1sZWZ0OiAwLjFlbTtcbn1cblxuLmV4cGFuZCB7XG4gIGZsb2F0OiByaWdodDtcbiAgY3Vyc29yOiBwb2ludGVyO1xufVxuXG4uaGlkZSB7XG4gIGRpc3BsYXk6IG5vbmU7XG59Il19 */");
+/* harmony default export */ __webpack_exports__["default"] = (".behavior-list {\n  margin: 0.1em;\n  list-style: none;\n  padding: 0;\n}\n\n.behavior-box {\n  margin: 0.5em;\n  border: 1px solid #ccc;\n  padding: 0.5em;\n}\n\n.binding-box {\n  margin: 0.5em;\n  border-bottom: 1px solid #ccc;\n  padding: 0.5em;\n}\n\n.word-bubble {\n  border: 1px dotted black;\n  border-radius: 1em;\n  padding: 0.4em;\n  margin: 0.1em;\n  cursor: pointer;\n}\n\n.binding-word-bubble-border-red {\n  border: 1px solid red;\n}\n\n.binding-word-bubble-border-green {\n  border: 1px solid green;\n}\n\n.binding-word-bubble {\n  float: left;\n  margin: 2px;\n  border-radius: 8px;\n  padding: 3px;\n}\n\n.word-bubble-button {\n  border-radius: 1em;\n  padding: 0.4em;\n  margin: 0.1em;\n}\n\n.float-left {\n  float: left;\n}\n\n.actions {\n  float: right;\n  cursor: pointer;\n  display: none;\n}\n\n.behavior-list:hover .actions {\n  display: block;\n}\n\n.disabled {\n  pointer-events: none;\n}\n\n.grabbable {\n  cursor: move;\n  /* fallback if grab cursor is unsupported */\n  cursor: grab;\n  cursor: -webkit-grab;\n}\n\n/* (Optional) Apply a \"closed-hand\" cursor during drag operation. */\n\n.grabbable:active {\n  cursor: grabbing;\n  cursor: -webkit-grabbing;\n}\n\n.mat-radio-button ~ .mat-radio-button {\n  margin-left: 16px;\n}\n\n.padding-left-right {\n  padding-left: 5px;\n  padding-right: 5px;\n}\n\n.button-padding {\n  margin-left: 0.1em;\n}\n\n.expand {\n  float: right;\n  cursor: pointer;\n}\n\n.hide {\n  display: none;\n}\n/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbIi9Vc2Vycy9TaGFiYmlyL3Byb2plY3RzL0RFV19VSS9zcmMvc3RlZWwvV0VCLUFQUExJQ0FUSU9OL2Zyb250ZW5kL3NyYy9hcHAvcGFnZXMvZGFzaGJvYXJkL2hsYi9obGIuY29tcG9uZW50LnNjc3MiLCJzcmMvYXBwL3BhZ2VzL2Rhc2hib2FyZC9obGIvaGxiLmNvbXBvbmVudC5zY3NzIl0sIm5hbWVzIjpbXSwibWFwcGluZ3MiOiJBQUFBO0VBQ0ksYUFBQTtFQUNBLGdCQUFBO0VBQ0EsVUFBQTtBQ0NKOztBREVBO0VBQ0ksYUFBQTtFQUNBLHNCQUFBO0VBQ0EsY0FBQTtBQ0NKOztBREVBO0VBQ0ksYUFBQTtFQUNBLDZCQUFBO0VBQ0EsY0FBQTtBQ0NKOztBREVBO0VBQ0ksd0JBQUE7RUFDQSxrQkFBQTtFQUNBLGNBQUE7RUFDQSxhQUFBO0VBQ0EsZUFBQTtBQ0NKOztBREVBO0VBQ0kscUJBQUE7QUNDSjs7QURDQTtFQUNJLHVCQUFBO0FDRUo7O0FEQUE7RUFFSSxXQUFBO0VBQ0EsV0FBQTtFQUNBLGtCQUFBO0VBQ0EsWUFBQTtBQ0VKOztBREFBO0VBQ0ksa0JBQUE7RUFDQSxjQUFBO0VBQ0EsYUFBQTtBQ0dKOztBREFBO0VBQ0ksV0FBQTtBQ0dKOztBREFBO0VBQ0ksWUFBQTtFQUNBLGVBQUE7RUFDQSxhQUFBO0FDR0o7O0FEQUE7RUFDSSxjQUFBO0FDR0o7O0FEQUE7RUFDSSxvQkFBQTtBQ0dKOztBREFBO0VBQ0ksWUFBQTtFQUFjLDJDQUFBO0VBQ2QsWUFBQTtFQUVBLG9CQUFBO0FDSUo7O0FEREMsbUVBQUE7O0FBQ0Q7RUFDSSxnQkFBQTtFQUVBLHdCQUFBO0FDSUo7O0FEREE7RUFDSSxpQkFBQTtBQ0lKOztBRERFO0VBQ0ksaUJBQUE7RUFDQSxrQkFBQTtBQ0lOOztBREFFO0VBQ0ksa0JBQUE7QUNHTjs7QURBRTtFQUNJLFlBQUE7RUFDQSxlQUFBO0FDR047O0FEQUU7RUFDSSxhQUFBO0FDR04iLCJmaWxlIjoic3JjL2FwcC9wYWdlcy9kYXNoYm9hcmQvaGxiL2hsYi5jb21wb25lbnQuc2NzcyIsInNvdXJjZXNDb250ZW50IjpbIi5iZWhhdmlvci1saXN0e1xuICAgIG1hcmdpbjouMWVtO1xuICAgIGxpc3Qtc3R5bGU6IG5vbmU7XG4gICAgcGFkZGluZzogMDtcbn1cblxuLmJlaGF2aW9yLWJveHtcbiAgICBtYXJnaW46IC41ZW07XG4gICAgYm9yZGVyOiAxcHggc29saWQgI2NjYztcbiAgICBwYWRkaW5nOiAuNWVtO1xufVxuXG4uYmluZGluZy1ib3h7XG4gICAgbWFyZ2luOiAuNWVtO1xuICAgIGJvcmRlci1ib3R0b206IDFweCBzb2xpZCAjY2NjO1xuICAgIHBhZGRpbmc6IC41ZW07XG59XG5cbi53b3JkLWJ1YmJsZXtcbiAgICBib3JkZXI6IDFweCBkb3R0ZWQgYmxhY2s7XG4gICAgYm9yZGVyLXJhZGl1czogMWVtO1xuICAgIHBhZGRpbmc6IDAuNGVtO1xuICAgIG1hcmdpbjogMC4xZW07XG4gICAgY3Vyc29yOiBwb2ludGVyO1xuIFxufVxuLmJpbmRpbmctd29yZC1idWJibGUtYm9yZGVyLXJlZHtcbiAgICBib3JkZXI6IDFweCBzb2xpZCByZWQ7XG59XG4uYmluZGluZy13b3JkLWJ1YmJsZS1ib3JkZXItZ3JlZW57XG4gICAgYm9yZGVyOiAxcHggc29saWQgZ3JlZW47XG59XG4uYmluZGluZy13b3JkLWJ1YmJsZXtcbiAgXG4gICAgZmxvYXQ6IGxlZnQ7XG4gICAgbWFyZ2luOiAycHg7XG4gICAgYm9yZGVyLXJhZGl1czogOHB4O1xuICAgIHBhZGRpbmc6IDNweDtcbn1cbi53b3JkLWJ1YmJsZS1idXR0b257XG4gICAgYm9yZGVyLXJhZGl1czogMWVtO1xuICAgIHBhZGRpbmc6IDAuNGVtO1xuICAgIG1hcmdpbjogMC4xZW07XG4gXG59XG4uZmxvYXQtbGVmdHtcbiAgICBmbG9hdDpsZWZ0O1xufVxuXG4uYWN0aW9uc3tcbiAgICBmbG9hdDpyaWdodDtcbiAgICBjdXJzb3I6IHBvaW50ZXI7XG4gICAgZGlzcGxheTogbm9uZTtcbn1cblxuLmJlaGF2aW9yLWxpc3Q6aG92ZXIgLmFjdGlvbnN7XG4gICAgZGlzcGxheTogYmxvY2s7XG59XG5cbi5kaXNhYmxlZHtcbiAgICBwb2ludGVyLWV2ZW50czogbm9uZTsgICBcbn1cblxuLmdyYWJiYWJsZSB7XG4gICAgY3Vyc29yOiBtb3ZlOyAvKiBmYWxsYmFjayBpZiBncmFiIGN1cnNvciBpcyB1bnN1cHBvcnRlZCAqL1xuICAgIGN1cnNvcjogZ3JhYjtcbiAgICBjdXJzb3I6IC1tb3otZ3JhYjtcbiAgICBjdXJzb3I6IC13ZWJraXQtZ3JhYjtcbn1cblxuIC8qIChPcHRpb25hbCkgQXBwbHkgYSBcImNsb3NlZC1oYW5kXCIgY3Vyc29yIGR1cmluZyBkcmFnIG9wZXJhdGlvbi4gKi9cbi5ncmFiYmFibGU6YWN0aXZlIHtcbiAgICBjdXJzb3I6IGdyYWJiaW5nO1xuICAgIGN1cnNvcjogLW1vei1ncmFiYmluZztcbiAgICBjdXJzb3I6IC13ZWJraXQtZ3JhYmJpbmc7XG59XG5cbi5tYXQtcmFkaW8tYnV0dG9uIH4gLm1hdC1yYWRpby1idXR0b24ge1xuICAgIG1hcmdpbi1sZWZ0OiAxNnB4O1xuICB9XG5cbiAgLnBhZGRpbmctbGVmdC1yaWdodHtcbiAgICAgIHBhZGRpbmctbGVmdDogNXB4O1xuICAgICAgcGFkZGluZy1yaWdodDogNXB4O1xuICB9XG5cbiBcbiAgLmJ1dHRvbi1wYWRkaW5ne1xuICAgICAgbWFyZ2luLWxlZnQ6IC4xZW07XG4gIH1cblxuICAuZXhwYW5ke1xuICAgICAgZmxvYXQ6IHJpZ2h0O1xuICAgICAgY3Vyc29yOiBwb2ludGVyO1xuICB9XG5cbiAgLmhpZGV7XG4gICAgICBkaXNwbGF5OiBub25lO1xuICB9IiwiLmJlaGF2aW9yLWxpc3Qge1xuICBtYXJnaW46IDAuMWVtO1xuICBsaXN0LXN0eWxlOiBub25lO1xuICBwYWRkaW5nOiAwO1xufVxuXG4uYmVoYXZpb3ItYm94IHtcbiAgbWFyZ2luOiAwLjVlbTtcbiAgYm9yZGVyOiAxcHggc29saWQgI2NjYztcbiAgcGFkZGluZzogMC41ZW07XG59XG5cbi5iaW5kaW5nLWJveCB7XG4gIG1hcmdpbjogMC41ZW07XG4gIGJvcmRlci1ib3R0b206IDFweCBzb2xpZCAjY2NjO1xuICBwYWRkaW5nOiAwLjVlbTtcbn1cblxuLndvcmQtYnViYmxlIHtcbiAgYm9yZGVyOiAxcHggZG90dGVkIGJsYWNrO1xuICBib3JkZXItcmFkaXVzOiAxZW07XG4gIHBhZGRpbmc6IDAuNGVtO1xuICBtYXJnaW46IDAuMWVtO1xuICBjdXJzb3I6IHBvaW50ZXI7XG59XG5cbi5iaW5kaW5nLXdvcmQtYnViYmxlLWJvcmRlci1yZWQge1xuICBib3JkZXI6IDFweCBzb2xpZCByZWQ7XG59XG5cbi5iaW5kaW5nLXdvcmQtYnViYmxlLWJvcmRlci1ncmVlbiB7XG4gIGJvcmRlcjogMXB4IHNvbGlkIGdyZWVuO1xufVxuXG4uYmluZGluZy13b3JkLWJ1YmJsZSB7XG4gIGZsb2F0OiBsZWZ0O1xuICBtYXJnaW46IDJweDtcbiAgYm9yZGVyLXJhZGl1czogOHB4O1xuICBwYWRkaW5nOiAzcHg7XG59XG5cbi53b3JkLWJ1YmJsZS1idXR0b24ge1xuICBib3JkZXItcmFkaXVzOiAxZW07XG4gIHBhZGRpbmc6IDAuNGVtO1xuICBtYXJnaW46IDAuMWVtO1xufVxuXG4uZmxvYXQtbGVmdCB7XG4gIGZsb2F0OiBsZWZ0O1xufVxuXG4uYWN0aW9ucyB7XG4gIGZsb2F0OiByaWdodDtcbiAgY3Vyc29yOiBwb2ludGVyO1xuICBkaXNwbGF5OiBub25lO1xufVxuXG4uYmVoYXZpb3ItbGlzdDpob3ZlciAuYWN0aW9ucyB7XG4gIGRpc3BsYXk6IGJsb2NrO1xufVxuXG4uZGlzYWJsZWQge1xuICBwb2ludGVyLWV2ZW50czogbm9uZTtcbn1cblxuLmdyYWJiYWJsZSB7XG4gIGN1cnNvcjogbW92ZTtcbiAgLyogZmFsbGJhY2sgaWYgZ3JhYiBjdXJzb3IgaXMgdW5zdXBwb3J0ZWQgKi9cbiAgY3Vyc29yOiBncmFiO1xuICBjdXJzb3I6IC1tb3otZ3JhYjtcbiAgY3Vyc29yOiAtd2Via2l0LWdyYWI7XG59XG5cbi8qIChPcHRpb25hbCkgQXBwbHkgYSBcImNsb3NlZC1oYW5kXCIgY3Vyc29yIGR1cmluZyBkcmFnIG9wZXJhdGlvbi4gKi9cbi5ncmFiYmFibGU6YWN0aXZlIHtcbiAgY3Vyc29yOiBncmFiYmluZztcbiAgY3Vyc29yOiAtbW96LWdyYWJiaW5nO1xuICBjdXJzb3I6IC13ZWJraXQtZ3JhYmJpbmc7XG59XG5cbi5tYXQtcmFkaW8tYnV0dG9uIH4gLm1hdC1yYWRpby1idXR0b24ge1xuICBtYXJnaW4tbGVmdDogMTZweDtcbn1cblxuLnBhZGRpbmctbGVmdC1yaWdodCB7XG4gIHBhZGRpbmctbGVmdDogNXB4O1xuICBwYWRkaW5nLXJpZ2h0OiA1cHg7XG59XG5cbi5idXR0b24tcGFkZGluZyB7XG4gIG1hcmdpbi1sZWZ0OiAwLjFlbTtcbn1cblxuLmV4cGFuZCB7XG4gIGZsb2F0OiByaWdodDtcbiAgY3Vyc29yOiBwb2ludGVyO1xufVxuXG4uaGlkZSB7XG4gIGRpc3BsYXk6IG5vbmU7XG59Il19 */");
 
 /***/ }),
 
@@ -1359,25 +1463,14 @@ let HlbComponent = class HlbComponent {
         this.contraintList = [];
         this.bindingList = [];
         this.bindingMap = new Map();
-        this.wordlist = [{
-                value: "Hello"
-            },
-            {
-                value: "World"
-            }, {
-                value: "server"
-            }, {
-                value: "router"
-            }, {
-                value: "actors"
-            }
-        ];
+        this.wordlist = [];
         this.inputText = "";
         this.actors = "";
         this.selectedIndex = 0;
     }
     ngOnInit() {
         this.behaviorList = [];
+        const instance = this;
         this.stateservice.getBehavior().subscribe(data => {
             if (data != null) {
                 console.log(data);
@@ -1385,25 +1478,30 @@ let HlbComponent = class HlbComponent {
                 data.forEach(element => {
                     text += element + '<br>';
                 });
-                this.behaviorText = text;
+                instance.behaviorText = text;
             }
         });
         this.stateservice.getBindings().subscribe(data => {
             if (data != null) {
+                this.behaviorList = [];
                 data.forEach(element => {
                     var list = element.trim().split(' ');
-                    console.log(list);
+                    // console.log(list);
                     var key = list[0];
-                    console.log(key);
+                    //console.log(key);
                     var value = list.splice(0).join(' ');
-                    console.log(value);
-                    this.bindingList.push({ key: key, value: value });
+                    //console.log(value);
+                    if (!this.bindingMap.has(key)) {
+                        this.bindingMap.set(key, null);
+                        this.bindingList.push({ key: key, value: value });
+                    }
                 });
             }
         });
         this.stateservice.getActors().subscribe(data => {
             // console.log(data);
             if (data != null) {
+                instance.actorsList = [];
                 data.forEach(element => {
                     this.actorsList.push({ text: element });
                 });
@@ -1415,6 +1513,7 @@ let HlbComponent = class HlbComponent {
     }
     created(editor, id) {
         // console.log(id);
+        var instance = this;
         switch (id) {
             case 1:
                 this.actorService = editor.getModule("counter");
@@ -1422,8 +1521,37 @@ let HlbComponent = class HlbComponent {
             case 2:
                 this.behaviorService = editor.getModule("counter");
                 this.behaviorService.isBlur().subscribe(data => {
-                    if (data)
+                    if (data && instance.behaviorService.isTextChanged())
                         this.updateActors();
+                });
+                this.behaviorService.isEnterPressed().subscribe(flag => {
+                    if (flag && instance.behaviorService.isTextChanged()) {
+                        if (this.behaviorService.getText().trim() === "")
+                            return;
+                        var index = this.behaviorService.getText().length - 2;
+                        if (this.behaviorService.getText().charAt(index) == '\n')
+                            this.updateActors();
+                    }
+                });
+                this.behaviorService.getSuggestionData().subscribe(data => {
+                    if (data != null) {
+                        var params = {
+                            type: "behavior",
+                            suggestion_for: data.currentSentence,
+                            behaviors: data.remainingSentences,
+                            constraints: [],
+                            actors: []
+                        };
+                        this.http.put("v1/hlb/suggestions", params).subscribe(data => {
+                            var list = [];
+                            data.suggestions.forEach(element => {
+                                list.push({ value: element, flag: false });
+                            });
+                            if (data.suggestion_text.trim() != '')
+                                list.push({ value: data.suggestion_text, flag: true });
+                            this.wordlist = list;
+                        });
+                    }
                 });
                 break;
             case 3:
@@ -1475,6 +1603,11 @@ let HlbComponent = class HlbComponent {
         });
         // this.loadBindings();
     }
+    isEmpty(binding) {
+        if (binding.value == undefined)
+            return true;
+        return binding.value.trim() == '';
+    }
     loadBindings() {
         this.bindingMap.forEach((value, key) => {
             this.bindingList.push(key);
@@ -1485,21 +1618,21 @@ let HlbComponent = class HlbComponent {
             triggers.forEach(element => {
                 if (!this.bindingMap.has(element)) {
                     this.bindingMap.set(element, null);
-                    this.bindingList.push({ key: element });
+                    this.bindingList.push({ key: element, value: "" });
                 }
             });
         if (actions != null)
             actions.forEach(element => {
                 if (!this.bindingMap.has(element)) {
                     this.bindingMap.set(element, null);
-                    this.bindingList.push({ key: element });
+                    this.bindingList.push({ key: element, value: "" });
                 }
             });
         if (emitters != null)
             emitters.forEach(element => {
                 if (!this.bindingMap.has(element)) {
                     this.bindingMap.set(element, null);
-                    this.bindingList.push({ key: element });
+                    this.bindingList.push({ key: element, value: "" });
                 }
             });
         // console.log(this.bindingMap);
@@ -1507,9 +1640,9 @@ let HlbComponent = class HlbComponent {
     logChangeBehavior(event) {
         if (this.behaviorService.getText().trim() === "")
             return;
-        var index = this.behaviorService.getText().length - 2;
-        if (this.behaviorService.getText().charAt(index) == '\n')
-            this.updateActors();
+        // var index = this.behaviorService.getText().length-2;
+        // if (this.behaviorService.getText().charAt(index) == '\n')
+        //     this.updateActors();
     }
     logChangeConstraints(event) {
         if (this.constraintService.getText().trim() === "")
@@ -1944,11 +2077,13 @@ let UploadComponent = class UploadComponent {
     }
     upload(item) {
         const fileEntry = item.fileEntry;
+        this.state.enableLoader();
         fileEntry.file((file) => {
             const formData = new FormData();
             formData.append('file', file);
             this.http.put('v1/upload/dew', formData, { responseType: 'blob' })
                 .subscribe(data => {
+                this.state.disableLoader();
                 if (data.behaviors != undefined) {
                     this.state.setActors(data.actors);
                     this.state.setBehavior(data.behaviors);
@@ -1963,6 +2098,8 @@ let UploadComponent = class UploadComponent {
                         duration: 2000,
                     });
                 }
+            }, error => {
+                this.state.disableLoader();
             });
         });
         //   alert(fileEntry.name+" is uploaded!");
