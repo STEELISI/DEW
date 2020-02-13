@@ -73,6 +73,7 @@ export class UploadComponent {
 
   upload(item:NgxFileDropEntry){
     const fileEntry = item.fileEntry as FileSystemFileEntry;
+    this.state.enableLoader();
     fileEntry.file((file: File) => {
     const formData = new FormData()
           formData.append('file', file)
@@ -81,7 +82,7 @@ export class UploadComponent {
  
           this.http.put('v1/upload/dew', formData, { responseType: 'blob' })
           .subscribe(data => {
-
+            this.state.disableLoader();
             if(data.behaviors !=undefined){
            this.state.setActors(data.actors);
            this.state.setBehavior(data.behaviors);
@@ -95,6 +96,8 @@ export class UploadComponent {
                 duration: 2000,
               });
             }
+          },error=>{
+            this.state.disableLoader();
           })
         });
    
