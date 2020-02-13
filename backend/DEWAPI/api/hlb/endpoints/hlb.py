@@ -3,6 +3,7 @@ from flask_restplus import Resource
 from DEWAPI.api.common.serializers import blog_post, ns_object, parse_request, translate_request, suggestion_object
 from DEWAPI.api.restplus import api
 from ..services.hlbServices import HLBService
+import globals
 
 ns = api.namespace('v1/hlb', description='Operations related to hlb')
 
@@ -50,16 +51,26 @@ class HandleGeneratorNs(Resource):
 @ns.route('/suggestions')
 class HandleSuggestions(Resource):
 
+
     @api.expect(suggestion_object)
     def put(self):
         """
           Gets suggestions for given input
         """
+
+        # TODO : Remove globals
+        globals.actors=dict()
+        globals.behaviors=dict()
+        globals.constraints=dict()
+        globals.events=dict()
+        globals.actions=dict()
+
         json_data = request.get_json(force=True)
         if json_data["type"] == "behavior":
-          return { 'suggestions': obj.HandleBehaviorSuggestions(json_data["behaviors"], json_data['actors'], json_data['suggestion_for'])}
+          s, t = obj.HandleBehaviorSuggestions(json_data["behaviors"], json_data['actors'], json_data['suggestion_for'])
+          return { 'suggestions': s, 'suggestion_text': t}
         elif json_data["type"] == "constraint":
-          return {'suggestions': obj.HandleConstraintSuggestions(json_data["constraints"], json_data["actors"], json_data["suggestion_for"])}
-          pass
+          s, t = obj.HandleConstraintSuggestions(json_data["constraints"], json_data["actors"], json_data["suggestion_for"])
+          return { 'suggestions': s, 'suggestion_text': t}
         else:
           pass

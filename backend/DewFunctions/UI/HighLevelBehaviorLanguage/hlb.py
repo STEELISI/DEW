@@ -320,6 +320,7 @@ def Centry(button):
 def getSuggestionsForEvent(evtype):
     print("In api")
     suggestions = []
+    suggestion_text = ''
     if evtype == "actors_only":
         for a in globals.actors:
             if a != "" and a not in globals.sbuttons:
@@ -355,10 +356,11 @@ def getSuggestionsForEvent(evtype):
         # globals.sbuttons["emit"] = 1
         # globals.app.addButton("emit", pb)
     else: # it was text to be displayed as label
-        suggestions.append(evtype)
+        #suggestions.append(evtype)
+        suggestion_text = evtype
     #globals.app.stopLabelFrame()
     # globals.app.stopScrollPane()
-    return suggestions
+    return suggestions,suggestion_text
 
 def addSuggestions(evtype, pb):
     globals.app.openScrollPane("Suggestions")

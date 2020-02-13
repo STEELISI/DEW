@@ -27,6 +27,7 @@ class HLBService():
         # from every line but the last
 
         parser = HLBParser(given_actors)
+        # TODO : Remove globals
         for b in behaviors:
             globals.behaviors[i] = b
             i = i + 1
@@ -53,25 +54,22 @@ class HLBService():
         type,vals,hints = parser.extract_partial(last_behavior)
         #print type,vals,hints
         if (type == HLBHintType.BLANK):
-            return self.addSuggestions("behaviors_enter")
+            return self.addSuggestions(["behaviors_enter"])
         elif(type == HLBHintType.REQ_WHEN_LIST):
-             return self.addSuggestions("enter event name")
-             return self.addSuggestions("events_only")
+             return self.addSuggestions(["events_only","enter event name"])
         elif(type == HLBHintType.REQ_ACTORS_HAVEWHEN):
-            return self.addSuggestions("when_enter")
+            return self.addSuggestions(["when_enter"])
         elif(type == HLBHintType.REQ_WAIT_TIME):
-            return self.addSuggestions("enter variable name or wait time in second")
+            return self.addSuggestions(["enter variable name or wait time in second"])
         elif(type == HLBHintType.REQ_ACTORS):
-            return self.addSuggestions("actors_only")
+            return self.addSuggestions(["actors_only"])
         elif(type == HLBHintType.REQ_ACTION):
             if (last_behavior.endswith(" ")):
                 items = last_behavior.strip().split(" ")
                 item = items[-1].strip(",")
                 if item not in globals.actors:
                     self.addactor(item)
-            return self.addSuggestions("enter action")
-            return self.addSuggestions("actions_only")
-            return self.addSuggestions("actors_only")
+            return self.addSuggestions(["actions_only", "actors_only", "enter action"])
         elif(type == HLBHintType.OPT_EMIT_STMT):
             if (last_behavior.endswith(" ")):
                 items = last_behavior.strip().split(" ")
@@ -79,12 +77,12 @@ class HLBService():
                 if item not in globals.actions:
                     globals.actions[item] = 1
 
-            return self.addSuggestions("emit")
+            return self.addSuggestions(["emit"])
         elif (type == HLBHintType.REQ_EMIT_LIST):
-            return self.addSuggestions("enter event name(s)")
+            return self.addSuggestions(["enter event name(s)"])
 
 
-        return ['wait', 'emit', 'server', 'client', 'install_iperf', 'install_flooder', 'install_tcpdump', 'start_measure', 'start_server', 'mstarted', 'sstarted', 'when', 'mstarted', 'cstarted', 'astarted', 'astopped', 'attacker', 'start_traffic', 'start_attack', 'stop_attack', 'stop_traffic', 'cstopped', 'mstopped', 'calculate_entropy', 'stop_measure', 'COPY_TO_GITHUB']
+        return ['wait', 'emit', 'server', 'client', 'install_iperf', 'install_flooder', 'install_tcpdump', 'start_measure', 'start_server', 'mstarted', 'sstarted', 'when', 'mstarted', 'cstarted', 'astarted', 'astopped', 'attacker', 'start_traffic', 'start_attack', 'stop_attack', 'stop_traffic', 'cstopped', 'mstopped', 'calculate_entropy', 'stop_measure', 'COPY_TO_GITHUB'], ""
 
     def addactor(self, item):
         globals.actors[item] = 1
@@ -96,8 +94,13 @@ class HLBService():
         if ("actor"+str(globals.acn)) in globals.actors:
             globals.acn = globals.acn+1
 
-    def addSuggestions(self, event):
-        return hlb.getSuggestionsForEvent(event)
+    def addSuggestions(self, events):
+        suggestions, suggestion_text = [], ''
+        for event in events:
+            s,t = hlb.getSuggestionsForEvent(event)
+            suggestions = suggestions + s
+            suggestion_text = suggestion_text + t
+        return suggestions, suggestion_text
 
     def HandleConstraintSuggestions(self, constraints, actors, last_constraint):
         suggestions = []
@@ -105,31 +108,31 @@ class HLBService():
         items = re.split("[\s,]",last_constraint.strip())
         item = items.pop(0)
         if item in ["num", "os","nodetype", "interfaces", "location", "link","lan"] and len(items) == 0:
-            return {'suggestionList': actors}
+            return actors
         elif len(items) >= 1:
             if (item == "num" or item == "interfaces") and items[-1] in actors:
-                return self.addSuggestions("enter digit")
+                return self.addSuggestions(["enter digit"])
             elif item == "os" and (items[-1] in actors):
                 # for os in globals.deploy_handler.getSuggestions(type='os'):
                     #addSuggestions(os, Centry)
                     # globals.app.addButton(os,Centry)
                     # globals.sbuttons[os]=1
-                return self.addSuggestions("enter OS")
+                return self.addSuggestions(["enter OS"])
             elif item == "nodetype" and (items[-1] in actors):
                 # for nodetype in globals.deploy_handler.getSuggestions(type='nodetype'):
                 #     globals.app.addButton(nodetype,Centry)
                 #     globals.sbuttons[nodetype]=1
-                return self.addSuggestions("enter node type")
+                return self.addSuggestions(["enter node type"])
             elif item == "link" and (items[-1] in actors):
-                return self.addSuggestions("actors_only")
+                return self.addSuggestions(["actors_only"])
             elif item == "lan" and (items[-1] in actors):
-                return self.addSuggestions("actors_only")
+                return self.addSuggestions(["actors_only"])
             elif item == "location" and (items[-1] in globals.actors):
-                return self.addSuggestions("enter testbed")
+                return self.addSuggestions(["enter testbed"])
             else:
-               return self.addSuggestions("constraints_enter")
+               return self.addSuggestions(["constraints_enter"])
         else:
-            return self.addSuggestions("constraints_enter")
+            return self.addSuggestions(["constraints_enter"])
 
     # Handle Translator
     def HandleTranslator(self,format, data):
