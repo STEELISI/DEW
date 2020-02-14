@@ -23,6 +23,10 @@ export default class EditorService {
     return this.textData.asObservable();
   }
 
+  getCurrentWord(): Observable<any> {
+    return this.currentword.asObservable();
+  }
+
   getSuggestionData(): Observable<any> {
     return this.currentsentence.asObservable();
   }
@@ -74,6 +78,7 @@ export default class EditorService {
       //  console.log(text);
         //console.log();
         instance.currentSentence( text,position);
+        instance.currentWord(text,position);
       instance.index = position;
     });
   

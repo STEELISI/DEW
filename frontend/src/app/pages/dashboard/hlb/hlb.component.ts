@@ -1,4 +1,4 @@
-import { Component, OnInit, Inject } from '@angular/core';
+import { Component, OnInit, Inject, ChangeDetectorRef } from '@angular/core';
 import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
 import * as Quill from "quill";
 import EditorService from '../common/editor-service';
@@ -41,7 +41,7 @@ inputText:string="";
 actors:String ="";
 selectedIndex:number=0;
 constructor(private http: HttpService,
-  public dialog: MatDialog,private stateservice:StateService,private _snackBar: MatSnackBar){}
+  public dialog: MatDialog,private stateservice:StateService,private _snackBar: MatSnackBar,private changeDetection: ChangeDetectorRef){}
 ngOnInit(): void {
 
 
@@ -129,7 +129,7 @@ ngOnInit(): void {
                       constraints: [],
                       actors: []
                     }
-
+                    this.behaviorTextFilter = '';
                     this.http.put("v1/hlb/suggestions",params).subscribe(data=>{
 
                       var list =[];
@@ -139,9 +139,17 @@ ngOnInit(): void {
                       if(data.suggestion_text.trim()!='')
                       list.push({value:data.suggestion_text,flag:true});
                       this.wordlist = list;
+                      this.changeDetection.detectChanges();
                     });
                 }
 
+              });
+
+              this.behaviorService.getCurrentWord().subscribe(data=>{
+                console.log(data);
+                if(data!=null && data.trim()){
+                  this.behaviorTextFilter = data;
+                }
               });
               break;
               case 3:
@@ -205,6 +213,7 @@ ngOnInit(): void {
       });
 
      // this.loadBindings();
+     this.changeDetection.detectChanges();
       
   }
 
