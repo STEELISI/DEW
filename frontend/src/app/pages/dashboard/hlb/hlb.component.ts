@@ -34,7 +34,8 @@ export class HlbComponent implements OnInit{
   actorsList:any=[];
   contraintList:any=[];
   bindingList:any=[];
-  localWordList:any;
+  suggestionMessage:String;
+
   bindingMap = new Map<String,any>();
   wordlist:any=[];
 inputText:string="";
@@ -137,7 +138,9 @@ ngOnInit(): void {
                         list.push({value:element,flag:false});
                       });
                       if(data.suggestion_text.trim()!='')
-                      list.push({value:data.suggestion_text,flag:true});
+                      this.suggestionMessage = data.suggestion_text;
+                      else
+                      this.suggestionMessage =null;
                       this.wordlist = list;
                       this.changeDetection.detectChanges();
                     });
@@ -327,25 +330,6 @@ logChangeConstraints(event){
     this.selectedIndex=index;
   }
 
-  updateWordList(){
-    this.localWordList=[];
-    var dict = new Map;
-    this.behaviorList.forEach(element => {
-      //console.log(element);
-    var wordlist = element.text.trim().split(/\s/);
-    wordlist.forEach(element => {
-      if(element.trim()!==""){
-        if(!dict.has(element.trim())){
-          this.localWordList.push({value:element.trim()});
-          dict.set(element.trim(),true);
-        }
-      }
-    });
-  
-  });
-  this.wordlist = this.wordlist.concat(this.localWordList);
-  console.log(this.localWordList);
-  }
 
   addBindings(){
     console.log(this.bindingList);
