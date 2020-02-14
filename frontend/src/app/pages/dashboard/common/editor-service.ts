@@ -8,7 +8,7 @@ export interface QuillInstance {
   getSelection: any;
   setText: any;
   insertText: any;
-  hasFocus:any;
+  hasFocus:any;deleteText:any;
 }
 
 export default class EditorService {
@@ -180,7 +180,20 @@ getSentenceAt (str, pos) {
       this.isEnterPress.next(true);
   }
   insertVaue(text: String) {
-    let t: string = this.quill.insertText(this.index, " " + text + " ");
+    var word = this.getWordAt(String(this.quill.getText()),this.index);
+    if (word.trim()=='')
+     this.quill.insertText(this.index, text + " ");
+     else
+    this.replaceText(this.quill.getText(),text,word);
+  }
+
+  replaceText(str,text,word){
+    str = String(str);
+    var pos = Number(this.index) >>> 0; 
+    var left = str.slice(0, pos).search(/\S+$/);
+    this.quill.deleteText(left,word.length);
+    let t: string = this.quill.insertText(left, text + " ");
+    this.index = left+text.length+1;
   }
 
   getText(): String {

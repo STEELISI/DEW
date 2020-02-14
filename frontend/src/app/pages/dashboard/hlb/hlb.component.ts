@@ -149,7 +149,7 @@ ngOnInit(): void {
               });
 
               this.behaviorService.getCurrentWord().subscribe(data=>{
-                console.log(data);
+               // console.log(data);
                 if(data!=null && data.trim()){
                   this.behaviorTextFilter = data;
                 }
