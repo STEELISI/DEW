@@ -171,7 +171,7 @@ function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _d
     /* harmony default export */
 
 
-    __webpack_exports__["default"] = "\n <div class=\"row\">\n<div class=\"col-md-9\">\n\n  \n    <div class=\"row\" style=\"margin: .5em;\">\n        <div class=\"col-md-12\" style=\"padding: 0;\">\n            <mat-card> \n               \n                 <div style=\"text-align: center;\">  Behavior</div> \n               <hr>\n               <div class=\"row\">\n               <div class=\"col-md-12\" (click)=\"selectTextBox(2)\">\n                  <div style=\"margin: .6em;\" [hidden]=\"!isEnable(2)\">\n                      <span>Suggestions:</span>\n                     \n                      <button type=\"button\" class=\"btn btn-outline-primary word-bubble-button\" *ngFor=\"let word of wordlist | textfilter:behaviorTextFilter \"  (click)=\"insertValue(word.value)\" [disabled]=\"word.flag\">{{word.value}}</button>\n                      \n                   </div>\n                <div class=\"flex-container\" (blur)=\"onBlurMethod()\" >\n                    \n                      <quill-editor \n                     \n                      [styles]=\"{height: '400px',border:'1px dashed grey'}\"\n                      [modules]=\"{  counter: { container: '#editor1'} ,toolbar: false }\"\n                      [(ngModel)]=\"behaviorText\" \n                      (onContentChanged)=\"logChangeBehavior($event);\"\n                      (onEditorCreated)=\"created($event,2)\"></quill-editor>\n                    </div>\n                     \n                  \n                  </div>\n                  </div>\n                 \n            </mat-card>\n   \n        </div>\n      </div> \n      <div class=\"row\" style=\"margin: .5em;\">\n          <div class=\"col-md-12\" style=\"padding: 0;\">\n              <mat-card> \n                \n                <div style=\"text-align: center;\">  Constraints</div> \n                \n                  <hr>\n                  <div class=\"row\">\n                  <div class=\"col-md-12\" (click)=\"selectTextBox(3)\">\n                    <div style=\"margin: .6em;\" [hidden]=\"!isEnable(3)\">\n                       <span>Suggestions:</span>\n                       <button type=\"button\" class=\"btn btn-outline-primary word-bubble-button\" *ngFor=\"let word of wordlist | textfilter:constraintTextFilter\"  (click)=\"insertValue(word.value)\">{{word.value}}</button>\n                           \n                \n                    </div>\n                      <div class=\"flex-container\">\n                    \n                          <quill-editor \n                         \n                          [styles]=\"{height: '400px',border:'1px dashed grey'}\"\n                          [modules]=\"{  counter: { container: '#editor1'} ,toolbar: false }\"\n                          [(ngModel)]=\"constraints\" \n                          (onContentChanged)=\"logChangeConstraints($event);\"\n                          (onEditorCreated)=\"created($event,3)\"></quill-editor>\n                        </div>\n                      </div>\n                      </div>\n              </mat-card>\n          </div>\n        </div>\n         <div class=\"row\" style=\"margin: .5em;\">\n          <div class=\"col-md-12\" style=\"padding: 0;\">\n            <mat-card> \n                    \n              <div style=\"text-align: center;\">  Bindings</div> \n              \n                <hr>\n                <div *ngIf=\"bindingList.length==0\" style=\"font-size: .8em;text-align: center;\">\n                  <span ><i>No Bindings Needed</i></span>\n                </div>\n                  <div *ngIf=\"bindingList.length!=0\">\n                <ul  class=\"behavior-list \" >\n                  <li class=\"binding-box\" *ngFor=\"let item of bindingList;let index=index\" ><div>\n                  \n                    <mat-form-field style=\"width:100%\">\n                      <input matInput placeholder=\"{{item.key+' represents: '}}\" [(ngModel)]=\"item.value\">\n                    </mat-form-field>\n      \n                    <span>\n                    </span>\n                   \n                  </div>\n                    </li>\n              </ul>\n              </div>\n      \n              \n            </mat-card> \n            </div>\n            </div> \n   \n\n \n  </div>\n<div class=\"col-md-3\" style=\"margin: 0;\">\n\n  <div class=\"row\">\n    <div class=\"col-md-12\">\n        \n      <div style=\"text-align: center;padding: 1em;\">     \n         <button mat-stroked-button (click)=\"addBindings()\" >Generate Ns File</button>\n    </div>\n    </div>\n    </div>\n  \n  <div class=\"row\" style=\"margin-top: .1em;\n  margin-bottom: .1em;\">\n    <div class=\"col-md-12\" style=\"padding: 0;\">\n\n      <mat-card>  \n        <div style=\"text-align: center;\">Actors\n         </div>\n\n        \n        <hr>\n        <div *ngIf=\"actorsList.length==0\" style=\"font-size: .8em;text-align: center;\">\n          <span ><i>No Actors</i></span>\n        </div>\n          <div *ngIf=\"actorsList.length!=0\" style=\"  height: auto;\n          display: flow-root;\n          padding: 0;\">\n        \n\n      <div *ngFor=\"let item of actorsList;let index=index\" class=\"binding-word-bubble\" style=\"  border: 1px solid black;\">\n          \n        <span>\n        {{item.text}} </span>\n       \n        </div>\n      </div>\n      </mat-card>\n\n    </div>\n  </div>\n\n  <div class=\"row\" style=\"margin-top: .1em;\n  margin-bottom: .1em;\">\n    <div class=\"col-md-12\" style=\"padding: 0;\">\n\n      <mat-card>  \n        <div style=\"text-align: center;\">Bindings Needed\n\n        \n         </div>\n\n        \n        <hr>\n        <div *ngIf=\"bindingList.length==0\" style=\"font-size: .8em;text-align: center;\">\n          <span ><i>No Bindings Needed.</i></span>\n        </div>\n        \n          <div *ngIf=\"bindingList.length!=0\" style=\"  height: auto;\n          display: flow-root;\n          padding: 0;\">\n        \n          <div *ngFor=\"let item of bindingList;let index=index\" class=\"binding-word-bubble\" [ngClass]=\"{'binding-word-bubble-border-red':isEmpty(item),'binding-word-bubble-border-green':!isEmpty(item)}\">\n          \n            <span>\n            {{item.key}} </span>\n           \n            </div>\n      \n      </div>\n      </mat-card>\n\n    </div>\n  </div>\n  </div>\n</div> \n\n";
+    __webpack_exports__["default"] = "\n <div class=\"row\">\n<div class=\"col-md-9\">\n\n  \n    <div class=\"row\" style=\"margin: .5em;\">\n        <div class=\"col-md-12\" style=\"padding: 0;\">\n            <mat-card> \n               \n                 <div style=\"text-align: center;\">  Behavior</div> \n               <hr>\n               <div class=\"row\">\n               <div class=\"col-md-12\" (click)=\"selectTextBox(2)\">\n                  <div style=\"margin: .6em;\" [hidden]=\"!isEnable(2)\">\n                      <span>Suggestions:</span>\n                     \n                      <button type=\"button\" class=\"btn btn-outline-primary word-bubble-button\" *ngFor=\"let word of wordlist | textfilter:behaviorTextFilter \"  (click)=\"insertValue(word.value)\" [disabled]=\"word.flag\">{{word.value}}</button>\n                      <button type=\"button\" *ngIf=\"suggestionMessage!=null\" class=\"btn btn-outline-primary word-bubble-button\" [disabled]=\"true\">{{suggestionMessage}}</button>\n                      \n                      \n                   </div>\n                <div class=\"flex-container\" (blur)=\"onBlurMethod()\" >\n                    \n                      <quill-editor \n                     \n                      [styles]=\"{height: '400px',border:'1px dashed grey'}\"\n                      [modules]=\"{  counter: { container: '#editor1'} ,toolbar: false }\"\n                      [(ngModel)]=\"behaviorText\" \n                      (onContentChanged)=\"logChangeBehavior($event);\"\n                      (onEditorCreated)=\"created($event,2)\"></quill-editor>\n                    </div>\n                     \n                  \n                  </div>\n                  </div>\n                 \n            </mat-card>\n   \n        </div>\n      </div> \n      <div class=\"row\" style=\"margin: .5em;\">\n          <div class=\"col-md-12\" style=\"padding: 0;\">\n              <mat-card> \n                \n                <div style=\"text-align: center;\">  Constraints</div> \n                \n                  <hr>\n                  <div class=\"row\">\n                  <div class=\"col-md-12\" (click)=\"selectTextBox(3)\">\n                    <div style=\"margin: .6em;\" [hidden]=\"!isEnable(3)\">\n                       <span>Suggestions:</span>\n                       <button type=\"button\" class=\"btn btn-outline-primary word-bubble-button\" *ngFor=\"let word of wordlist | textfilter:constraintTextFilter\"  (click)=\"insertValue(word.value)\">{{word.value}}</button>\n                           \n                \n                    </div>\n                      <div class=\"flex-container\">\n                    \n                          <quill-editor \n                         \n                          [styles]=\"{height: '400px',border:'1px dashed grey'}\"\n                          [modules]=\"{  counter: { container: '#editor1'} ,toolbar: false }\"\n                          [(ngModel)]=\"constraints\" \n                          (onContentChanged)=\"logChangeConstraints($event);\"\n                          (onEditorCreated)=\"created($event,3)\"></quill-editor>\n                        </div>\n                      </div>\n                      </div>\n              </mat-card>\n          </div>\n        </div>\n         <div class=\"row\" style=\"margin: .5em;\">\n          <div class=\"col-md-12\" style=\"padding: 0;\">\n            <mat-card> \n                    \n              <div style=\"text-align: center;\">  Bindings</div> \n              \n                <hr>\n                <div *ngIf=\"bindingList.length==0\" style=\"font-size: .8em;text-align: center;\">\n                  <span ><i>No Bindings Needed</i></span>\n                </div>\n                  <div *ngIf=\"bindingList.length!=0\">\n                <ul  class=\"behavior-list \" >\n                  <li class=\"binding-box\" *ngFor=\"let item of bindingList;let index=index\" ><div>\n                  \n                    <mat-form-field style=\"width:100%\">\n                      <input matInput placeholder=\"{{item.key+' represents: '}}\" [(ngModel)]=\"item.value\">\n                    </mat-form-field>\n      \n                    <span>\n                    </span>\n                   \n                  </div>\n                    </li>\n              </ul>\n              </div>\n      \n              \n            </mat-card> \n            </div>\n            </div> \n   \n\n \n  </div>\n<div class=\"col-md-3\" style=\"margin: 0;\">\n\n  <div class=\"row\">\n    <div class=\"col-md-12\">\n        \n      <div style=\"text-align: center;padding: 1em;\">     \n         <button mat-stroked-button (click)=\"addBindings()\" >Generate Ns File</button>\n    </div>\n    </div>\n    </div>\n  \n  <div class=\"row\" style=\"margin-top: .1em;\n  margin-bottom: .1em;\">\n    <div class=\"col-md-12\" style=\"padding: 0;\">\n\n      <mat-card>  \n        <div style=\"text-align: center;\">Actors\n         </div>\n\n        \n        <hr>\n        <div *ngIf=\"actorsList.length==0\" style=\"font-size: .8em;text-align: center;\">\n          <span ><i>No Actors</i></span>\n        </div>\n          <div *ngIf=\"actorsList.length!=0\" style=\"  height: auto;\n          display: flow-root;\n          padding: 0;\">\n        \n\n      <div *ngFor=\"let item of actorsList;let index=index\" class=\"binding-word-bubble\" style=\"  border: 1px solid black;\">\n          \n        <span>\n        {{item.text}} </span>\n       \n        </div>\n      </div>\n      </mat-card>\n\n    </div>\n  </div>\n\n  <div class=\"row\" style=\"margin-top: .1em;\n  margin-bottom: .1em;\">\n    <div class=\"col-md-12\" style=\"padding: 0;\">\n\n      <mat-card>  \n        <div style=\"text-align: center;\">Bindings Needed\n\n        \n         </div>\n\n        \n        <hr>\n        <div *ngIf=\"bindingList.length==0\" style=\"font-size: .8em;text-align: center;\">\n          <span ><i>No Bindings Needed.</i></span>\n        </div>\n        \n          <div *ngIf=\"bindingList.length!=0\" style=\"  height: auto;\n          display: flow-root;\n          padding: 0;\">\n        \n          <div *ngFor=\"let item of bindingList;let index=index\" class=\"binding-word-bubble\" [ngClass]=\"{'binding-word-bubble-border-red':isEmpty(item),'binding-word-bubble-border-green':!isEmpty(item)}\">\n          \n            <span>\n            {{item.key}} </span>\n           \n            </div>\n      \n      </div>\n      </mat-card>\n\n    </div>\n  </div>\n  </div>\n</div> \n\n";
     /***/
   },
 
@@ -1660,6 +1660,7 @@ function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _d
           //console.log();
 
           instance.currentSentence(text, position);
+          instance.currentWord(text, position);
           instance.index = position;
         });
       }
@@ -1668,6 +1669,11 @@ function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _d
         key: "getUpdatedValue",
         value: function getUpdatedValue() {
           return this.textData.asObservable();
+        }
+      }, {
+        key: "getCurrentWord",
+        value: function getCurrentWord() {
+          return this.currentword.asObservable();
         }
       }, {
         key: "getSuggestionData",
@@ -2609,13 +2615,14 @@ function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _d
     var HlbComponent =
     /*#__PURE__*/
     function () {
-      function HlbComponent(http, dialog, stateservice, _snackBar) {
+      function HlbComponent(http, dialog, stateservice, _snackBar, changeDetection) {
         _classCallCheck(this, HlbComponent);
 
         this.http = http;
         this.dialog = dialog;
         this.stateservice = stateservice;
         this._snackBar = _snackBar;
+        this.changeDetection = changeDetection;
         this.actorTextFilter = "";
         this.behaviorTextFilter = "";
         this.constraintTextFilter = "";
@@ -2719,6 +2726,7 @@ function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _d
                     constraints: [],
                     actors: []
                   };
+                  _this6.behaviorTextFilter = '';
 
                   _this6.http.put("v1/hlb/suggestions", params).subscribe(function (data) {
                     var list = [];
@@ -2728,12 +2736,18 @@ function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _d
                         flag: false
                       });
                     });
-                    if (data.suggestion_text.trim() != '') list.push({
-                      value: data.suggestion_text,
-                      flag: true
-                    });
+                    if (data.suggestion_text.trim() != '') _this6.suggestionMessage = data.suggestion_text;else _this6.suggestionMessage = null;
                     _this6.wordlist = list;
+
+                    _this6.changeDetection.detectChanges();
                   });
+                }
+              });
+              this.behaviorService.getCurrentWord().subscribe(function (data) {
+                console.log(data);
+
+                if (data != null && data.trim()) {
+                  _this6.behaviorTextFilter = data;
                 }
               });
               break;
@@ -2800,6 +2814,8 @@ function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _d
 
             _this8.extractEvents(element[0], element[2], element[3]);
           }); // this.loadBindings();
+
+          this.changeDetection.detectChanges();
         }
       }, {
         key: "isEmpty",
@@ -2933,34 +2949,9 @@ function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _d
           this.selectedIndex = index;
         }
       }, {
-        key: "updateWordList",
-        value: function updateWordList() {
-          var _this12 = this;
-
-          this.localWordList = [];
-          var dict = new Map();
-          this.behaviorList.forEach(function (element) {
-            //console.log(element);
-            var wordlist = element.text.trim().split(/\s/);
-            wordlist.forEach(function (element) {
-              if (element.trim() !== "") {
-                if (!dict.has(element.trim())) {
-                  _this12.localWordList.push({
-                    value: element.trim()
-                  });
-
-                  dict.set(element.trim(), true);
-                }
-              }
-            });
-          });
-          this.wordlist = this.wordlist.concat(this.localWordList);
-          console.log(this.localWordList);
-        }
-      }, {
         key: "addBindings",
         value: function addBindings() {
-          var _this13 = this;
+          var _this12 = this;
 
           console.log(this.bindingList);
           var dialogRef = this.dialog.open(BindingPopUp, {
@@ -2970,13 +2961,13 @@ function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _d
           dialogRef.afterClosed().subscribe(function (result) {
             console.log('The dialog was closed');
 
-            _this13.generateNs();
+            _this12.generateNs();
           });
         }
       }, {
         key: "generateNs",
         value: function generateNs() {
-          var _this14 = this;
+          var _this13 = this;
 
           var data = {
             actors: [],
@@ -3009,18 +3000,18 @@ function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _d
           this.http.put("v1/hlb/generateNs", data, null).subscribe(function (data) {
             console.log(data);
 
-            _this14.stateservice.disableLoader();
+            _this13.stateservice.disableLoader();
 
-            _this14.downLoadFile(data.script);
+            _this13.downLoadFile(data.script);
 
-            _this14._snackBar.open("Successfully Downloaded.", "close", {
+            _this13._snackBar.open("Successfully Downloaded.", "close", {
               duration: 2000
             }); // this.stateservice.setBindings(data.Bindings);
 
           }, function (error) {
-            _this14.stateservice.disableLoader();
+            _this13.stateservice.disableLoader();
 
-            _this14._snackBar.open(error, "close", {
+            _this13._snackBar.open(error, "close", {
               duration: 2000
             });
           });
@@ -3070,6 +3061,8 @@ function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _d
         type: _common_state_service_service__WEBPACK_IMPORTED_MODULE_5__["StateService"]
       }, {
         type: _angular_material__WEBPACK_IMPORTED_MODULE_6__["MatSnackBar"]
+      }, {
+        type: _angular_core__WEBPACK_IMPORTED_MODULE_1__["ChangeDetectorRef"]
       }];
     };
 
@@ -3271,7 +3264,7 @@ function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _d
       }, {
         key: "save",
         value: function save() {
-          var _this15 = this;
+          var _this14 = this;
 
           var text = this.service.getText();
           var data = {
@@ -3281,22 +3274,22 @@ function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _d
           this.http.put("v1/nlp/behavior", data, null).subscribe(function (data) {
             console.log(data);
 
-            _this15.stateservice.disableLoader();
+            _this14.stateservice.disableLoader();
 
-            _this15.stateservice.setBehavior(data.behavior);
+            _this14.stateservice.setBehavior(data.behavior);
 
-            _this15.stateservice.setActors(data.actors);
+            _this14.stateservice.setActors(data.actors);
 
-            _this15.stateservice.setConstraints(data.constraints);
+            _this14.stateservice.setConstraints(data.constraints);
 
-            _this15._snackBar.open("Successfully Translated.", "close", {
+            _this14._snackBar.open("Successfully Translated.", "close", {
               duration: 2000
             }); // this.stateservice.setBindings(data.Bindings);
 
           }, function (error) {
-            _this15.stateservice.disableLoader();
+            _this14.stateservice.disableLoader();
 
-            _this15._snackBar.open(error, "close", {
+            _this14._snackBar.open(error, "close", {
               duration: 2000
             });
           });
@@ -3304,7 +3297,7 @@ function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _d
       }, {
         key: "updateWordList",
         value: function updateWordList() {
-          var _this16 = this;
+          var _this15 = this;
 
           this.localWordList = [];
           var dict = new Map();
@@ -3314,7 +3307,7 @@ function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _d
             wordlist.forEach(function (element) {
               if (element.trim() !== "") {
                 if (!dict.has(element.trim())) {
-                  _this16.localWordList.push({
+                  _this15.localWordList.push({
                     value: element.trim()
                   });
 
@@ -3451,7 +3444,7 @@ function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _d
       _createClass(UploadComponent, [{
         key: "dropped",
         value: function dropped(files) {
-          var _this17 = this;
+          var _this16 = this;
 
           //this.files = files;
           var _iteratorNormalCompletion = true;
@@ -3466,7 +3459,7 @@ function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _d
               if (droppedFile.fileEntry.isFile) {
                 var fileEntry = droppedFile.fileEntry;
                 fileEntry.file(function (file) {
-                  _this17.filename = file.name; // Here you can access the real file
+                  _this16.filename = file.name; // Here you can access the real file
 
                   var reader = new FileReader();
 
@@ -3531,7 +3524,7 @@ function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _d
       }, {
         key: "upload",
         value: function upload(item) {
-          var _this18 = this;
+          var _this17 = this;
 
           var fileEntry = item.fileEntry;
           this.state.enableLoader();
@@ -3539,30 +3532,30 @@ function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _d
             var formData = new FormData();
             formData.append('file', file);
 
-            _this18.http.put('v1/upload/dew', formData, {
+            _this17.http.put('v1/upload/dew', formData, {
               responseType: 'blob'
             }).subscribe(function (data) {
-              _this18.state.disableLoader();
+              _this17.state.disableLoader();
 
               if (data.behaviors != undefined) {
-                _this18.state.setActors(data.actors);
+                _this17.state.setActors(data.actors);
 
-                _this18.state.setBehavior(data.behaviors);
+                _this17.state.setBehavior(data.behaviors);
 
-                _this18.state.setBindings(data.bindings);
+                _this17.state.setBindings(data.bindings);
 
-                _this18.state.setBindings(data.constraints);
+                _this17.state.setBindings(data.constraints);
 
-                _this18._snackBar.open("File name " + fileEntry.name + " is uploaded!", "Close", {
+                _this17._snackBar.open("File name " + fileEntry.name + " is uploaded!", "Close", {
                   duration: 2000
                 });
               } else {
-                _this18._snackBar.open("Error in uploading file name " + fileEntry.name, "Close", {
+                _this17._snackBar.open("Error in uploading file name " + fileEntry.name, "Close", {
                   duration: 2000
                 });
               }
             }, function (error) {
-              _this18.state.disableLoader();
+              _this17.state.disableLoader();
             });
           }); //   alert(fileEntry.name+" is uploaded!");
         }
