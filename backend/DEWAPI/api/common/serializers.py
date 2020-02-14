@@ -58,3 +58,11 @@ suggestion_object = api.model('Suggestion request', {
   'constraints': fields.List(fields.String, description="List of constraints to make suggestions"),
   'actors': fields.List(fields.String, description="List of actors to make suggestions")
 })
+
+persist_data = api.model('Save request', {
+  'username': fields.String(description="Username", required=True),
+  'behaviors': fields.List(fields.String, description="List of behaviors",required=True),
+  'constraints': fields.List(fields.String, description="List of constraints",required=True),
+  'actors': fields.List(fields.String, description="List of actors",required=True),
+  'bindings': fields.List(fields.String, description="List of bindings",required=True)
+  })

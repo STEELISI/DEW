@@ -28,13 +28,16 @@ from flask_restplus import Api
 from DEWAPI import settings
 from DEWAPI.api.hlb.endpoints.hlb import ns as hlb_namespace
 from DEWAPI.api.nlp.endpoints.nlp import ns as nlp_namespace
+from DEWAPI.api.persistence.endpoints.persist import ns as persist_namespace
 from DEWAPI.api.upload.endpoints.parse_dew import ns as upload_namespace
+import DEWAPI.api.persistence.services.sqlite3
 from DEWAPI.api.restplus import api
 app = Flask(__name__)
 # app.debug = true
 
 @app.before_request
 def log_headers():
+    DEWAPI.api.persistence.services.sqlite3.create_experiment_table()
     print(request.headers)
 
 def configure_app(flask_app):
@@ -51,6 +54,7 @@ def initialize_app(flask_app):
     api.add_namespace(hlb_namespace)
     api.add_namespace(nlp_namespace)
     api.add_namespace(upload_namespace)
+    api.add_namespace(persist_namespace)
     flask_app.register_blueprint(blueprint)
 
 
