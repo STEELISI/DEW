@@ -990,7 +990,19 @@ class EditorService {
         this.isEnterPress.next(true);
     }
     insertVaue(text) {
-        let t = this.quill.insertText(this.index, " " + text + " ");
+        var word = this.getWordAt(String(this.quill.getText()), this.index);
+        if (word.trim() == '')
+            this.quill.insertText(this.index, text + " ");
+        else
+            this.replaceText(this.quill.getText(), text, word);
+    }
+    replaceText(str, text, word) {
+        str = String(str);
+        var pos = Number(this.index) >>> 0;
+        var left = str.slice(0, pos).search(/\S+$/);
+        this.quill.deleteText(left, word.length);
+        let t = this.quill.insertText(left, text + " ");
+        this.index = left + text.length + 1;
     }
     getText() {
         return this.quill.getText();
@@ -1563,7 +1575,7 @@ let HlbComponent = class HlbComponent {
                     }
                 });
                 this.behaviorService.getCurrentWord().subscribe(data => {
-                    console.log(data);
+                    // console.log(data);
                     if (data != null && data.trim()) {
                         this.behaviorTextFilter = data;
                     }
