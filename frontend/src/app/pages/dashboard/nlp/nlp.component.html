@@ -6,7 +6,7 @@
           <button
             type="button"
             class="btn btn-outline-primary word-bubble-button"
-            *ngFor="let word of wordlist | textfilter: nlpTextFilter"
+            *ngFor="let word of wordlist"
             (click)="insertValue(word.value)"
           >
             {{ word.value }}

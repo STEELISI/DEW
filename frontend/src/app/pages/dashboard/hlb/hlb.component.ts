@@ -120,6 +120,12 @@ ngOnInit(): void {
                 }
               });
 
+              this.behaviorService.isTabPressed().subscribe(flag=>{
+                if(flag ){
+                  this.insertValue( this.stateservice.getCurrentWord(),true);
+                  //this.behaviorService
+                }
+              });
               this.behaviorService.getSuggestionData().subscribe(data=>{
                 if(data!=null){
                   
@@ -149,7 +155,7 @@ ngOnInit(): void {
               });
 
               this.behaviorService.getCurrentWord().subscribe(data=>{
-               // console.log(data);
+               console.log(data);
                 if(data!=null && data.trim()){
                   this.behaviorTextFilter = data;
                 }
@@ -269,9 +275,9 @@ logChangeConstraints(event){
     return;
   console.log(this.constraintService.getText().charAt(this.constraintService.getText().length-1))
 }
-  insertValue(text: string) {
+  insertValue(text: any,flag:boolean=false) {
     //  var quill =  Quill.getModule('#t');
-    this.service.insertVaue(text);
+    this.service.insertVaue(text,flag,this.behaviorTextFilter);
   }
 
   selectTextBox(id:number){

@@ -49,7 +49,7 @@
                   <div class="col-md-12" (click)="selectTextBox(3)">
                     <div style="margin: .6em;" [hidden]="!isEnable(3)">
                        <span>Suggestions:</span>
-                       <button type="button" class="btn btn-outline-primary word-bubble-button" *ngFor="let word of wordlist | textfilter:constraintTextFilter"  (click)="insertValue(word.value)">{{word.value}}</button>
+                       <button type="button" class="btn btn-outline-primary word-bubble-button" *ngFor="let word of wordlist"  (click)="insertValue(word.value)">{{word.value}}</button>
                            
                 
                     </div>

@@ -18,23 +18,7 @@ export class NlpComponent {
   behaviorText: String;
   behaviorList: any = [];
   localWordList: any;
-  wordlist: any = [
-    {
-      value: "Hello"
-    },
-    {
-      value: "World"
-    },
-    {
-      value: "server"
-    },
-    {
-      value: "router"
-    },
-    {
-      value: "actors"
-    }
-  ];
+  wordlist: any = [];
 
   constructor(private http: HttpService, private stateservice: StateService
     ,private _snackBar: MatSnackBar) {}
