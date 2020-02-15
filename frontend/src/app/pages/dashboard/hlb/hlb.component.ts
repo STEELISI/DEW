@@ -5,7 +5,6 @@ import EditorService from '../common/editor-service';
 import { StateService } from '../common/state-service.service';
 import { MatSnackBar } from '@angular/material';
 import {MatDialog, MatDialogRef, MAT_DIALOG_DATA} from '@angular/material/dialog';
-import { saveAs } from 'file-saver';
 import { HttpService } from '../common/http-service.service';
 Quill.register("modules/counter", EditorService);
 
