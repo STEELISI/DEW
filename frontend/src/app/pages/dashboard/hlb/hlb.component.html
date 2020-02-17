@@ -14,7 +14,7 @@
                   <div style="margin: .6em;" [hidden]="!isEnable(2)">
                       <span>Suggestions:</span>
                      
-                      <button type="button" class="btn btn-outline-primary word-bubble-button" *ngFor="let word of wordlist | textfilter:behaviorTextFilter "  (click)="insertValue(word.value)" [disabled]="word.flag">{{word.value}}</button>
+                      <button type="button" class="btn btn-outline-primary word-bubble-button" *ngFor="let word of behaviorWordList | textfilter:behaviorTextFilter "  (click)="insertValue(word.value)" [disabled]="word.flag">{{word.value}}</button>
                       <button type="button" *ngIf="suggestionMessage!=null" class="btn btn-outline-primary word-bubble-button" [disabled]="true">{{suggestionMessage}}</button>
                       
                       
@@ -49,7 +49,7 @@
                   <div class="col-md-12" (click)="selectTextBox(3)">
                     <div style="margin: .6em;" [hidden]="!isEnable(3)">
                        <span>Suggestions:</span>
-                       <button type="button" class="btn btn-outline-primary word-bubble-button" *ngFor="let word of wordlist"  (click)="insertValue(word.value)">{{word.value}}</button>
+                       <button type="button" class="btn btn-outline-primary word-bubble-button" *ngFor="let word of constraintWordList | textfilter:constraintTextFilter"  (click)="insertValueInConstraint(word.value)">{{word.value}}</button>
                            
                 
                     </div>
@@ -163,10 +163,12 @@
           display: flow-root;
           padding: 0;">
         
-          <div *ngFor="let item of bindingList;let index=index" class="binding-word-bubble" [ngClass]="{'binding-word-bubble-border-red':isEmpty(item),'binding-word-bubble-border-green':!isEmpty(item)}">
+          <div *ngFor="let item of bindingList;let index=index" class="binding-word-bubble" >
           
             <span>
             {{item.key}} </span>
+            <i class="fas fa-exclamation-circle" style="color: red;" *ngIf="isEmpty(item)"></i>
+            <i class="fa fa-check-circle" style="color: green;"  *ngIf="!isEmpty(item)" ></i>
            
             </div>
       

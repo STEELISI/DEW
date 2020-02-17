@@ -9,7 +9,8 @@ export class StateService {
     behavior:BehaviorSubject<any> = new BehaviorSubject(null);
     constraints:BehaviorSubject<any> = new BehaviorSubject(null);
     bindings:BehaviorSubject<any> = new BehaviorSubject(null);
-    currentWord:String;
+    currentBehaviorWord:String;
+    currentConstraintWord:String;
     enableLoader():void{this.loaderSwitch.next(true);}
     disableLoader():void{this.loaderSwitch.next(false);}
     isLoaderEnabled():Observable<boolean> {return this.loaderSwitch.asObservable();}
@@ -19,11 +20,17 @@ export class StateService {
     getActors():Observable<any>{
         return this.actors.asObservable();
     }
-    setCurrentWord(word: any) {
-        this.currentWord = word;
+    setCurrentBehaviorWord(word: any) {
+        this.currentBehaviorWord = word;
       }
-      getCurrentWord():String{
-          return this.currentWord;
+      getCurrentBehaviorWord():String{
+          return this.currentBehaviorWord;
+      }
+      setCurrentConstraintWord(word: any) {
+        this.currentConstraintWord = word;
+      }
+      getCurrentConstraintWord():String{
+          return this.currentConstraintWord;
       }
     getBehavior():Observable<any>{
         return this.behavior.asObservable();
