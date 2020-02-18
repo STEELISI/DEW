@@ -21,7 +21,11 @@ export class TextFilterPipe implements PipeTransform {
         else if (option == "constraint")
           this.state.setCurrentConstraintWord("");
       }
+      if (items.length>=3)
+      return items.splice(0,3);
+      else
       return items;
+
     }
     if (filter.trim() === "") {
       if (items.length > 0) {
@@ -34,6 +38,9 @@ export class TextFilterPipe implements PipeTransform {
         else if (option == "constraint")
           this.state.setCurrentConstraintWord("");
       }
+      if (items.length>=3)
+      return items.splice(0,3);
+      else
       return items;
     } else {
       var filterList = items.filter(
@@ -53,7 +60,11 @@ export class TextFilterPipe implements PipeTransform {
         else if (option == "constraint")
           this.state.setCurrentConstraintWord("");
       }
+      if (filterList.length>=3)
+      return filterList.splice(0,3);
+      else
       return filterList;
+
     }
   }
 }
