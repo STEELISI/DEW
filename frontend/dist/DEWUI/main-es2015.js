@@ -1207,7 +1207,10 @@ let TextFilterPipe = class TextFilterPipe {
                 else if (option == "constraint")
                     this.state.setCurrentConstraintWord("");
             }
-            return items;
+            if (items.length >= 3)
+                return items.splice(0, 3);
+            else
+                return items;
         }
         if (filter.trim() === "") {
             if (items.length > 0) {
@@ -1222,7 +1225,10 @@ let TextFilterPipe = class TextFilterPipe {
                 else if (option == "constraint")
                     this.state.setCurrentConstraintWord("");
             }
-            return items;
+            if (items.length >= 3)
+                return items.splice(0, 3);
+            else
+                return items;
         }
         else {
             var filterList = items.filter((item) => item.value
@@ -1241,7 +1247,10 @@ let TextFilterPipe = class TextFilterPipe {
                 else if (option == "constraint")
                     this.state.setCurrentConstraintWord("");
             }
-            return filterList;
+            if (filterList.length >= 3)
+                return filterList.splice(0, 3);
+            else
+                return filterList;
         }
     }
 };

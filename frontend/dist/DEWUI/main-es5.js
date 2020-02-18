@@ -2150,7 +2150,7 @@ function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _d
               if (option == "behavior") this.state.setCurrentBehaviorWord("");else if (option == "constraint") this.state.setCurrentConstraintWord("");
             }
 
-            return items;
+            if (items.length >= 3) return items.splice(0, 3);else return items;
           }
 
           if (filter.trim() === "") {
@@ -2160,7 +2160,7 @@ function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _d
               if (option == "behavior") this.state.setCurrentBehaviorWord("");else if (option == "constraint") this.state.setCurrentConstraintWord("");
             }
 
-            return items;
+            if (items.length >= 3) return items.splice(0, 3);else return items;
           } else {
             var filterList = items.filter(function (item) {
               return item.value.trim().toLowerCase().indexOf(filter.trim().toLowerCase()) > -1;
@@ -2172,7 +2172,7 @@ function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _d
               if (option == "behavior") this.state.setCurrentBehaviorWord("");else if (option == "constraint") this.state.setCurrentConstraintWord("");
             }
 
-            return filterList;
+            if (filterList.length >= 3) return filterList.splice(0, 3);else return filterList;
           }
         }
       }]);
