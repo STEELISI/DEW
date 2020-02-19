@@ -11,11 +11,11 @@
                <hr>
                <div class="row">
                <div class="col-md-12" (click)="selectTextBox(2)">
-                  <div style="margin: .6em;" [hidden]="!isEnable(2)">
+                  <div style="margin: .6em;border-bottom: 1px solid #eee;" [hidden]="!isEnable(2)">
                       <span>Suggestions:</span>
                      
-                      <button type="button" class="btn btn-outline-primary word-bubble-button" *ngFor="let word of behaviorWordList | textfilter:behaviorTextFilter "  (click)="insertValue(word.value)" [disabled]="word.flag">{{word.value}}</button>
-                      <button type="button" *ngIf="suggestionMessage!=null" class="btn btn-outline-primary word-bubble-button" [disabled]="true">{{suggestionMessage}}</button>
+                      <button type="button" class="btn btn-outline-primary word-bubble-button" *ngFor="let word of behaviorWordList | slice:0:3 | textfilter:behaviorTextFilter "  (click)="insertValue(word.value)" [disabled]="word.flag">{{word.value}}</button>
+                      <button type="button" *ngIf="suggestionbehaviorMessage!=null" class="btn btn-outline-primary word-bubble-button" [disabled]="true">{{suggestionbehaviorMessage}}</button>
                       
                       
                    </div>
@@ -23,7 +23,7 @@
                     
                       <quill-editor 
                      
-                      [styles]="{height: '400px',border:'1px dashed grey'}"
+                      [styles]="{height: '400px',border:'none'}"
                       [modules]="{  counter: { container: '#editor1'} ,toolbar: false }"
                       [(ngModel)]="behaviorText" 
                       (onContentChanged)="logChangeBehavior($event);"
@@ -47,9 +47,10 @@
                   <hr>
                   <div class="row">
                   <div class="col-md-12" (click)="selectTextBox(3)">
-                    <div style="margin: .6em;" [hidden]="!isEnable(3)">
+                    <div style="margin: .6em;border-bottom: 1px solid #eee;" [hidden]="!isEnable(3)">
                        <span>Suggestions:</span>
-                       <button type="button" class="btn btn-outline-primary word-bubble-button" *ngFor="let word of constraintWordList | textfilter:constraintTextFilter"  (click)="insertValueInConstraint(word.value)">{{word.value}}</button>
+                       <button type="button" class="btn btn-outline-primary word-bubble-button" *ngFor="let word of constraintWordList | slice:0:3 | textfilter:constraintTextFilter"  (click)="insertValueInConstraint(word.value)">{{word.value}}</button>
+                      <button type="button" *ngIf="suggestionConstraintMessage!=null" class="btn btn-outline-primary word-bubble-button" [disabled]="true">{{suggestionConstraintMessage}}</button>
                            
                 
                     </div>
@@ -57,7 +58,7 @@
                     
                           <quill-editor 
                          
-                          [styles]="{height: '400px',border:'1px dashed grey'}"
+                          [styles]="{height: '400px',border:'none'}"
                           [modules]="{  counter: { container: '#editor1'} ,toolbar: false }"
                           [(ngModel)]="constraints" 
                           (onContentChanged)="logChangeConstraints($event);"

@@ -40,7 +40,8 @@ export class HlbComponent implements OnInit{
   actorsList:any=[];
   contraintList:any=[];
   bindingList:any=[];
-  suggestionMessage:String;
+  suggestionbehaviorMessage:String;
+  suggestionConstraintMessage:String;
 
   bindingMap = new Map<String,any>();
   behaviorWordList:any=[];
@@ -163,9 +164,9 @@ ngOnInit(): void {
                         list.push({value:element,flag:false});
                       });
                       if(data.suggestion_text.trim()!='')
-                      this.suggestionMessage = data.suggestion_text;
+                      this.suggestionbehaviorMessage = data.suggestion_text;
                       else
-                      this.suggestionMessage =null;
+                      this.suggestionbehaviorMessage =null;
                       this.behaviorWordList = list;
                       this.changeDetection.detectChanges();
                     });
@@ -226,9 +227,9 @@ ngOnInit(): void {
                             list.push({value:element,flag:false});
                           });
                           if(data.suggestion_text.trim()!='')
-                          this.suggestionMessage = data.suggestion_text;
+                          this.suggestionConstraintMessage = data.suggestion_text;
                           else
-                          this.suggestionMessage =null;
+                          this.suggestionConstraintMessage =null;
                           this.constraintWordList = list;
                           this.changeDetection.detectChanges();
                         });
