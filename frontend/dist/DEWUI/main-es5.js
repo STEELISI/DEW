@@ -2817,6 +2817,7 @@ function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _d
               this.behaviorService = editor.getModule("counter");
               this.behaviorService.isBlur().subscribe(function (data) {
                 if (data && instance.behaviorService.isTextChanged()) _this6.updateActors();
+                if (!data) _this6.textBoxId = 2;else _this6.textBoxId = -1;
               });
               this.behaviorService.isEnterPressed().subscribe(function (flag) {
                 if (flag && instance.behaviorService.isTextChanged()) {
@@ -2877,6 +2878,7 @@ function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _d
               this.constraintService = editor.getModule("counter");
               this.constraintService.isBlur().subscribe(function (data) {
                 if (data && instance.constraintService.isTextChanged()) _this6.updateActorsConstraint();
+                if (!data) _this6.textBoxId = 3;else _this6.textBoxId = -1;
               });
               this.constraintService.isEnterPressed().subscribe(function (flag) {
                 if (flag && instance.constraintService.isTextChanged()) {
