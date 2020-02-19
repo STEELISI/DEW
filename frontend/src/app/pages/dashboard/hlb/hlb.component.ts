@@ -121,6 +121,11 @@ ngOnInit(): void {
               this.behaviorService.isBlur().subscribe(data=>{
                 if(data  && instance.behaviorService.isTextChanged())
                 this.updateActors();
+
+                if(!data)
+                  this.textBoxId = 2;
+                else
+                this.textBoxId = -1;
               })
               this.behaviorService.isEnterPressed().subscribe(flag=>{
                 if(flag && instance.behaviorService.isTextChanged()){
@@ -186,6 +191,11 @@ ngOnInit(): void {
                   this.constraintService.isBlur().subscribe(data=>{
                     if(data  && instance.constraintService.isTextChanged())
                     this.updateActorsConstraint();
+
+                    if(!data)
+                  this.textBoxId = 3;
+                else
+                this.textBoxId = -1;
                   })
                   this.constraintService.isEnterPressed().subscribe(flag=>{
                     if(flag && instance.constraintService.isTextChanged()){
