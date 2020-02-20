@@ -1,17 +1,17 @@
 
     <div class="row">
       <div class="col-md-12" style="padding: 2em;">
-        <div style="margin: .6em;" >
+        <!-- <div style="margin: .6em;" >
           <span>Suggestions:</span>
           <button
             type="button"
             class="btn btn-outline-primary word-bubble-button"
-            *ngFor="let word of wordlist | textfilter: nlpTextFilter"
+            *ngFor="let word of wordlist"
             (click)="insertValue(word.value)"
           >
             {{ word.value }}
           </button>
-        </div>
+        </div> -->
         <div class="flex-container">
           <quill-editor
             [styles]="{ height: '100px' }"

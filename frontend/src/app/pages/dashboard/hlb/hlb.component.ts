@@ -1,11 +1,10 @@
-import { Component, OnInit, Inject } from '@angular/core';
+import { Component, OnInit, Inject, ChangeDetectorRef } from '@angular/core';
 import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
 import * as Quill from "quill";
 import EditorService from '../common/editor-service';
 import { StateService } from '../common/state-service.service';
 import { MatSnackBar } from '@angular/material';
 import {MatDialog, MatDialogRef, MAT_DIALOG_DATA} from '@angular/material/dialog';
-import { saveAs } from 'file-saver';
 import { HttpService } from '../common/http-service.service';
 Quill.register("modules/counter", EditorService);
 
@@ -25,31 +24,40 @@ export class HlbComponent implements OnInit{
   constraintService:EditorService;
   service:any;
   actorTextFilter:String="";
-  behaviorTextFilter:String="";
-  constraintTextFilter:String="";
+  behaviorTextFilter:any={
+    name:"behavior",
+    text:""
+  };
+  constraintTextFilter:any={
+    name:"constraint",
+    text:""
+  };
   editIndex:number;
   behaviorText:String;
   textBoxId:number;
   behaviorList:any=[];
+  constraintWordList:any=[];
   actorsList:any=[];
   contraintList:any=[];
   bindingList:any=[];
-  localWordList:any;
+  suggestionbehaviorMessage:String;
+  suggestionConstraintMessage:String;
+
   bindingMap = new Map<String,any>();
-  wordlist:any=[];
+  behaviorWordList:any=[];
 inputText:string="";
 actors:String ="";
 selectedIndex:number=0;
 constructor(private http: HttpService,
-  public dialog: MatDialog,private stateservice:StateService,private _snackBar: MatSnackBar){}
+  public dialog: MatDialog,private stateservice:StateService,private _snackBar: MatSnackBar,private changeDetection: ChangeDetectorRef){}
 ngOnInit(): void {
 
-
+  this.bindingMap = new Map<String,any>();
   this.behaviorList = [];
   const instance =this;
   this.stateservice.getBehavior().subscribe(data=>{
     if(data != null){
-      console.log(data);
+      //console.log(data);
       var text = '';
       data.forEach(element => {
         text+=element+'<br>';
@@ -59,26 +67,31 @@ ngOnInit(): void {
   });
   this.stateservice.getBindings().subscribe(data=>{
     if(data != null){
-      this.behaviorList=[];
+      //console.log(data);
+    this.bindingList=[];
+  this.bindingMap = new Map<String,any>();
       
     data.forEach(element => {
       var list=element.trim().split(' ');
-     // console.log(list);
+     // //console.log(list);
       var key = list[0];
-      //console.log(key);
+      ////console.log(key);
 
-      var value = list.splice(0).join(' ');
-      //console.log(value);
-      if (!this.bindingMap.has(key)){
-        this.bindingMap.set(key,null);
-        this.bindingList.push({key:key,value:value});
-      }
+      var value = list.splice(1);
+      ////console.log(value);
+      value = value.join(" ");
+    //  if (!this.bindingMap.has(key)){
+      var t = {key:key,value:value};
+      this.bindingMap.set(key,t);
+      this.bindingList.push(t);
+      //}
       
     });
+    //console.log(this.bindingMap);
   }
   });
   this.stateservice.getActors().subscribe(data=>{
-   // console.log(data);
+   // //console.log(data);
   if(data != null){
     instance.actorsList=[];
     data.forEach(element => {
@@ -96,7 +109,7 @@ ngOnInit(): void {
     moveItemInArray(list, event.previousIndex, event.currentIndex);
   }
   created(editor,id:number) {
-   // console.log(id);
+   // //console.log(id);
    var instance = this;
     switch(id){
       case 1:
@@ -108,6 +121,11 @@ ngOnInit(): void {
               this.behaviorService.isBlur().subscribe(data=>{
                 if(data  && instance.behaviorService.isTextChanged())
                 this.updateActors();
+
+                if(!data)
+                  this.textBoxId = 2;
+                else
+                this.textBoxId = -1;
               })
               this.behaviorService.isEnterPressed().subscribe(flag=>{
                 if(flag && instance.behaviorService.isTextChanged()){
@@ -119,6 +137,14 @@ ngOnInit(): void {
                 }
               });
 
+              this.behaviorService.isTabPressed().subscribe(flag=>{
+                if(flag ){
+                  //console.log("inside istab");
+                  if(this.stateservice.getCurrentBehaviorWord().trim()!='')
+                  this.insertValue( this.stateservice.getCurrentBehaviorWord(),true);
+                  //this.behaviorService
+                }
+              });
               this.behaviorService.getSuggestionData().subscribe(data=>{
                 if(data!=null){
                   
@@ -130,6 +156,12 @@ ngOnInit(): void {
                       actors: []
                     }
 
+                    var constraints = this.constraintService.getText().trim();
+                    if(constraints!=''){
+                    var constraintsList = constraints.split("\n");
+                    params.constraints = constraintsList;
+                    }
+                    this.behaviorTextFilter.text = '';
                     this.http.put("v1/hlb/suggestions",params).subscribe(data=>{
 
                       var list =[];
@@ -137,27 +169,97 @@ ngOnInit(): void {
                         list.push({value:element,flag:false});
                       });
                       if(data.suggestion_text.trim()!='')
-                      list.push({value:data.suggestion_text,flag:true});
-                      this.wordlist = list;
+                      this.suggestionbehaviorMessage = data.suggestion_text;
+                      else
+                      this.suggestionbehaviorMessage =null;
+                      this.behaviorWordList = list;
+                      this.changeDetection.detectChanges();
                     });
                 }
 
+              });
+
+              this.behaviorService.getCurrentWord().subscribe(data=>{
+               //console.log(data);
+                if(data!=null && data.trim()){
+                  this.behaviorTextFilter.text = data;
+                }
               });
               break;
               case 3:
                   this.constraintService = editor.getModule("counter");
                   this.constraintService.isBlur().subscribe(data=>{
-                    console.log(data);
+                    if(data  && instance.constraintService.isTextChanged())
+                    this.updateActorsConstraint();
+
+                    if(!data)
+                  this.textBoxId = 3;
+                else
+                this.textBoxId = -1;
                   })
+                  this.constraintService.isEnterPressed().subscribe(flag=>{
+                    if(flag && instance.constraintService.isTextChanged()){
+                    if(this.constraintService.getText().trim()==="")
+                       return;
+                      var index = this.constraintService.getText().length-2;
+                      if (this.constraintService.getText().charAt(index) == '\n')
+                          this.updateActorsConstraint();
+                    }
+                  });
+    
+                  this.constraintService.isTabPressed().subscribe(flag=>{
+                    if(flag ){
+                      if(this.stateservice.getCurrentConstraintWord().trim()!='')
+                      this.insertValueInConstraint( this.stateservice.getCurrentConstraintWord(),true);
+                      //this.behaviorService
+                    }
+                  });
+                  this.constraintService.getSuggestionData().subscribe(data=>{
+                    if(data!=null){
+                      
+                        var params = {
+                          type: "constraint",
+                          suggestion_for: data.currentSentence,
+                          behaviors: [],
+                          constraints: data.remainingSentences,
+                          actors: []
+                        }
+                        var behaviors = this.behaviorService.getText().trim();
+                        if(behaviors!=''){
+                        var behaviorsList = behaviors.split("\n");
+                        params.behaviors = behaviorsList;
+                        }
+                        this.constraintTextFilter.text = '';
+                        this.http.put("v1/hlb/suggestions",params).subscribe(data=>{
+    
+                          var list =[];
+                          data.suggestions.forEach(element => {
+                            list.push({value:element,flag:false});
+                          });
+                          if(data.suggestion_text.trim()!='')
+                          this.suggestionConstraintMessage = data.suggestion_text;
+                          else
+                          this.suggestionConstraintMessage =null;
+                          this.constraintWordList = list;
+                          this.changeDetection.detectChanges();
+                        });
+                    }
+    
+                  });
+    
+                  this.constraintService.getCurrentWord().subscribe(data=>{
+                   ////console.log(data);
+                    if(data!=null && data.trim()){
+                      this.constraintTextFilter.text = data;
+                    }
+                  });
                   break;
-                  // case 4:
-                  // this.editorService = editor.getModule("counter");
-                  // break;
+               
     }
    
   }
   updateActors(){
-    console.log('inside update Actors');
+    //console.log('inside update Actors');
     if(this.behaviorService.getText().trim()===""){
       this.actorsList=[];
      return;
@@ -188,14 +290,45 @@ ngOnInit(): void {
      });
      
   }
+
+  updateActorsConstraint(){
+    if(this.constraintService.getText().trim()===""){
+      this.actorsList=[];
+     return;
+    }
+
+     var data ={
+      ParseType: "bash",
+      Scenario: [],
+      Constraints: []
+    };
+  //  this.behaviorList=[];
+    var blist = this.constraintService.getText().trim().split('\n');
+   blist.forEach(element => {
+
+    var text = element.trim();
+      if(text!=''){
+      data.Constraints.push(text);
+     // this.behaviorList.push(text);
+      }
+    });
+   
+    
+     this.http.put("v1/hlb/parse",data).subscribe((data:ParseApiBean)=>{
+     
+     //console.log(data);
+      this.extractInfo(data);
+      
+     });
+  }
   extractInfo(data:ParseApiBean){
     this.extractScenario(data.parsedScenario);
    
   }
 
   extractScenario(scenario){
-      console.log(scenario);
-      this.bindingMap = new Map<String,any>();
+      //console.log(scenario);
+     // this.bindingMap = new Map<String,any>();
       this.actorsList=[];
       this.bindingList=[];
       scenario.forEach(element => {
@@ -205,6 +338,7 @@ ngOnInit(): void {
       });
 
      // this.loadBindings();
+     this.changeDetection.detectChanges();
       
   }
 
@@ -219,29 +353,47 @@ ngOnInit(): void {
     });
   }
   extractEvents(triggers,actions,emitters){
+    //console.log(this.bindingMap);
       if(triggers!=null)
       triggers.forEach(element => {
+        //console.log(element);
         if (!this.bindingMap.has(element)){
-              this.bindingMap.set(element,null);
-              this.bindingList.push({key:element,value:""});
+          var t = {key:element,value:""};
+          this.bindingMap.set(element,t);
+          this.bindingList.push(t);
+        }else{
+          this.bindingList.push(this.bindingMap.get(element));
+
         }
       });
       if(actions!=null)
       actions.forEach(element => {
+        //console.log(element);
+
         if (!this.bindingMap.has(element)){
-          this.bindingMap.set(element,null);
-          this.bindingList.push({key:element,value:""});
+          var t = {key:element,value:""};
+          this.bindingMap.set(element,t);
+          this.bindingList.push(t);
+    }else{
+      this.bindingList.push(this.bindingMap.get(element));
+
     }
       });
       if(emitters!=null)
       emitters.forEach(element => {
+        //console.log(element);
+
         if (!this.bindingMap.has(element)){
-          this.bindingMap.set(element,null);
-          this.bindingList.push({key:element,value:""});
+          var t = {key:element,value:""};
+          this.bindingMap.set(element,t);
+          this.bindingList.push(t);
+    }else{
+      this.bindingList.push(this.bindingMap.get(element));
+
     }
       });
     
-     // console.log(this.bindingMap);
+     // //console.log(this.bindingMap);
   }
   logChangeBehavior(event){
     if(this.behaviorService.getText().trim()==="")
@@ -255,11 +407,15 @@ ngOnInit(): void {
 logChangeConstraints(event){
   if(this.constraintService.getText().trim()==="")
     return;
-  console.log(this.constraintService.getText().charAt(this.constraintService.getText().length-1))
+ // //console.log(this.constraintService.getText().charAt(this.constraintService.getText().length-1))
 }
-  insertValue(text: string) {
-    //  var quill =  Quill.getModule('#t');
-    this.service.insertVaue(text);
+  insertValue(text: any,flag:boolean=false) {
+    //console.log("word:"+text);
+    this.service.insertVaue(text,flag,this.behaviorTextFilter.text);
+  }
+  insertValueInConstraint(text: any,flag:boolean=false) {
+   
+    this.service.insertVaue(text,flag,this.constraintTextFilter.text);
   }
 
   selectTextBox(id:number){
@@ -274,9 +430,7 @@ logChangeConstraints(event){
               case 3:
                   this.service =   this.constraintService 
                   break;
-                  case 4:
-                  this.service =   this.editorService; 
-                  break;
+                 
     }
   }
 
@@ -290,7 +444,7 @@ logChangeConstraints(event){
    
     data.forEach(element => {
       
-        //console.log(element);
+        ////console.log(element);
         this.insertActor(element);
      
     });
@@ -301,12 +455,12 @@ logChangeConstraints(event){
       return element.text === actor;
   });
 
- // console.log(t);
+ // //console.log(t);
      if(t == undefined)
      this.actorsList.push({text:actor});
   }
   clear(){
-    console.log(this.behaviorText);
+    //console.log(this.behaviorText);
     this.service.clear();
     this.behaviorText="";
   }
@@ -318,28 +472,9 @@ logChangeConstraints(event){
     this.selectedIndex=index;
   }
 
-  updateWordList(){
-    this.localWordList=[];
-    var dict = new Map;
-    this.behaviorList.forEach(element => {
-      //console.log(element);
-    var wordlist = element.text.trim().split(/\s/);
-    wordlist.forEach(element => {
-      if(element.trim()!==""){
-        if(!dict.has(element.trim())){
-          this.localWordList.push({value:element.trim()});
-          dict.set(element.trim(),true);
-        }
-      }
-    });
-  
-  });
-  this.wordlist = this.wordlist.concat(this.localWordList);
-  console.log(this.localWordList);
-  }
 
   addBindings(){
-    console.log(this.bindingList);
+    //console.log(this.bindingList);
 
     var dialogRef = this.dialog.open(BindingPopUp, {
       width: '70%',
@@ -347,7 +482,7 @@ logChangeConstraints(event){
     });
 
     dialogRef.afterClosed().subscribe(result => {
-      console.log('The dialog was closed');
+      //console.log('The dialog was closed');
       this.generateNs();
     });
   }
@@ -389,7 +524,7 @@ logChangeConstraints(event){
     this.http
       .put("v1/hlb/generateNs", data, null)
       .subscribe(data => {
-        console.log(data);
+        //console.log(data);
         this.stateservice.disableLoader();
         this.downLoadFile(data.script);
         this._snackBar.open("Successfully Downloaded.", "close", {
@@ -407,7 +542,7 @@ logChangeConstraints(event){
 
   downLoadFile(data: any) {
     var blob = new Blob([data], { type: "text/plain"});
-    console.log(blob);
+    //console.log(blob);
    // var url = (window.URL || window.webkitURL).createObjectURL(blob);
     var fileName = "experiment.txt";
     if ('msSaveOrOpenBlob' in navigator) {

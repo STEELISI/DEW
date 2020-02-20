@@ -8,13 +8,16 @@ export interface QuillInstance {
   getSelection: any;
   setText: any;
   insertText: any;
-  hasFocus:any;
+  hasFocus:any;deleteText:any;
+  setSelection:any;
 }
 
 export default class EditorService {
+ 
   private textData = new BehaviorSubject<any>("");
   private onBlur=new BehaviorSubject<any>(false);
   private isEnterPress=new BehaviorSubject<any>(false);
+  private isTabPress=new BehaviorSubject<any>(false);
   private onBlurFlag=false;
   private currentword=new BehaviorSubject<any>('');
   private currentsentence=new BehaviorSubject<any>(null);
@@ -23,11 +26,18 @@ export default class EditorService {
     return this.textData.asObservable();
   }
 
+  getCurrentWord(): Observable<any> {
+    return this.currentword.asObservable();
+  }
+
   getSuggestionData(): Observable<any> {
     return this.currentsentence.asObservable();
   }
   isEnterPressed(): Observable<any> {
     return this.isEnterPress.asObservable();
+  }
+  isTabPressed(): Observable<any> {
+    return this.isTabPress.asObservable();
   }
   setUpdatedValue(Data: String) {
     this.textData.next(Data);
@@ -38,7 +48,6 @@ export default class EditorService {
   any;
   constructor(quill) {
     this.quill = quill;
-    const index = 1;
     var instance = this;
     this.quill.on("selection-change", function(range, oldRange, source) {
       if (range) {
@@ -56,6 +65,8 @@ export default class EditorService {
     this.quill.on("text-change", function(delta, oldDelta, source) {
        //console.log(delta);
        var position =0;
+       var tabFlag=false;
+       var delFlag=false;
        instance.isTextChange=true;
         if(delta.ops!=undefined){
           delta.ops.forEach(element => {
@@ -65,30 +76,40 @@ export default class EditorService {
               position+=element.insert.length;
               if(element.insert == '\n')
                   instance.pressedEntered();
+              if(element.insert == '\t')
+                tabFlag=true;  
+             
             }
+            if(element.delete!=undefined)
+            delFlag =true;
           });
         }
-        //console.log(position);
+      
         var index = instance.quill.getText().length-1;
         var text = instance.quill.getText().substr(0,index);
-      //  console.log(text);
-        //console.log();
+        instance.index = position;
+        //console.log("value of index inside:"+instance.index);
+     
+        if(!tabFlag){
         instance.currentSentence( text,position);
-      instance.index = position;
+        instance.currentWord(text,position);
+        }else{
+          if(!delFlag)
+      setTimeout(function(){ instance.pressedTab(); }, 50); 
+        }
     });
-  
   }
   currentWord(text,position){
    var word = this.getWordAt(text,position);
-   if(word.trim() !=''){
+   
      this.currentword.next(word);
-   }
+   
   }
 
    currentSentence(text,position){
    var sentence = this.getSentenceTill(text,position);
    var remainingSentences = this.getRemainingSentences(text,position);
-   //console.log(remainingSentences);
+   ////console.log(remainingSentences);
    var obj ={
      currentSentence:sentence,
      remainingSentences:remainingSentences
@@ -104,7 +125,7 @@ export default class EditorService {
     var left= str.slice(0, pos).search(/\n.*$/);
     var list = [];
     var temp;
-    //console.log(left);
+    ////console.log(left);
     if(left>0){
       temp = str.slice(0, left).split("\n");
       temp.forEach(element => {
@@ -174,8 +195,46 @@ getSentenceAt (str, pos) {
   pressedEntered(){
       this.isEnterPress.next(true);
   }
-  insertVaue(text: String) {
-    let t: string = this.quill.insertText(this.index, " " + text + " ");
+  pressedTab() {
+    this.isTabPress.next(true);
+  }
+  insertVaue(text: String,flag:boolean=true,word) {
+
+    if (word.trim()==''){
+      //console.log("inside trim");
+      
+     
+      if(flag){
+        this.index--;
+      this.quill.deleteText(this.index,1);
+      }
+      //console.log("::"+text);
+     this.quill.insertText(this.index, text+" ");
+    
+    
+     //console.log("value of index before:"+this.index);
+
+    }else
+    this.replaceText(this.quill.getText(),text,word,flag);
+
+  }
+
+  replaceText(str,text,word,flag){
+    str = String(str);
+    var pos ;
+    if (flag)
+    pos = Number(this.index-1) >>> 0; 
+    else
+    pos = Number(this.index) >>> 0; 
+    var left = str.slice(0, pos).search(/\S+$/);
+    if (flag)
+    this.quill.deleteText(left,word.length+1);
+    else
+    this.quill.deleteText(left,word.length);
+
+    let t: string = this.quill.insertText(left, text + " ");
+    //console.log("h");
+    this.index = left+text.length+1;
   }
 
   getText(): String {

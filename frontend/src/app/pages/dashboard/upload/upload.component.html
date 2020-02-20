@@ -1,5 +1,5 @@
-<div class="container">
-  <mat-card>
+
+
     <div class="row">
       <div class="col-md-12" >
   <ngx-file-drop dropZoneLabel="Drop files here" (onFileDrop)="dropped($event)" 
@@ -19,9 +19,9 @@
     <table class="table">
       <thead class="upload-name">
           <tr >
-            <th>Sr.</th>
-              <th>Name</th>
-              <th></th>
+            <th style="min-width:150px">Sr.</th>
+              <th style="min-width:150px">Name</th>
+              <th style="min-width:150px"></th>
           </tr>
       </thead>
       <tbody class="upload-name"  *ngIf="files.length!=0">
@@ -46,5 +46,4 @@
   </table>
     </div>
 </div>
-</mat-card>
-</div>
+
