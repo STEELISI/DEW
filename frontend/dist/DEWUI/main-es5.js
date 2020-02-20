@@ -1642,6 +1642,7 @@ function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _d
           //console.log(delta);
           var position = 0;
           var tabFlag = false;
+          var delFlag = false;
           instance.isTextChange = true;
 
           if (delta.ops != undefined) {
@@ -1653,6 +1654,8 @@ function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _d
                 if (element.insert == '\n') instance.pressedEntered();
                 if (element.insert == '\t') tabFlag = true;
               }
+
+              if (element.delete != undefined) delFlag = true;
             });
           }
 
@@ -1663,9 +1666,11 @@ function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _d
           if (!tabFlag) {
             instance.currentSentence(text, position);
             instance.currentWord(text, position);
-          } else setTimeout(function () {
-            instance.pressedTab();
-          }, 50);
+          } else {
+            if (!delFlag) setTimeout(function () {
+              instance.pressedTab();
+            }, 50);
+          }
         });
       }
 

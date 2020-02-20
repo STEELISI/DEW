@@ -878,6 +878,7 @@ class EditorService {
             //console.log(delta);
             var position = 0;
             var tabFlag = false;
+            var delFlag = false;
             instance.isTextChange = true;
             if (delta.ops != undefined) {
                 delta.ops.forEach(element => {
@@ -890,6 +891,8 @@ class EditorService {
                         if (element.insert == '\t')
                             tabFlag = true;
                     }
+                    if (element.delete != undefined)
+                        delFlag = true;
                 });
             }
             var index = instance.quill.getText().length - 1;
@@ -900,8 +903,10 @@ class EditorService {
                 instance.currentSentence(text, position);
                 instance.currentWord(text, position);
             }
-            else
-                setTimeout(function () { instance.pressedTab(); }, 50);
+            else {
+                if (!delFlag)
+                    setTimeout(function () { instance.pressedTab(); }, 50);
+            }
         });
     }
     getUpdatedValue() {
