@@ -66,3 +66,9 @@ persist_data = api.model('Save request', {
   'actors': fields.List(fields.String, description="List of actors",required=True),
   'bindings': fields.List(fields.String, description="List of bindings",required=True)
   })
+
+suggestion_v2_object = api.model('Suggestion request',{
+  'username': fields.String(description="Username", required=True),
+  'type': fields.String(description="Type of suggestions required",required=True, enum=['behavior', 'constraint']),
+  'suggestion_for': fields.String(description="Partial string for which suggestion is required")
+})

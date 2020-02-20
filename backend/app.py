@@ -27,6 +27,7 @@ from flask import Flask, Blueprint, request
 from flask_restplus import Api
 from DEWAPI import settings
 from DEWAPI.api.hlb.endpoints.hlb import ns as hlb_namespace
+from DEWAPI.api.hlb.endpoints.hlb_v2 import ns as hlb_v2_namespace
 from DEWAPI.api.nlp.endpoints.nlp import ns as nlp_namespace
 from DEWAPI.api.persistence.endpoints.persist import ns as persist_namespace
 from DEWAPI.api.upload.endpoints.parse_dew import ns as upload_namespace
@@ -52,6 +53,7 @@ def initialize_app(flask_app):
     blueprint = Blueprint('api', __name__, url_prefix='/api')
     api.init_app(blueprint)
     api.add_namespace(hlb_namespace)
+    api.add_namespace(hlb_v2_namespace)
     api.add_namespace(nlp_namespace)
     api.add_namespace(upload_namespace)
     api.add_namespace(persist_namespace)
