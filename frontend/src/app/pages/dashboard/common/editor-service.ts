@@ -66,6 +66,7 @@ export default class EditorService {
        //console.log(delta);
        var position =0;
        var tabFlag=false;
+       var delFlag=false;
        instance.isTextChange=true;
         if(delta.ops!=undefined){
           delta.ops.forEach(element => {
@@ -79,6 +80,8 @@ export default class EditorService {
                 tabFlag=true;  
              
             }
+            if(element.delete!=undefined)
+            delFlag =true;
           });
         }
       
@@ -86,12 +89,14 @@ export default class EditorService {
         var text = instance.quill.getText().substr(0,index);
         instance.index = position;
         //console.log("value of index inside:"+instance.index);
-      
+     
         if(!tabFlag){
         instance.currentSentence( text,position);
         instance.currentWord(text,position);
-        }else
+        }else{
+          if(!delFlag)
       setTimeout(function(){ instance.pressedTab(); }, 50); 
+        }
     });
   }
   currentWord(text,position){
