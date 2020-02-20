@@ -12,6 +12,7 @@ RUN pip install uwsgi
 
 # Configure base directory
 WORKDIR /app
+
 COPY requirements.txt /app/requirements.txt
 # Install dependencies
 RUN pip install -r requirements.txt
@@ -22,6 +23,8 @@ COPY nginx.conf /etc/nginx
 
 # Use settings_production
 RUN mv DEWAPI/settings.py DEWAPI/settings_dev.txt && mv DEWAPI/settings_production.py DEWAPI/settings.py
+
+RUN mkdir -p /app/db/
 
 # Given run permissions
 RUN chmod a+x startup.sh

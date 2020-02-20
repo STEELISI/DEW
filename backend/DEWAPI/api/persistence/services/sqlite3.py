@@ -1,7 +1,7 @@
 import sqlite3
 from flask import g
 
-DATABASE = 'database.db'
+DATABASE = 'db/database.db'
 
 
 def connect_db():
@@ -21,12 +21,9 @@ def teardown_request(exception):
 
 def query_many(query, args=(), one=False):
     g.db = connect_db()
-    print("Running query - ", query, args)
     cur = g.db.executemany(query, args)
     g.db.commit()
-    print(cur)
     rv = [dict((cur.description[idx][0], value) for idx, value in enumerate(row)) for row in cur.fetchall()]
-    print(rv)
     
     teardown_request(None)
     return (rv[0] if rv else None) if one else rv
@@ -35,11 +32,8 @@ def query_db(query, args=(), one=False):
     # g.db = connect_db()
 
     g.db = connect_db()
-    print("Running query - ", query, args)
     cur = g.db.execute(query, args)
-    print(cur)
     rv = [dict((cur.description[idx][0], value) for idx, value in enumerate(row)) for row in cur.fetchall()]
-    print(rv)
     teardown_request(None)
     return (rv[0] if rv else None) if one else rv
 
@@ -60,7 +54,6 @@ def create_experiment(experiment="",username=""):
 
 def create_or_update_experiment(experiment="", username=""):
     previous_experiment = find_experiment(username)
-    print(previous_experiment)
     if previous_experiment is None:
         create_experiment(experiment=experiment, username=username)
     else:
