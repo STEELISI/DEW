@@ -10,7 +10,7 @@ from alembic import op
 import sqlalchemy as sa
 sys.path.append('./utilities')
 
-from access_control_enum import AccessControl
+from access_control_enum import AccessControlEnum
 from datetime import datetime
 
 
@@ -26,12 +26,12 @@ def upgrade():
     	'access_control',
     	sa.Column('uid',sa.String,sa.ForeignKey('user.uid'),primary_key=True),
     	sa.Column('experiment_id',sa.Integer, sa.ForeignKey('experiment.experiment_id'),primary_key=True),
-    	sa.Column('access_level',sa.Enum(AccessControl),nullable=False),
-    	sa.Column('created_at', sa.DateTime,nullable=False,default=datetime.utcnow),
+    	sa.Column('access_level',sa.Integer, nullable=False),
+    	sa.Column('created_at', sa.DateTime,default=datetime.utcnow),
       sa.Column('updated_at', sa.DateTime,onupdate=datetime.utcnow),
     	sa.Column('expiry_date',sa.DateTime,nullable=False),
-    	sa.Column('creator', sa.String, sa.ForeignKey('user.uid'),nullable=False),
-    	sa.Column('last_updated_by_user', sa.String, sa.ForeignKey('user.uid'),nullable=False)
+    	sa.Column('creator', sa.String, sa.ForeignKey('user.uid')),
+    	sa.Column('last_updated_by_user', sa.String, sa.ForeignKey('user.uid'))
     )
 
 

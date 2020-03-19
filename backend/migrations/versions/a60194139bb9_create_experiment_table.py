@@ -25,7 +25,7 @@ def upgrade():
         sa.Column('description', sa.Text),
         sa.Column('nlp_content', sa.Text),
         sa.Column('content', sa.Text),
-        sa.Column('created_at', sa.DateTime,nullable=False,default=datetime.utcnow),
+        sa.Column('created_at', sa.DateTime,default=datetime.utcnow),
         sa.Column('updated_at', sa.DateTime,onupdate=datetime.utcnow),
         sa.Column('uid',sa.String, sa.ForeignKey('user.uid'))
 
