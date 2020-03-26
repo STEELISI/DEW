@@ -1,12 +1,13 @@
 import { NgModule } from "@angular/core";
 import { Routes, RouterModule } from "@angular/router";
 import { PagesComponent } from './pages.component';
-import { AuthGuard } from '../@authentication/auth.guard';
+import { AuthGuard } from '../@auth/auth.guard';
+import { PageNotFound } from './error/error.component';
 
 const routes: Routes = [{
   path: '',
- // component: PagesComponent,
-  canActivate: [AuthGuard],
+  component: PagesComponent,
+  //canActivate: [AuthGuard],
   children: [
     {
       path: 'dashboard',
@@ -14,13 +15,19 @@ const routes: Routes = [{
         .then(m => m.DashboardModule),
     },
     {
+      path: 'hlbparser',
+      loadChildren: () => import('./hlbparser/hlpparser.module')
+        .then(m => m.HLBParserModule),
+    },
+    
+    {
       path: '',
       redirectTo: 'dashboard',
       pathMatch: 'full',
     },
     {
       path: '**',
-      redirectTo: 'dashboard',
+      component:PageNotFound,
     },
   ],
 }];

@@ -4,16 +4,25 @@ import { BehaviorSubject, Observable } from 'rxjs';
 @Injectable()
 export class StateService {
   
+  
     loaderSwitch:BehaviorSubject<boolean> = new BehaviorSubject(false);
     actors:BehaviorSubject<any> = new BehaviorSubject(null);
     behavior:BehaviorSubject<any> = new BehaviorSubject(null);
     constraints:BehaviorSubject<any> = new BehaviorSubject(null);
     bindings:BehaviorSubject<any> = new BehaviorSubject(null);
+    userDetails:any;
     currentBehaviorWord:String;
     currentConstraintWord:String;
     enableLoader():void{this.loaderSwitch.next(true);}
     disableLoader():void{this.loaderSwitch.next(false);}
     isLoaderEnabled():Observable<boolean> {return this.loaderSwitch.asObservable();}
+
+    getUserDetails():any{
+        return this.userDetails;
+      }
+      setUserDetails(user){
+        this.userDetails =user;
+      }
     getBindings():Observable<any>{
         return this.bindings.asObservable();
     }

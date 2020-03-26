@@ -31,6 +31,7 @@ from DEWAPI.api.hlb.endpoints.hlb_v2 import ns as hlb_v2_namespace
 from DEWAPI.api.nlp.endpoints.nlp import ns as nlp_namespace
 from DEWAPI.api.persistence.endpoints.persist import ns as persist_namespace
 from DEWAPI.api.upload.endpoints.parse_dew import ns as upload_namespace
+from DEWAPI.api.userinfo.endpoints.userinfo import ns as user_namespace
 import DEWAPI.api.persistence.services.sqlite3
 from DEWAPI.api.restplus import api
 from extensions import db
@@ -44,6 +45,7 @@ def register_extensions(app):
     api.add_namespace(nlp_namespace)
     api.add_namespace(upload_namespace)
     api.add_namespace(persist_namespace)
+    api.add_namespace(user_namespace)
     app.register_blueprint(blueprint)
     db.init_app(app)
 

@@ -25,7 +25,7 @@ class HLBService():
         i=0
         # parse out events, globals.actors, actions and methods
         # from every line but the last
-
+        
         parser = HLBParser(given_actors)
         # TODO : Remove globals
         for b in behaviors:
@@ -51,7 +51,10 @@ class HLBService():
 
         # Go through last behavior line to see what is the current state
         # start (waitd, wait) or (whene, when) or actor, actor, action, method, emit, done
+        print("hello:::::::::",len(last_behavior),"::::")
         type,vals,hints = parser.extract_partial(last_behavior)
+
+        print(type)
         #print type,vals,hints
         if (type == HLBHintType.BLANK):
             return self.addSuggestions(["behaviors_enter"])
@@ -69,7 +72,8 @@ class HLBService():
                 item = items[-1].strip(",")
                 if item not in globals.actors:
                     self.addactor(item)
-            return self.addSuggestions(["actions_only", "actors_only", "enter action"])
+            return self.addSuggestions(["actions_only",  "enter action"])
+            '''"actors_only",'''
         elif(type == HLBHintType.OPT_EMIT_STMT):
             if (last_behavior.endswith(" ")):
                 items = last_behavior.strip().split(" ")

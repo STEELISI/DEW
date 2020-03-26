@@ -51,7 +51,7 @@ translate_request = api.model('Translate request', {
   'Script': fields.String(description="Content of the script to be translated, script type could be bash, magi, and go")
 })
 
-suggestion_object = api.model('Suggestion request', {
+suggestion_object = api.model('Suggestion v1 request', {
   'type': fields.String(description="Type of suggestions required",required=True, enum=['behavior', 'constraint']),
   'suggestion_for': fields.String(description="Partial string for which suggestion is required"),
   'behaviors': fields.List(fields.String, description="List of behaviors to make suggestions"),
@@ -67,8 +67,12 @@ persist_data = api.model('Save request', {
   'bindings': fields.List(fields.String, description="List of bindings",required=True)
   })
 
-suggestion_v2_object = api.model('Suggestion request',{
+suggestion_v2_object = api.model('Suggestion v2 request',{
   'username': fields.String(description="Username", required=True),
   'type': fields.String(description="Type of suggestions required",required=True, enum=['behavior', 'constraint']),
   'suggestion_for': fields.String(description="Partial string for which suggestion is required")
+})
+
+user_object = api.model('User information request',{
+  'token': fields.String(description="token", required=True),
 })

@@ -1,0 +1,19 @@
+<div class="row" *ngIf="alive">
+  <div class="col-md-12">  
+      <p>Authenticating User...</p>
+    </div>
+    </div>
+
+    <div class="row" *ngIf="!alive">
+        <div class="container">
+        <div class="col-md-12">  
+            <div id="gSignInWrapper">
+                <span class="label">Sign in with:</span>
+                <div id="customBtn" class="customGPlusSignIn">
+                  <span class="icon"></span>
+                  <span class="buttonText">Google</span>
+                </div>
+              </div>
+          </div>
+          </div>
+        </div>

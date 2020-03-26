@@ -10,9 +10,7 @@ import { Component, OnDestroy } from "@angular/core";
   </layout>
   `
 })
-export class PagesComponent implements OnDestroy {
+export class PagesComponent  {
   alive: boolean = true;
-  ngOnDestroy(): void {
-    this.alive = false;
-  }
+
 }

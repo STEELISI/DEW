@@ -1,18 +1,20 @@
 import { BrowserModule } from "@angular/platform-browser";
-import { NgModule, Directive } from "@angular/core";
+import { NgModule, Directive, APP_INITIALIZER } from "@angular/core";
 
 import { AppRoutingModule } from "./app-routing.module";
 import { AppComponent } from "./app.component";
 import { PagesModule } from './pages/pages.module';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { HttpClientModule } from '@angular/common/http';
-import { RouterModule, ActivatedRouteSnapshot, RouterStateSnapshot } from '@angular/router';
-import { HttpService } from './pages/dashboard/common/http-service.service';
+import { RouterModule, ActivatedRouteSnapshot, RouterStateSnapshot, Router } from '@angular/router';
+import { HttpService } from './pages/hlbparser/common/http-service.service';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { AuthGuard } from './@authentication/auth.guard';
-import {AuthService} from './@authentication/auth.service';
-import { AuthModule } from './@authentication/auth.module';
+import { AuthGuard } from './@auth/auth.guard';
+import {AuthService} from './@auth/auth.service';
+import { AuthModule } from './@auth/auth.module';
+import { AppService } from './app.service';
+import { StateService } from './pages/hlbparser/common/state-service.service';
 @NgModule({
   declarations: [
     AppComponent
@@ -21,12 +23,20 @@ import { AuthModule } from './@authentication/auth.module';
     AuthModule.forRoot(),
     BrowserModule,
     BrowserAnimationsModule,
-    PagesModule,
+   // PagesModule,
+    RouterModule,
     AppRoutingModule,
-    HttpClientModule,
-    
+    HttpClientModule
   ],
-  providers:[HttpService],
+  providers:[HttpService,StateService,
+   // AppService,
+    // {
+    //   provide: APP_INITIALIZER,
+    //   useFactory: (ds: AppService) => function() {return ds.load()},
+    //   deps: [AppService],
+    //   multi: true
+    // }
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule {}

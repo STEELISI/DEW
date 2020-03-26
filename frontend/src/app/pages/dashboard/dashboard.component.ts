@@ -1,32 +1,34 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
+import { StateService } from '../hlbparser/common/state-service.service';
 
 @Component({
   selector: 'dashboard',
   templateUrl: './dashboard.component.html',
   styleUrls: ['./dashboard.component.scss']
 })
-export class DashboardComponent {
+export class DashboardComponent implements OnInit{
+  
+  
+
 
     menuList:any=[
       {
-        name:"HLB",
-        id:1,
-        html:"<hlb></hlb>"
+        name:"Home",
+        id:1
       }
       ,{
-        name:"NLP",
-        id:2,
-        html:"<nlp></nlp>"
-      }
-        ,{
-        name:"Behavior Dependency Graph",
-        id:3,
-        html:"<p>In Progress.....</p>"
-      } ,{
-        name:"Upload",
-        id:4,
-        html:"<upload></upload>"
-      }     
+        name:"List of Experiment",
+        id:2
+      
+      }   
       ];
+userDetails:any;
+
+        constructor(private state:StateService){}
+  ngOnInit(): void {
+   
+    this.userDetails =  this.state.getUserDetails()==null?{}:this.state.getUserDetails();
+    
+  }
 
 }

@@ -64,8 +64,8 @@ class HandleSuggestions(Resource):
         globals.constraints=dict()
         globals.events=dict()
         globals.actions=dict()
-
         json_data = request.get_json(force=True)
+        print(len(json_data['suggestion_for']))
         if json_data["type"] == "behavior":
           s, t = obj.HandleBehaviorSuggestions(json_data["behaviors"], json_data['actors'], json_data['suggestion_for'])
           return { 'suggestions': s, 'suggestion_text': t}
