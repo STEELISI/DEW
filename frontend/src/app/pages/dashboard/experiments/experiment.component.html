@@ -9,9 +9,10 @@
     <table class="table">
       <thead >
           <tr >
-            <th style="min-width:150px">Exp. Id</th>
-              <th style="min-width:250px">Experiment Name</th>
-              <th style="min-width:350px">Experiment Description</th>
+            <th style="min-width:50px">Exp. Id</th>
+              <th style="min-width:150px">Experiment Name</th>
+              <th style="min-width:150px">Experiment Description</th>
+              <th style="min-width:150px">Last Created Date</th>
               <th style="min-width:150px">Last Updated Date</th>
               <th ></th>
           </tr>
@@ -21,7 +22,8 @@
             <td>{{item.id}}</td>
               <td><strong>{{ item.name }}</strong></td>
               <td><strong>{{ item.description }}</strong></td>
-              <td><strong>{{ item.lastUpdatedDate }}</strong></td>
+              <td><strong>{{ item.created_date }}</strong></td>
+              <td><strong>{{ item.updated_date }}</strong></td>
               <td>
      
                 <i class="fas fa-edit pointer" (click)="edit(item)"></i>

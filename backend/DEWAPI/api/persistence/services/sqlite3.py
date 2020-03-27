@@ -38,18 +38,20 @@ def query_db(query, args=(), one=False):
     return (rv[0] if rv else None) if one else rv
 
 
-def update_experiment(experiment="",username=""):
-    query = "update experiment set experiment = ? where username = ?"
-    query_many(query, [(experiment,username)])
-    return True
+def update_experiment(experiment="",userId="",experimentId="",name="",description=""):
+    query = "update experiment set content = ? ,updated_at = datetime(),name=?,description=?  where uid = ? and id = ?"
+    query_many(query, [(experiment,name,description,userId,experimentId)])
+    return True, "Successful"
 
-def find_experiment(username):
-    query = "select * from experiment where username = ?"
-    return query_db(query, (username,),one=True)
-
-def create_experiment(experiment="",username=""):
-    query = "insert into experiment(experiment, username) values(?,?)"
-    query_many(query,[(experiment,username)])
+def find_experiment(userId):
+    query = "select id,name,description,created_at created_date,updated_at as updated_date from experiment where uid = ?"
+    return query_db(query, (userId,))
+def getExperimentById(userId,id1):
+    query = "select content as experiment from experiment where uid = ? and id = ?"
+    return query_db(query, (userId,id1),one=True)
+def create_experiment(experiment="",uid=""):
+    query = "insert into experiment(experiment, uid) values(?,?)"
+    query_many(query,[(experiment,uid)])
     return True
 
 def create_or_update_experiment(experiment="", username=""):
@@ -61,7 +63,7 @@ def create_or_update_experiment(experiment="", username=""):
     return True
 
 def create_experiment_table():
-    query = "create table IF NOT EXISTS experiment(username varchar(255) primary key, experiment text)"
+    query = "create table IF NOT EXISTS experiment(uid varchar(255) primary key, experiment text)"
     g.db = connect_db()
     cur = g.db.execute(query)
     g.db.commit()

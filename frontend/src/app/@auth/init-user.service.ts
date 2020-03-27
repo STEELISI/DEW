@@ -18,17 +18,20 @@ export class InitUserService {
     var img = this.authService.getCookie("img");
     var givenName = this.authService.getCookie("givenName");
     var lastName = this.authService.getCookie("lastName");
+    var userId = this.authService.getCookie("userId");
     var result ={
       fullName:fullName,
       emailId:emailId,
       img:img,
       givenName:givenName,
-      lastName:lastName
+      lastName:lastName,
+      userId:userId
     }
     if(fullName==undefined || fullName==null ||fullName==''
       || emailId==undefined || emailId==null || emailId==''
       || givenName==undefined || givenName==null ||givenName==''
       || lastName==undefined || lastName==null || lastName==''
+      || userId==undefined || userId==null || userId==''
       || img==undefined || img==null || img==''
       ){
 
@@ -42,6 +45,8 @@ export class InitUserService {
        this.authService.setCookie("lastName",data.lastName,3599);
        this.authService.setCookie("img",data.img,3599);
        this.authService.setCookie("fullName",data.fullName,3599);
+       this.authService.setCookie("userId",data.userId,3599);
+
        this.user.next(data);
      });
     }else{

@@ -6,6 +6,8 @@ import { StateService } from '../common/state-service.service';
 import { MatSnackBar } from '@angular/material';
 import {MatDialog, MatDialogRef, MAT_DIALOG_DATA} from '@angular/material/dialog';
 import { HttpService } from '../common/http-service.service';
+import { Router, ActivatedRoute, ParamMap } from '@angular/router';
+import { switchMap } from 'rxjs/operators';
 Quill.register("modules/counter", EditorService);
 
 
@@ -48,10 +50,16 @@ export class HlbComponent implements OnInit{
 inputText:string="";
 actors:String ="";
 selectedIndex:number=0;
-constructor(private http: HttpService,
+constructor(private http: HttpService,private route: ActivatedRoute,
   public dialog: MatDialog,private stateservice:StateService,private _snackBar: MatSnackBar,private changeDetection: ChangeDetectorRef){}
 ngOnInit(): void {
-
+  var t =this.route.paramMap.pipe(
+    switchMap((params: ParamMap) =>{
+     console.log(params.get('id'))
+     return "";
+    })
+    
+  );
   this.bindingMap = new Map<String,any>();
   this.behaviorList = [];
   const instance =this;

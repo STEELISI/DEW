@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'hlbparser',
@@ -28,5 +29,7 @@ export class HLBParserComponent {
         html:"<upload></upload>"
       }     
       ];
+
+      constructor(private route:Router){}
 
 }

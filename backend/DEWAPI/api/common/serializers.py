@@ -60,11 +60,19 @@ suggestion_object = api.model('Suggestion v1 request', {
 })
 
 persist_data = api.model('Save request', {
-  'username': fields.String(description="Username", required=True),
+  'userId': fields.String(description="user id", required=True),
+  'name':fields.String(description="Name of experiment", required=True),
+  'id':fields.String(description="Id of experiment", required=False),
+  'description':fields.String(description="Description of experiment", required=True),
   'behaviors': fields.List(fields.String, description="List of behaviors",required=True),
   'constraints': fields.List(fields.String, description="List of constraints",required=True),
   'actors': fields.List(fields.String, description="List of actors",required=True),
   'bindings': fields.List(fields.String, description="List of bindings",required=True)
+  })
+
+experiment_detail = api.model('get experiment request', {
+  'userId': fields.String(description="user id", required=True),
+  'id':fields.String(description="Id of experiment", required=True)
   })
 
 suggestion_v2_object = api.model('Suggestion v2 request',{

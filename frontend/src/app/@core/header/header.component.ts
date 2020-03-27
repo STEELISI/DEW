@@ -14,7 +14,9 @@ export class HeaderComponent implements OnInit{
   userName:String;
   fullName:String;
   img:String;
-  constructor(protected authService:AuthService,protected initUserService:InitUserService,protected route:Router){}
+  constructor(protected authService:AuthService,protected initUserService:InitUserService,protected route:Router){
+   
+  }
   ngOnInit(): void {
     this.initUserService.getUser().subscribe(user=>{
       console.log(user);
@@ -24,12 +26,15 @@ export class HeaderComponent implements OnInit{
          this.img =user.img;
         }
     });
-    this.authService.isAuthenticated().subscribe(loggedin=>{
+
+    this. authService.isAuthenticated().subscribe(loggedin=>{
+      console.log();
       this.loggedIn = loggedin;
       if(loggedin){
         this.initUserService.initCurrentUser();
       }
     });
+    
   }
   loginWithGoogle(){
     this.authService.loginWithGoogle();
