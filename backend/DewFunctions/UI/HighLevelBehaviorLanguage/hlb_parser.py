@@ -68,7 +68,8 @@ class HLBParser():
     newline = Literal("\n")
     wsp = White().suppress()
     actor = (not_akeyword + Word(alphanums))
-    actors = actor + ZeroOrMore((comma + wsp + actor | comma + actor))
+    actors = actor + ZeroOrMore((comma + wsp + actor | comma + actor | wsp + comma + actor | wsp + comma + wsp + actor))
+    #actor_comma = (actor | actors) + (wsp + comma | comma + wsp | wsp + comma + wsp)
     #action = (Optional(CaselessKeyword("start") | CaselessKeyword("stop") | CaselessKeyword("restart") | CaselessKeyword("check")) + (not_akeyword + Word(alphanums)))	
     action = (not_akeyword + Word(alphanums))
     event = (not_akeyword + Word(alphanums))
@@ -91,10 +92,12 @@ class HLBParser():
     hlb_partial_trigger_word = (when_trigger + wsp + parts_of_wait) | parts_of_when | parts_of_wait
     hlb_missing_when_list = (when_keyword) + LineEnd()
     hlb_missing_wait_time = (when_trigger + wsp + wait_keyword + LineEnd() | wait_keyword + LineEnd())
-    hlb_missing_actors = (trigger("trigger") | trigger("trigger") + actors("actors") + comma + LineEnd())
-    hlb_missing_actors_whenstmt = when_trigger + LineEnd()
-    hlb_missing_actors_waitstmt = wait_trigger + LineEnd() | when_trigger + wsp + wait_trigger + LineEnd()
-    hlb_missing_action = (trigger("trigger") + wsp + actors("actors") + LineEnd() |  actors("actors") + LineEnd())
+    hlb_unfinished_actors_list = actors("actors") + Optional(wsp) + comma + Optional(wsp) + LineEnd()
+    hlb_missing_actors = Optional(wsp) + LineEnd() | trigger("trigger") + Optional(wsp) + LineEnd() | trigger("trigger") + hlb_unfinished_actors_list | hlb_unfinished_actors_list
+    #actors("actors") | actors("actors")) + Optional(wsp) + comma + Optional(wsp) + LineEnd())
+    hlb_missing_actors_whenstmt = when_trigger + LineEnd() | when_trigger + hlb_unfinished_actors_list
+    hlb_missing_actors_waitstmt = wait_trigger + LineEnd() | when_trigger + wsp + wait_trigger + LineEnd() | wait_trigger + hlb_unfinished_actors_list | when_trigger + wsp + wait_trigger + hlb_unfinished_actors_list
+    hlb_missing_action = (trigger("trigger") + wsp + actors("actors") | actors("actors")) + Optional(wsp) + LineEnd()
     hlb_missing_emit_list = (trigger("trigger") + wsp + actors("actors") | actors("actors")) + wsp + action("action") + emit_keyword + LineEnd()
 
     def __init__(self, actors):
@@ -136,10 +139,12 @@ class HLBParser():
         """
         try:
             parsed = self.hlb_statement.parseString(statement)
-            print(parsed)
+            # FIX: This should be logged or optional. Not a print.
+            # print(parsed)
         except ParseException as pe:
             print("WARNING: Could not parse HLB statement:\n\t%s" % (statement))
-            print(pe)
+            # FIX: Use Logger.
+            #print(pe)
             return(None, None, None, None, None)
         if parsed.e_events == None:
             parsed.e_events = []
@@ -174,106 +179,114 @@ class HLBParser():
     def extract_partial(self, partial):
         #print("Parsing \'%s\'" % partial)
         if len(partial.strip().split()) == 0:
+            print("Nothing given")
             return(HLBHintType.BLANK,  self.new_return_dict(), ['WHEN', 'WAIT', '<ACTOR>'])
+            
         t_events, actors, action, e_events, wait_time = self.parse_stmt(partial)
-        # In case we have a 2 word action with a <keyword string> pattern:
-        try:
-            action = ''.join(action)
-        except TypeError:
-            action = str(action)
         if actors != None and e_events != None:
             #print("Complete statement with emit.")
+            self.update_actors(actors)
             return(HLBHintType.NO_HINT, self.new_return_dict(t_events=t_events, actors=actors, action=action, e_events=e_events, wait_time=wait_time), []) 
         elif actors != None and e_events == None:
             #print("Complete statement, with no emit.")
-            hint_list = ['EMIT ' + action +'Signal', 'EMIT'] 
+            self.update_actors(actors)
+            hint_list = ['EMIT ' + action[0] +'Signal', 'EMIT'] 
             return(HLBHintType.OPT_EMIT_STMT, self.new_return_dict(t_events=t_events, actors=actors, action=action, wait_time=wait_time), hint_list) 
+            
+        ## WARNING: The following is a longest match first:
+        ## For the below to work, the order must be kept 
+        ## (along with the break out of conditional statements 
+        ## via return or some other mechanism).
         
-        
-        # Our statement isn't complete or correct:
-        if actors == None:
-            #print("Statement is not complete as is.")
+        # Do we have an emit, but missing emit event list?
+        try:
+            parsed = self.hlb_missing_emit_list.parseString(partial)
+            #print("Missing emit list.")
+            hint_list = [parsed.action[0]+'Signal', '<LIST, OF, TRIGGERS>']
+            self.update_actors(parsed.actors)
+            return(HLBHintType.REQ_EMIT_LIST, self.new_return_dict(t_events=parsed.t_events, actors=parsed.actors, action=parsed.action, wait_time=parsed.wait_time), hint_list)
+        except ParseException as pe:
+            pass
+        # Do we have a wait? but missing the wait time?
+        try:
+            parsed = self.hlb_missing_wait_time.parseString(partial)
+            #print("Missing wait time")
+            hint_list = ['<VARNAME_FOR_WAIT_TIME>']
+            return(HLBHintType.REQ_WAIT_TIME, self.new_return_dict(t_events=parsed.t_events), hint_list)
+        except ParseException as pe:
+            pass
+        # Do we have a when? but missing the when event triggers?
+        try:
+            parsed = self.hlb_missing_when_list.parseString(partial)
+            #print("Missing when list.")
+            hint_list = ['<TRIGGER_NAME>']
+            return(HLBHintType.REQ_WHEN_LIST, self.new_return_dict(), hint_list)
+        except ParseException as pe:
+            pass
+        # Do we just have a start of a keyword/actor name?
+        if partial[-1] != ' ' and partial[-1] != ',':
+            hint_list = []
+            return(HLBHintType.BLANK, self.new_return_dict(), hint_list)
+        try:
+            parsed = self.hlb_partial_trigger_word.parseString(partial)
+            hint_list = []
+            return(HLBHintType.BLANK, self.new_return_dict(), hint_list)
+        except ParseException as pe:
+            pass
+        # Are we missing an action?
+        try:
+            # Maybe we don't have an actor, but a partial wait or when
+            parsed = self.hlb_missing_action.parseString(partial)
+            #print("Missing action.")
+            hint_list = ['<METHOD_NAME>']
+            for a in self.actors:
+                if a != "":
+                    hint_list.append(', ' + a.strip())
+            return(HLBHintType.REQ_ACTION, self.new_return_dict(t_events=parsed.t_events, actors=parsed.actors, wait_time=parsed.wait_time), hint_list)
+        except ParseException as pe:
+            pass
+        # Do we have a trigger, but need actors?
+        try:
+            parsed = self.hlb_missing_actors.parseString(partial)
+            self.update_actors(parsed.actors)
+            #print("Missing actors", parsed)
+            hint_list = []
             
-            ## WARNING: The following is a longest match first:
-            ## For the below to work, the order must be kept 
-            ## (along with the break out of conditional statements 
-            ## via return or some other mechanism).
-            
-            # Do we have an emit, but missing emit event list?
-            try:
-                parsed = self.hlb_missing_emit_list.parseString(partial)
-                #print("Missing emit list.")
-                hint_list = [action+'Signal', '<LIST, OF, TRIGGERS>']
-                return(HLBHintType.REQ_EMIT_LIST, self.new_return_dict(t_events=parsed.t_events, actors=parsed.actors, action=parsed.action, wait_time=parsed.wait_time), hint_list)
-            except ParseException as pe:
-                pass
-            # Do we have a wait? but missing the wait time?
-            try:
-                parsed = self.hlb_missing_wait_time.parseString(partial)
-                #print("Missing wait time")
-                hint_list = ['<VARNAME_FOR_WAIT_TIME>']
-                return(HLBHintType.REQ_WAIT_TIME, self.new_return_dict(t_events=parsed.t_events), hint_list)
-            except ParseException as pe:
-                pass
-            # Do we have a when? but missing the when event triggers?
-            try:
-                parsed = self.hlb_missing_when_list.parseString(partial)
-                #print("Missing when list.")
-                hint_list = ['<TRIGGER_NAME>']
-                return(HLBHintType.REQ_WHEN_LIST, self.new_return_dict(), hint_list)
-            except ParseException as pe:
-                pass
-            # Do we just have a start of a keyword?
-            if " " not in partial:
-                hint_list = []
-                return(HLBHintType.BLANK, self.new_return_dict(), hint_list)
-            try:
-                parsed = self.hlb_partial_trigger_word.parseString(partial)
-                hint_list = []
-                return(HLBHintType.BLANK, self.new_return_dict(), hint_list)
-            except ParseException as pe:
-                pass
-            # Are we missing an action?
-            try:
-                # Maybe we don't have an actor, but a partial wait or when
-            
-                parsed = self.hlb_missing_action.parseString(partial)
-                #print("Missing action.")
-                hint_list = ['<METHOD_NAME>']
+            # If we end with an incomplete actor list, add actors as hints.
+            if partial.strip()[-1] == ',':
                 for a in self.actors:
                     if a != "":
-                        hint_list.append(', ' + a.strip())
-                return(HLBHintType.REQ_ACTION, self.new_return_dict(t_events=parsed.t_events, actors=parsed.actors, wait_time=parsed.wait_time), hint_list)
-            except ParseException as pe:
-                pass
-            # Do we have a trigger, but no actors?
+                        in_statement = False
+                        for b in parsed.actors:
+                            if a == b:
+                                in_statement = True
+                                break
+                        if not in_statement:
+                            hint_list.append(a.strip())
             try:
-                parsed = self.hlb_missing_actors.parseString(partial)
-                print("Missing actors", parsed)
-                hint_list = []
-                for a in self.actors:
-                    if a != "":
-                        hint_list.append(a.strip())
-                try:
-                    # We may have a 'when xxx' statement, in which case we should also suggest a 'wait' as a hint.
-                    parsed_for_when = self.hlb_missing_actors_whenstmt.parseString(partial)
+                # We may have a 'when xxx' statement, in which case we should also suggest a 'wait' as a hint.
+                parsed_for_when = self.hlb_missing_actors_whenstmt.parseString(partial)
+                if len(parsed.actors) == 0:
                     hint_list.append('WAIT')
-                    return(HLBHintType.REQ_ACTORS_HAVEWHEN, self.new_return_dict(t_events=parsed.t_events), hint_list)
-                except ParseException as pe:
-                    # We don't just have a 'when xxxx'. We either have a 'wait xxx' or a 'when xxx wait xxx'
-                    try:
-                        parsed_for_wait = self.hlb_missing_actors_waitstmt.parseString(partial)
-                        return(HLBHintType.REQ_ACTORS_HAVEWAIT, self.new_return_dict(t_events=parsed.t_events, wait_time=parsed.wait_time), hint_list)
-                    except ParseException as pe:
-                        return(HLBHintType.REQ_ACTORS,  self.new_return_dict(t_events=parsed.t_events, wait_time=parsed.wait_time), hint_list)
+                return(HLBHintType.REQ_ACTORS_HAVEWHEN, self.new_return_dict(actors=parsed.actors, t_events=parsed.t_events), hint_list)
             except ParseException as pe:
-                return(HLBHintType.UNKNOWN_ERROR, self.new_return_dict(), [])
-            
+                # We don't just have a 'when xxxx'. We either have a 'wait xxx' or a 'when xxx wait xxx'
+                try:
+                    parsed_for_wait = self.hlb_missing_actors_waitstmt.parseString(partial)
+                    return(HLBHintType.REQ_ACTORS_HAVEWAIT, self.new_return_dict(actors=parsed.actors, t_events=parsed.t_events, wait_time=parsed.wait_time), hint_list)
+                except ParseException as pe:
+                    return(HLBHintType.REQ_ACTORS, self.new_return_dict(actors=parsed.actors, t_events=parsed.t_events, wait_time=parsed.wait_time), hint_list)
+        except ParseException as pe:
+            return(HLBHintType.UNKNOWN_ERROR, self.new_return_dict(), [])
+
+    def update_actors(self, new_list):
+        self.actors.extend(new_list)
+        self.actors = list(set(self.actors))
                 
 def testParser():
-    parser = HLBParser()
+    parser = HLBParser([])
     while True:
-        line = raw_input("Input statement: ")
+        line = input("Input statement: ")
         print(line)
         (t_events, actors, action, e_events, wait_time) = parser.parse_stmt(line)
         if actors != None:
@@ -287,8 +300,16 @@ def testParser():
         if wait_time != None:
             print("Wait time: %s" % wait_time)
         parser.extract_partial(line)
+
+def testSuggestions():
+    parser = HLBParser([])
+    while True:
+        line = input("Input statement: ")
+        print(parser.extract_partial(line))
     
 if __name__ == "__main__":
-    testParser()
+    #testParser()
+    testSuggestions()
+
     
     
