@@ -87261,7 +87261,7 @@
     /* harmony default export */
 
 
-    __webpack_exports__["default"] = "<div class=\"row\" >\n\n\n\n  <div class=\"col-md-10\" style=\"    margin: 2em;\">\n    \n    <mat-card> \n      <button Mat-button class=\"btn btn-primary\" style=\"float:right;margin: 1em;\" (click)=\"create()\">create new experiment</button>\n    <table class=\"table\">\n      <thead >\n          <tr >\n            <th style=\"min-width:150px\">Exp. Id</th>\n              <th style=\"min-width:250px\">Experiment Name</th>\n              <th style=\"min-width:350px\">Experiment Description</th>\n              <th style=\"min-width:150px\">Last Updated Date</th>\n              <th ></th>\n          </tr>\n      </thead>\n      <tbody *ngIf=\"experiments.length!=0\" >\n          <tr *ngFor=\"let item of experiments; let i=index\" >\n            <td>{{item.id}}</td>\n              <td><strong>{{ item.name }}</strong></td>\n              <td><strong>{{ item.description }}</strong></td>\n              <td><strong>{{ item.lastUpdatedDate }}</strong></td>\n              <td>\n     \n                <i class=\"fas fa-edit pointer\" (click)=\"edit(item)\"></i>\n                <i class=\"far fa-trash-alt pointer\" (click)=\"delete(i)\"></i></td>\n\n          </tr>\n      </tbody>\n      <tbody class=\"upload-name\"  *ngIf=\"experiments.length==0\" >\n        <tr >\n          <td colspan=\"3\" ><span ><i>No saved experiments.</i> </span></td>\n            \n\n        </tr>\n    </tbody>\n \n  </table>\n  </mat-card>\n    </div>\n</div>";
+    __webpack_exports__["default"] = "<div class=\"row\" >\n\n\n\n  <div class=\"col-md-10\" style=\"    margin: 2em;\">\n    \n    <mat-card> \n      <button Mat-button class=\"btn btn-primary\" style=\"float:right;margin: 1em;\" (click)=\"create()\">create new experiment</button>\n    <table class=\"table\">\n      <thead >\n          <tr >\n            <th style=\"min-width:50px\">Exp. Id</th>\n              <th style=\"min-width:150px\">Experiment Name</th>\n              <th style=\"min-width:150px\">Experiment Description</th>\n              <th style=\"min-width:150px\">Last Created Date</th>\n              <th style=\"min-width:150px\">Last Updated Date</th>\n              <th ></th>\n          </tr>\n      </thead>\n      <tbody *ngIf=\"experiments.length!=0\" >\n          <tr *ngFor=\"let item of experiments; let i=index\" >\n            <td>{{item.id}}</td>\n              <td><strong>{{ item.name }}</strong></td>\n              <td><strong>{{ item.description }}</strong></td>\n              <td><strong>{{ item.created_date }}</strong></td>\n              <td><strong>{{ item.updated_date }}</strong></td>\n              <td>\n     \n                <i class=\"fas fa-edit pointer\" (click)=\"edit(item)\"></i>\n                <i class=\"far fa-trash-alt pointer\" (click)=\"delete(i)\"></i></td>\n\n          </tr>\n      </tbody>\n      <tbody class=\"upload-name\"  *ngIf=\"experiments.length==0\" >\n        <tr >\n          <td colspan=\"3\" ><span ><i>No saved experiments.</i> </span></td>\n            \n\n        </tr>\n    </tbody>\n \n  </table>\n  </mat-card>\n    </div>\n</div>";
     /***/
   },
 
@@ -95376,10 +95376,24 @@
     var _angular_router__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(
     /*! @angular/router */
     "./node_modules/@angular/router/fesm2015/router.js");
+    /* harmony import */
+
+
+    var _hlbparser_common_http_service_service__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(
+    /*! ../../hlbparser/common/http-service.service */
+    "./src/app/pages/hlbparser/common/http-service.service.ts");
+    /* harmony import */
+
+
+    var src_app_auth_init_user_service__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(
+    /*! src/app/@auth/init-user.service */
+    "./src/app/@auth/init-user.service.ts");
 
     let ExperimentComponent = class ExperimentComponent {
-      constructor(router) {
+      constructor(router, http, initUser) {
         this.router = router;
+        this.http = http;
+        this.initUser = initUser;
         this.experiments = [{
           id: 123,
           name: "Test1",
@@ -95388,18 +95402,35 @@
         }];
       }
 
+      ngOnInit() {
+        this.initUser.getUser().subscribe(user => {
+          console.log(user);
+
+          if (user != null) {
+            this.http.get("/v1/persist/getExperimentList/" + user.userId).subscribe(data => {
+              this.experiments = data;
+            });
+          }
+        });
+      }
+
       edit(experiments) {
-        this.router.navigate(["hlbparser/create", experiments.id]);
+        console.log(experiments);
+        this.router.navigate(["pages/hlbparser/create", experiments.id]);
       }
 
       create() {
-        this.router.navigate(["hlbparser/create"]);
+        this.router.navigate(["pages/hlbparser/create"]);
       }
 
     };
 
     ExperimentComponent.ctorParameters = () => [{
       type: _angular_router__WEBPACK_IMPORTED_MODULE_2__["Router"]
+    }, {
+      type: _hlbparser_common_http_service_service__WEBPACK_IMPORTED_MODULE_3__["HttpService"]
+    }, {
+      type: src_app_auth_init_user_service__WEBPACK_IMPORTED_MODULE_4__["InitUserService"]
     }];
 
     ExperimentComponent = tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"]([Object(_angular_core__WEBPACK_IMPORTED_MODULE_1__["Component"])({
@@ -95964,11 +95995,24 @@
     var _common_http_service_service__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(
     /*! ../common/http-service.service */
     "./src/app/pages/hlbparser/common/http-service.service.ts");
+    /* harmony import */
+
+
+    var _angular_router__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(
+    /*! @angular/router */
+    "./node_modules/@angular/router/fesm2015/router.js");
+    /* harmony import */
+
+
+    var rxjs_operators__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(
+    /*! rxjs/operators */
+    "./node_modules/rxjs/_esm2015/operators/index.js");
 
     quill__WEBPACK_IMPORTED_MODULE_3__["register"]("modules/counter", _common_editor_service__WEBPACK_IMPORTED_MODULE_4__["default"]);
     let HlbComponent = class HlbComponent {
-      constructor(http, dialog, stateservice, _snackBar, changeDetection) {
+      constructor(http, route, dialog, stateservice, _snackBar, changeDetection) {
         this.http = http;
+        this.route = route;
         this.dialog = dialog;
         this.stateservice = stateservice;
         this._snackBar = _snackBar;
@@ -95995,6 +96039,10 @@
       }
 
       ngOnInit() {
+        var t = this.route.paramMap.pipe(Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_10__["switchMap"])(params => {
+          console.log(params.get('id'));
+          return "";
+        }));
         this.bindingMap = new Map();
         this.behaviorList = [];
         const instance = this;
@@ -96460,6 +96508,8 @@
     HlbComponent.ctorParameters = () => [{
       type: _common_http_service_service__WEBPACK_IMPORTED_MODULE_8__["HttpService"]
     }, {
+      type: _angular_router__WEBPACK_IMPORTED_MODULE_9__["ActivatedRoute"]
+    }, {
       type: _angular_material_dialog__WEBPACK_IMPORTED_MODULE_7__["MatDialog"]
     }, {
       type: _common_state_service_service__WEBPACK_IMPORTED_MODULE_5__["StateService"]
@@ -96630,9 +96680,16 @@
     var _angular_core__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(
     /*! @angular/core */
     "./node_modules/@angular/core/fesm2015/core.js");
+    /* harmony import */
+
+
+    var _angular_router__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(
+    /*! @angular/router */
+    "./node_modules/@angular/router/fesm2015/router.js");
 
     let HLBParserComponent = class HLBParserComponent {
-      constructor() {
+      constructor(route) {
+        this.route = route;
         this.menuList = [{
           name: "HLB",
           id: 1,
@@ -96653,6 +96710,11 @@
       }
 
     };
+
+    HLBParserComponent.ctorParameters = () => [{
+      type: _angular_router__WEBPACK_IMPORTED_MODULE_2__["Router"]
+    }];
+
     HLBParserComponent = tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"]([Object(_angular_core__WEBPACK_IMPORTED_MODULE_1__["Component"])({
       selector: 'hlbparser',
       template: tslib__WEBPACK_IMPORTED_MODULE_0__["__importDefault"](__webpack_require__(
