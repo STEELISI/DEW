@@ -24,7 +24,6 @@ def query_many(query, args=(), one=False):
     cur = g.db.executemany(query, args)
     g.db.commit()
     rv = [dict((cur.description[idx][0], value) for idx, value in enumerate(row)) for row in cur.fetchall()]
-    
     teardown_request(None)
     return (rv[0] if rv else None) if one else rv
 
@@ -39,15 +38,18 @@ def query_db(query, args=(), one=False):
 
 
 def update_experiment(experiment="",userId="",experimentId="",name="",description=""):
-    query = "update experiment set content = ? ,updated_at = datetime(),name=?,description=?  where uid = ? and id = ?"
+    query = "update experiment set content = ? ,updated_at = datetime(),name=?,description=?  where uid = ? and experiment_id = ?"
     query_many(query, [(experiment,name,description,userId,experimentId)])
+    print(query)
     return True, "Successful"
 
 def find_experiment(userId):
-    query = "select id,name,description,created_at created_date,updated_at as updated_date from experiment where uid = ?"
+    query = "select experiment_id,name,description,created_at created_date,updated_at as updated_date from experiment where uid = ?"
     return query_db(query, (userId,))
+
+
 def getExperimentById(userId,id1):
-    query = "select content as experiment from experiment where uid = ? and id = ?"
+    query = "select content as experiment from experiment where uid = ? and experiment_id = ?"
     return query_db(query, (userId,id1),one=True)
 def create_experiment(experiment="",uid=""):
     query = "insert into experiment(experiment, uid) values(?,?)"
