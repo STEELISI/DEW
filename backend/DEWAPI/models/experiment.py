@@ -16,6 +16,7 @@ class Experiment(db.Model):
     def to_dict(self):
         return {
             'name': self.name,
+            'id': self.experiment_id,
             'description': self.description,
             # 'nlp_content': self.nlp_content,
             'content': self.content,

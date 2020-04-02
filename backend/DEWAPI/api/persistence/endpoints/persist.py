@@ -34,10 +34,14 @@ class HandleSave(Resource):
         print("Experiment : ", json.loads(json.dumps({'actors': actors, 'constraints': constraints, 'behaviors': behaviors, 'bindings': bindings},ensure_ascii=False)))
 
         if experimentId is None or experimentId.strip() == '':
-          flag, message = em.save_experiment(userId, experiment_content,experimentId,name,description)
+          flag, message = em.create_experiment(userId, experiment_content,experimentId,name,description)
         else: 
-          flag, message = persistence.services.sqlite3.update_experiment(experiment_content,userId,experimentId,name,description)
-        return {'saved': flag,'message':message }
+          try:
+            flag , message = em.update_experiment(experimentId,userId,name=name, description=description,content=experiment_content)
+            return {'saved': flag,'message':message }
+          except ValueError as e:
+            msg = {'saved': False, 'message': str(e)}
+            return msg, 403
 
          # persistence.services.sqlite3.query_db("select id from users where username="+username,one=True)
          # return 
@@ -54,7 +58,7 @@ class HandleRetrieve(Resource):
       """
       print(userId)
 
-      experiment = persistence.services.sqlite3.find_experiment(userId)
+      experiment = em.get_accessible_experiments(userId)
 
       result = []
       if experiment is not None:
@@ -73,10 +77,14 @@ class HandleRetrieve(Resource):
       content = request.get_json(force=True)
       userId = content['userId']
       id1 = content['id']
-      experiment = persistence.services.sqlite3.getExperimentById(userId,id1)
-      
-      result = {}
-      if experiment is not None:
-        result=json.loads(experiment['experiment'])
+      try:
+        experiment = em.get_experiment(id1, userId)
         
-      return result
+        result = {}
+        if experiment is not None:
+          result=experiment.to_dict()
+          
+        return result
+      except ValueError as e:
+        if str(e) == "Forbidden":
+          return {}, 403
