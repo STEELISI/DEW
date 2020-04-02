@@ -20,7 +20,7 @@ class ExperimentManager(object):
         db.session.add(e)
         db.session.commit()
 
-        u.default_experiment_id = e.id
+        u.default_experiment_id = e.experiment_id
 
         # ac = AccessControl(u.uid, e.experiment_id, AccessControlEnum.manage.value, datetime.utcnow() + relativedelta(years=999), u.uid)
         

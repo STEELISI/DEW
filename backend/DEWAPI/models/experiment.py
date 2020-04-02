@@ -3,7 +3,7 @@ from datetime import datetime
 
 class Experiment(db.Model):
 
-    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    experiment_id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     name = db.Column(db.String, default='untitled')
     description = db.Column(db.Text)
     # nlp_content = db.Column(db.Text)

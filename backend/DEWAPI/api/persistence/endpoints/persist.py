@@ -33,7 +33,7 @@ class HandleSave(Resource):
         experiment_content = json.dumps({'actors': actors, 'constraints': constraints, 'behaviors': behaviors, 'bindings': bindings})
         print("Experiment : ", json.loads(json.dumps({'actors': actors, 'constraints': constraints, 'behaviors': behaviors, 'bindings': bindings},ensure_ascii=False)))
 
-        if experimentId is None and experimentId.strip() == '':
+        if experimentId is None or experimentId.strip() == '':
           flag, message = em.save_experiment(userId, experiment_content,experimentId,name,description)
         else: 
           flag, message = persistence.services.sqlite3.update_experiment(experiment_content,userId,experimentId,name,description)
