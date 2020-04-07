@@ -27,7 +27,7 @@ class ExperimentManager(object):
         db.session.add(u)
         db.session.add(ac)
         db.session.commit()
-        return True,"Successfull"
+        return e
 
     
     def update_experiment(self, experiment_id, current_user_id, name, content, description):
@@ -51,7 +51,7 @@ class ExperimentManager(object):
 
     def get_experiment(self, experiment_id, current_user_id):
         if self.user_can(experiment_id, current_user_id, AccessControlEnum.read.value):
-            e = Experiment.query.filter(Experiment.experiment_id == experiment_id).first()
+            e = Experiment.query.filter(Experiment.experiment_id == experiment_id, Experiment.deleted_at == None).first()
             return e
         else:
             raise ValueError("Forbidden")
@@ -59,9 +59,28 @@ class ExperimentManager(object):
 
     def get_accessible_experiments(self, user_id):
         ac = AccessControl.query.filter(AccessControl.uid==user_id,AccessControl.expiry_date>datetime.today(), AccessControl.access_level>=AccessControlEnum.none.value).all()
-        experiments = [Experiment.query.get(e.experiment_id).to_dict() for e in ac]
+        
+        experiment_ids = [e.experiment_id for e in ac]
+
+        experiments = [e.to_dict() for e in Experiment.query.filter(Experiment.experiment_id.in_(experiment_ids),Experiment.deleted_at == None).all()]
+
         print(experiments)
         return experiments
+
+
+    def soft_delete_experiment(self, current_user_id, experiment_id):
+        if self.user_can(experiment_id, current_user_id, AccessControlEnum.manage.value):
+            e = Experiment.query.filter(Experiment.experiment_id == experiment_id, Experiment.deleted_at == None).first()
+            if e is None:
+                raise ValueError("Forbidden")
+            e.deleted_at = datetime.utcnow()
+            db.session.commit()
+            return True, "Successfull"
+        else:
+            raise ValueError("Forbidden")
+
+    def copy_experiment(self, original_experiment, user_id):
+        return self.create_experiment(user_id,original_experiment.content,None,original_experiment.name,original_experiment.description)
 
 
     def user_can(self, experiment_id, user_id, action):
