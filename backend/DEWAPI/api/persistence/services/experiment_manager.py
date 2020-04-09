@@ -86,9 +86,3 @@ class ExperimentManager(object):
     def user_can(self, experiment_id, user_id, action):
         ac = AccessControl.query.filter(AccessControl.experiment_id==experiment_id, AccessControl.uid==user_id,AccessControl.expiry_date>datetime.today(), AccessControl.access_level>=action).first()
         return (ac is not None)
-
-                
-
-    
-        
-            
