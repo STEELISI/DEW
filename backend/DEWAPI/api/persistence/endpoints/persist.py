@@ -34,10 +34,17 @@ class HandleSave(Resource):
         print("Experiment : ", json.loads(json.dumps({'actors': actors, 'constraints': constraints, 'behaviors': behaviors, 'bindings': bindings},ensure_ascii=False)))
 
         if experimentId is None or experimentId.strip() == '':
-          flag, message = em.save_experiment(userId, experiment_content,experimentId,name,description)
+          experiment = em.create_experiment(userId, experiment_content,experimentId,name,description)
+          if experiment is not None:
+              return {'saved': True,'message':"Successful" }
+            
         else: 
-          flag, message = persistence.services.sqlite3.update_experiment(experiment_content,userId,experimentId,name,description)
-        return {'saved': flag,'message':message }
+          try:
+            flag , message = em.update_experiment(experimentId,userId,name=name, description=description,content=experiment_content)
+            return {'saved': flag,'message':message }
+          except ValueError as e:
+            msg = {'saved': False, 'message': str(e)}
+            return msg, 403
 
          # persistence.services.sqlite3.query_db("select id from users where username="+username,one=True)
          # return 
@@ -54,7 +61,7 @@ class HandleRetrieve(Resource):
       """
       print(userId)
 
-      experiment = persistence.services.sqlite3.find_experiment(userId)
+      experiment = em.get_accessible_experiments(userId)
 
       result = []
       if experiment is not None:
@@ -73,11 +80,53 @@ class HandleRetrieve(Resource):
       content = request.get_json(force=True)
       userId = content['userId']
       id1 = content['id']
-      experiment = persistence.services.sqlite3.getExperimentById(userId,id1)
-      
-      result = {}
-      if experiment is not None:
-        result=json.loads(experiment['experiment'])
-        result['name'] = experiment['name']
-        result['description'] = experiment['description']        
-      return result
+      try:
+        experiment = em.get_experiment(id1, userId)
+        
+        result = {}
+        if experiment is not None:
+          result=experiment.to_dict()
+          
+        return result
+      except ValueError as e:
+        if str(e) == "Forbidden":
+          return {}, 403
+
+
+@ns.route("/experiment/delete")
+class HandleDelete(Resource):
+  @api.expect(experiment_detail)
+  def delete(self):
+    """
+      Delete experiment from database
+    """
+    content = request.get_json(force=True)
+    userId = content['userId']
+    experiment_id = content['id']
+    
+    try:
+      em.soft_delete_experiment(userId, experiment_id)
+      return None, 204
+    except ValueError as e:
+      if str(e) == "Forbidden":
+        return {}, 403
+
+
+@ns.route("/experiment/copy")
+class HandleDelete(Resource):
+  @api.expect(experiment_detail)
+  def post(self):
+    """
+      Duplicate the experiment
+    """
+    content = request.get_json(force=True)
+    userId = content['userId']
+    experiment_id = content['id']
+    
+    try:
+      experiment = em.get_experiment(experiment_id, userId)
+      copied_experiment = em.copy_experiment(experiment, userId)
+      return copied_experiment.to_dict(), 201
+    except ValueError as e:
+      if str(e) == "Forbidden":
+        return {}, 403

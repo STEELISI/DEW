@@ -9,6 +9,7 @@ class Experiment(db.Model):
     # nlp_content = db.Column(db.Text)
     content = db.Column(db.Text)
     created_at = db.Column(db.DateTime,nullable=False,default=datetime.utcnow)
+    deleted_at = db.Column(db.DateTime)
     updated_at = db.Column(db.DateTime,onupdate=datetime.utcnow, default=datetime.utcnow)
     uid = db.Column(db.String, db.ForeignKey('user.uid'))
 
@@ -16,11 +17,13 @@ class Experiment(db.Model):
     def to_dict(self):
         return {
             'name': self.name,
+            'id': self.experiment_id,
             'description': self.description,
             # 'nlp_content': self.nlp_content,
             'content': self.content,
             'created_at': self.created_at,
             'updated_at': self.updated_at,
+            'deleted_at': self.deleted_at,
             'uid': self.uid
             }
 

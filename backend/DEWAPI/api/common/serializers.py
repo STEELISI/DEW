@@ -84,3 +84,10 @@ suggestion_v2_object = api.model('Suggestion v2 request',{
 user_object = api.model('User information request',{
   'token': fields.String(description="token", required=True),
 })
+
+
+token_data = api.model('Create token object',{
+  'experiment_id': fields.String(description="experiment id for which the token is to be created", required=True),
+  'access_level': fields.String(description="Access level allowed", required=True, enum=['read', 'write']),
+  'creator_uid': fields.String(description="uid of creator", required=True),
+})
