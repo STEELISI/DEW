@@ -27,16 +27,26 @@ class TokenManager(object):
             raise ValueError("Forbidden")
     
     def get_experiment_data(self, token):
-        experiment_id = AuthToken.query.filter(AuthToken.token==token).first().experiment_id
-        experiment = Experiment.query.filter(Experiment.experiment_id == experiment_id, Experiment.deleted_at == None).first()
+        auth_token = AuthToken.query.filter(AuthToken.token==token, AuthToken.active == True).first()
+        if auth_token is None:
+            raise ValueError("Not found")
+        experiment = Experiment.query.filter(Experiment.experiment_id == auth_token.experiment_id, Experiment.deleted_at == None).first()
         if experiment is None:
             raise ValueError("Not found")
         else:
             return experiment
     
+    def toggle_token(self, token, experiment_id, uid):
+        if self.user_can(experiment_id, uid, AccessControlEnum.manage.value):
+            auth_token = AuthToken.query.filter(AuthToken.token==token).first()
+            auth_token.active = not auth_token.active
+            db.session.commit()
+            return auth_token.to_dict()
+        else:
+            raise ValueError("Forbidden")
 
     def update_experiment(self, token, update_content):
-        auth_token = AuthToken.query.filter(AuthToken.token==token, AuthToken.access_level == 'write').first()
+        auth_token = AuthToken.query.filter(AuthToken.token==token, AuthToken.access_level == 'write', AuthToken.active == True).first()
         if auth_token is None:
             raise ValueError('Forbidden')
 

@@ -92,6 +92,13 @@ token_data = api.model('Create token object',{
   'creator_uid': fields.String(description="uid of creator", required=True),
 })
 
+token_data_small = api.model('Toggle token object',{
+  'experiment_id': fields.String(description="experiment id for which the token is to be created", required=True),
+  'token': fields.String(description="Auth token to be toggled", required=True),
+  'current_uid': fields.String(description="uid of current user", required=True),
+})
+
+
 uid_header_parser = api.parser()
 uid_header_parser.add_argument('X-user-id',location='headers')
 

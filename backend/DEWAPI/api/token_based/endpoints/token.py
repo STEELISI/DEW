@@ -2,7 +2,7 @@ import sys, json
 from DEWAPI.api.restplus import api
 from flask import request, escape
 from flask_restplus import Resource
-from DEWAPI.api.common.serializers import token_data, uid_header_parser, experiment_update_by_token
+from DEWAPI.api.common.serializers import token_data, uid_header_parser, experiment_update_by_token, token_data_small
 from DEWAPI.models.user import User
 from DEWAPI.models.auth_token import AuthToken
 from DEWAPI.api.token_based.services.token_manager import TokenManager
@@ -29,7 +29,8 @@ class HandleRootPath(Resource):
         except ValueError as e:
             if str(e) == "Forbidden":
                 return {}, 403
-    
+
+
 @ns.route('/list/<experiment_id>')
 class HandleListForExperiment(Resource):
     @api.expect(uid_header_parser)
@@ -83,3 +84,22 @@ class HandleGetExperiment(Resource):
                 return {'status': 'Failure'}, 403
 
 
+@ns.route('/toggle/')
+class HandleTogglePath(Resource):
+    @api.expect(token_data_small)
+    def put(self):
+        """
+        Create token for a given experiment
+        """
+        content = request.get_json(force=True)
+        experiment_id = content['experiment_id']
+        token = content['token']
+        current_uid = content['current_uid']
+
+        try:
+            token = tm.toggle_token(token,experiment_id,current_uid)
+            return token, 200
+        except ValueError as e:
+            if str(e) == "Forbidden":
+                return {}, 403
+    
