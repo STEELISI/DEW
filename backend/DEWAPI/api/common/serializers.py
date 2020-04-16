@@ -91,3 +91,15 @@ token_data = api.model('Create token object',{
   'access_level': fields.String(description="Access level allowed", required=True, enum=['read', 'write']),
   'creator_uid': fields.String(description="uid of creator", required=True),
 })
+
+uid_header_parser = api.parser()
+uid_header_parser.add_argument('X-user-id',location='headers')
+
+experiment_update_by_token = api.model('Experiment object update by token', {
+  'name':fields.String(description="Name of experiment", required=True),
+  'description':fields.String(description="Description of experiment", required=True),
+  'behaviors': fields.List(fields.String, description="List of behaviors",required=True),
+  'constraints': fields.List(fields.String, description="List of constraints",required=True),
+  'actors': fields.List(fields.String, description="List of actors",required=True),
+  'bindings': fields.List(fields.String, description="List of bindings",required=True)
+})
