@@ -78,5 +78,6 @@ class HandleRetrieve(Resource):
       result = {}
       if experiment is not None:
         result=json.loads(experiment['experiment'])
-        
+        result['name'] = experiment['name']
+        result['description'] = experiment['description']        
       return result
