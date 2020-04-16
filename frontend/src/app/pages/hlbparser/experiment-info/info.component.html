@@ -1,0 +1,74 @@
+
+ <div class="row">
+<div class="col-md-8">
+
+  
+    <div class="row" style="margin: .5em;">
+        <div class="col-md-12" style="padding: 0;">
+            <mat-card> 
+              
+              <mat-form-field class="col-md-12">
+                <mat-label>Experiment Name</mat-label>
+                <input matInput [(ngModel)]="experiment.name" (change)="setExperimentName()">
+              </mat-form-field>
+            
+              <mat-form-field class="col-md-12">
+                <mat-label>Experiment Description</mat-label>
+                <textarea matInput [(ngModel)]="experiment.description" (change)="setExperimentDescription()"></textarea>
+              </mat-form-field>
+               
+            </mat-card>
+   
+        </div>
+      </div> 
+      <div class="row" style="margin: .5em;">
+        <div class="col-md-12" style="padding: 0;">
+            <mat-card> 
+
+              
+              <table class="table">
+                <thead >
+                    <tr >
+                      <th style="min-width:50px">Id</th>
+                        <th style="min-width:250px">Url</th>
+                        <th style="min-width:50px">Status</th>
+                        <th style="min-width:50px">Last Created Date</th>
+                       
+                        <th ></th>
+                    </tr>
+                </thead>
+                <tbody *ngIf="tokenList.length!=0" >
+                    <tr *ngFor="let item of tokenList; let i=index" >
+                      <td>{{i}}</td>
+                        <td><strong>{{ item.url }}</strong></td>
+                        <td><strong>{{ item.status }}</strong></td>
+                        <td><strong>{{ item.created_date }}</strong></td>
+       
+                        <td>
+               
+                          <i class="far fa-trash-alt pointer" (click)="delete(i)"></i></td>
+          
+                    </tr>
+                </tbody>
+                <tbody style="text-align: center;"  *ngIf="tokenList.length==0" >
+                  <tr >
+                    <td colspan="3" ><span ><i>No public urls.</i> </span></td>
+                      
+          
+                  </tr>
+              </tbody>
+           
+            </table>
+            </mat-card>
+   
+        </div>
+      </div> 
+  </div>
+  <div class="col-md-4">
+    <div style="text-align: center;padding: 1em;">     
+      <button mat-stroked-button (click)="save()" >Save</button>
+ </div>
+
+  </div>
+</div> 
+

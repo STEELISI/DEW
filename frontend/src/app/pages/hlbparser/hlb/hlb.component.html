@@ -60,7 +60,7 @@
                          
                           [styles]="{height: '400px',border:'none'}"
                           [modules]="{  counter: { container: '#editor1'} ,toolbar: false }"
-                          [(ngModel)]="constraints" 
+                          [(ngModel)]="constraintText" 
                           (onContentChanged)="logChangeConstraints($event);"
                           (onEditorCreated)="created($event,3)"></quill-editor>
                         </div>
@@ -84,7 +84,7 @@
                   <li class="binding-box" *ngFor="let item of bindingList;let index=index" ><div>
                   
                     <mat-form-field style="width:100%">
-                      <input matInput placeholder="{{item.key+' represents: '}}" [(ngModel)]="item.value">
+                      <input matInput placeholder="{{item.key+' represents: '}}" [(ngModel)]="item.value" (change)="storeBinding()">
                     </mat-form-field>
       
                     <span>
@@ -112,9 +112,7 @@
          <button mat-stroked-button (click)="addBindings()" >Generate Ns File</button>
          
     </div>
-    <div style="text-align: center;padding: .1em;">     
-      <button mat-stroked-button (click)="save()" >Save</button>
- </div>
+ 
     </div>
     </div>
   

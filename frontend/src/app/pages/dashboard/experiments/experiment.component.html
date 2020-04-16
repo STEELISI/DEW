@@ -19,7 +19,7 @@
       </thead>
       <tbody *ngIf="experiments.length!=0" >
           <tr *ngFor="let item of experiments; let i=index" >
-            <td>{{item.id}}</td>
+            <td>{{item.experiment_id}}</td>
               <td><strong>{{ item.name }}</strong></td>
               <td><strong>{{ item.description }}</strong></td>
               <td><strong>{{ item.created_date }}</strong></td>
