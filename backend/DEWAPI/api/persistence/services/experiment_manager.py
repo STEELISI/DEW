@@ -65,7 +65,18 @@ class ExperimentManager(object):
         experiments = [e.to_dict() for e in Experiment.query.filter(Experiment.experiment_id.in_(experiment_ids),Experiment.deleted_at == None).all()]
 
         print(experiments)
-        return experiments
+        result=[]
+        for e in experiments:
+            obj = {}
+            obj['experiment_id']=e['id']
+            obj['name'] = e['name']
+            obj['description'] = e['description']
+            obj['created_date'] = e['created_at'].date().strftime('%m-%d-%Y')
+            obj['updated_date']= e['updated_at'].date().strftime('%m-%d-%Y')
+            result.append(obj)
+
+
+        return result
 
 
     def soft_delete_experiment(self, current_user_id, experiment_id):

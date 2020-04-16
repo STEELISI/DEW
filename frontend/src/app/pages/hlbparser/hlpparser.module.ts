@@ -24,6 +24,7 @@ import { AuthGuard } from 'src/app/@auth/auth.guard';
 import { AuthModule } from 'src/app/@auth/auth.module';
 import { DependencyGraphComponent } from './dependency-graph/dependency-graph.component';
 import {MatRadioModule} from '@angular/material/radio';
+import { InfoComponent } from './experiment-info/info.component';
 
 @NgModule({
   exports:[HLBParserComponent],
@@ -35,7 +36,8 @@ import {MatRadioModule} from '@angular/material/radio';
      TextFilterPipe,
      UploadComponent,
      FilePreviewComponent,
-     BindingPopUp
+     BindingPopUp,
+     InfoComponent
   ],
   imports: [
     CommonModule,

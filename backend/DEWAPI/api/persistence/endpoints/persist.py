@@ -85,7 +85,10 @@ class HandleRetrieve(Resource):
         
         result = {}
         if experiment is not None:
-          result=experiment.to_dict()
+          r = experiment.to_dict()
+          result=json.loads(r['content'])
+          result['name'] = r['name']
+          result['description'] = r['description']
           
         return result
       except ValueError as e:

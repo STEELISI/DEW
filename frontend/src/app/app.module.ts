@@ -7,7 +7,7 @@ import { PagesModule } from './pages/pages.module';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { HttpClientModule } from '@angular/common/http';
 import { RouterModule, ActivatedRouteSnapshot, RouterStateSnapshot, Router } from '@angular/router';
-import { HttpService } from './pages/hlbparser/common/http-service.service';
+import { HttpService } from './http-service.service';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { AuthGuard } from './@auth/auth.guard';
@@ -28,7 +28,7 @@ import { StateService } from './pages/hlbparser/common/state-service.service';
     AppRoutingModule,
     HttpClientModule
   ],
-  providers:[HttpService,StateService,
+  providers:[HttpService,StateService
    // AppService,
     // {
     //   provide: APP_INITIALIZER,

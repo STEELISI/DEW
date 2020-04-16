@@ -1,7 +1,7 @@
 import { BehaviorSubject, Observable, of } from 'rxjs';
 import { Injectable } from '@angular/core';
-import { HttpService } from './http.service';
 import { AuthService } from './auth.service';
+import { HttpService } from '../http-service.service';
 @Injectable({
   providedIn: 'root'
 })

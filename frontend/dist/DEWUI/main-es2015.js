@@ -23,37 +23,6 @@ webpackEmptyAsyncContext.id = "./$$_lazy_route_resource lazy recursive";
 
 /***/ }),
 
-/***/ "./environments/environment.ts":
-/*!*************************************!*\
-  !*** ./environments/environment.ts ***!
-  \*************************************/
-/*! exports provided: environment */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "environment", function() { return environment; });
-/* harmony import */ var tslib__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! tslib */ "./node_modules/tslib/tslib.es6.js");
-// This file can be replaced during build by using the `fileReplacements` array.
-// `ng build --prod` replaces `environment.ts` with `environment.prod.ts`.
-// The list of file replacements can be found in `angular.json`.
-
-const environment = {
-    production: false,
-    apiUrl: 'http://localhost:5000',
-};
-/*
- * For easier debugging in development mode, you can import the following file
- * to ignore zone related error stack frames such as `zone.run`, `zoneDelegate.invokeTask`.
- *
- * This import should be commented out in production mode because it will have a negative impact
- * on performance if an error is thrown.
- */
-// import 'zone.js/dist/zone-error';  // Included with Angular CLI.
-
-
-/***/ }),
-
 /***/ "./node_modules/raw-loader/dist/cjs.js!./src/app/@auth/components/login/login.component.html":
 /*!***************************************************************************************************!*\
   !*** ./node_modules/raw-loader/dist/cjs.js!./src/app/@auth/components/login/login.component.html ***!
@@ -693,7 +662,8 @@ let AuthService = class AuthService {
         return "";
     }
     loginWithGoogle() {
-        var redirect = 'http://dew.isi.edu/auth/googleoauth2callback';
+        // var redirect = 'http://dew.isi.edu/auth/googleoauth2callback';
+        var redirect = 'http://localhost:4200/auth/googleoauth2callback';
         var client_id = '926607687771-0lll564e4sbjo4davt10fufmhuehgl1s.apps.googleusercontent.com';
         var url = [];
         //  var apuUrl = "https://accounts.google.com/o/oauth2/v2/auth";
@@ -928,63 +898,6 @@ LogoutComponent = tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"]([
 
 /***/ }),
 
-/***/ "./src/app/@auth/http.service.ts":
-/*!***************************************!*\
-  !*** ./src/app/@auth/http.service.ts ***!
-  \***************************************/
-/*! exports provided: HttpService */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "HttpService", function() { return HttpService; });
-/* harmony import */ var tslib__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! tslib */ "./node_modules/tslib/tslib.es6.js");
-/* harmony import */ var _angular_core__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @angular/core */ "./node_modules/@angular/core/fesm2015/core.js");
-/* harmony import */ var _angular_common_http__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @angular/common/http */ "./node_modules/@angular/common/fesm2015/http.js");
-/* harmony import */ var _environments_environment__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../../../environments/environment */ "./environments/environment.ts");
-/*
- * Copyright (c) Akveo 2019. All Rights Reserved.
- * Licensed under the Single Application / Multi Application License.
- * See LICENSE_SINGLE_APP / LICENSE_MULTI_APP in the 'docs' folder for license information on type of purchased license.
- */
-
-
-
-
-let HttpService = class HttpService {
-    constructor(http) {
-        this.http = http;
-    }
-    get apiUrl() {
-        return _environments_environment__WEBPACK_IMPORTED_MODULE_3__["environment"].apiUrl;
-    }
-    get(endpoint, options, flag = false) {
-        return this.http.get(`${this.apiUrl}/${endpoint}`, options);
-    }
-    post(endpoint, data, options) {
-        return this.http.post(`${endpoint}`, data, options);
-    }
-    put(endpoint, data, options) {
-        return this.http.put(`${this.apiUrl}/${endpoint}`, data);
-    }
-    patch(endpoint, data, options) {
-        return this.http.patch(`${endpoint}`, data, options);
-    }
-    delete(endpoint, options) {
-        return this.http.delete(`${endpoint}`);
-    }
-};
-HttpService.ctorParameters = () => [
-    { type: _angular_common_http__WEBPACK_IMPORTED_MODULE_2__["HttpClient"] }
-];
-HttpService = tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"]([
-    Object(_angular_core__WEBPACK_IMPORTED_MODULE_1__["Injectable"])({ providedIn: 'root' })
-], HttpService);
-
-
-
-/***/ }),
-
 /***/ "./src/app/@auth/init-user.service.ts":
 /*!********************************************!*\
   !*** ./src/app/@auth/init-user.service.ts ***!
@@ -998,8 +911,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var tslib__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! tslib */ "./node_modules/tslib/tslib.es6.js");
 /* harmony import */ var rxjs__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! rxjs */ "./node_modules/rxjs/_esm2015/index.js");
 /* harmony import */ var _angular_core__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @angular/core */ "./node_modules/@angular/core/fesm2015/core.js");
-/* harmony import */ var _http_service__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./http.service */ "./src/app/@auth/http.service.ts");
-/* harmony import */ var _auth_service__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./auth.service */ "./src/app/@auth/auth.service.ts");
+/* harmony import */ var _auth_service__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./auth.service */ "./src/app/@auth/auth.service.ts");
+/* harmony import */ var _http_service_service__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../http-service.service */ "./src/app/http-service.service.ts");
 
 
 
@@ -1054,8 +967,8 @@ let InitUserService = class InitUserService {
     }
 };
 InitUserService.ctorParameters = () => [
-    { type: _http_service__WEBPACK_IMPORTED_MODULE_3__["HttpService"] },
-    { type: _auth_service__WEBPACK_IMPORTED_MODULE_4__["AuthService"] }
+    { type: _http_service_service__WEBPACK_IMPORTED_MODULE_4__["HttpService"] },
+    { type: _auth_service__WEBPACK_IMPORTED_MODULE_3__["AuthService"] }
 ];
 InitUserService = tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"]([
     Object(_angular_core__WEBPACK_IMPORTED_MODULE_2__["Injectable"])({
@@ -1262,8 +1175,13 @@ const routes = [
     {
         path: 'pages',
         canActivate: [_auth_auth_guard__WEBPACK_IMPORTED_MODULE_3__["AuthGuard"]],
-        loadChildren: () => __webpack_require__.e(/*! import() | pages-pages-module */ "pages-pages-module").then(__webpack_require__.bind(null, /*! ./pages/pages.module */ "./src/app/pages/pages.module.ts"))
+        loadChildren: () => Promise.all(/*! import() | pages-pages-module */[__webpack_require__.e("default~pages-pages-module~public-public-module"), __webpack_require__.e("default~hlbparser-hlpparser-module~pages-pages-module"), __webpack_require__.e("pages-pages-module")]).then(__webpack_require__.bind(null, /*! ./pages/pages.module */ "./src/app/pages/pages.module.ts"))
             .then(m => m.PagesModule),
+    },
+    {
+        path: 'public',
+        loadChildren: () => Promise.all(/*! import() | public-public-module */[__webpack_require__.e("default~pages-pages-module~public-public-module"), __webpack_require__.e("default~hlbparser-hlpparser-module~public-public-module"), __webpack_require__.e("public-public-module")]).then(__webpack_require__.bind(null, /*! ./public/public.module */ "./src/app/public/public.module.ts"))
+            .then(m => m.PublicModule),
     }, {
         path: 'auth',
         loadChildren: () => Promise.resolve(/*! import() */).then(__webpack_require__.bind(null, /*! ./@auth/auth.module */ "./src/app/@auth/auth.module.ts"))
@@ -1362,7 +1280,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _angular_platform_browser_animations__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! @angular/platform-browser/animations */ "./node_modules/@angular/platform-browser/fesm2015/animations.js");
 /* harmony import */ var _angular_common_http__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! @angular/common/http */ "./node_modules/@angular/common/fesm2015/http.js");
 /* harmony import */ var _angular_router__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! @angular/router */ "./node_modules/@angular/router/fesm2015/router.js");
-/* harmony import */ var _pages_hlbparser_common_http_service_service__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ./pages/hlbparser/common/http-service.service */ "./src/app/pages/hlbparser/common/http-service.service.ts");
+/* harmony import */ var _http_service_service__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ./http-service.service */ "./src/app/http-service.service.ts");
 /* harmony import */ var _auth_auth_module__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ./@auth/auth.module */ "./src/app/@auth/auth.module.ts");
 /* harmony import */ var _pages_hlbparser_common_state_service_service__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! ./pages/hlbparser/common/state-service.service */ "./src/app/pages/hlbparser/common/state-service.service.ts");
 
@@ -1392,7 +1310,14 @@ AppModule = tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"]([
             _app_routing_module__WEBPACK_IMPORTED_MODULE_3__["AppRoutingModule"],
             _angular_common_http__WEBPACK_IMPORTED_MODULE_6__["HttpClientModule"]
         ],
-        providers: [_pages_hlbparser_common_http_service_service__WEBPACK_IMPORTED_MODULE_8__["HttpService"], _pages_hlbparser_common_state_service_service__WEBPACK_IMPORTED_MODULE_10__["StateService"],
+        providers: [_http_service_service__WEBPACK_IMPORTED_MODULE_8__["HttpService"], _pages_hlbparser_common_state_service_service__WEBPACK_IMPORTED_MODULE_10__["StateService"]
+            // AppService,
+            // {
+            //   provide: APP_INITIALIZER,
+            //   useFactory: (ds: AppService) => function() {return ds.load()},
+            //   deps: [AppService],
+            //   multi: true
+            // }
         ],
         bootstrap: [_app_component__WEBPACK_IMPORTED_MODULE_4__["AppComponent"]]
     })
@@ -1402,10 +1327,10 @@ AppModule = tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"]([
 
 /***/ }),
 
-/***/ "./src/app/pages/hlbparser/common/http-service.service.ts":
-/*!****************************************************************!*\
-  !*** ./src/app/pages/hlbparser/common/http-service.service.ts ***!
-  \****************************************************************/
+/***/ "./src/app/http-service.service.ts":
+/*!*****************************************!*\
+  !*** ./src/app/http-service.service.ts ***!
+  \*****************************************/
 /*! exports provided: HttpService */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
@@ -1415,7 +1340,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var tslib__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! tslib */ "./node_modules/tslib/tslib.es6.js");
 /* harmony import */ var _angular_core__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @angular/core */ "./node_modules/@angular/core/fesm2015/core.js");
 /* harmony import */ var _angular_common_http__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @angular/common/http */ "./node_modules/@angular/common/fesm2015/http.js");
-/* harmony import */ var _environments_environment__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../../../../environments/environment */ "./src/environments/environment.ts");
+/* harmony import */ var _environments_environment__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../environments/environment */ "./src/environments/environment.ts");
 /*
  * Copyright (c) Akveo 2019. All Rights Reserved.
  * Licensed under the Single Application / Multi Application License.
@@ -1482,10 +1407,24 @@ let StateService = class StateService {
         this.behavior = new rxjs__WEBPACK_IMPORTED_MODULE_2__["BehaviorSubject"](null);
         this.constraints = new rxjs__WEBPACK_IMPORTED_MODULE_2__["BehaviorSubject"](null);
         this.bindings = new rxjs__WEBPACK_IMPORTED_MODULE_2__["BehaviorSubject"](null);
+        this.experimentName = new rxjs__WEBPACK_IMPORTED_MODULE_2__["BehaviorSubject"]("");
+        this.experimentDescription = new rxjs__WEBPACK_IMPORTED_MODULE_2__["BehaviorSubject"]("");
     }
-    enableLoader() { this.loaderSwitch.next(true); }
-    disableLoader() { this.loaderSwitch.next(false); }
-    isLoaderEnabled() { return this.loaderSwitch.asObservable(); }
+    enableLoader() {
+        this.loaderSwitch.next(true);
+    }
+    disableLoader() {
+        this.loaderSwitch.next(false);
+    }
+    isLoaderEnabled() {
+        return this.loaderSwitch.asObservable();
+    }
+    getExperimentName() {
+        return this.experimentName.asObservable();
+    }
+    getExperimentDescription() {
+        return this.experimentDescription.asObservable();
+    }
     getUserDetails() {
         return this.userDetails;
     }
@@ -1527,6 +1466,12 @@ let StateService = class StateService {
     }
     setConstraints(data) {
         this.constraints.next(data);
+    }
+    setExperimentName(data) {
+        this.experimentName.next(data);
+    }
+    setExperimentDescription(data) {
+        this.experimentDescription.next(data);
     }
 };
 StateService = tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"]([

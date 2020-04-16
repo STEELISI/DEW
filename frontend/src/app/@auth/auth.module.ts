@@ -10,7 +10,6 @@ import { AuthRoutingModule } from "./auth-routing.module";
 import { GoogleOAuth2CallbackComponent } from "./components/googlecallback/google-oauth2-callback.component";
 import { AuthResult } from "./auth-result";
 import { InitUserService } from "./init-user.service";
-import { HttpService } from "../pages/hlbparser/common/http-service.service";
 import { LogoutComponent } from "./components/logout/logout.component";
 
 @NgModule({

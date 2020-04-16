@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { HttpService } from '../../hlbparser/common/http-service.service';
 import { InitUserService } from 'src/app/@auth/init-user.service';
+import { HttpService } from 'src/app/http-service.service';
 
 @Component({
   selector: 'experiment',
@@ -15,7 +15,8 @@ export class ExperimentComponent implements OnInit{
       if(user !=null){
 
    this.http.get("/v1/persist/getExperimentList/"+user.userId).subscribe(data=>{
-     this.experiments = data;
+    
+    this.experiments = data;
    });
   }
   });
@@ -33,7 +34,7 @@ export class ExperimentComponent implements OnInit{
   }
   edit(experiments){
     console.log(experiments)
-    this.router.navigate(["pages/hlbparser/create",experiments.id]);
+    this.router.navigate(["pages/hlbparser/create",experiments.experiment_id]);
   }
 
   create(){

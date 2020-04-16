@@ -49,7 +49,7 @@ def find_experiment(userId):
 
 
 def getExperimentById(userId,id1):
-    query = "select content as experiment from experiment where uid = ? and experiment_id = ?"
+    query = "select name,description,content as experiment from experiment where uid = ? and experiment_id = ?"
     return query_db(query, (userId,id1),one=True)
 def create_experiment(experiment="",uid=""):
     query = "insert into experiment(experiment, uid) values(?,?)"
