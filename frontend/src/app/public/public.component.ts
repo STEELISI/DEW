@@ -4,9 +4,9 @@ import { Component, OnDestroy } from "@angular/core";
   selector: "app-public",
   styleUrls: ['public.component.scss'],
   template: `
- 
+ <layout>
   <router-outlet></router-outlet>
-  
+  </layout>
  
   `
 })

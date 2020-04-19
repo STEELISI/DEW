@@ -24,6 +24,7 @@ export class InfoComponent implements OnInit {
   tokenList=[];
   constructor(protected state: StateService,protected auth:AuthService,protected http:HttpService,protected route:Router) {}
   ngOnInit(): void {
+    this.loadTokenList();
     if( this.id!=undefined &&  this.id!=null &&  this.id!=-1)
     this.experiment['id'] = this.id;
     this.state.getExperimentName().subscribe(name => {
@@ -44,6 +45,12 @@ export class InfoComponent implements OnInit {
     this.state.getConstraints().subscribe(constraintsList=>{
       this.experiment.constraints=constraintsList;
     });
+
+    this.state.getTokenList().subscribe(data=>{
+      if(data!=null){
+        this.tokenList = data;
+      }
+    });
   }
 
   setExperimentName() {
@@ -52,6 +59,19 @@ export class InfoComponent implements OnInit {
   setExperimentDescription() {
     this.state.setExperimentDescription(this.experiment.description);
   }
+
+  loadTokenList(){
+    var input1 = {
+      creator_uid: this.auth.getCookie("userId"),
+      experiment_id: this.id,
+    };
+    this.http
+    .post("api/v1/token-based-auth/getTokenList", input1)
+    .subscribe((data) => {
+      this.state.setTokenList(data);
+    });
+  }
+
 
   save(){
       
@@ -62,5 +82,18 @@ export class InfoComponent implements OnInit {
         }
       });
     console.log(this.experiment)
+  }
+
+  createToken(){
+    var params = {
+      "experiment_id": this.id,
+      "access_level": "write",
+      "creator_uid": this.auth.getCookie("userId")
+    }
+    this.http.post("api/v1/token-based-auth/create",params).subscribe(data=>{
+      
+        this.loadTokenList();
+    
+    });
   }
 }

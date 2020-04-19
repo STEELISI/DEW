@@ -2,13 +2,14 @@ import { BehaviorSubject, Observable, of } from 'rxjs';
 import { Injectable } from '@angular/core';
 import { AuthService } from './auth.service';
 import { HttpService } from '../http-service.service';
+import { StateService } from '../pages/hlbparser/common/state-service.service';
 @Injectable({
   providedIn: 'root'
 })
 export class InitUserService {
 
   login:boolean=false;
-  constructor(protected http: HttpService,protected authService:AuthService){}
+  constructor(protected http: HttpService,protected authService:AuthService,private state:StateService){}
   user:BehaviorSubject<any>=new BehaviorSubject<any>(null);
   getUser():Observable<any>{return this.user.asObservable();}
   initCurrentUser(){
@@ -38,8 +39,10 @@ export class InitUserService {
     var param = {
       token:this.authService.getToken()
     }
+    this.state.enableLoader();
      this.http.post('/api/v1/user/getuserinfo/',param).subscribe(data=>{
        console.log(data);
+       
        this.authService.setCookie("emailId",data.emailId,3599);
        this.authService.setCookie("givenName",data.givenName,3599);
        this.authService.setCookie("lastName",data.lastName,3599);
@@ -48,6 +51,7 @@ export class InitUserService {
        this.authService.setCookie("userId",data.userId,3599);
 
        this.user.next(data);
+       this.state.disableLoader();
      });
     }else{
         this.user.next(result);

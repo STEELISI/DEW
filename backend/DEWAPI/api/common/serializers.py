@@ -91,3 +91,8 @@ token_data = api.model('Create token object',{
   'access_level': fields.String(description="Access level allowed", required=True, enum=['read', 'write']),
   'creator_uid': fields.String(description="uid of creator", required=True),
 })
+
+tokenListModel = api.model('Get List of all tokens',{
+  'experiment_id': fields.String(description="experiment id for which the token is to be created", required=True),
+  'creator_uid': fields.String(description="uid of creator", required=True),
+})

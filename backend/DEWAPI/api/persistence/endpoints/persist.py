@@ -128,8 +128,11 @@ class HandleDelete(Resource):
     
     try:
       experiment = em.get_experiment(experiment_id, userId)
-      copied_experiment = em.copy_experiment(experiment, userId)
-      return copied_experiment.to_dict(), 201
+      copied_experiment = em.copy_experiment(experiment, userId).to_dict()
+      result = {}
+      result['status'] = True
+      result['experiment_id'] = copied_experiment['id']
+      return result, 201
     except ValueError as e:
       if str(e) == "Forbidden":
         return {}, 403

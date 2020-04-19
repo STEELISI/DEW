@@ -25,10 +25,6 @@ export class GoogleOAuth2CallbackComponent implements OnDestroy {
         console.log(authResult);
         if (authResult.isSuccess()) {
         this.router.navigate(['pages/dashboard']);
-        //  console.log(authResult);
-        //  this.api.setOAuth2Token(authResult.getToken());
-        //  this.initUserService.initCurrentUser();
-        //  this.router.navigateByUrl('/pages/dashboard');
         }
       });
   }

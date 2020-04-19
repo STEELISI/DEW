@@ -20,3 +20,9 @@ class TokenManager(object):
     def user_can(self, experiment_id, user_id, action):
         ac = AccessControl.query.filter(AccessControl.experiment_id==experiment_id, AccessControl.uid==user_id,AccessControl.expiry_date>datetime.today(), AccessControl.access_level>=action).first()
         return (ac is not None)
+
+    def getTokenList(self,experiment_id,creater_id):
+        result = [e.to_dict() for e in AuthToken.query.filter(AuthToken.experiment_id == experiment_id, AuthToken.creator_uid == creater_id)]
+        
+        # print(result)
+        return result

@@ -25,9 +25,9 @@
               <td><strong>{{ item.created_date }}</strong></td>
               <td><strong>{{ item.updated_date }}</strong></td>
               <td>
-     
+                <i class="fas fa-copy pointer" (click)="copy(item)"></i>
                 <i class="fas fa-edit pointer" (click)="edit(item)"></i>
-                <i class="far fa-trash-alt pointer" (click)="delete(i)"></i></td>
+                <i class="far fa-trash-alt pointer" (click)="delete(item)"></i></td>
 
           </tr>
       </tbody>

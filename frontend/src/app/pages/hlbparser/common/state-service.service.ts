@@ -3,6 +3,7 @@ import { BehaviorSubject, Observable } from "rxjs";
 
 @Injectable()
 export class StateService {
+  
   loaderSwitch: BehaviorSubject<boolean> = new BehaviorSubject(false);
   actors: BehaviorSubject<any> = new BehaviorSubject(null);
   behavior: BehaviorSubject<any> = new BehaviorSubject(null);
@@ -10,9 +11,16 @@ export class StateService {
   bindings: BehaviorSubject<any> = new BehaviorSubject(null);
   experimentName: BehaviorSubject<String> = new BehaviorSubject("");
   experimentDescription: BehaviorSubject<String> = new BehaviorSubject("");
+  tokenList: BehaviorSubject<any> = new BehaviorSubject("");
   userDetails: any;
   currentBehaviorWord: String;
   currentConstraintWord: String;
+  setTokenList(data: any) {
+    this.tokenList.next(data);
+  }
+  getTokenList():Observable<any> {
+    return this.tokenList.asObservable();
+  }
   enableLoader(): void {
     this.loaderSwitch.next(true);
   }

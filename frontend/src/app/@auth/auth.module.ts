@@ -1,6 +1,6 @@
 import { NgModule, ModuleWithProviders } from "@angular/core";
 import { CommonModule } from "@angular/common";
-import { ReactiveFormsModule } from "@angular/forms";
+import { ReactiveFormsModule, FormControl, FormsModule } from "@angular/forms";
 import { AuthGuard } from "./auth.guard";
 import { AuthService } from "./auth.service";
 import { AuthComponent } from "./auth.component";
@@ -11,6 +11,16 @@ import { GoogleOAuth2CallbackComponent } from "./components/googlecallback/googl
 import { AuthResult } from "./auth-result";
 import { InitUserService } from "./init-user.service";
 import { LogoutComponent } from "./components/logout/logout.component";
+import {
+  MatCard,
+  MatLabel,
+  MatFormField,
+  MatInput,
+  MatInputModule,
+  MatCardModule,
+  MatButtonModule,
+} from "@angular/material";
+import { BrowserModule } from "@angular/platform-browser";
 
 @NgModule({
   exports: [AuthComponent],
@@ -19,15 +29,24 @@ import { LogoutComponent } from "./components/logout/logout.component";
     AuthComponent,
     LoginComponent,
     GoogleOAuth2CallbackComponent,
-    LogoutComponent
+    LogoutComponent,
   ],
-  imports: [CommonModule, ReactiveFormsModule, CoreModule, AuthRoutingModule]
+  imports: [
+    CommonModule,
+    ReactiveFormsModule,
+    CoreModule,
+    AuthRoutingModule,
+    FormsModule,
+    MatCardModule,
+    MatButtonModule,
+    MatInputModule
+  ],
 })
 export class AuthModule {
   static forRoot(): ModuleWithProviders {
     return {
       ngModule: AuthModule,
-      providers: [AuthService, AuthGuard]
+      providers: [AuthService, AuthGuard],
     };
   }
 }

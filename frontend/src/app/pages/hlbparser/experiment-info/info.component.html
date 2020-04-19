@@ -29,20 +29,20 @@
               <table class="table">
                 <thead >
                     <tr >
-                      <th style="min-width:50px">Id</th>
+                     
                         <th style="min-width:250px">Url</th>
                         <th style="min-width:50px">Status</th>
-                        <th style="min-width:50px">Last Created Date</th>
+                        <!-- <th style="min-width:50px">Last Created Date</th> -->
                        
                         <th ></th>
                     </tr>
                 </thead>
                 <tbody *ngIf="tokenList.length!=0" >
                     <tr *ngFor="let item of tokenList; let i=index" >
-                      <td>{{i}}</td>
-                        <td><strong>{{ item.url }}</strong></td>
-                        <td><strong>{{ item.status }}</strong></td>
-                        <td><strong>{{ item.created_date }}</strong></td>
+                     
+                        <td><strong>{{ 'http://localhost:4200/public/hlb/view/'+item.token }}</strong></td>
+                        <td><strong>{{ (item.status)?'Active':'Not Active' }}</strong></td>
+                        <!-- <td><strong>{{ item.created_date }}</strong></td> -->
        
                         <td>
                
@@ -68,6 +68,9 @@
     <div style="text-align: center;padding: 1em;">     
       <button mat-stroked-button (click)="save()" >Save</button>
  </div>
+ <div style="text-align: center;padding: 1em;">     
+  <button mat-stroked-button (click)="createToken()" >Create token</button>
+</div>
 
   </div>
 </div> 

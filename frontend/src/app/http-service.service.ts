@@ -42,6 +42,6 @@ export class HttpService {
   }
 
   delete(endpoint: string, options?): Observable<any> {
-    return this.http.delete(`${endpoint}`);
+    return this.http.delete(`${this.apiUrl}/${endpoint}`,options);
   }
 }

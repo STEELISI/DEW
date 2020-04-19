@@ -51,17 +51,23 @@ export class HLBParserComponent implements OnInit {
           userId: this.auth.getCookie("userId"),
           id: params["id"],
         };
+
+        
         this.experimentId = params["id"];
+        this.state.enableLoader();
         this.http
           .post("api/v1/persist/getExperimentById", input)
           .subscribe((data) => {
+
             this.state.setActors(data.actors);
             this.state.setExperimentName(data.name);
             this.state.setExperimentDescription(data.description);
             this.state.setBehavior(data.behaviors);
             this.state.setBindings(data.bindings);
             this.state.setConstraints(data.constraints);
+            this.state.disableLoader();
           });
+         
         return "";
       }
     });

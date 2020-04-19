@@ -50,10 +50,10 @@ export class HLBParserComponent implements OnInit {
     this.route.params.subscribe(params => {
       if(params["id"]!=''){
       var input = {
-        userId: this.auth.getCookie("userId"),
         id: params["id"]
       };
       this.experimentId = params["id"];
+      this.state.enableLoader();
       this.http
         .post("api/v1/persist/getExperimentById", input)
         .subscribe(data => {
@@ -63,6 +63,7 @@ export class HLBParserComponent implements OnInit {
           this.state.setBehavior(data.behaviors);
           this.state.setBindings(data.bindings);
           this.state.setConstraints(data.constraints);
+          this.state.disableLoader();
         });
       return "";
     }});
