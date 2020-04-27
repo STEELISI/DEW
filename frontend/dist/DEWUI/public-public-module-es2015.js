@@ -66,7 +66,7 @@ const routes = [{
         children: [
             {
                 path: 'hlb',
-                loadChildren: () => Promise.all(/*! import() | hlbparser-hlpparser-module */[__webpack_require__.e("default~hlbparser-hlpparser-module~public-public-module"), __webpack_require__.e("default~hlbparser-hlpparser-module~pages-pages-module")]).then(__webpack_require__.bind(null, /*! ./hlbparser/hlpparser.module */ "./src/app/public/hlbparser/hlpparser.module.ts"))
+                loadChildren: () => Promise.all(/*! import() | hlbparser-hlpparser-module */[__webpack_require__.e("default~hlbparser-hlpparser-module~pages-pages-module"), __webpack_require__.e("default~hlbparser-hlpparser-module~public-public-module")]).then(__webpack_require__.bind(null, /*! ./hlbparser/hlpparser.module */ "./src/app/public/hlbparser/hlpparser.module.ts"))
                     .then(m => m.PublicHLBParserModule),
             },
             {
@@ -124,9 +124,9 @@ PublicComponent = tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"]([
     Object(_angular_core__WEBPACK_IMPORTED_MODULE_1__["Component"])({
         selector: "app-public",
         template: `
- 
+ <layout>
   <router-outlet></router-outlet>
-  
+  </layout>
  
   `,
         styles: [tslib__WEBPACK_IMPORTED_MODULE_0__["__importDefault"](__webpack_require__(/*! ./public.component.scss */ "./src/app/public/public.component.scss")).default]

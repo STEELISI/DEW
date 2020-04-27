@@ -35,7 +35,7 @@
     /* harmony default export */
 
 
-    __webpack_exports__["default"] = "\n <div class=\"row\">\n<div class=\"col-md-8\">\n\n  \n    <div class=\"row\" style=\"margin: .5em;\">\n        <div class=\"col-md-12\" style=\"padding: 0;\">\n            <mat-card> \n              \n              <mat-form-field class=\"col-md-12\">\n                <mat-label>Experiment Name</mat-label>\n                <input matInput [(ngModel)]=\"experiment.name\" (change)=\"setExperimentName()\">\n              </mat-form-field>\n            \n              <mat-form-field class=\"col-md-12\">\n                <mat-label>Experiment Description</mat-label>\n                <textarea matInput [(ngModel)]=\"experiment.description\" (change)=\"setExperimentDescription()\"></textarea>\n              </mat-form-field>\n               \n            </mat-card>\n   \n        </div>\n      </div> \n      <div class=\"row\" style=\"margin: .5em;\">\n        <div class=\"col-md-12\" style=\"padding: 0;\">\n            <mat-card> \n\n              \n              <table class=\"table\">\n                <thead >\n                    <tr >\n                      <th style=\"min-width:50px\">Id</th>\n                        <th style=\"min-width:250px\">Url</th>\n                        <th style=\"min-width:50px\">Status</th>\n                        <th style=\"min-width:50px\">Last Created Date</th>\n                       \n                        <th ></th>\n                    </tr>\n                </thead>\n                <tbody *ngIf=\"tokenList.length!=0\" >\n                    <tr *ngFor=\"let item of tokenList; let i=index\" >\n                      <td>{{i}}</td>\n                        <td><strong>{{ item.url }}</strong></td>\n                        <td><strong>{{ item.status }}</strong></td>\n                        <td><strong>{{ item.created_date }}</strong></td>\n       \n                        <td>\n               \n                          <i class=\"far fa-trash-alt pointer\" (click)=\"delete(i)\"></i></td>\n          \n                    </tr>\n                </tbody>\n                <tbody style=\"text-align: center;\"  *ngIf=\"tokenList.length==0\" >\n                  <tr >\n                    <td colspan=\"3\" ><span ><i>No public urls.</i> </span></td>\n                      \n          \n                  </tr>\n              </tbody>\n           \n            </table>\n            </mat-card>\n   \n        </div>\n      </div> \n  </div>\n  <div class=\"col-md-4\">\n    <div style=\"text-align: center;padding: 1em;\">     \n      <button mat-stroked-button (click)=\"save()\" >Save</button>\n </div>\n\n  </div>\n</div> \n\n";
+    __webpack_exports__["default"] = "<div class=\"row\">\n  <div class=\"col-md-8\">\n    <div class=\"row\" style=\"margin: 0.5em;\">\n      <div class=\"col-md-12\" style=\"padding: 0;\">\n        <mat-card>\n          <mat-form-field class=\"col-md-12\" appearance=\"outline\">\n            <mat-label>Experiment Name</mat-label>\n            <input\n            [disabled]=\"onlyReadable()\"\n              matInput\n              [(ngModel)]=\"experiment.name\"\n              (change)=\"setExperimentName()\"\n            />\n          </mat-form-field>\n\n          <mat-form-field class=\"col-md-12\" appearance=\"outline\">\n            <mat-label>Experiment Description</mat-label>\n            <textarea\n            [disabled]=\"onlyReadable()\"\n              matInput\n              [(ngModel)]=\"experiment.description\"\n              (change)=\"setExperimentDescription()\"\n            ></textarea>\n          </mat-form-field>\n        </mat-card>\n      </div>\n    </div>\n  </div>\n  <div class=\"col-md-4\">\n    <div style=\"text-align: center; padding: 1em;\" *ngIf=\"!onlyReadable()\">\n      <button mat-stroked-button (click)=\"save()\">Save</button>\n    </div>\n  </div>\n</div>\n";
     /***/
   },
 
@@ -75,7 +75,7 @@
     /* harmony default export */
 
 
-    __webpack_exports__["default"] = "\n <div class=\"row\">\n<div class=\"col-md-9\">\n\n  \n    <div class=\"row\" style=\"margin: .5em;\">\n        <div class=\"col-md-12\" style=\"padding: 0;\">\n            <mat-card> \n               \n                 <div style=\"text-align: center;\">  Behavior</div> \n               <hr>\n               <div class=\"row\">\n               <div class=\"col-md-12\" (click)=\"selectTextBox(2)\">\n                  <div style=\"margin: .6em;border-bottom: 1px solid #eee;\" [hidden]=\"!isEnable(2)\">\n                      <span>Suggestions:</span>\n                     \n                      <button type=\"button\" class=\"btn btn-outline-primary word-bubble-button\" *ngFor=\"let word of behaviorWordList | slice:0:3 | textfilter:behaviorTextFilter \"  (click)=\"insertValue(word.value)\" [disabled]=\"word.flag\">{{word.value}}</button>\n                      <button type=\"button\" *ngIf=\"suggestionbehaviorMessage!=null\" class=\"btn btn-outline-primary word-bubble-button\" [disabled]=\"true\">{{suggestionbehaviorMessage}}</button>\n                      \n                      \n                   </div>\n                <div class=\"flex-container\" (blur)=\"onBlurMethod()\" >\n                    \n                      <quill-editor \n                     \n                      [styles]=\"{height: '400px',border:'none'}\"\n                      [modules]=\"{  counter: { container: '#editor1'} ,toolbar: false }\"\n                      [(ngModel)]=\"behaviorText\" \n                      (onContentChanged)=\"logChangeBehavior($event);\"\n                      (onEditorCreated)=\"created($event,2)\"></quill-editor>\n                    </div>\n                     \n                  \n                  </div>\n                  </div>\n                 \n            </mat-card>\n   \n        </div>\n      </div> \n      <div class=\"row\" style=\"margin: .5em;\">\n          <div class=\"col-md-12\" style=\"padding: 0;\">\n              <mat-card> \n                \n                <div style=\"text-align: center;\">  Constraints</div> \n                \n                  <hr>\n                  <div class=\"row\">\n                  <div class=\"col-md-12\" (click)=\"selectTextBox(3)\">\n                    <div style=\"margin: .6em;border-bottom: 1px solid #eee;\" [hidden]=\"!isEnable(3)\">\n                       <span>Suggestions:</span>\n                       <button type=\"button\" class=\"btn btn-outline-primary word-bubble-button\" *ngFor=\"let word of constraintWordList | slice:0:3 | textfilter:constraintTextFilter\"  (click)=\"insertValueInConstraint(word.value)\">{{word.value}}</button>\n                      <button type=\"button\" *ngIf=\"suggestionConstraintMessage!=null\" class=\"btn btn-outline-primary word-bubble-button\" [disabled]=\"true\">{{suggestionConstraintMessage}}</button>\n                           \n                \n                    </div>\n                      <div class=\"flex-container\">\n                    \n                          <quill-editor \n                         \n                          [styles]=\"{height: '400px',border:'none'}\"\n                          [modules]=\"{  counter: { container: '#editor1'} ,toolbar: false }\"\n                          [(ngModel)]=\"constraints\" \n                          (onContentChanged)=\"logChangeConstraints($event);\"\n                          (onEditorCreated)=\"created($event,3)\"></quill-editor>\n                        </div>\n                      </div>\n                      </div>\n              </mat-card>\n          </div>\n        </div>\n         <div class=\"row\" style=\"margin: .5em;\">\n          <div class=\"col-md-12\" style=\"padding: 0;\">\n            <mat-card> \n                    \n              <div style=\"text-align: center;\">  Bindings</div> \n              \n                <hr>\n                <div *ngIf=\"bindingList.length==0\" style=\"font-size: .8em;text-align: center;\">\n                  <span ><i>No Bindings Needed</i></span>\n                </div>\n                  <div *ngIf=\"bindingList.length!=0\">\n                <ul  class=\"behavior-list \" >\n                  <li class=\"binding-box\" *ngFor=\"let item of bindingList;let index=index\" ><div>\n                  \n                    <mat-form-field style=\"width:100%\">\n                      <input matInput placeholder=\"{{item.key+' represents: '}}\" [(ngModel)]=\"item.value\" (change)=\"storeBinding()\">\n                    </mat-form-field>\n      \n                    <span>\n                    </span>\n                   \n                  </div>\n                    </li>\n              </ul>\n              </div>\n      \n              \n            </mat-card> \n            </div>\n            </div> \n   \n\n \n  </div>\n<div class=\"col-md-3\" style=\"margin: 0;\">\n\n  <div class=\"row\">\n    <div class=\"col-md-12\" style=\"padding: 1em;\">\n        \n      <div style=\"text-align: center;padding: .1em;\">     \n         <button mat-stroked-button (click)=\"addBindings()\" >Generate Ns File</button>\n         \n    </div>\n \n    </div>\n    </div>\n  \n  <div class=\"row\" style=\"margin-top: .1em;\n  margin-bottom: .1em;\">\n    <div class=\"col-md-12\" style=\"padding: 0;\">\n\n      <mat-card>  \n        <div style=\"text-align: center;\">Actors\n         </div>\n\n        \n        <hr>\n        <div *ngIf=\"actorsList.length==0\" style=\"font-size: .8em;text-align: center;\">\n          <span ><i>No Actors</i></span>\n        </div>\n          <div *ngIf=\"actorsList.length!=0\" style=\"  height: auto;\n          display: flow-root;\n          padding: 0;\">\n        \n\n      <div *ngFor=\"let item of actorsList;let index=index\" class=\"binding-word-bubble\" style=\"  border: 1px solid black;\">\n          \n        <span>\n        {{item.text}} </span>\n       \n        </div>\n      </div>\n      </mat-card>\n\n    </div>\n  </div>\n\n  <div class=\"row\" style=\"margin-top: .1em;\n  margin-bottom: .1em;\">\n    <div class=\"col-md-12\" style=\"padding: 0;\">\n\n      <mat-card>  \n        <div style=\"text-align: center;\">Bindings Needed\n\n        \n         </div>\n\n        \n        <hr>\n        <div *ngIf=\"bindingList.length==0\" style=\"font-size: .8em;text-align: center;\">\n          <span ><i>No Bindings Needed.</i></span>\n        </div>\n        \n          <div *ngIf=\"bindingList.length!=0\" style=\"  height: auto;\n          display: flow-root;\n          padding: 0;\">\n        \n          <div *ngFor=\"let item of bindingList;let index=index\" class=\"binding-word-bubble\" >\n          \n            <span>\n            {{item.key}} </span>\n            <i class=\"fas fa-exclamation-circle\" style=\"color: red;\" *ngIf=\"isEmpty(item)\"></i>\n            <i class=\"fa fa-check-circle\" style=\"color: green;\"  *ngIf=\"!isEmpty(item)\" ></i>\n           \n            </div>\n      \n      </div>\n      </mat-card>\n\n    </div>\n  </div>\n  </div>\n</div> \n\n";
+    __webpack_exports__["default"] = "\n <div class=\"row\">\n  <div class=\"col-md-9\">\n  \n    \n      <div class=\"row\" style=\"margin: .5em;\">\n          <div class=\"col-md-12\" style=\"padding: 0;\">\n              <mat-card> \n                 \n                   <div style=\"text-align: center;\">  Behavior</div> \n                 <hr>\n                 <div class=\"row\">\n                 <div class=\"col-md-12\" (click)=\"selectTextBox(2)\">\n                    <div *ngIf=\"!onlyReadable()\" style=\"margin: .6em;border-bottom: 1px solid #eee;\" [hidden]=\"!isEnable(2)\">\n                        <span>Suggestions:</span>\n                       \n                        <button type=\"button\" class=\"btn btn-outline-primary word-bubble-button\" *ngFor=\"let word of behaviorWordList | slice:0:3 | textfilter:behaviorTextFilter \"  (click)=\"insertValue(word.value)\" [disabled]=\"word.flag\">{{word.value}}</button>\n                        <button type=\"button\" *ngIf=\"suggestionbehaviorMessage!=null\" class=\"btn btn-outline-primary word-bubble-button\" [disabled]=\"true\">{{suggestionbehaviorMessage}}</button>\n                        \n                        \n                     </div>\n                  <div class=\"flex-container\" (blur)=\"onBlurMethod()\" >\n                      \n                        <quill-editor [disabled]=\"onlyReadable()\"\n                       \n                        [styles]=\"{height: '400px',border:'none'}\"\n                        [modules]=\"{  counter: { container: '#editor1'} ,toolbar: false }\"\n                        [(ngModel)]=\"behaviorText\" \n                        (onContentChanged)=\"logChangeBehavior($event);\"\n                        (onEditorCreated)=\"created($event,2)\"></quill-editor>\n                      </div>\n                       \n                    \n                    </div>\n                    </div>\n                   \n              </mat-card>\n     \n          </div>\n        </div> \n        <div class=\"row\" style=\"margin: .5em;\">\n            <div class=\"col-md-12\" style=\"padding: 0;\">\n                <mat-card> \n                  \n                  <div style=\"text-align: center;\">  Constraints</div> \n                  \n                    <hr>\n                    <div class=\"row\">\n                    <div class=\"col-md-12\" (click)=\"selectTextBox(3)\">\n                      <div *ngIf=\"!onlyReadable()\" style=\"margin: .6em;border-bottom: 1px solid #eee;\" [hidden]=\"!isEnable(3)\">\n                         <span>Suggestions:</span>\n                         <button type=\"button\" class=\"btn btn-outline-primary word-bubble-button\" *ngFor=\"let word of constraintWordList | slice:0:3 | textfilter:constraintTextFilter\"  (click)=\"insertValueInConstraint(word.value)\">{{word.value}}</button>\n                        <button type=\"button\" *ngIf=\"suggestionConstraintMessage!=null\" class=\"btn btn-outline-primary word-bubble-button\" [disabled]=\"true\">{{suggestionConstraintMessage}}</button>\n                             \n                  \n                      </div>\n                        <div class=\"flex-container\">\n                      \n                            <quill-editor \n                            [disabled]=\"onlyReadable()\"\n                            [styles]=\"{height: '400px',border:'none'}\"\n                            [modules]=\"{  counter: { container: '#editor1'} ,toolbar: false }\"\n                            [(ngModel)]=\"constraintText\" \n                            (onContentChanged)=\"logChangeConstraints($event);\"\n                            (onEditorCreated)=\"created($event,3)\"></quill-editor>\n                          </div>\n                        </div>\n                        </div>\n                </mat-card>\n            </div>\n          </div>\n           <div class=\"row\" style=\"margin: .5em;\">\n            <div class=\"col-md-12\" style=\"padding: 0;\">\n              <mat-card> \n                      \n                <div style=\"text-align: center;\">  Bindings</div> \n                \n                  <hr>\n                  <div *ngIf=\"bindingList.length==0\" style=\"font-size: .8em;text-align: center;\">\n                    <span ><i>No Bindings Needed</i></span>\n                  </div>\n                    <div *ngIf=\"bindingList.length!=0\">\n                  <ul  class=\"behavior-list \" >\n                    <li *ngFor=\"let item of bindingList;let index=index\" ><div>\n                    \n                      <mat-form-field style=\"width:100%\" appearance=\"outline\">\n                        <mat-label>{{item.key+' represents: '}}</mat-label>\n                        <input [disabled]=\"onlyReadable()\" matInput [(ngModel)]=\"item.value\" (change)=\"storeBinding()\">\n                      </mat-form-field>\n        \n                      <span>\n                      </span>\n                     \n                    </div>\n                      </li>\n                </ul>\n                </div>\n        \n                \n              </mat-card> \n              </div>\n              </div> \n     \n  \n   \n    </div>\n  <div class=\"col-md-3\" style=\"margin-top: .5em;\">\n  \n    <div class=\"row\" *ngIf=\"!onlyReadable()\">\n      <div class=\"col-md-12\" style=\"padding: 1em;\">\n          \n        <div style=\"text-align: center;padding: .1em;\">     \n           <button mat-stroked-button (click)=\"addBindings()\" >Generate Ns File</button>\n           \n      </div>\n   \n      </div>\n      </div>\n    \n    <div class=\"row\" style=\"margin-top: .1em;\n    margin-bottom: .1em;\">\n      <div class=\"col-md-12\" style=\"padding: 0;\">\n  \n        <mat-card>  \n          <div style=\"text-align: center;\">Actors\n           </div>\n  \n          \n          <hr>\n          <div *ngIf=\"actorsList.length==0\" style=\"font-size: .8em;text-align: center;\">\n            <span ><i>No Actors</i></span>\n          </div>\n            <div *ngIf=\"actorsList.length!=0\" style=\"  height: auto;\n            display: flow-root;\n            padding: 0;\">\n          \n  \n        <div *ngFor=\"let item of actorsList;let index=index\" class=\"binding-word-bubble\" style=\"  border: 1px solid black;\">\n            \n          <span>\n          {{item.text}} </span>\n         \n          </div>\n        </div>\n        </mat-card>\n  \n      </div>\n    </div>\n  \n    <div class=\"row\" style=\"margin-top: .1em;\n    margin-bottom: .1em;\">\n      <div class=\"col-md-12\" style=\"padding: 0;\">\n  \n        <mat-card>  \n          <div style=\"text-align: center;\">Bindings Needed\n  \n          \n           </div>\n  \n          \n          <hr>\n          <div *ngIf=\"bindingList.length==0\" style=\"font-size: .8em;text-align: center;\">\n            <span ><i>No Bindings Needed.</i></span>\n          </div>\n          \n            <div *ngIf=\"bindingList.length!=0\" style=\"  height: auto;\n            display: flow-root;\n            padding: 0;\">\n          \n            <div *ngFor=\"let item of bindingList;let index=index\" class=\"binding-word-bubble\" >\n            \n              <span>\n              {{item.key}} </span>\n              <i class=\"fas fa-exclamation-circle\" style=\"color: red;\" *ngIf=\"isEmpty(item)\"></i>\n              <i class=\"fa fa-check-circle\" style=\"color: green;\"  *ngIf=\"!isEmpty(item)\" ></i>\n             \n              </div>\n        \n        </div>\n        </mat-card>\n  \n      </div>\n    </div>\n    </div>\n  </div> \n  \n  ";
     /***/
   },
 
@@ -95,7 +95,7 @@
     /* harmony default export */
 
 
-    __webpack_exports__["default"] = "\n  <mat-tab-group>\n    <mat-tab *ngFor=\"let x of menuList\" label=\"{{ x.name }}\">\n   \n    \n      <div *ngIf=\"x.id ==1\" class=\"tab\">\n        <experiment-info [id]=experimentId></experiment-info>\n      </div>\n      <div *ngIf=\"x.id ==2\" class=\"tab\">\n        <hlb></hlb>\n      </div>\n\n      <!-- <div *ngIf=\"x.id ==3\" class=\"tab\">\n        <nlp></nlp>\n      </div> -->\n\n      <div *ngIf=\"x.id ==4\" class=\"tab\">\n        <dependency-graph></dependency-graph>\n      </div> \n\n      <!-- <div *ngIf=\"x.id ==5\" class=\"tab\">\n        <upload></upload>\n      </div>  -->\n      \n    </mat-tab>\n  </mat-tab-group> \n\n";
+    __webpack_exports__["default"] = "\n  <mat-tab-group>\n    <mat-tab *ngFor=\"let x of menuList\" label=\"{{ x.name }}\">\n   \n    \n      <div *ngIf=\"x.id ==1\" class=\"tab\">\n        <experiment-info [id]=experimentId></experiment-info>\n      </div>\n      <div *ngIf=\"x.id ==2\" class=\"tab\">\n        <hlb></hlb>\n      </div>\n\n      <div *ngIf=\"x.id ==3\" class=\"tab\">\n        <nlp></nlp>\n      </div>\n\n      <div *ngIf=\"x.id ==4\" class=\"tab\">\n        <dependency-graph></dependency-graph>\n      </div> \n\n      <!-- <div *ngIf=\"x.id ==5\" class=\"tab\">\n        <upload></upload>\n      </div>  -->\n      \n    </mat-tab>\n  </mat-tab-group> \n\n";
     /***/
   },
 
@@ -409,144 +409,6 @@
   },
 
   /***/
-  "./src/app/public/hlbparser/common/state-service.service.ts":
-  /*!******************************************************************!*\
-    !*** ./src/app/public/hlbparser/common/state-service.service.ts ***!
-    \******************************************************************/
-
-  /*! exports provided: StateService */
-
-  /***/
-  function srcAppPublicHlbparserCommonStateServiceServiceTs(module, __webpack_exports__, __webpack_require__) {
-    "use strict";
-
-    __webpack_require__.r(__webpack_exports__);
-    /* harmony export (binding) */
-
-
-    __webpack_require__.d(__webpack_exports__, "StateService", function () {
-      return StateService;
-    });
-    /* harmony import */
-
-
-    var tslib__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(
-    /*! tslib */
-    "./node_modules/tslib/tslib.es6.js");
-    /* harmony import */
-
-
-    var _angular_core__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(
-    /*! @angular/core */
-    "./node_modules/@angular/core/fesm2015/core.js");
-    /* harmony import */
-
-
-    var rxjs__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(
-    /*! rxjs */
-    "./node_modules/rxjs/_esm2015/index.js");
-
-    let StateService = class StateService {
-      constructor() {
-        this.loaderSwitch = new rxjs__WEBPACK_IMPORTED_MODULE_2__["BehaviorSubject"](false);
-        this.actors = new rxjs__WEBPACK_IMPORTED_MODULE_2__["BehaviorSubject"](null);
-        this.behavior = new rxjs__WEBPACK_IMPORTED_MODULE_2__["BehaviorSubject"](null);
-        this.constraints = new rxjs__WEBPACK_IMPORTED_MODULE_2__["BehaviorSubject"](null);
-        this.bindings = new rxjs__WEBPACK_IMPORTED_MODULE_2__["BehaviorSubject"](null);
-        this.experimentName = new rxjs__WEBPACK_IMPORTED_MODULE_2__["BehaviorSubject"]("");
-        this.experimentDescription = new rxjs__WEBPACK_IMPORTED_MODULE_2__["BehaviorSubject"]("");
-      }
-
-      enableLoader() {
-        this.loaderSwitch.next(true);
-      }
-
-      disableLoader() {
-        this.loaderSwitch.next(false);
-      }
-
-      isLoaderEnabled() {
-        return this.loaderSwitch.asObservable();
-      }
-
-      getExperimentName() {
-        return this.experimentName.asObservable();
-      }
-
-      getExperimentDescription() {
-        return this.experimentDescription.asObservable();
-      }
-
-      getUserDetails() {
-        return this.userDetails;
-      }
-
-      setUserDetails(user) {
-        this.userDetails = user;
-      }
-
-      getBindings() {
-        return this.bindings.asObservable();
-      }
-
-      getActors() {
-        return this.actors.asObservable();
-      }
-
-      setCurrentBehaviorWord(word) {
-        this.currentBehaviorWord = word;
-      }
-
-      getCurrentBehaviorWord() {
-        return this.currentBehaviorWord;
-      }
-
-      setCurrentConstraintWord(word) {
-        this.currentConstraintWord = word;
-      }
-
-      getCurrentConstraintWord() {
-        return this.currentConstraintWord;
-      }
-
-      getBehavior() {
-        return this.behavior.asObservable();
-      }
-
-      getConstraints() {
-        return this.constraints.asObservable();
-      }
-
-      setBindings(Bindings) {
-        this.bindings.next(Bindings);
-      }
-
-      setActors(data) {
-        this.actors.next(data);
-      }
-
-      setBehavior(data) {
-        this.behavior.next(data);
-      }
-
-      setConstraints(data) {
-        this.constraints.next(data);
-      }
-
-      setExperimentName(data) {
-        this.experimentName.next(data);
-      }
-
-      setExperimentDescription(data) {
-        this.experimentDescription.next(data);
-      }
-
-    };
-    StateService = tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"]([Object(_angular_core__WEBPACK_IMPORTED_MODULE_1__["Injectable"])()], StateService);
-    /***/
-  },
-
-  /***/
   "./src/app/public/hlbparser/common/text-filter.pipe.ts":
   /*!*************************************************************!*\
     !*** ./src/app/public/hlbparser/common/text-filter.pipe.ts ***!
@@ -580,9 +442,9 @@
     /* harmony import */
 
 
-    var _state_service_service__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(
-    /*! ./state-service.service */
-    "./src/app/public/hlbparser/common/state-service.service.ts");
+    var src_app_state_service_service__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(
+    /*! src/app/state-service.service */
+    "./src/app/state-service.service.ts");
 
     let TextFilterPipe = class TextFilterPipe {
       constructor(state) {
@@ -595,9 +457,9 @@
 
         if (!items || !filter) {
           if (items.length > 0) {
-            if (option == 'behavior') this.state.setCurrentBehaviorWord(items[0].value);else if (option == 'constraint') this.state.setCurrentConstraintWord(items[0].value);
+            if (option == "behavior") this.state.setCurrentBehaviorWord(items[0].value);else if (option == "constraint") this.state.setCurrentConstraintWord(items[0].value);
           } else {
-            if (option == 'behavior') this.state.setCurrentBehaviorWord("");else if (option == 'constraint') this.state.setCurrentConstraintWord("");
+            if (option == "behavior") this.state.setCurrentBehaviorWord("");else if (option == "constraint") this.state.setCurrentConstraintWord("");
           }
 
           return items;
@@ -605,9 +467,9 @@
 
         if (filter.trim() === "") {
           if (items.length > 0) {
-            if (option == 'behavior') this.state.setCurrentBehaviorWord(items[0].value);else if (option == 'constraint') this.state.setCurrentConstraintWord(items[0].value);
+            if (option == "behavior") this.state.setCurrentBehaviorWord(items[0].value);else if (option == "constraint") this.state.setCurrentConstraintWord(items[0].value);
           } else {
-            if (option == 'behavior') this.state.setCurrentBehaviorWord("");else if (option == 'constraint') this.state.setCurrentConstraintWord("");
+            if (option == "behavior") this.state.setCurrentBehaviorWord("");else if (option == "constraint") this.state.setCurrentConstraintWord("");
           }
 
           return items;
@@ -615,9 +477,9 @@
           var filterList = items.filter(item => item.value.trim().toLowerCase().indexOf(filter.trim().toLowerCase()) > -1);
 
           if (filterList.length > 0) {
-            if (option == 'behavior') this.state.setCurrentBehaviorWord(filterList[0].value);else if (option == 'constraint') this.state.setCurrentConstraintWord(filterList[0].value);
+            if (option == "behavior") this.state.setCurrentBehaviorWord(filterList[0].value);else if (option == "constraint") this.state.setCurrentConstraintWord(filterList[0].value);
           } else {
-            if (option == 'behavior') this.state.setCurrentBehaviorWord("");else if (option == 'constraint') this.state.setCurrentConstraintWord("");
+            if (option == "behavior") this.state.setCurrentBehaviorWord("");else if (option == "constraint") this.state.setCurrentConstraintWord("");
           }
 
           return filterList;
@@ -627,11 +489,11 @@
     };
 
     TextFilterPipe.ctorParameters = () => [{
-      type: _state_service_service__WEBPACK_IMPORTED_MODULE_2__["StateService"]
+      type: src_app_state_service_service__WEBPACK_IMPORTED_MODULE_2__["StateService"]
     }];
 
     TextFilterPipe = tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"]([Object(_angular_core__WEBPACK_IMPORTED_MODULE_1__["Pipe"])({
-      name: 'textfilter',
+      name: "textfilter",
       pure: false
     })], TextFilterPipe);
     /***/
@@ -756,15 +618,15 @@
     /* harmony import */
 
 
-    var _common_state_service_service__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(
-    /*! ../common/state-service.service */
-    "./src/app/public/hlbparser/common/state-service.service.ts");
+    var src_app_auth_auth_service__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(
+    /*! src/app/@auth/auth.service */
+    "./src/app/@auth/auth.service.ts");
     /* harmony import */
 
 
-    var src_app_auth_auth_service__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(
-    /*! src/app/@auth/auth.service */
-    "./src/app/@auth/auth.service.ts");
+    var src_app_state_service_service__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(
+    /*! src/app/state-service.service */
+    "./src/app/state-service.service.ts");
 
     let InfoComponent = class InfoComponent {
       constructor(state, auth) {
@@ -783,7 +645,7 @@
       }
 
       ngOnInit() {
-        if (this.id != undefined && this.id != null && this.id != -1) this.experiment['id'] = this.id;
+        if (this.id != undefined && this.id != null && this.id != -1) this.experiment["id"] = this.id;
         this.state.getExperimentName().subscribe(name => {
           this.experiment.name = name;
         });
@@ -802,6 +664,11 @@
         this.state.getConstraints().subscribe(constraintsList => {
           this.experiment.constraint = constraintsList;
         });
+        this.tokenLevel = this.state.getTokenLevel();
+      }
+
+      onlyReadable() {
+        return this.tokenLevel == 'read';
       }
 
       setExperimentName() {
@@ -819,9 +686,9 @@
     };
 
     InfoComponent.ctorParameters = () => [{
-      type: _common_state_service_service__WEBPACK_IMPORTED_MODULE_2__["StateService"]
+      type: src_app_state_service_service__WEBPACK_IMPORTED_MODULE_3__["StateService"]
     }, {
-      type: src_app_auth_auth_service__WEBPACK_IMPORTED_MODULE_3__["AuthService"]
+      type: src_app_auth_auth_service__WEBPACK_IMPORTED_MODULE_2__["AuthService"]
     }];
 
     tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"]([Object(_angular_core__WEBPACK_IMPORTED_MODULE_1__["Input"])()], InfoComponent.prototype, "id", void 0);
@@ -853,7 +720,7 @@
     /* harmony default export */
 
 
-    __webpack_exports__["default"] = ".behavior-list {\n  margin: 0.1em;\n  list-style: none;\n  padding: 0;\n}\n\n.behavior-box {\n  margin: 0.5em;\n  border: 1px solid #ccc;\n  padding: 0.5em;\n}\n\n.binding-box {\n  margin: 0.5em;\n  border-bottom: 1px solid #ccc;\n  padding: 0.5em;\n}\n\n.word-bubble {\n  border: 1px dotted black;\n  border-radius: 1em;\n  padding: 0.4em;\n  margin: 0.1em;\n  cursor: pointer;\n}\n\n.binding-word-bubble {\n  border: 1px solid black;\n  float: left;\n  margin: 2px;\n  border-radius: 8px;\n  padding: 3px;\n}\n\n.word-bubble-button {\n  border-radius: 1em;\n  padding: 0.4em;\n  margin: 0.1em;\n}\n\n.float-left {\n  float: left;\n}\n\n.actions {\n  float: right;\n  cursor: pointer;\n  display: none;\n}\n\n.behavior-list:hover .actions {\n  display: block;\n}\n\n.disabled {\n  pointer-events: none;\n}\n\n.grabbable {\n  cursor: move;\n  /* fallback if grab cursor is unsupported */\n  cursor: grab;\n  cursor: -webkit-grab;\n}\n\n/* (Optional) Apply a \"closed-hand\" cursor during drag operation. */\n\n.grabbable:active {\n  cursor: grabbing;\n  cursor: -webkit-grabbing;\n}\n\n.mat-radio-button ~ .mat-radio-button {\n  margin-left: 16px;\n}\n\n.padding-left-right {\n  padding-left: 5px;\n  padding-right: 5px;\n}\n\n.button-padding {\n  margin-left: 0.1em;\n}\n\n.expand {\n  float: right;\n  cursor: pointer;\n}\n\n.hide {\n  display: none;\n}\n/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbIi9Vc2Vycy9TaGFiYmlyL3Byb2plY3RzL0RFV19VSS9zcmMvc3RlZWwvV0VCLUFQUExJQ0FUSU9OL2Zyb250ZW5kL3NyYy9hcHAvcHVibGljL2hsYnBhcnNlci9obGIvaGxiLmNvbXBvbmVudC5zY3NzIiwic3JjL2FwcC9wdWJsaWMvaGxicGFyc2VyL2hsYi9obGIuY29tcG9uZW50LnNjc3MiXSwibmFtZXMiOltdLCJtYXBwaW5ncyI6IkFBQUE7RUFDSSxhQUFBO0VBQ0EsZ0JBQUE7RUFDQSxVQUFBO0FDQ0o7O0FERUE7RUFDSSxhQUFBO0VBQ0Esc0JBQUE7RUFDQSxjQUFBO0FDQ0o7O0FERUE7RUFDSSxhQUFBO0VBQ0EsNkJBQUE7RUFDQSxjQUFBO0FDQ0o7O0FERUE7RUFDSSx3QkFBQTtFQUNBLGtCQUFBO0VBQ0EsY0FBQTtFQUNBLGFBQUE7RUFDQSxlQUFBO0FDQ0o7O0FER0E7RUFDSSx1QkFBQTtFQUNBLFdBQUE7RUFDQSxXQUFBO0VBQ0Esa0JBQUE7RUFDQSxZQUFBO0FDQUo7O0FERUE7RUFDSSxrQkFBQTtFQUNBLGNBQUE7RUFDQSxhQUFBO0FDQ0o7O0FERUE7RUFDSSxXQUFBO0FDQ0o7O0FERUE7RUFDSSxZQUFBO0VBQ0EsZUFBQTtFQUNBLGFBQUE7QUNDSjs7QURFQTtFQUNJLGNBQUE7QUNDSjs7QURFQTtFQUNJLG9CQUFBO0FDQ0o7O0FERUE7RUFDSSxZQUFBO0VBQWMsMkNBQUE7RUFDZCxZQUFBO0VBRUEsb0JBQUE7QUNFSjs7QURDQyxtRUFBQTs7QUFDRDtFQUNJLGdCQUFBO0VBRUEsd0JBQUE7QUNFSjs7QURDQTtFQUNJLGlCQUFBO0FDRUo7O0FEQ0U7RUFDSSxpQkFBQTtFQUNBLGtCQUFBO0FDRU47O0FERUU7RUFDSSxrQkFBQTtBQ0NOOztBREVFO0VBQ0ksWUFBQTtFQUNBLGVBQUE7QUNDTjs7QURFRTtFQUNJLGFBQUE7QUNDTiIsImZpbGUiOiJzcmMvYXBwL3B1YmxpYy9obGJwYXJzZXIvaGxiL2hsYi5jb21wb25lbnQuc2NzcyIsInNvdXJjZXNDb250ZW50IjpbIi5iZWhhdmlvci1saXN0e1xuICAgIG1hcmdpbjouMWVtO1xuICAgIGxpc3Qtc3R5bGU6IG5vbmU7XG4gICAgcGFkZGluZzogMDtcbn1cblxuLmJlaGF2aW9yLWJveHtcbiAgICBtYXJnaW46IC41ZW07XG4gICAgYm9yZGVyOiAxcHggc29saWQgI2NjYztcbiAgICBwYWRkaW5nOiAuNWVtO1xufVxuXG4uYmluZGluZy1ib3h7XG4gICAgbWFyZ2luOiAuNWVtO1xuICAgIGJvcmRlci1ib3R0b206IDFweCBzb2xpZCAjY2NjO1xuICAgIHBhZGRpbmc6IC41ZW07XG59XG5cbi53b3JkLWJ1YmJsZXtcbiAgICBib3JkZXI6IDFweCBkb3R0ZWQgYmxhY2s7XG4gICAgYm9yZGVyLXJhZGl1czogMWVtO1xuICAgIHBhZGRpbmc6IDAuNGVtO1xuICAgIG1hcmdpbjogMC4xZW07XG4gICAgY3Vyc29yOiBwb2ludGVyO1xuIFxufVxuXG4uYmluZGluZy13b3JkLWJ1YmJsZXtcbiAgICBib3JkZXI6IDFweCBzb2xpZCBibGFjaztcbiAgICBmbG9hdDogbGVmdDtcbiAgICBtYXJnaW46IDJweDtcbiAgICBib3JkZXItcmFkaXVzOiA4cHg7XG4gICAgcGFkZGluZzogM3B4O1xufVxuLndvcmQtYnViYmxlLWJ1dHRvbntcbiAgICBib3JkZXItcmFkaXVzOiAxZW07XG4gICAgcGFkZGluZzogMC40ZW07XG4gICAgbWFyZ2luOiAwLjFlbTtcbiBcbn1cbi5mbG9hdC1sZWZ0e1xuICAgIGZsb2F0OmxlZnQ7XG59XG5cbi5hY3Rpb25ze1xuICAgIGZsb2F0OnJpZ2h0O1xuICAgIGN1cnNvcjogcG9pbnRlcjtcbiAgICBkaXNwbGF5OiBub25lO1xufVxuXG4uYmVoYXZpb3ItbGlzdDpob3ZlciAuYWN0aW9uc3tcbiAgICBkaXNwbGF5OiBibG9jaztcbn1cblxuLmRpc2FibGVke1xuICAgIHBvaW50ZXItZXZlbnRzOiBub25lOyAgIFxufVxuXG4uZ3JhYmJhYmxlIHtcbiAgICBjdXJzb3I6IG1vdmU7IC8qIGZhbGxiYWNrIGlmIGdyYWIgY3Vyc29yIGlzIHVuc3VwcG9ydGVkICovXG4gICAgY3Vyc29yOiBncmFiO1xuICAgIGN1cnNvcjogLW1vei1ncmFiO1xuICAgIGN1cnNvcjogLXdlYmtpdC1ncmFiO1xufVxuXG4gLyogKE9wdGlvbmFsKSBBcHBseSBhIFwiY2xvc2VkLWhhbmRcIiBjdXJzb3IgZHVyaW5nIGRyYWcgb3BlcmF0aW9uLiAqL1xuLmdyYWJiYWJsZTphY3RpdmUge1xuICAgIGN1cnNvcjogZ3JhYmJpbmc7XG4gICAgY3Vyc29yOiAtbW96LWdyYWJiaW5nO1xuICAgIGN1cnNvcjogLXdlYmtpdC1ncmFiYmluZztcbn1cblxuLm1hdC1yYWRpby1idXR0b24gfiAubWF0LXJhZGlvLWJ1dHRvbiB7XG4gICAgbWFyZ2luLWxlZnQ6IDE2cHg7XG4gIH1cblxuICAucGFkZGluZy1sZWZ0LXJpZ2h0e1xuICAgICAgcGFkZGluZy1sZWZ0OiA1cHg7XG4gICAgICBwYWRkaW5nLXJpZ2h0OiA1cHg7XG4gIH1cblxuIFxuICAuYnV0dG9uLXBhZGRpbmd7XG4gICAgICBtYXJnaW4tbGVmdDogLjFlbTtcbiAgfVxuXG4gIC5leHBhbmR7XG4gICAgICBmbG9hdDogcmlnaHQ7XG4gICAgICBjdXJzb3I6IHBvaW50ZXI7XG4gIH1cblxuICAuaGlkZXtcbiAgICAgIGRpc3BsYXk6IG5vbmU7XG4gIH0iLCIuYmVoYXZpb3ItbGlzdCB7XG4gIG1hcmdpbjogMC4xZW07XG4gIGxpc3Qtc3R5bGU6IG5vbmU7XG4gIHBhZGRpbmc6IDA7XG59XG5cbi5iZWhhdmlvci1ib3gge1xuICBtYXJnaW46IDAuNWVtO1xuICBib3JkZXI6IDFweCBzb2xpZCAjY2NjO1xuICBwYWRkaW5nOiAwLjVlbTtcbn1cblxuLmJpbmRpbmctYm94IHtcbiAgbWFyZ2luOiAwLjVlbTtcbiAgYm9yZGVyLWJvdHRvbTogMXB4IHNvbGlkICNjY2M7XG4gIHBhZGRpbmc6IDAuNWVtO1xufVxuXG4ud29yZC1idWJibGUge1xuICBib3JkZXI6IDFweCBkb3R0ZWQgYmxhY2s7XG4gIGJvcmRlci1yYWRpdXM6IDFlbTtcbiAgcGFkZGluZzogMC40ZW07XG4gIG1hcmdpbjogMC4xZW07XG4gIGN1cnNvcjogcG9pbnRlcjtcbn1cblxuLmJpbmRpbmctd29yZC1idWJibGUge1xuICBib3JkZXI6IDFweCBzb2xpZCBibGFjaztcbiAgZmxvYXQ6IGxlZnQ7XG4gIG1hcmdpbjogMnB4O1xuICBib3JkZXItcmFkaXVzOiA4cHg7XG4gIHBhZGRpbmc6IDNweDtcbn1cblxuLndvcmQtYnViYmxlLWJ1dHRvbiB7XG4gIGJvcmRlci1yYWRpdXM6IDFlbTtcbiAgcGFkZGluZzogMC40ZW07XG4gIG1hcmdpbjogMC4xZW07XG59XG5cbi5mbG9hdC1sZWZ0IHtcbiAgZmxvYXQ6IGxlZnQ7XG59XG5cbi5hY3Rpb25zIHtcbiAgZmxvYXQ6IHJpZ2h0O1xuICBjdXJzb3I6IHBvaW50ZXI7XG4gIGRpc3BsYXk6IG5vbmU7XG59XG5cbi5iZWhhdmlvci1saXN0OmhvdmVyIC5hY3Rpb25zIHtcbiAgZGlzcGxheTogYmxvY2s7XG59XG5cbi5kaXNhYmxlZCB7XG4gIHBvaW50ZXItZXZlbnRzOiBub25lO1xufVxuXG4uZ3JhYmJhYmxlIHtcbiAgY3Vyc29yOiBtb3ZlO1xuICAvKiBmYWxsYmFjayBpZiBncmFiIGN1cnNvciBpcyB1bnN1cHBvcnRlZCAqL1xuICBjdXJzb3I6IGdyYWI7XG4gIGN1cnNvcjogLW1vei1ncmFiO1xuICBjdXJzb3I6IC13ZWJraXQtZ3JhYjtcbn1cblxuLyogKE9wdGlvbmFsKSBBcHBseSBhIFwiY2xvc2VkLWhhbmRcIiBjdXJzb3IgZHVyaW5nIGRyYWcgb3BlcmF0aW9uLiAqL1xuLmdyYWJiYWJsZTphY3RpdmUge1xuICBjdXJzb3I6IGdyYWJiaW5nO1xuICBjdXJzb3I6IC1tb3otZ3JhYmJpbmc7XG4gIGN1cnNvcjogLXdlYmtpdC1ncmFiYmluZztcbn1cblxuLm1hdC1yYWRpby1idXR0b24gfiAubWF0LXJhZGlvLWJ1dHRvbiB7XG4gIG1hcmdpbi1sZWZ0OiAxNnB4O1xufVxuXG4ucGFkZGluZy1sZWZ0LXJpZ2h0IHtcbiAgcGFkZGluZy1sZWZ0OiA1cHg7XG4gIHBhZGRpbmctcmlnaHQ6IDVweDtcbn1cblxuLmJ1dHRvbi1wYWRkaW5nIHtcbiAgbWFyZ2luLWxlZnQ6IDAuMWVtO1xufVxuXG4uZXhwYW5kIHtcbiAgZmxvYXQ6IHJpZ2h0O1xuICBjdXJzb3I6IHBvaW50ZXI7XG59XG5cbi5oaWRlIHtcbiAgZGlzcGxheTogbm9uZTtcbn0iXX0= */";
+    __webpack_exports__["default"] = ".behavior-list {\n  margin: 0.1em;\n  list-style: none;\n  padding: 0;\n}\n\n.behavior-box {\n  margin: 0.5em;\n  border: 1px solid #ccc;\n  padding: 0.5em;\n}\n\n.word-bubble {\n  border: 1px dotted black;\n  border-radius: 1em;\n  padding: 0.4em;\n  margin: 0.1em;\n  cursor: pointer;\n}\n\n.binding-word-bubble {\n  border: 1px solid black;\n  float: left;\n  margin: 2px;\n  border-radius: 8px;\n  padding: 3px;\n}\n\n.word-bubble-button {\n  border-radius: 1em;\n  padding: 0.4em;\n  margin: 0.1em;\n}\n\n.float-left {\n  float: left;\n}\n\n.actions {\n  float: right;\n  cursor: pointer;\n  display: none;\n}\n\n.behavior-list:hover .actions {\n  display: block;\n}\n\n.disabled {\n  pointer-events: none;\n}\n\n.grabbable {\n  cursor: move;\n  /* fallback if grab cursor is unsupported */\n  cursor: grab;\n  cursor: -webkit-grab;\n}\n\n/* (Optional) Apply a \"closed-hand\" cursor during drag operation. */\n\n.grabbable:active {\n  cursor: grabbing;\n  cursor: -webkit-grabbing;\n}\n\n.mat-radio-button ~ .mat-radio-button {\n  margin-left: 16px;\n}\n\n.padding-left-right {\n  padding-left: 5px;\n  padding-right: 5px;\n}\n\n.button-padding {\n  margin-left: 0.1em;\n}\n\n.expand {\n  float: right;\n  cursor: pointer;\n}\n\n.hide {\n  display: none;\n}\n/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbIi9Vc2Vycy9TaGFiYmlyL3Byb2plY3RzL0RFV19VSS9zcmMvc3RlZWwvV0VCLUFQUExJQ0FUSU9OL2Zyb250ZW5kL3NyYy9hcHAvcHVibGljL2hsYnBhcnNlci9obGIvaGxiLmNvbXBvbmVudC5zY3NzIiwic3JjL2FwcC9wdWJsaWMvaGxicGFyc2VyL2hsYi9obGIuY29tcG9uZW50LnNjc3MiXSwibmFtZXMiOltdLCJtYXBwaW5ncyI6IkFBQUE7RUFDSSxhQUFBO0VBQ0EsZ0JBQUE7RUFDQSxVQUFBO0FDQ0o7O0FERUE7RUFDSSxhQUFBO0VBQ0Esc0JBQUE7RUFDQSxjQUFBO0FDQ0o7O0FESUE7RUFDSSx3QkFBQTtFQUNBLGtCQUFBO0VBQ0EsY0FBQTtFQUNBLGFBQUE7RUFDQSxlQUFBO0FDREo7O0FES0E7RUFDSSx1QkFBQTtFQUNBLFdBQUE7RUFDQSxXQUFBO0VBQ0Esa0JBQUE7RUFDQSxZQUFBO0FDRko7O0FESUE7RUFDSSxrQkFBQTtFQUNBLGNBQUE7RUFDQSxhQUFBO0FDREo7O0FESUE7RUFDSSxXQUFBO0FDREo7O0FESUE7RUFDSSxZQUFBO0VBQ0EsZUFBQTtFQUNBLGFBQUE7QUNESjs7QURJQTtFQUNJLGNBQUE7QUNESjs7QURJQTtFQUNJLG9CQUFBO0FDREo7O0FESUE7RUFDSSxZQUFBO0VBQWMsMkNBQUE7RUFDZCxZQUFBO0VBRUEsb0JBQUE7QUNBSjs7QURHQyxtRUFBQTs7QUFDRDtFQUNJLGdCQUFBO0VBRUEsd0JBQUE7QUNBSjs7QURHQTtFQUNJLGlCQUFBO0FDQUo7O0FER0U7RUFDSSxpQkFBQTtFQUNBLGtCQUFBO0FDQU47O0FESUU7RUFDSSxrQkFBQTtBQ0ROOztBRElFO0VBQ0ksWUFBQTtFQUNBLGVBQUE7QUNETjs7QURJRTtFQUNJLGFBQUE7QUNETiIsImZpbGUiOiJzcmMvYXBwL3B1YmxpYy9obGJwYXJzZXIvaGxiL2hsYi5jb21wb25lbnQuc2NzcyIsInNvdXJjZXNDb250ZW50IjpbIi5iZWhhdmlvci1saXN0e1xuICAgIG1hcmdpbjouMWVtO1xuICAgIGxpc3Qtc3R5bGU6IG5vbmU7XG4gICAgcGFkZGluZzogMDtcbn1cblxuLmJlaGF2aW9yLWJveHtcbiAgICBtYXJnaW46IC41ZW07XG4gICAgYm9yZGVyOiAxcHggc29saWQgI2NjYztcbiAgICBwYWRkaW5nOiAuNWVtO1xufVxuXG5cblxuLndvcmQtYnViYmxle1xuICAgIGJvcmRlcjogMXB4IGRvdHRlZCBibGFjaztcbiAgICBib3JkZXItcmFkaXVzOiAxZW07XG4gICAgcGFkZGluZzogMC40ZW07XG4gICAgbWFyZ2luOiAwLjFlbTtcbiAgICBjdXJzb3I6IHBvaW50ZXI7XG4gXG59XG5cbi5iaW5kaW5nLXdvcmQtYnViYmxle1xuICAgIGJvcmRlcjogMXB4IHNvbGlkIGJsYWNrO1xuICAgIGZsb2F0OiBsZWZ0O1xuICAgIG1hcmdpbjogMnB4O1xuICAgIGJvcmRlci1yYWRpdXM6IDhweDtcbiAgICBwYWRkaW5nOiAzcHg7XG59XG4ud29yZC1idWJibGUtYnV0dG9ue1xuICAgIGJvcmRlci1yYWRpdXM6IDFlbTtcbiAgICBwYWRkaW5nOiAwLjRlbTtcbiAgICBtYXJnaW46IDAuMWVtO1xuIFxufVxuLmZsb2F0LWxlZnR7XG4gICAgZmxvYXQ6bGVmdDtcbn1cblxuLmFjdGlvbnN7XG4gICAgZmxvYXQ6cmlnaHQ7XG4gICAgY3Vyc29yOiBwb2ludGVyO1xuICAgIGRpc3BsYXk6IG5vbmU7XG59XG5cbi5iZWhhdmlvci1saXN0OmhvdmVyIC5hY3Rpb25ze1xuICAgIGRpc3BsYXk6IGJsb2NrO1xufVxuXG4uZGlzYWJsZWR7XG4gICAgcG9pbnRlci1ldmVudHM6IG5vbmU7ICAgXG59XG5cbi5ncmFiYmFibGUge1xuICAgIGN1cnNvcjogbW92ZTsgLyogZmFsbGJhY2sgaWYgZ3JhYiBjdXJzb3IgaXMgdW5zdXBwb3J0ZWQgKi9cbiAgICBjdXJzb3I6IGdyYWI7XG4gICAgY3Vyc29yOiAtbW96LWdyYWI7XG4gICAgY3Vyc29yOiAtd2Via2l0LWdyYWI7XG59XG5cbiAvKiAoT3B0aW9uYWwpIEFwcGx5IGEgXCJjbG9zZWQtaGFuZFwiIGN1cnNvciBkdXJpbmcgZHJhZyBvcGVyYXRpb24uICovXG4uZ3JhYmJhYmxlOmFjdGl2ZSB7XG4gICAgY3Vyc29yOiBncmFiYmluZztcbiAgICBjdXJzb3I6IC1tb3otZ3JhYmJpbmc7XG4gICAgY3Vyc29yOiAtd2Via2l0LWdyYWJiaW5nO1xufVxuXG4ubWF0LXJhZGlvLWJ1dHRvbiB+IC5tYXQtcmFkaW8tYnV0dG9uIHtcbiAgICBtYXJnaW4tbGVmdDogMTZweDtcbiAgfVxuXG4gIC5wYWRkaW5nLWxlZnQtcmlnaHR7XG4gICAgICBwYWRkaW5nLWxlZnQ6IDVweDtcbiAgICAgIHBhZGRpbmctcmlnaHQ6IDVweDtcbiAgfVxuXG4gXG4gIC5idXR0b24tcGFkZGluZ3tcbiAgICAgIG1hcmdpbi1sZWZ0OiAuMWVtO1xuICB9XG5cbiAgLmV4cGFuZHtcbiAgICAgIGZsb2F0OiByaWdodDtcbiAgICAgIGN1cnNvcjogcG9pbnRlcjtcbiAgfVxuXG4gIC5oaWRle1xuICAgICAgZGlzcGxheTogbm9uZTtcbiAgfSIsIi5iZWhhdmlvci1saXN0IHtcbiAgbWFyZ2luOiAwLjFlbTtcbiAgbGlzdC1zdHlsZTogbm9uZTtcbiAgcGFkZGluZzogMDtcbn1cblxuLmJlaGF2aW9yLWJveCB7XG4gIG1hcmdpbjogMC41ZW07XG4gIGJvcmRlcjogMXB4IHNvbGlkICNjY2M7XG4gIHBhZGRpbmc6IDAuNWVtO1xufVxuXG4ud29yZC1idWJibGUge1xuICBib3JkZXI6IDFweCBkb3R0ZWQgYmxhY2s7XG4gIGJvcmRlci1yYWRpdXM6IDFlbTtcbiAgcGFkZGluZzogMC40ZW07XG4gIG1hcmdpbjogMC4xZW07XG4gIGN1cnNvcjogcG9pbnRlcjtcbn1cblxuLmJpbmRpbmctd29yZC1idWJibGUge1xuICBib3JkZXI6IDFweCBzb2xpZCBibGFjaztcbiAgZmxvYXQ6IGxlZnQ7XG4gIG1hcmdpbjogMnB4O1xuICBib3JkZXItcmFkaXVzOiA4cHg7XG4gIHBhZGRpbmc6IDNweDtcbn1cblxuLndvcmQtYnViYmxlLWJ1dHRvbiB7XG4gIGJvcmRlci1yYWRpdXM6IDFlbTtcbiAgcGFkZGluZzogMC40ZW07XG4gIG1hcmdpbjogMC4xZW07XG59XG5cbi5mbG9hdC1sZWZ0IHtcbiAgZmxvYXQ6IGxlZnQ7XG59XG5cbi5hY3Rpb25zIHtcbiAgZmxvYXQ6IHJpZ2h0O1xuICBjdXJzb3I6IHBvaW50ZXI7XG4gIGRpc3BsYXk6IG5vbmU7XG59XG5cbi5iZWhhdmlvci1saXN0OmhvdmVyIC5hY3Rpb25zIHtcbiAgZGlzcGxheTogYmxvY2s7XG59XG5cbi5kaXNhYmxlZCB7XG4gIHBvaW50ZXItZXZlbnRzOiBub25lO1xufVxuXG4uZ3JhYmJhYmxlIHtcbiAgY3Vyc29yOiBtb3ZlO1xuICAvKiBmYWxsYmFjayBpZiBncmFiIGN1cnNvciBpcyB1bnN1cHBvcnRlZCAqL1xuICBjdXJzb3I6IGdyYWI7XG4gIGN1cnNvcjogLW1vei1ncmFiO1xuICBjdXJzb3I6IC13ZWJraXQtZ3JhYjtcbn1cblxuLyogKE9wdGlvbmFsKSBBcHBseSBhIFwiY2xvc2VkLWhhbmRcIiBjdXJzb3IgZHVyaW5nIGRyYWcgb3BlcmF0aW9uLiAqL1xuLmdyYWJiYWJsZTphY3RpdmUge1xuICBjdXJzb3I6IGdyYWJiaW5nO1xuICBjdXJzb3I6IC1tb3otZ3JhYmJpbmc7XG4gIGN1cnNvcjogLXdlYmtpdC1ncmFiYmluZztcbn1cblxuLm1hdC1yYWRpby1idXR0b24gfiAubWF0LXJhZGlvLWJ1dHRvbiB7XG4gIG1hcmdpbi1sZWZ0OiAxNnB4O1xufVxuXG4ucGFkZGluZy1sZWZ0LXJpZ2h0IHtcbiAgcGFkZGluZy1sZWZ0OiA1cHg7XG4gIHBhZGRpbmctcmlnaHQ6IDVweDtcbn1cblxuLmJ1dHRvbi1wYWRkaW5nIHtcbiAgbWFyZ2luLWxlZnQ6IDAuMWVtO1xufVxuXG4uZXhwYW5kIHtcbiAgZmxvYXQ6IHJpZ2h0O1xuICBjdXJzb3I6IHBvaW50ZXI7XG59XG5cbi5oaWRlIHtcbiAgZGlzcGxheTogbm9uZTtcbn0iXX0= */";
     /***/
   },
 
@@ -919,27 +786,27 @@
     /* harmony import */
 
 
-    var _common_state_service_service__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(
-    /*! ../common/state-service.service */
-    "./src/app/public/hlbparser/common/state-service.service.ts");
-    /* harmony import */
-
-
-    var _angular_material__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(
+    var _angular_material__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(
     /*! @angular/material */
     "./node_modules/@angular/material/esm2015/material.js");
     /* harmony import */
 
 
-    var _angular_material_dialog__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(
+    var _angular_material_dialog__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(
     /*! @angular/material/dialog */
     "./node_modules/@angular/material/esm2015/dialog.js");
     /* harmony import */
 
 
-    var src_app_http_service_service__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(
+    var src_app_http_service_service__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(
     /*! src/app/http-service.service */
     "./src/app/http-service.service.ts");
+    /* harmony import */
+
+
+    var src_app_state_service_service__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(
+    /*! src/app/state-service.service */
+    "./src/app/state-service.service.ts");
 
     quill__WEBPACK_IMPORTED_MODULE_3__["register"]("modules/counter", _common_editor_service__WEBPACK_IMPORTED_MODULE_4__["default"]);
     let HlbComponent = class HlbComponent {
@@ -970,15 +837,20 @@
         this.selectedIndex = 0;
       }
 
+      onlyReadable() {
+        return this.tokenLevel == 'read';
+      }
+
       ngOnInit() {
         this.bindingMap = new Map();
         this.behaviorList = [];
         const instance = this;
+        this.tokenLevel = this.stateservice.getTokenLevel();
         this.stateservice.getBehavior().subscribe(data => {
           if (data != null) {
-            var text = '';
+            var text = "";
             data.forEach(element => {
-              text += element + '<br>';
+              text += element + "<br>";
             });
             instance.behaviorText = text;
           }
@@ -989,7 +861,7 @@
             this.bindingList = [];
             this.bindingMap = new Map();
             data.forEach(element => {
-              var list = element.trim().split(' ');
+              var list = element.trim().split(" ");
               var key = list[0];
               var value = list.splice(1);
               value = value.join(" ");
@@ -999,7 +871,7 @@
               };
               this.bindingMap.set(key, t);
               this.bindingList.push(t);
-            });
+            }); //console.log(this.bindingMap);
           }
         });
         this.stateservice.getActors().subscribe(data => {
@@ -1011,6 +883,16 @@
                 text: element
               });
             });
+          }
+        });
+        this.stateservice.getConstraints().subscribe(data => {
+          // //console.log(data);
+          if (data != null) {
+            var text = "";
+            data.forEach(element => {
+              text += element + "<br>";
+            });
+            instance.constraintText = text;
           }
         });
       }
@@ -1038,13 +920,13 @@
               if (flag && instance.behaviorService.isTextChanged()) {
                 if (this.behaviorService.getText().trim() === "") return;
                 var index = this.behaviorService.getText().length - 2;
-                if (this.behaviorService.getText().charAt(index) == '\n') this.updateActors();
+                if (this.behaviorService.getText().charAt(index) == "\n") this.updateActors();
               }
             });
             this.behaviorService.isTabPressed().subscribe(flag => {
               if (flag) {
                 //console.log("inside istab");
-                if (this.stateservice.getCurrentBehaviorWord().trim() != '') this.insertValue(this.stateservice.getCurrentBehaviorWord(), true); //this.behaviorService
+                if (this.stateservice.getCurrentBehaviorWord().trim() != "") this.insertValue(this.stateservice.getCurrentBehaviorWord(), true); //this.behaviorService
               }
             });
             this.behaviorService.getSuggestionData().subscribe(data => {
@@ -1058,12 +940,12 @@
                 };
                 var constraints = this.constraintService.getText().trim();
 
-                if (constraints != '') {
+                if (constraints != "") {
                   var constraintsList = constraints.split("\n");
                   params.constraints = constraintsList;
                 }
 
-                this.behaviorTextFilter.text = '';
+                this.behaviorTextFilter.text = "";
                 this.http.put("v1/hlb/suggestions", params).subscribe(data => {
                   var list = [];
                   data.suggestions.forEach(element => {
@@ -1072,7 +954,7 @@
                       flag: false
                     });
                   });
-                  if (data.suggestion_text.trim() != '') this.suggestionbehaviorMessage = data.suggestion_text;else this.suggestionbehaviorMessage = null;
+                  if (data.suggestion_text.trim() != "") this.suggestionbehaviorMessage = data.suggestion_text;else this.suggestionbehaviorMessage = null;
                   this.behaviorWordList = list;
                   this.changeDetection.detectChanges();
                 });
@@ -1096,12 +978,12 @@
               if (flag && instance.constraintService.isTextChanged()) {
                 if (this.constraintService.getText().trim() === "") return;
                 var index = this.constraintService.getText().length - 2;
-                if (this.constraintService.getText().charAt(index) == '\n') this.updateActorsConstraint();
+                if (this.constraintService.getText().charAt(index) == "\n") this.updateActorsConstraint();
               }
             });
             this.constraintService.isTabPressed().subscribe(flag => {
               if (flag) {
-                if (this.stateservice.getCurrentConstraintWord().trim() != '') this.insertValueInConstraint(this.stateservice.getCurrentConstraintWord(), true); //this.behaviorService
+                if (this.stateservice.getCurrentConstraintWord().trim() != "") this.insertValueInConstraint(this.stateservice.getCurrentConstraintWord(), true); //this.behaviorService
               }
             });
             this.constraintService.getSuggestionData().subscribe(data => {
@@ -1115,12 +997,12 @@
                 };
                 var behaviors = this.behaviorService.getText().trim();
 
-                if (behaviors != '') {
+                if (behaviors != "") {
                   var behaviorsList = behaviors.split("\n");
                   params.behaviors = behaviorsList;
                 }
 
-                this.constraintTextFilter.text = '';
+                this.constraintTextFilter.text = "";
                 this.http.put("v1/hlb/suggestions", params).subscribe(data => {
                   var list = [];
                   data.suggestions.forEach(element => {
@@ -1129,7 +1011,7 @@
                       flag: false
                     });
                   });
-                  if (data.suggestion_text.trim() != '') this.suggestionConstraintMessage = data.suggestion_text;else this.suggestionConstraintMessage = null;
+                  if (data.suggestion_text.trim() != "") this.suggestionConstraintMessage = data.suggestion_text;else this.suggestionConstraintMessage = null;
                   this.constraintWordList = list;
                   this.changeDetection.detectChanges();
                 });
@@ -1158,11 +1040,11 @@
           Constraints: []
         };
         this.behaviorList = [];
-        var blist = this.behaviorService.getText().trim().split('\n');
+        var blist = this.behaviorService.getText().trim().split("\n");
         blist.forEach(element => {
           var text = element.trim();
 
-          if (text != '') {
+          if (text != "") {
             data.Scenario.push(text);
             this.behaviorList.push(text);
           }
@@ -1185,19 +1067,18 @@
           Constraints: []
         };
         this.contraintList = [];
-        var blist = this.constraintService.getText().trim().split('\n');
+        var blist = this.constraintService.getText().trim().split("\n");
         blist.forEach(element => {
           var text = element.trim();
 
-          if (text != '') {
+          if (text != "") {
             data.Constraints.push(text);
             this.contraintList.push(text);
           }
         });
         this.stateservice.setConstraints(this.contraintList);
-        this.http.put("v1/hlb/parse", data).subscribe(data => {
-          //console.log(data);
-          this.extractInfo(data);
+        this.http.put("v1/hlb/parse", data).subscribe(data => {//console.log(data);
+          //   this.extractInfo(data);
         });
       }
 
@@ -1240,7 +1121,7 @@
 
       isEmpty(binding) {
         if (binding.value == undefined) return true;
-        return binding.value.trim() == '';
+        return binding.value.trim() == "";
       }
 
       loadBindings() {
@@ -1365,7 +1246,7 @@
       addBindings() {
         //console.log(this.bindingList);
         var dialogRef = this.dialog.open(BindingPopUp, {
-          width: '70%',
+          width: "70%",
           data: this.bindingList
         });
         dialogRef.afterClosed().subscribe(result => {
@@ -1394,7 +1275,7 @@
           data.constraints.push(element.text);
         });
         this.bindingList.forEach(element => {
-          if (element.value == null || element.value.trim() == '') {
+          if (element.value == null || element.value.trim() == "") {
             flag = true;
             return;
           }
@@ -1438,12 +1319,12 @@
 
         var fileName = "experiment.txt";
 
-        if ('msSaveOrOpenBlob' in navigator) {
+        if ("msSaveOrOpenBlob" in navigator) {
           navigator.msSaveOrOpenBlob(blob, fileName);
         } else {
-          var downloadLink = document.createElement('a');
+          var downloadLink = document.createElement("a");
           downloadLink.download = fileName;
-          downloadLink.innerHTML = 'Download File'; // if ('webkitURL' in window) {
+          downloadLink.innerHTML = "Download File"; // if ('webkitURL' in window) {
           // Chrome allows the link to be clicked
           // without actually adding it to the DOM.
           //  downloadLink.href = window.webkitURL.createObjectURL(blob);
@@ -1453,7 +1334,7 @@
 
           downloadLink.href = window.URL.createObjectURL(blob); //downloadLink.onclick = destroyClickedElement;
 
-          downloadLink.style.display = 'none';
+          downloadLink.style.display = "none";
           document.body.appendChild(downloadLink); //  }
 
           downloadLink.click();
@@ -1463,19 +1344,19 @@
     };
 
     HlbComponent.ctorParameters = () => [{
-      type: src_app_http_service_service__WEBPACK_IMPORTED_MODULE_8__["HttpService"]
+      type: src_app_http_service_service__WEBPACK_IMPORTED_MODULE_7__["HttpService"]
     }, {
-      type: _angular_material_dialog__WEBPACK_IMPORTED_MODULE_7__["MatDialog"]
+      type: _angular_material_dialog__WEBPACK_IMPORTED_MODULE_6__["MatDialog"]
     }, {
-      type: _common_state_service_service__WEBPACK_IMPORTED_MODULE_5__["StateService"]
+      type: src_app_state_service_service__WEBPACK_IMPORTED_MODULE_8__["StateService"]
     }, {
-      type: _angular_material__WEBPACK_IMPORTED_MODULE_6__["MatSnackBar"]
+      type: _angular_material__WEBPACK_IMPORTED_MODULE_5__["MatSnackBar"]
     }, {
       type: _angular_core__WEBPACK_IMPORTED_MODULE_1__["ChangeDetectorRef"]
     }];
 
     HlbComponent = tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"]([Object(_angular_core__WEBPACK_IMPORTED_MODULE_1__["Component"])({
-      selector: 'hlb',
+      selector: "hlb",
       template: tslib__WEBPACK_IMPORTED_MODULE_0__["__importDefault"](__webpack_require__(
       /*! raw-loader!./hlb.component.html */
       "./node_modules/raw-loader/dist/cjs.js!./src/app/public/hlbparser/hlb/hlb.component.html")).default,
@@ -1496,24 +1377,24 @@
     };
 
     BindingPopUp.ctorParameters = () => [{
-      type: _angular_material_dialog__WEBPACK_IMPORTED_MODULE_7__["MatDialogRef"]
+      type: _angular_material_dialog__WEBPACK_IMPORTED_MODULE_6__["MatDialogRef"]
     }, {
       type: undefined,
       decorators: [{
         type: _angular_core__WEBPACK_IMPORTED_MODULE_1__["Inject"],
-        args: [_angular_material_dialog__WEBPACK_IMPORTED_MODULE_7__["MAT_DIALOG_DATA"]]
+        args: [_angular_material_dialog__WEBPACK_IMPORTED_MODULE_6__["MAT_DIALOG_DATA"]]
       }]
     }];
 
     BindingPopUp = tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"]([Object(_angular_core__WEBPACK_IMPORTED_MODULE_1__["Component"])({
-      selector: 'hlb-binding',
+      selector: "hlb-binding",
       template: tslib__WEBPACK_IMPORTED_MODULE_0__["__importDefault"](__webpack_require__(
       /*! raw-loader!./hlb-binding.component.html */
       "./node_modules/raw-loader/dist/cjs.js!./src/app/public/hlbparser/hlb/hlb-binding.component.html")).default,
       styles: [tslib__WEBPACK_IMPORTED_MODULE_0__["__importDefault"](__webpack_require__(
       /*! ./hlb.component.scss */
       "./src/app/public/hlbparser/hlb/hlb.component.scss")).default]
-    }), tslib__WEBPACK_IMPORTED_MODULE_0__["__param"](1, Object(_angular_core__WEBPACK_IMPORTED_MODULE_1__["Inject"])(_angular_material_dialog__WEBPACK_IMPORTED_MODULE_7__["MAT_DIALOG_DATA"]))], BindingPopUp);
+    }), tslib__WEBPACK_IMPORTED_MODULE_0__["__param"](1, Object(_angular_core__WEBPACK_IMPORTED_MODULE_1__["Inject"])(_angular_material_dialog__WEBPACK_IMPORTED_MODULE_6__["MAT_DIALOG_DATA"]))], BindingPopUp);
     /***/
   },
 
@@ -1646,9 +1527,9 @@
     /* harmony import */
 
 
-    var _common_state_service_service__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(
-    /*! ./common/state-service.service */
-    "./src/app/public/hlbparser/common/state-service.service.ts");
+    var src_app_state_service_service__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(
+    /*! src/app/state-service.service */
+    "./src/app/state-service.service.ts");
     /* harmony import */
 
 
@@ -1657,54 +1538,81 @@
     "./src/app/http-service.service.ts");
 
     let HLBParserComponent = class HLBParserComponent {
-      constructor(route, http, state, auth) {
+      constructor(route, router, http, state, auth) {
         this.route = route;
+        this.router = router;
         this.http = http;
         this.state = state;
         this.auth = auth;
-        this.menuList = [{
-          name: "Information",
-          id: 1,
-          html: "<experiment-info></experiment-info>"
-        }, {
-          name: "HLB",
-          id: 2,
-          html: "<hlb></hlb>"
-        }, {
-          name: "NLP",
-          id: 3,
-          html: "<nlp></nlp>"
-        }, {
-          name: "Behavior Dependency Graph",
-          id: 4,
-          html: "<p>In Progress.....</p>"
-        }, {
-          name: "Upload",
-          id: 5,
-          html: "<upload></upload>"
-        }];
+        this.menuList = [];
         this.experimentId = -1;
       }
 
       ngOnInit() {
         this.route.params.subscribe(params => {
-          if (params["id"] != '') {
+          if (params["id"] != "") {
             var input = {
-              userId: this.auth.getCookie("userId"),
               id: params["id"]
             };
             this.experimentId = params["id"];
-            this.http.post("api/v1/persist/getExperimentById", input).subscribe(data => {
-              this.state.setActors(data.actors);
-              this.state.setExperimentName(data.name);
-              this.state.setExperimentDescription(data.description);
-              this.state.setBehavior(data.behaviors);
-              this.state.setBindings(data.bindings);
-              this.state.setConstraints(data.constraints);
+            this.state.enableLoader();
+            this.http.get("v1/token-based-auth/get/" + this.experimentId).subscribe(resultT => {
+              if (resultT.data != null && resultT.data.token != undefined && resultT.data.status) {
+                this.http.get("v1/token-based-auth/getdetails/" + this.experimentId).subscribe(result => {
+                  var data = result.data;
+                  this.state.setActors(data.actors);
+                  this.state.setExperimentName(data.name);
+                  this.state.setExperimentDescription(data.description);
+                  this.state.setBehavior(data.behaviors);
+                  this.state.setBindings(data.bindings);
+                  this.state.setConstraints(data.constraints);
+                  this.state.setTokenLevel(resultT.data.level);
+                  this.setMenu();
+                  this.state.disableLoader();
+                }, error => {
+                  alert("Invalid Token");
+                  this.router.navigate(["auth/login"]);
+                });
+              } else {
+                alert("Invalid Token");
+                this.router.navigate(["auth/login"]);
+              }
+
+              return "";
             });
-            return "";
           }
         });
+      }
+
+      setMenu() {
+        this.menuList.push({
+          name: "Information",
+          id: 1,
+          html: "<experiment-info></experiment-info>"
+        });
+        this.menuList.push({
+          name: "HLB",
+          id: 2,
+          html: "<hlb></hlb>"
+        });
+
+        if (this.state.getTokenLevel() == "write") {
+          this.menuList.push({
+            name: "NLP",
+            id: 3,
+            html: "<nlp></nlp>"
+          });
+          this.menuList.push({
+            name: "Behavior Dependency Graph",
+            id: 4,
+            html: "<p>In Progress.....</p>"
+          });
+          this.menuList.push({
+            name: "Upload",
+            id: 5,
+            html: "<upload></upload>"
+          });
+        }
       }
 
     };
@@ -1712,9 +1620,11 @@
     HLBParserComponent.ctorParameters = () => [{
       type: _angular_router__WEBPACK_IMPORTED_MODULE_2__["ActivatedRoute"]
     }, {
+      type: _angular_router__WEBPACK_IMPORTED_MODULE_2__["Router"]
+    }, {
       type: src_app_http_service_service__WEBPACK_IMPORTED_MODULE_5__["HttpService"]
     }, {
-      type: _common_state_service_service__WEBPACK_IMPORTED_MODULE_4__["StateService"]
+      type: src_app_state_service_service__WEBPACK_IMPORTED_MODULE_4__["StateService"]
     }, {
       type: src_app_auth_auth_service__WEBPACK_IMPORTED_MODULE_3__["AuthService"]
     }];
@@ -1813,102 +1723,102 @@
     /* harmony import */
 
 
-    var _common_state_service_service__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(
-    /*! ./common/state-service.service */
-    "./src/app/public/hlbparser/common/state-service.service.ts");
-    /* harmony import */
-
-
-    var _angular_material__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(
+    var _angular_material__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(
     /*! @angular/material */
     "./node_modules/@angular/material/esm2015/material.js");
     /* harmony import */
 
 
-    var ngx_file_drop__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(
+    var ngx_file_drop__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(
     /*! ngx-file-drop */
     "./node_modules/ngx-file-drop/fesm2015/ngx-file-drop.js");
     /* harmony import */
 
 
-    var _hlpparser_component__WEBPACK_IMPORTED_MODULE_13__ = __webpack_require__(
+    var _hlpparser_component__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(
     /*! ./hlpparser.component */
     "./src/app/public/hlbparser/hlpparser.component.ts");
     /* harmony import */
 
 
-    var _swimlane_ngx_graph__WEBPACK_IMPORTED_MODULE_14__ = __webpack_require__(
+    var _swimlane_ngx_graph__WEBPACK_IMPORTED_MODULE_13__ = __webpack_require__(
     /*! @swimlane/ngx-graph */
     "./node_modules/@swimlane/ngx-graph/fesm2015/swimlane-ngx-graph.js");
     /* harmony import */
 
 
-    var _angular_common__WEBPACK_IMPORTED_MODULE_15__ = __webpack_require__(
+    var _angular_common__WEBPACK_IMPORTED_MODULE_14__ = __webpack_require__(
     /*! @angular/common */
     "./node_modules/@angular/common/fesm2015/common.js");
     /* harmony import */
 
 
-    var _hlbparser_routing_module__WEBPACK_IMPORTED_MODULE_16__ = __webpack_require__(
+    var _hlbparser_routing_module__WEBPACK_IMPORTED_MODULE_15__ = __webpack_require__(
     /*! ./hlbparser-routing.module */
     "./src/app/public/hlbparser/hlbparser-routing.module.ts");
     /* harmony import */
 
 
-    var _angular_router__WEBPACK_IMPORTED_MODULE_17__ = __webpack_require__(
+    var _angular_router__WEBPACK_IMPORTED_MODULE_16__ = __webpack_require__(
     /*! @angular/router */
     "./node_modules/@angular/router/fesm2015/router.js");
     /* harmony import */
 
 
-    var _hlb_hlb_component__WEBPACK_IMPORTED_MODULE_18__ = __webpack_require__(
+    var _hlb_hlb_component__WEBPACK_IMPORTED_MODULE_17__ = __webpack_require__(
     /*! ./hlb/hlb.component */
     "./src/app/public/hlbparser/hlb/hlb.component.ts");
     /* harmony import */
 
 
-    var _nlp_nlp_component__WEBPACK_IMPORTED_MODULE_19__ = __webpack_require__(
+    var _nlp_nlp_component__WEBPACK_IMPORTED_MODULE_18__ = __webpack_require__(
     /*! ./nlp/nlp.component */
     "./src/app/public/hlbparser/nlp/nlp.component.ts");
     /* harmony import */
 
 
-    var _common_text_filter_pipe__WEBPACK_IMPORTED_MODULE_20__ = __webpack_require__(
+    var _common_text_filter_pipe__WEBPACK_IMPORTED_MODULE_19__ = __webpack_require__(
     /*! ./common/text-filter.pipe */
     "./src/app/public/hlbparser/common/text-filter.pipe.ts");
     /* harmony import */
 
 
-    var _upload_upload_component__WEBPACK_IMPORTED_MODULE_21__ = __webpack_require__(
+    var _upload_upload_component__WEBPACK_IMPORTED_MODULE_20__ = __webpack_require__(
     /*! ./upload/upload.component */
     "./src/app/public/hlbparser/upload/upload.component.ts");
     /* harmony import */
 
 
-    var _dependency_graph_dependency_graph_component__WEBPACK_IMPORTED_MODULE_22__ = __webpack_require__(
+    var _dependency_graph_dependency_graph_component__WEBPACK_IMPORTED_MODULE_21__ = __webpack_require__(
     /*! ./dependency-graph/dependency-graph.component */
     "./src/app/public/hlbparser/dependency-graph/dependency-graph.component.ts");
     /* harmony import */
 
 
-    var _angular_material_radio__WEBPACK_IMPORTED_MODULE_23__ = __webpack_require__(
+    var _angular_material_radio__WEBPACK_IMPORTED_MODULE_22__ = __webpack_require__(
     /*! @angular/material/radio */
     "./node_modules/@angular/material/esm2015/radio.js");
     /* harmony import */
 
 
-    var _experiment_info_info_component__WEBPACK_IMPORTED_MODULE_24__ = __webpack_require__(
+    var _experiment_info_info_component__WEBPACK_IMPORTED_MODULE_23__ = __webpack_require__(
     /*! ./experiment-info/info.component */
     "./src/app/public/hlbparser/experiment-info/info.component.ts");
+    /* harmony import */
+
+
+    var src_app_state_service_service__WEBPACK_IMPORTED_MODULE_24__ = __webpack_require__(
+    /*! src/app/state-service.service */
+    "./src/app/state-service.service.ts");
 
     let PublicHLBParserModule = class PublicHLBParserModule {};
     PublicHLBParserModule = tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"]([Object(_angular_core__WEBPACK_IMPORTED_MODULE_1__["NgModule"])({
-      exports: [_hlpparser_component__WEBPACK_IMPORTED_MODULE_13__["HLBParserComponent"]],
-      declarations: [_hlpparser_component__WEBPACK_IMPORTED_MODULE_13__["HLBParserComponent"], _hlb_hlb_component__WEBPACK_IMPORTED_MODULE_18__["HlbComponent"], _nlp_nlp_component__WEBPACK_IMPORTED_MODULE_19__["NlpComponent"], _dependency_graph_dependency_graph_component__WEBPACK_IMPORTED_MODULE_22__["DependencyGraphComponent"], _common_text_filter_pipe__WEBPACK_IMPORTED_MODULE_20__["TextFilterPipe"], _upload_upload_component__WEBPACK_IMPORTED_MODULE_21__["UploadComponent"], _upload_upload_component__WEBPACK_IMPORTED_MODULE_21__["FilePreviewComponent"], _hlb_hlb_component__WEBPACK_IMPORTED_MODULE_18__["BindingPopUp"], _experiment_info_info_component__WEBPACK_IMPORTED_MODULE_24__["InfoComponent"]],
-      imports: [_angular_common__WEBPACK_IMPORTED_MODULE_15__["CommonModule"], _angular_router__WEBPACK_IMPORTED_MODULE_17__["RouterModule"], _angular_material_radio__WEBPACK_IMPORTED_MODULE_23__["MatRadioModule"], _swimlane_ngx_graph__WEBPACK_IMPORTED_MODULE_14__["NgxGraphModule"], _angular_material__WEBPACK_IMPORTED_MODULE_11__["MatDialogModule"], _angular_material__WEBPACK_IMPORTED_MODULE_11__["MatButtonModule"], _angular_material__WEBPACK_IMPORTED_MODULE_11__["MatSnackBarModule"], _fortawesome_angular_fontawesome__WEBPACK_IMPORTED_MODULE_9__["FontAwesomeModule"], _angular_material_tabs__WEBPACK_IMPORTED_MODULE_2__["MatTabsModule"], _angular_cdk_drag_drop__WEBPACK_IMPORTED_MODULE_7__["DragDropModule"], _angular_forms__WEBPACK_IMPORTED_MODULE_3__["FormsModule"], _angular_material__WEBPACK_IMPORTED_MODULE_11__["MatTableModule"], _angular_material_expansion__WEBPACK_IMPORTED_MODULE_4__["MatExpansionModule"], _angular_material_card__WEBPACK_IMPORTED_MODULE_6__["MatCardModule"], ngx_quill__WEBPACK_IMPORTED_MODULE_8__["QuillModule"].forRoot(), _hlbparser_routing_module__WEBPACK_IMPORTED_MODULE_16__["HLBParserRoutingModule"], _angular_material_input__WEBPACK_IMPORTED_MODULE_5__["MatInputModule"], ngx_file_drop__WEBPACK_IMPORTED_MODULE_12__["NgxFileDropModule"]],
-      entryComponents: [_upload_upload_component__WEBPACK_IMPORTED_MODULE_21__["FilePreviewComponent"], _hlb_hlb_component__WEBPACK_IMPORTED_MODULE_18__["BindingPopUp"]],
-      providers: [_common_state_service_service__WEBPACK_IMPORTED_MODULE_10__["StateService"]],
-      bootstrap: [_hlpparser_component__WEBPACK_IMPORTED_MODULE_13__["HLBParserComponent"]]
+      exports: [_hlpparser_component__WEBPACK_IMPORTED_MODULE_12__["HLBParserComponent"]],
+      declarations: [_hlpparser_component__WEBPACK_IMPORTED_MODULE_12__["HLBParserComponent"], _hlb_hlb_component__WEBPACK_IMPORTED_MODULE_17__["HlbComponent"], _nlp_nlp_component__WEBPACK_IMPORTED_MODULE_18__["NlpComponent"], _dependency_graph_dependency_graph_component__WEBPACK_IMPORTED_MODULE_21__["DependencyGraphComponent"], _common_text_filter_pipe__WEBPACK_IMPORTED_MODULE_19__["TextFilterPipe"], _upload_upload_component__WEBPACK_IMPORTED_MODULE_20__["UploadComponent"], _upload_upload_component__WEBPACK_IMPORTED_MODULE_20__["FilePreviewComponent"], _hlb_hlb_component__WEBPACK_IMPORTED_MODULE_17__["BindingPopUp"], _experiment_info_info_component__WEBPACK_IMPORTED_MODULE_23__["InfoComponent"]],
+      imports: [_angular_common__WEBPACK_IMPORTED_MODULE_14__["CommonModule"], _angular_router__WEBPACK_IMPORTED_MODULE_16__["RouterModule"], _angular_material_radio__WEBPACK_IMPORTED_MODULE_22__["MatRadioModule"], _swimlane_ngx_graph__WEBPACK_IMPORTED_MODULE_13__["NgxGraphModule"], _angular_material__WEBPACK_IMPORTED_MODULE_10__["MatDialogModule"], _angular_material__WEBPACK_IMPORTED_MODULE_10__["MatButtonModule"], _angular_material__WEBPACK_IMPORTED_MODULE_10__["MatSnackBarModule"], _fortawesome_angular_fontawesome__WEBPACK_IMPORTED_MODULE_9__["FontAwesomeModule"], _angular_material_tabs__WEBPACK_IMPORTED_MODULE_2__["MatTabsModule"], _angular_cdk_drag_drop__WEBPACK_IMPORTED_MODULE_7__["DragDropModule"], _angular_forms__WEBPACK_IMPORTED_MODULE_3__["FormsModule"], _angular_material__WEBPACK_IMPORTED_MODULE_10__["MatTableModule"], _angular_material_expansion__WEBPACK_IMPORTED_MODULE_4__["MatExpansionModule"], _angular_material_card__WEBPACK_IMPORTED_MODULE_6__["MatCardModule"], ngx_quill__WEBPACK_IMPORTED_MODULE_8__["QuillModule"].forRoot(), _hlbparser_routing_module__WEBPACK_IMPORTED_MODULE_15__["HLBParserRoutingModule"], _angular_material_input__WEBPACK_IMPORTED_MODULE_5__["MatInputModule"], ngx_file_drop__WEBPACK_IMPORTED_MODULE_11__["NgxFileDropModule"]],
+      entryComponents: [_upload_upload_component__WEBPACK_IMPORTED_MODULE_20__["FilePreviewComponent"], _hlb_hlb_component__WEBPACK_IMPORTED_MODULE_17__["BindingPopUp"]],
+      providers: [src_app_state_service_service__WEBPACK_IMPORTED_MODULE_24__["StateService"]],
+      bootstrap: [_hlpparser_component__WEBPACK_IMPORTED_MODULE_12__["HLBParserComponent"]]
     })], PublicHLBParserModule);
     /***/
   },
@@ -1983,21 +1893,21 @@
     /* harmony import */
 
 
-    var _common_state_service_service__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(
-    /*! ../common/state-service.service */
-    "./src/app/public/hlbparser/common/state-service.service.ts");
-    /* harmony import */
-
-
-    var _angular_material__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(
+    var _angular_material__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(
     /*! @angular/material */
     "./node_modules/@angular/material/esm2015/material.js");
     /* harmony import */
 
 
-    var src_app_http_service_service__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(
+    var src_app_http_service_service__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(
     /*! src/app/http-service.service */
     "./src/app/http-service.service.ts");
+    /* harmony import */
+
+
+    var src_app_state_service_service__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(
+    /*! src/app/state-service.service */
+    "./src/app/state-service.service.ts");
 
     quill__WEBPACK_IMPORTED_MODULE_2__["register"]("modules/counter", _common_editor_service__WEBPACK_IMPORTED_MODULE_3__["default"]);
     let NlpComponent = class NlpComponent {
@@ -2082,11 +1992,11 @@
     };
 
     NlpComponent.ctorParameters = () => [{
-      type: src_app_http_service_service__WEBPACK_IMPORTED_MODULE_6__["HttpService"]
+      type: src_app_http_service_service__WEBPACK_IMPORTED_MODULE_5__["HttpService"]
     }, {
-      type: _common_state_service_service__WEBPACK_IMPORTED_MODULE_4__["StateService"]
+      type: src_app_state_service_service__WEBPACK_IMPORTED_MODULE_6__["StateService"]
     }, {
-      type: _angular_material__WEBPACK_IMPORTED_MODULE_5__["MatSnackBar"]
+      type: _angular_material__WEBPACK_IMPORTED_MODULE_4__["MatSnackBar"]
     }];
 
     NlpComponent = tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"]([Object(_angular_core__WEBPACK_IMPORTED_MODULE_1__["Component"])({
@@ -2173,15 +2083,15 @@
     /* harmony import */
 
 
-    var _common_state_service_service__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(
-    /*! ../common/state-service.service */
-    "./src/app/public/hlbparser/common/state-service.service.ts");
+    var src_app_http_service_service__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(
+    /*! src/app/http-service.service */
+    "./src/app/http-service.service.ts");
     /* harmony import */
 
 
-    var src_app_http_service_service__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(
-    /*! src/app/http-service.service */
-    "./src/app/http-service.service.ts");
+    var src_app_state_service_service__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(
+    /*! src/app/state-service.service */
+    "./src/app/state-service.service.ts");
 
     let UploadComponent = class UploadComponent {
       constructor(_snackBar, dialog, http, state) {
@@ -2252,9 +2162,9 @@
         this.state.enableLoader();
         fileEntry.file(file => {
           const formData = new FormData();
-          formData.append('file', file);
-          this.http.put('v1/upload/dew', formData, {
-            responseType: 'blob'
+          formData.append("file", file);
+          this.http.put("v1/upload/dew", formData, {
+            responseType: "blob"
           }).subscribe(data => {
             this.state.disableLoader();
 
@@ -2293,9 +2203,9 @@
     }, {
       type: _angular_material_dialog__WEBPACK_IMPORTED_MODULE_3__["MatDialog"]
     }, {
-      type: src_app_http_service_service__WEBPACK_IMPORTED_MODULE_5__["HttpService"]
+      type: src_app_http_service_service__WEBPACK_IMPORTED_MODULE_4__["HttpService"]
     }, {
-      type: _common_state_service_service__WEBPACK_IMPORTED_MODULE_4__["StateService"]
+      type: src_app_state_service_service__WEBPACK_IMPORTED_MODULE_5__["StateService"]
     }];
 
     UploadComponent = tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"]([Object(_angular_core__WEBPACK_IMPORTED_MODULE_1__["Component"])({
@@ -2341,7 +2251,7 @@
     }];
 
     FilePreviewComponent = tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"]([Object(_angular_core__WEBPACK_IMPORTED_MODULE_1__["Component"])({
-      selector: 'file-preview',
+      selector: "file-preview",
       template: tslib__WEBPACK_IMPORTED_MODULE_0__["__importDefault"](__webpack_require__(
       /*! raw-loader!./file.preview.component.html */
       "./node_modules/raw-loader/dist/cjs.js!./src/app/public/hlbparser/upload/file.preview.component.html")).default

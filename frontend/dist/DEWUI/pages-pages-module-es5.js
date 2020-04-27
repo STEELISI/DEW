@@ -15,7 +15,7 @@
     /* harmony default export */
 
 
-    __webpack_exports__["default"] = "\n  <mat-tab-group>\n    <mat-tab *ngFor=\"let x of menuList\" label=\"{{ x.name }}\">\n\n      <div *ngIf=\"x.id == 1\" class=\"tab\">\n\n        Welcome {{userDetails.name}}!\n      </div>\n      <div *ngIf=\"x.id == 2\" class=\"tab\">\n        <experiment></experiment>\n        </div>\n    </mat-tab>\n  </mat-tab-group> \n\n";
+    __webpack_exports__["default"] = "\n  <mat-tab-group>\n    <mat-tab *ngFor=\"let x of menuList\" label=\"{{ x.name }}\">\n      <div *ngIf=\"x.id == 1\" class=\"tab\">\n        <experiment></experiment>\n        </div>\n    </mat-tab>\n  </mat-tab-group> \n\n";
     /***/
   },
 
@@ -35,7 +35,7 @@
     /* harmony default export */
 
 
-    __webpack_exports__["default"] = "<div class=\"row\" >\n\n\n\n  <div class=\"col-md-10\" style=\"    margin: 2em;\">\n    \n    <mat-card> \n      <button Mat-button class=\"btn btn-primary\" style=\"float:right;margin: 1em;\" (click)=\"create()\">create new experiment</button>\n    <table class=\"table\">\n      <thead >\n          <tr >\n            <th style=\"min-width:50px\">Exp. Id</th>\n              <th style=\"min-width:150px\">Experiment Name</th>\n              <th style=\"min-width:150px\">Experiment Description</th>\n              <th style=\"min-width:150px\">Last Created Date</th>\n              <th style=\"min-width:150px\">Last Updated Date</th>\n              <th ></th>\n          </tr>\n      </thead>\n      <tbody *ngIf=\"experiments.length!=0\" >\n          <tr *ngFor=\"let item of experiments; let i=index\" >\n            <td>{{item.experiment_id}}</td>\n              <td><strong>{{ item.name }}</strong></td>\n              <td><strong>{{ item.description }}</strong></td>\n              <td><strong>{{ item.created_date }}</strong></td>\n              <td><strong>{{ item.updated_date }}</strong></td>\n              <td>\n     \n                <i class=\"fas fa-edit pointer\" (click)=\"edit(item)\"></i>\n                <i class=\"far fa-trash-alt pointer\" (click)=\"delete(i)\"></i></td>\n\n          </tr>\n      </tbody>\n      <tbody class=\"upload-name\"  *ngIf=\"experiments.length==0\" >\n        <tr >\n          <td colspan=\"3\" ><span ><i>No saved experiments.</i> </span></td>\n            \n\n        </tr>\n    </tbody>\n \n  </table>\n  </mat-card>\n    </div>\n</div>";
+    __webpack_exports__["default"] = "<div class=\"row\" >\n\n\n\n  <div class=\"col-md-10\" style=\"    margin: 2em;\">\n    \n    <mat-card> \n      <button Mat-button class=\"btn btn-primary\" style=\"float:right;margin: 1em;\" (click)=\"create()\">create new experiment</button>\n    <table class=\"table\">\n      <thead >\n          <tr >\n            <th style=\"min-width:50px\">Exp. Id</th>\n              <th style=\"min-width:150px\">Experiment Name</th>\n              <th style=\"min-width:150px\">Experiment Description</th>\n              <th style=\"min-width:150px\">Last Created Date</th>\n              <th style=\"min-width:150px\">Last Updated Date</th>\n              <th ></th>\n          </tr>\n      </thead>\n      <tbody *ngIf=\"experiments.length!=0\" >\n          <tr *ngFor=\"let item of experiments; let i=index\" >\n            <td>{{item.experiment_id}}</td>\n              <td><strong>{{ item.name }}</strong></td>\n              <td><strong>{{ item.description }}</strong></td>\n              <td><strong>{{ item.created_date }}</strong></td>\n              <td><strong>{{ item.updated_date }}</strong></td>\n              <td>\n                <i class=\"fas fa-copy pointer\" (click)=\"copy(item)\"></i>\n                <i class=\"fas fa-edit pointer\" (click)=\"edit(item)\"></i>\n                <i class=\"far fa-trash-alt pointer\" (click)=\"delete(item)\"></i></td>\n\n          </tr>\n      </tbody>\n      <tbody class=\"upload-name\"  *ngIf=\"experiments.length==0\" >\n        <tr >\n          <td colspan=\"3\" ><span ><i>No saved experiments.</i> </span></td>\n            \n\n        </tr>\n    </tbody>\n \n  </table>\n  </mat-card>\n    </div>\n</div>";
     /***/
   },
 
@@ -170,19 +170,16 @@
     /* harmony import */
 
 
-    var _hlbparser_common_state_service_service__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(
-    /*! ../hlbparser/common/state-service.service */
-    "./src/app/pages/hlbparser/common/state-service.service.ts");
+    var _state_service_service__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(
+    /*! ../../state-service.service */
+    "./src/app/state-service.service.ts");
 
     let DashboardComponent = class DashboardComponent {
       constructor(state) {
         this.state = state;
         this.menuList = [{
-          name: "Home",
-          id: 1
-        }, {
           name: "List of Experiment",
-          id: 2
+          id: 1
         }];
       }
 
@@ -193,7 +190,7 @@
     };
 
     DashboardComponent.ctorParameters = () => [{
-      type: _hlbparser_common_state_service_service__WEBPACK_IMPORTED_MODULE_2__["StateService"]
+      type: _state_service_service__WEBPACK_IMPORTED_MODULE_2__["StateService"]
     }];
 
     DashboardComponent = tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"]([Object(_angular_core__WEBPACK_IMPORTED_MODULE_1__["Component"])({
@@ -320,9 +317,9 @@
     /* harmony import */
 
 
-    var _hlbparser_common_state_service_service__WEBPACK_IMPORTED_MODULE_15__ = __webpack_require__(
-    /*! ../hlbparser/common/state-service.service */
-    "./src/app/pages/hlbparser/common/state-service.service.ts");
+    var _state_service_service__WEBPACK_IMPORTED_MODULE_15__ = __webpack_require__(
+    /*! ../../state-service.service */
+    "./src/app/state-service.service.ts");
     /* harmony import */
 
 
@@ -335,7 +332,7 @@
       exports: [_dashboard_component__WEBPACK_IMPORTED_MODULE_14__["DashboardComponent"]],
       declarations: [_dashboard_component__WEBPACK_IMPORTED_MODULE_14__["DashboardComponent"], _experiments_experiment_component__WEBPACK_IMPORTED_MODULE_16__["ExperimentComponent"]],
       imports: [_angular_common__WEBPACK_IMPORTED_MODULE_10__["CommonModule"], _angular_router__WEBPACK_IMPORTED_MODULE_11__["RouterModule"], _angular_material_radio__WEBPACK_IMPORTED_MODULE_12__["MatRadioModule"], _angular_material__WEBPACK_IMPORTED_MODULE_9__["MatDialogModule"], _angular_material__WEBPACK_IMPORTED_MODULE_9__["MatButtonModule"], _angular_material__WEBPACK_IMPORTED_MODULE_9__["MatSnackBarModule"], _fortawesome_angular_fontawesome__WEBPACK_IMPORTED_MODULE_8__["FontAwesomeModule"], _angular_material_tabs__WEBPACK_IMPORTED_MODULE_2__["MatTabsModule"], _angular_cdk_drag_drop__WEBPACK_IMPORTED_MODULE_7__["DragDropModule"], _angular_forms__WEBPACK_IMPORTED_MODULE_3__["FormsModule"], _angular_material__WEBPACK_IMPORTED_MODULE_9__["MatTableModule"], _angular_material_expansion__WEBPACK_IMPORTED_MODULE_4__["MatExpansionModule"], _angular_material_card__WEBPACK_IMPORTED_MODULE_6__["MatCardModule"], _dashboard_routing_module__WEBPACK_IMPORTED_MODULE_13__["DashboardRoutingModule"], _angular_material_input__WEBPACK_IMPORTED_MODULE_5__["MatInputModule"]],
-      providers: [_hlbparser_common_state_service_service__WEBPACK_IMPORTED_MODULE_15__["StateService"]],
+      providers: [_state_service_service__WEBPACK_IMPORTED_MODULE_15__["StateService"]],
       bootstrap: [_dashboard_component__WEBPACK_IMPORTED_MODULE_14__["DashboardComponent"]]
     })], DashboardModule);
     /***/
@@ -357,7 +354,7 @@
     /* harmony default export */
 
 
-    __webpack_exports__["default"] = ".tab {\n  overflow: hidden;\n}\n\n.pointer {\n  cursor: pointer;\n}\n/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbIi9Vc2Vycy9TaGFiYmlyL3Byb2plY3RzL0RFV19VSS9zcmMvc3RlZWwvV0VCLUFQUExJQ0FUSU9OL2Zyb250ZW5kL3NyYy9hcHAvcGFnZXMvZGFzaGJvYXJkL2V4cGVyaW1lbnRzL2V4cGVyaW1lbnQuY29tcG9uZW50LnNjc3MiLCJzcmMvYXBwL3BhZ2VzL2Rhc2hib2FyZC9leHBlcmltZW50cy9leHBlcmltZW50LmNvbXBvbmVudC5zY3NzIl0sIm5hbWVzIjpbXSwibWFwcGluZ3MiOiJBQUFBO0VBQ0ksZ0JBQUE7QUNDSjs7QURDQTtFQUNJLGVBQUE7QUNFSiIsImZpbGUiOiJzcmMvYXBwL3BhZ2VzL2Rhc2hib2FyZC9leHBlcmltZW50cy9leHBlcmltZW50LmNvbXBvbmVudC5zY3NzIiwic291cmNlc0NvbnRlbnQiOlsiLnRhYntcbiAgICBvdmVyZmxvdzogaGlkZGVuO1xufVxuLnBvaW50ZXJ7XG4gICAgY3Vyc29yOiBwb2ludGVyO1xufSIsIi50YWIge1xuICBvdmVyZmxvdzogaGlkZGVuO1xufVxuXG4ucG9pbnRlciB7XG4gIGN1cnNvcjogcG9pbnRlcjtcbn0iXX0= */";
+    __webpack_exports__["default"] = ".tab {\n  overflow: hidden;\n}\n\n.pointer {\n  margin: 0.2em;\n  cursor: pointer;\n}\n/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbIi9Vc2Vycy9TaGFiYmlyL3Byb2plY3RzL0RFV19VSS9zcmMvc3RlZWwvV0VCLUFQUExJQ0FUSU9OL2Zyb250ZW5kL3NyYy9hcHAvcGFnZXMvZGFzaGJvYXJkL2V4cGVyaW1lbnRzL2V4cGVyaW1lbnQuY29tcG9uZW50LnNjc3MiLCJzcmMvYXBwL3BhZ2VzL2Rhc2hib2FyZC9leHBlcmltZW50cy9leHBlcmltZW50LmNvbXBvbmVudC5zY3NzIl0sIm5hbWVzIjpbXSwibWFwcGluZ3MiOiJBQUFBO0VBQ0ksZ0JBQUE7QUNDSjs7QURDQTtFQUNJLGFBQUE7RUFDQSxlQUFBO0FDRUoiLCJmaWxlIjoic3JjL2FwcC9wYWdlcy9kYXNoYm9hcmQvZXhwZXJpbWVudHMvZXhwZXJpbWVudC5jb21wb25lbnQuc2NzcyIsInNvdXJjZXNDb250ZW50IjpbIi50YWJ7XG4gICAgb3ZlcmZsb3c6IGhpZGRlbjtcbn1cbi5wb2ludGVye1xuICAgIG1hcmdpbjogLjJlbTtcbiAgICBjdXJzb3I6IHBvaW50ZXI7XG59IiwiLnRhYiB7XG4gIG92ZXJmbG93OiBoaWRkZW47XG59XG5cbi5wb2ludGVyIHtcbiAgbWFyZ2luOiAwLjJlbTtcbiAgY3Vyc29yOiBwb2ludGVyO1xufSJdfQ== */";
     /***/
   },
 
@@ -410,6 +407,12 @@
     var src_app_http_service_service__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(
     /*! src/app/http-service.service */
     "./src/app/http-service.service.ts");
+    /* harmony import */
+
+
+    var _angular_common_http__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(
+    /*! @angular/common/http */
+    "./node_modules/@angular/common/fesm2015/http.js");
 
     let ExperimentComponent = class ExperimentComponent {
       constructor(router, http, initUser) {
@@ -426,13 +429,17 @@
 
       ngOnInit() {
         this.initUser.getUser().subscribe(user => {
-          console.log(user);
-
+          // console.log(user)
           if (user != null) {
-            this.http.get("/v1/persist/getExperimentList/" + user.userId).subscribe(data => {
-              this.experiments = data;
-            });
+            this.userInfo = user;
+            this.load(user.userId);
           }
+        });
+      }
+
+      load(userId) {
+        this.http.get("v1/persist/getExperimentList/" + userId).subscribe(data => {
+          this.experiments = data;
         });
       }
 
@@ -443,6 +450,33 @@
 
       create() {
         this.router.navigate(["pages/hlbparser/create"]);
+      }
+
+      copy(item) {
+        var params = {
+          "userId": this.userInfo.userId,
+          "id": item.experiment_id + ""
+        };
+        this.http.post("api/v1/persist/experiment/copy", params).subscribe(data => {
+          this.edit(data);
+        });
+      }
+
+      delete(experiments) {
+        var header = {
+          headers: new _angular_common_http__WEBPACK_IMPORTED_MODULE_5__["HttpHeaders"]({
+            'Content-Type': 'application/json'
+          }),
+          body: {
+            userId: this.userInfo.userId,
+            id: experiments.experiment_id + ""
+          }
+        };
+        this.http.delete("v1/persist/experiment/delete", header).subscribe(data => {
+          console.log(data);
+          alert("experiment is delete;");
+          this.load(this.userInfo.userId);
+        });
       }
 
     };
@@ -572,7 +606,7 @@
         path: 'hlbparser',
         loadChildren: () => Promise.all(
         /*! import() | hlbparser-hlpparser-module */
-        [__webpack_require__.e("default~hlbparser-hlpparser-module~public-public-module"), __webpack_require__.e("default~hlbparser-hlpparser-module~pages-pages-module")]).then(__webpack_require__.bind(null,
+        [__webpack_require__.e("default~hlbparser-hlpparser-module~pages-pages-module"), __webpack_require__.e("default~hlbparser-hlpparser-module~public-public-module")]).then(__webpack_require__.bind(null,
         /*! ./hlbparser/hlpparser.module */
         "./src/app/pages/hlbparser/hlpparser.module.ts")).then(m => m.HLBParserModule)
       }, {

@@ -30,6 +30,26 @@
   },
 
   /***/
+  "./node_modules/raw-loader/dist/cjs.js!./src/app/@auth/components/googleregistration/google-registration.component.html":
+  /*!******************************************************************************************************************************!*\
+    !*** ./node_modules/raw-loader/dist/cjs.js!./src/app/@auth/components/googleregistration/google-registration.component.html ***!
+    \******************************************************************************************************************************/
+
+  /*! exports provided: default */
+
+  /***/
+  function node_modulesRawLoaderDistCjsJsSrcAppAuthComponentsGoogleregistrationGoogleRegistrationComponentHtml(module, __webpack_exports__, __webpack_require__) {
+    "use strict";
+
+    __webpack_require__.r(__webpack_exports__);
+    /* harmony default export */
+
+
+    __webpack_exports__["default"] = "<div class=\"row\" *ngIf=\"alive\">\n  <div class=\"col-md-12\">\n    <p>Authenticating User...</p>\n  </div>\n</div>\n\n<div\n  class=\"row\"\n  *ngIf=\"!alive\"\n  style=\"margin: 5%; margin-left: 26%; margin-right: 26%;\"\n>\n  <div class=\"container\">\n    <div class=\"col-md-12\">\n      <mat-card>\n        <div class=\"row\" style=\"text-align: center;\">\n          <div class=\"col-md-12\">\n            <div class=\"navbar-header\">\n              <a class=\"navbar-brand\" href=\"#\">\n                <img\n                  src=\"./assets/isi_logo.gif\"\n                  class=\"img-thumbnail\"\n                  style=\"border: none; height: 35px;\"\n                  alt=\"\"\n                />\n              </a>\n            </div>\n          </div>\n        </div>\n        <div class=\"row\" style=\"text-align: center;\">\n          <mat-form-field class=\"col-md-12\" appearance=\"outline\">\n            <mat-label>User Handle</mat-label>\n            <input\n              matInput\n              [(ngModel)]=\"userHandle\"\n              name=\"handle\"\n              pattern=\"[a-zA-Z0-9_]*\"\n              placeholder=\"Ex. @david_miller\"\n              (change)=\"checkHandle()\"\n            />\n            <mat-icon\n              matPrefix\n              class=\"fas fa-at pointer blue\"\n              (click)=\"enablePassword()\"\n            ></mat-icon>\n           \n           <mat-error>Pattern: combination of alphabet, number and underscore.</mat-error>\n           <mat-hint style=\"color:red\"*ngIf=\"isExist()\">User already Exists</mat-hint>\n          </mat-form-field>\n        </div>\n\n        <div class=\"row\" style=\"text-align: center;\">\n          <mat-form-field class=\"col-md-12\" appearance=\"outline\">\n            <mat-label>Email</mat-label>\n            <input matInput [(ngModel)]=\"emailId\" name=\"email\"  disabled />\n          </mat-form-field>\n        </div>\n        <div class=\"row\" style=\"text-align: center;\">\n          <mat-form-field class=\"col-md-12\" appearance=\"outline\">\n            <mat-label>Name</mat-label>\n            <input matInput [(ngModel)]=\"fullName\" name=\"name\" disabled />\n          </mat-form-field>\n        </div>\n        <div class=\"row\" style=\"text-align: center;\">\n          <div class=\"col-md-12\">\n            <button mat-stroked-button (click)=\"register()\" class=\"button\" [disabled]='!isEnable()'>\n              Register\n            </button>\n            <button mat-stroked-button (click)=\"cancel()\" class=\"button\">\n              Cancel\n            </button>\n          </div>\n        </div>\n      </mat-card>\n    </div>\n  </div>\n</div>\n";
+    /***/
+  },
+
+  /***/
   "./node_modules/raw-loader/dist/cjs.js!./src/app/@auth/components/login/login.component.html":
   /*!***************************************************************************************************!*\
     !*** ./node_modules/raw-loader/dist/cjs.js!./src/app/@auth/components/login/login.component.html ***!
@@ -45,7 +65,7 @@
     /* harmony default export */
 
 
-    __webpack_exports__["default"] = "<div class=\"row\" *ngIf=\"alive\">\n  <div class=\"col-md-12\">  \n      <p>Authenticating User...</p>\n    </div>\n    </div>\n\n    <div class=\"row\" *ngIf=\"!alive\">\n        <div class=\"container\">\n        <div class=\"col-md-12\">  \n            <div id=\"gSignInWrapper\">\n                <span class=\"label\">Sign in with:</span>\n                <div id=\"customBtn\" class=\"customGPlusSignIn\">\n                  <span class=\"icon\"></span>\n                  <span class=\"buttonText\">Google</span>\n                </div>\n              </div>\n          </div>\n          </div>\n        </div>";
+    __webpack_exports__["default"] = "<div class=\"row\" *ngIf=\"alive\">\n  <div class=\"col-md-12\">\n    <p>Authenticating User...</p>\n  </div>\n</div>\n\n<div\n  class=\"row\"\n  *ngIf=\"!alive\"\n  style=\"margin: 5%; margin-left: 26%; margin-right: 26%;\"\n>\n  <div class=\"container\">\n    <div class=\"col-md-12\">\n      <mat-card>\n       \n        <div class=\"row\" style=\"text-align: center;\">\n          <div class=\"col-md-12\"> <div class=\"navbar-header\">\n            \n            <a class=\"navbar-brand\" href=\"#\">\n              <img\n                src=\"./assets/isi_logo.gif\"\n                class=\"img-thumbnail\"\n                style=\"border:none;height: 35px;\"\n                alt=\"\"\n              />\n            </a>\n           \n            </div></div>\n        </div>\n        <div class=\"row\" style=\"text-align: center;\">\n          <mat-form-field class=\"col-md-12\">\n            <mat-label>Email</mat-label>\n            <input matInput [(ngModel)]=\"emailId\" name=\"email\" />\n            <mat-icon\n              matSuffix\n              *ngIf=\"emailId.length != 0 && isAlternateLoginEnable()\"\n              class=\"fas fa-angle-right pointer green\"\n              (click)=\"enablePassword()\"\n            ></mat-icon>\n          </mat-form-field>\n        </div>\n        <div\n          class=\"row\"\n          style=\"text-align: center;\"\n          *ngIf=\"isAlternateLoginEnable()\"\n        >\n          <div class=\"col-md-12\">\n            <p>or</p>\n            <button mat-stroked-button (click)=\"login()\">\n              Login using Google!\n            </button>\n          </div>\n        </div>\n        <div\n          class=\"row\"\n          *ngIf=\"!isAlternateLoginEnable()\"\n          style=\"text-align: center;\"\n        >\n          <mat-form-field class=\"col-md-12\">\n            <mat-label>Enter your password</mat-label>\n            <input\n              matInput\n              [type]=\"hide ? 'password' : 'text'\"\n              [(ngModel)]=\"password\"\n            />\n            <button\n              mat-icon-button\n              matSuffix\n              (click)=\"hide = !hide\"\n              [attr.aria-label]=\"'Hide password'\"\n              [attr.aria-pressed]=\"hide\"\n            >\n              <mat-icon>{{ hide ? \"visibility_off\" : \"visibility\" }}</mat-icon>\n            </button>\n            <button mat-icon-button matSuffix>\n              <mat-icon\n                *ngIf=\"password.length != 0\"\n                class=\"fas fa-angle-right pointer green\"\n                (click)=\"enablePassword()\"\n              ></mat-icon>\n            </button>\n          </mat-form-field>\n          <div class=\"col-md-12\">\n            <button mat-icon-button matSuffix>\n              <mat-icon\n                class=\"fas fa-angle-left pointer\"\n                (click)=\"disablePassword()\"\n              ></mat-icon>\n            </button>\n          </div>\n        </div>\n      </mat-card>\n    </div>\n  </div>\n</div>\n";
     /***/
   },
 
@@ -85,7 +105,7 @@
     /* harmony default export */
 
 
-    __webpack_exports__["default"] = "\n<div class=\"row\" style=\"border-bottom: 1px solid #eee;\">\n  <div class=\"col-md-12\">\n    <header></header>\n \n  </div>\n\n</div>\n\n<div class=\"row\">\n  <div class=\"col-md-12\">\n  <ng-content select=\"router-outlet\"></ng-content>\n</div>\n</div>";
+    __webpack_exports__["default"] = "<!-- \n<div class=\"row\" style=\"border-bottom: 1px solid #eee;\">\n  <div class=\"col-md-12\">\n    <header></header>\n \n  </div>\n\n</div>\n\n<div class=\"row\">\n  <div class=\"col-md-12\">\n  <ng-content select=\"router-outlet\"></ng-content>\n</div>\n</div> -->\n\n<div class=\"row\">\n  <div class=\"col-md-12\">\n    <div class=\"wrapper\">\n      \n  <nav id=\"sidebar\" [ngClass]=\"{'active':menuFlag}\">\n  \n    <div class=\"sidebar-header\">\n      <i style=\"float:right\"  class=\"fas fa-times menu_pointer\"(click)=\" toggle()\"></i>\n     \n      <div class=\"navbar-nav pointer\" [matMenuTriggerFor]=\"menu\">\n        <div class=\"profile\" *ngIf=\"!loggedIn\"></div>\n        <div class=\"profile_img\" *ngIf=\"loggedIn\"><img src=\"{{img}}\" width=\"80px\" height=\"80px\">\n          <div class=\"username\"><span *ngIf=\"!loggedIn\">Login / Sign Up!</span><span *ngIf=\"loggedIn\">{{fullName}}<br><i>{{'@'+userHandle}}</i></span></div>\n        </div>\n        \n        <mat-menu #menu=\"matMenu\">\n          <button mat-menu-item (click)=\"loginWithGoogle()\" *ngIf=\"!loggedIn\">Login with Google</button>\n          <button mat-menu-item *ngIf=\"!loggedIn\">Sign Up</button>\n          <button mat-menu-item *ngIf=\"loggedIn\" (click)=\"logout()\">Logout</button>\n        </mat-menu>\n      </div>\n    </div>\n\n    <ul class=\"list-unstyled components\">\n        <!-- <li class=\"active\">\n            <a href=\"#homeSubmenu\" data-toggle=\"collapse\" aria-expanded=\"false\" class=\"dropdown-toggle\">Home</a>\n            <ul class=\"collapse list-unstyled\" id=\"homeSubmenu\">\n                <li>\n                    <a href=\"#\">Home 1</a>\n                </li>\n                <li>\n                    <a href=\"#\">Home 2</a>\n                </li>\n                <li>\n                    <a href=\"#\">Home 3</a>\n                </li>\n            </ul>\n        </li> -->\n        <li>\n            <a href=\"/pages/dashboard\">Dashboard</a>\n        </li>\n       \n    </ul>\n</nav>\n</div>\n<div id=\"content\" >\n  \n  <div class=\"row\" style=\"border-bottom: 1px solid #eee;\">\n    <div class=\"col-md-12\">\n   \n  <div class=\"header\">\n    <nav class=\"navbar navbar-expand-lg static-top\" style=\"padding: 0;\">\n          <div class=\"container col-md-12\"> \n   \n            <div class=\"navbar-header\">\n      <i  (click)=\" toggle()\" class=\"fas fa-bars menu_pointer\"></i>\n             \n            <a class=\"navbar-brand\" href=\"#\">\n              <img\n                src=\"./assets/isi_logo.gif\"\n                class=\"img-thumbnail\"\n                style=\"border:none;height: 35px;\"\n                alt=\"\"\n              />\n            </a>\n           \n            </div>\n  \n        \n            \n  \n      \n  \n        \n      </div>\n      \n    </nav>\n  </div>\n\n   \n</div>\n\n</div>\n<div class=\"row\" (click)=\"closeMenu()\">\n  <div class=\"col-md-12\">\n  <ng-content select=\"router-outlet\"></ng-content>\n</div>\n</div>\n</div>\n</div>\n</div>";
     /***/
   },
 
@@ -644,51 +664,6 @@
   },
 
   /***/
-  "./src/app/@auth/auth-result.ts":
-  /*!**************************************!*\
-    !*** ./src/app/@auth/auth-result.ts ***!
-    \**************************************/
-
-  /*! exports provided: AuthResult */
-
-  /***/
-  function srcAppAuthAuthResultTs(module, __webpack_exports__, __webpack_require__) {
-    "use strict";
-
-    __webpack_require__.r(__webpack_exports__);
-    /* harmony export (binding) */
-
-
-    __webpack_require__.d(__webpack_exports__, "AuthResult", function () {
-      return AuthResult;
-    });
-    /* harmony import */
-
-
-    var tslib__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(
-    /*! tslib */
-    "./node_modules/tslib/tslib.es6.js");
-
-    class AuthResult {
-      constructor(success, token) {
-        this.success = success;
-        this.token = token;
-      }
-
-      getToken() {
-        return this.token;
-      }
-
-      isSuccess() {
-        return this.success;
-      }
-
-    }
-    /***/
-
-  },
-
-  /***/
   "./src/app/@auth/auth-routing.module.ts":
   /*!**********************************************!*\
     !*** ./src/app/@auth/auth-routing.module.ts ***!
@@ -728,44 +703,45 @@
     /* harmony import */
 
 
-    var _auth_component__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(
-    /*! ./auth.component */
-    "./src/app/@auth/auth.component.ts");
-    /* harmony import */
-
-
-    var _components_login_login_component__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(
+    var _components_login_login_component__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(
     /*! ./components/login/login.component */
     "./src/app/@auth/components/login/login.component.ts");
     /* harmony import */
 
 
-    var _components_googlecallback_google_oauth2_callback_component__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(
+    var _components_googlecallback_google_oauth2_callback_component__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(
     /*! ./components/googlecallback/google-oauth2-callback.component */
     "./src/app/@auth/components/googlecallback/google-oauth2-callback.component.ts");
     /* harmony import */
 
 
-    var _components_logout_logout_component__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(
+    var _components_logout_logout_component__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(
     /*! ./components/logout/logout.component */
     "./src/app/@auth/components/logout/logout.component.ts");
+    /* harmony import */
+
+
+    var _components_googleregistration_google_registration_component__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(
+    /*! ./components/googleregistration/google-registration.component */
+    "./src/app/@auth/components/googleregistration/google-registration.component.ts");
 
     const routes = [{
       path: "",
-      component: _auth_component__WEBPACK_IMPORTED_MODULE_3__["AuthComponent"],
-      children: [{
-        path: "",
-        component: _components_login_login_component__WEBPACK_IMPORTED_MODULE_4__["LoginComponent"]
-      }, {
-        path: "login",
-        component: _components_login_login_component__WEBPACK_IMPORTED_MODULE_4__["LoginComponent"]
-      }, {
-        path: "googleoauth2callback",
-        component: _components_googlecallback_google_oauth2_callback_component__WEBPACK_IMPORTED_MODULE_5__["GoogleOAuth2CallbackComponent"]
-      }, {
-        path: "logout",
-        component: _components_logout_logout_component__WEBPACK_IMPORTED_MODULE_6__["LogoutComponent"]
-      }]
+      pathMatch: 'full',
+      redirectTo: 'login' // component: LoginComponent
+
+    }, {
+      path: "login",
+      component: _components_login_login_component__WEBPACK_IMPORTED_MODULE_3__["LoginComponent"]
+    }, {
+      path: "googleoauth2callback",
+      component: _components_googlecallback_google_oauth2_callback_component__WEBPACK_IMPORTED_MODULE_4__["GoogleOAuth2CallbackComponent"]
+    }, {
+      path: "registerwithgoogle/:id",
+      component: _components_googleregistration_google_registration_component__WEBPACK_IMPORTED_MODULE_6__["GoogleRegistrationComponent"]
+    }, {
+      path: "logout",
+      component: _components_logout_logout_component__WEBPACK_IMPORTED_MODULE_5__["LogoutComponent"]
     }];
     let AuthRoutingModule = class AuthRoutingModule {};
     AuthRoutingModule = tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"]([Object(_angular_core__WEBPACK_IMPORTED_MODULE_2__["NgModule"])({
@@ -830,7 +806,7 @@
     let AuthComponent = class AuthComponent {};
     AuthComponent = tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"]([Object(_angular_core__WEBPACK_IMPORTED_MODULE_1__["Component"])({
       selector: 'auth',
-      template: "\n  <layout>\n              <router-outlet></router-outlet>\n         </layout>\n  ",
+      template: "\n\n              <router-outlet></router-outlet>\n        \n  ",
       styles: [tslib__WEBPACK_IMPORTED_MODULE_0__["__importDefault"](__webpack_require__(
       /*! ./auth.component.scss */
       "./src/app/@auth/auth.component.scss")).default]
@@ -890,9 +866,9 @@
     /* harmony import */
 
 
-    var _pages_hlbparser_common_state_service_service__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(
-    /*! ../pages/hlbparser/common/state-service.service */
-    "./src/app/pages/hlbparser/common/state-service.service.ts");
+    var _state_service_service__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(
+    /*! ../state-service.service */
+    "./src/app/state-service.service.ts");
     /*
      * Copyright (c) Akveo 2019. All Rights Reserved.
      * Licensed under the Single Application / Multi Application License.
@@ -950,7 +926,7 @@
     }, {
       type: _angular_router__WEBPACK_IMPORTED_MODULE_2__["Router"]
     }, {
-      type: _pages_hlbparser_common_state_service_service__WEBPACK_IMPORTED_MODULE_5__["StateService"]
+      type: _state_service_service__WEBPACK_IMPORTED_MODULE_5__["StateService"]
     }];
 
     AuthGuard = tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"]([Object(_angular_core__WEBPACK_IMPORTED_MODULE_1__["Injectable"])()], AuthGuard);
@@ -1048,6 +1024,18 @@
     var _components_logout_logout_component__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(
     /*! ./components/logout/logout.component */
     "./src/app/@auth/components/logout/logout.component.ts");
+    /* harmony import */
+
+
+    var _angular_material__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(
+    /*! @angular/material */
+    "./node_modules/@angular/material/esm2015/material.js");
+    /* harmony import */
+
+
+    var _components_googleregistration_google_registration_component__WEBPACK_IMPORTED_MODULE_13__ = __webpack_require__(
+    /*! ./components/googleregistration/google-registration.component */
+    "./src/app/@auth/components/googleregistration/google-registration.component.ts");
 
     var AuthModule_1;
     let AuthModule = AuthModule_1 = class AuthModule {
@@ -1061,8 +1049,8 @@
     };
     AuthModule = AuthModule_1 = tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"]([Object(_angular_core__WEBPACK_IMPORTED_MODULE_1__["NgModule"])({
       exports: [_auth_component__WEBPACK_IMPORTED_MODULE_6__["AuthComponent"]],
-      declarations: [_auth_component__WEBPACK_IMPORTED_MODULE_6__["AuthComponent"], _components_login_login_component__WEBPACK_IMPORTED_MODULE_7__["LoginComponent"], _components_googlecallback_google_oauth2_callback_component__WEBPACK_IMPORTED_MODULE_10__["GoogleOAuth2CallbackComponent"], _components_logout_logout_component__WEBPACK_IMPORTED_MODULE_11__["LogoutComponent"]],
-      imports: [_angular_common__WEBPACK_IMPORTED_MODULE_2__["CommonModule"], _angular_forms__WEBPACK_IMPORTED_MODULE_3__["ReactiveFormsModule"], _core_core_module__WEBPACK_IMPORTED_MODULE_8__["CoreModule"], _auth_routing_module__WEBPACK_IMPORTED_MODULE_9__["AuthRoutingModule"]]
+      declarations: [_auth_component__WEBPACK_IMPORTED_MODULE_6__["AuthComponent"], _components_login_login_component__WEBPACK_IMPORTED_MODULE_7__["LoginComponent"], _components_googlecallback_google_oauth2_callback_component__WEBPACK_IMPORTED_MODULE_10__["GoogleOAuth2CallbackComponent"], _components_logout_logout_component__WEBPACK_IMPORTED_MODULE_11__["LogoutComponent"], _components_googleregistration_google_registration_component__WEBPACK_IMPORTED_MODULE_13__["GoogleRegistrationComponent"]],
+      imports: [_angular_common__WEBPACK_IMPORTED_MODULE_2__["CommonModule"], _angular_forms__WEBPACK_IMPORTED_MODULE_3__["ReactiveFormsModule"], _core_core_module__WEBPACK_IMPORTED_MODULE_8__["CoreModule"], _auth_routing_module__WEBPACK_IMPORTED_MODULE_9__["AuthRoutingModule"], _angular_forms__WEBPACK_IMPORTED_MODULE_3__["FormsModule"], _angular_material__WEBPACK_IMPORTED_MODULE_12__["MatCardModule"], _angular_material__WEBPACK_IMPORTED_MODULE_12__["MatButtonModule"], _angular_material__WEBPACK_IMPORTED_MODULE_12__["MatInputModule"], _angular_material__WEBPACK_IMPORTED_MODULE_12__["MatIconModule"]]
     })], AuthModule);
     /***/
   },
@@ -1107,14 +1095,22 @@
     /* harmony import */
 
 
-    var _auth_result__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(
-    /*! ./auth-result */
-    "./src/app/@auth/auth-result.ts");
+    var _http_service_service__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(
+    /*! ../http-service.service */
+    "./src/app/http-service.service.ts");
 
     let AuthService = class AuthService {
-      constructor() {
+      constructor(http) {
+        this.http = http;
         this.login = false;
         this.isAuthenticate = new rxjs__WEBPACK_IMPORTED_MODULE_1__["BehaviorSubject"](false);
+      }
+
+      startSession(id) {
+        var param = {
+          token: id
+        };
+        return this.http.post('/api/v1/user/validateUser/', param);
       }
 
       authenticate(arg0) {
@@ -1125,10 +1121,14 @@
           params[temp[0]] = temp[1];
         }); // //console.log(params);
 
-        this.isAuthenticate.next(true);
-        this.setCookie("token", params["access_token"], Number(params["expires_in"]));
         this.token = params["access_token"];
-        return Object(rxjs__WEBPACK_IMPORTED_MODULE_1__["of"])(new _auth_result__WEBPACK_IMPORTED_MODULE_3__["AuthResult"](true, params["access_token"]));
+        this.expiry = Number(params["expires_in"]);
+        return this.startSession(params["access_token"]);
+      }
+
+      enableAuthentication() {
+        this.isAuthenticate.next(true);
+        this.setCookie("token", this.token, this.expiry);
       }
 
       getToken() {
@@ -1216,9 +1216,15 @@
         this.setCookie("givenName", "", 0);
         this.setCookie("lastName", "", 0);
         this.setCookie("img", "", 0);
+        this.setCookie("userHandle", "", 0);
       }
 
     };
+
+    AuthService.ctorParameters = () => [{
+      type: _http_service_service__WEBPACK_IMPORTED_MODULE_3__["HttpService"]
+    }];
+
     AuthService = tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"]([Object(_angular_core__WEBPACK_IMPORTED_MODULE_2__["Injectable"])({
       providedIn: 'root'
     })], AuthService);
@@ -1311,12 +1317,11 @@
         this.authService.authenticate('google').pipe(Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_3__["takeWhile"])(() => this.alive)).subscribe(authResult => {
           console.log(authResult);
 
-          if (authResult.isSuccess()) {
-            this.router.navigate(['pages/dashboard']); //  console.log(authResult);
-            //  this.api.setOAuth2Token(authResult.getToken());
-            //  this.initUserService.initCurrentUser();
-            //  this.router.navigateByUrl('/pages/dashboard');
-          }
+          if (authResult.navigateTo == undefined) {
+            this.authService.enableAuthentication();
+            this.router.navigate(['pages/dashboard']);
+          } else this.router.navigate(['auth/registerwithgoogle', this.authService.getToken()]); // }
+
         });
       }
 
@@ -1336,11 +1341,188 @@
 
     GoogleOAuth2CallbackComponent = tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"]([Object(_angular_core__WEBPACK_IMPORTED_MODULE_1__["Component"])({
       selector: 'google-oauth2-callback',
-      template: "\n  <div>\n    <div>Welcome {{name}}!</div>\n  </div>\n",
+      template: "\n  <div>\n    <div>Signing in.....</div>\n  </div>\n",
       styles: [tslib__WEBPACK_IMPORTED_MODULE_0__["__importDefault"](__webpack_require__(
       /*! ./google-oauth2-callback.component.scss */
       "./src/app/@auth/components/googlecallback/google-oauth2-callback.component.scss")).default]
     })], GoogleOAuth2CallbackComponent);
+    /***/
+  },
+
+  /***/
+  "./src/app/@auth/components/googleregistration/google-registration.component.scss":
+  /*!****************************************************************************************!*\
+    !*** ./src/app/@auth/components/googleregistration/google-registration.component.scss ***!
+    \****************************************************************************************/
+
+  /*! exports provided: default */
+
+  /***/
+  function srcAppAuthComponentsGoogleregistrationGoogleRegistrationComponentScss(module, __webpack_exports__, __webpack_require__) {
+    "use strict";
+
+    __webpack_require__.r(__webpack_exports__);
+    /* harmony default export */
+
+
+    __webpack_exports__["default"] = ".blue {\n  color: blue;\n  margin-right: 0.4rem;\n}\n\n.button {\n  float: right;\n  margin: 0.2rem;\n}\n/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbIi9Vc2Vycy9TaGFiYmlyL3Byb2plY3RzL0RFV19VSS9zcmMvc3RlZWwvV0VCLUFQUExJQ0FUSU9OL2Zyb250ZW5kL3NyYy9hcHAvQGF1dGgvY29tcG9uZW50cy9nb29nbGVyZWdpc3RyYXRpb24vZ29vZ2xlLXJlZ2lzdHJhdGlvbi5jb21wb25lbnQuc2NzcyIsInNyYy9hcHAvQGF1dGgvY29tcG9uZW50cy9nb29nbGVyZWdpc3RyYXRpb24vZ29vZ2xlLXJlZ2lzdHJhdGlvbi5jb21wb25lbnQuc2NzcyJdLCJuYW1lcyI6W10sIm1hcHBpbmdzIjoiQUFBQTtFQUNJLFdBQUE7RUFDQSxvQkFBQTtBQ0NKOztBRENBO0VBQ0ksWUFBQTtFQUNBLGNBQUE7QUNFSiIsImZpbGUiOiJzcmMvYXBwL0BhdXRoL2NvbXBvbmVudHMvZ29vZ2xlcmVnaXN0cmF0aW9uL2dvb2dsZS1yZWdpc3RyYXRpb24uY29tcG9uZW50LnNjc3MiLCJzb3VyY2VzQ29udGVudCI6WyIuYmx1ZXtcbiAgICBjb2xvcjpibHVlO1xuICAgIG1hcmdpbi1yaWdodDogLjRyZW07XG59XG4uYnV0dG9ue1xuICAgIGZsb2F0OnJpZ2h0O1xuICAgIG1hcmdpbjouMnJlbTtcbn0iLCIuYmx1ZSB7XG4gIGNvbG9yOiBibHVlO1xuICBtYXJnaW4tcmlnaHQ6IDAuNHJlbTtcbn1cblxuLmJ1dHRvbiB7XG4gIGZsb2F0OiByaWdodDtcbiAgbWFyZ2luOiAwLjJyZW07XG59Il19 */";
+    /***/
+  },
+
+  /***/
+  "./src/app/@auth/components/googleregistration/google-registration.component.ts":
+  /*!**************************************************************************************!*\
+    !*** ./src/app/@auth/components/googleregistration/google-registration.component.ts ***!
+    \**************************************************************************************/
+
+  /*! exports provided: GoogleRegistrationComponent */
+
+  /***/
+  function srcAppAuthComponentsGoogleregistrationGoogleRegistrationComponentTs(module, __webpack_exports__, __webpack_require__) {
+    "use strict";
+
+    __webpack_require__.r(__webpack_exports__);
+    /* harmony export (binding) */
+
+
+    __webpack_require__.d(__webpack_exports__, "GoogleRegistrationComponent", function () {
+      return GoogleRegistrationComponent;
+    });
+    /* harmony import */
+
+
+    var tslib__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(
+    /*! tslib */
+    "./node_modules/tslib/tslib.es6.js");
+    /* harmony import */
+
+
+    var _angular_core__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(
+    /*! @angular/core */
+    "./node_modules/@angular/core/fesm2015/core.js");
+    /* harmony import */
+
+
+    var _angular_router__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(
+    /*! @angular/router */
+    "./node_modules/@angular/router/fesm2015/router.js");
+    /* harmony import */
+
+
+    var _init_user_service__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(
+    /*! ../../init-user.service */
+    "./src/app/@auth/init-user.service.ts");
+    /*
+     * Copyright (c) Akveo 2019. All Rights Reserved.
+     * Licensed under the Single Application / Multi Application License.
+     * See LICENSE_SINGLE_APP / LICENSE_MULTI_APP in the 'docs' folder for license information on type of purchased license.
+     */
+
+
+    let GoogleRegistrationComponent = class GoogleRegistrationComponent {
+      constructor(router, route, userService, changeDetection) {
+        this.router = router;
+        this.route = route;
+        this.userService = userService;
+        this.changeDetection = changeDetection;
+        this.alive = true;
+        this.emailId = "";
+        this.fullName = "";
+        this.userHandle = "";
+        this.active = false;
+        this.userHandleExist = false;
+      }
+
+      ngOnInit() {
+        this.route.params.subscribe(params => {
+          if (params["id"] != "") {
+            console.log(params["id"]);
+            this.token = params["id"];
+            return this.userService.getUserDetailForRegistration(params["id"]).then(data => {
+              this.fullName = data.fullName;
+              this.emailId = data.emailId;
+              this.enableUI();
+            });
+          }
+        });
+        return null;
+      }
+
+      enableUI() {
+        this.alive = false;
+        console.log(this.alive);
+        this.changeDetection.detectChanges();
+      }
+
+      cancel() {
+        this.router.navigate(['auth/login']);
+      }
+
+      register() {
+        if (this.validate()) {
+          var params = {
+            handle: this.userHandle,
+            token: this.token
+          };
+          this.userService.registerUser(params).subscribe(flag => {
+            if (flag) this.router.navigate(['pages/dashboard']);else {
+              alert("Error: Please try again");
+              this.router.navigate(['auth/login']);
+            }
+          }); //this.state.enableLoader();
+        }
+      }
+
+      isExist() {
+        return this.userHandleExist;
+      }
+
+      validate() {
+        let pattern = /^[a-zA-Z0-9_]+$/i;
+        return pattern.test(this.userHandle);
+      }
+
+      checkHandle() {
+        if (this.validate()) {
+          var params = {
+            handle: this.userHandle
+          }; //this.state.enableLoader();
+
+          this.userService.checkHandle(params).subscribe(data => {
+            //this.state.disableLoader();
+            this.active = data.valid;
+            this.userHandleExist = !data.valid;
+          });
+        } else {
+          this.active = false;
+        }
+      }
+
+      isEnable() {
+        return this.active;
+      }
+
+    };
+
+    GoogleRegistrationComponent.ctorParameters = () => [{
+      type: _angular_router__WEBPACK_IMPORTED_MODULE_2__["Router"]
+    }, {
+      type: _angular_router__WEBPACK_IMPORTED_MODULE_2__["ActivatedRoute"]
+    }, {
+      type: _init_user_service__WEBPACK_IMPORTED_MODULE_3__["InitUserService"]
+    }, {
+      type: _angular_core__WEBPACK_IMPORTED_MODULE_1__["ChangeDetectorRef"]
+    }];
+
+    GoogleRegistrationComponent = tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"]([Object(_angular_core__WEBPACK_IMPORTED_MODULE_1__["Component"])({
+      selector: "google-registration",
+      template: tslib__WEBPACK_IMPORTED_MODULE_0__["__importDefault"](__webpack_require__(
+      /*! raw-loader!./google-registration.component.html */
+      "./node_modules/raw-loader/dist/cjs.js!./src/app/@auth/components/googleregistration/google-registration.component.html")).default,
+      styles: [tslib__WEBPACK_IMPORTED_MODULE_0__["__importDefault"](__webpack_require__(
+      /*! ./google-registration.component.scss */
+      "./src/app/@auth/components/googleregistration/google-registration.component.scss")).default]
+    })], GoogleRegistrationComponent);
     /***/
   },
 
@@ -1360,7 +1542,7 @@
     /* harmony default export */
 
 
-    __webpack_exports__["default"] = "#customBtn {\n  display: inline-block;\n  background: white;\n  color: #444;\n  width: 190px;\n  border-radius: 5px;\n  border: thin solid #888;\n  box-shadow: 1px 1px 1px grey;\n  white-space: nowrap;\n}\n\n#customBtn:hover {\n  cursor: pointer;\n}\n\nspan.label {\n  font-family: serif;\n  font-weight: normal;\n}\n\nspan.icon {\n  background: url(\"/assets/g-normal.png\") transparent 5px 50% no-repeat;\n  display: inline-block;\n  vertical-align: middle;\n  width: 42px;\n  height: 42px;\n}\n\nspan.buttonText {\n  display: inline-block;\n  vertical-align: middle;\n  padding-left: 42px;\n  padding-right: 42px;\n  font-size: 14px;\n  font-weight: bold;\n  /* Use the Roboto font that is loaded in the <head> */\n  font-family: \"Roboto\", sans-serif;\n}\n/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbIi9Vc2Vycy9TaGFiYmlyL3Byb2plY3RzL0RFV19VSS9zcmMvc3RlZWwvV0VCLUFQUExJQ0FUSU9OL2Zyb250ZW5kL3NyYy9hcHAvQGF1dGgvY29tcG9uZW50cy9sb2dpbi9sb2dpbi5jb21wb25lbnQuc2NzcyIsInNyYy9hcHAvQGF1dGgvY29tcG9uZW50cy9sb2dpbi9sb2dpbi5jb21wb25lbnQuc2NzcyJdLCJuYW1lcyI6W10sIm1hcHBpbmdzIjoiQUFBQTtFQUNJLHFCQUFBO0VBQ0EsaUJBQUE7RUFDQSxXQUFBO0VBQ0EsWUFBQTtFQUNBLGtCQUFBO0VBQ0EsdUJBQUE7RUFDQSw0QkFBQTtFQUNBLG1CQUFBO0FDQ0o7O0FEQ0U7RUFDRSxlQUFBO0FDRUo7O0FEQUU7RUFDRSxrQkFBQTtFQUNBLG1CQUFBO0FDR0o7O0FEREU7RUFDRSxxRUFBQTtFQUNBLHFCQUFBO0VBQ0Esc0JBQUE7RUFDQSxXQUFBO0VBQ0EsWUFBQTtBQ0lKOztBREZFO0VBQ0UscUJBQUE7RUFDQSxzQkFBQTtFQUNBLGtCQUFBO0VBQ0EsbUJBQUE7RUFDQSxlQUFBO0VBQ0EsaUJBQUE7RUFDQSxxREFBQTtFQUNBLGlDQUFBO0FDS0oiLCJmaWxlIjoic3JjL2FwcC9AYXV0aC9jb21wb25lbnRzL2xvZ2luL2xvZ2luLmNvbXBvbmVudC5zY3NzIiwic291cmNlc0NvbnRlbnQiOlsiI2N1c3RvbUJ0biB7XG4gICAgZGlzcGxheTogaW5saW5lLWJsb2NrO1xuICAgIGJhY2tncm91bmQ6IHdoaXRlO1xuICAgIGNvbG9yOiAjNDQ0O1xuICAgIHdpZHRoOiAxOTBweDtcbiAgICBib3JkZXItcmFkaXVzOiA1cHg7XG4gICAgYm9yZGVyOiB0aGluIHNvbGlkICM4ODg7XG4gICAgYm94LXNoYWRvdzogMXB4IDFweCAxcHggZ3JleTtcbiAgICB3aGl0ZS1zcGFjZTogbm93cmFwO1xuICB9XG4gICNjdXN0b21CdG46aG92ZXIge1xuICAgIGN1cnNvcjogcG9pbnRlcjtcbiAgfVxuICBzcGFuLmxhYmVsIHtcbiAgICBmb250LWZhbWlseTogc2VyaWY7XG4gICAgZm9udC13ZWlnaHQ6IG5vcm1hbDtcbiAgfVxuICBzcGFuLmljb24ge1xuICAgIGJhY2tncm91bmQ6IHVybCgnL2Fzc2V0cy9nLW5vcm1hbC5wbmcnKSB0cmFuc3BhcmVudCA1cHggNTAlIG5vLXJlcGVhdDtcbiAgICBkaXNwbGF5OiBpbmxpbmUtYmxvY2s7XG4gICAgdmVydGljYWwtYWxpZ246IG1pZGRsZTtcbiAgICB3aWR0aDogNDJweDtcbiAgICBoZWlnaHQ6IDQycHg7XG4gIH1cbiAgc3Bhbi5idXR0b25UZXh0IHtcbiAgICBkaXNwbGF5OiBpbmxpbmUtYmxvY2s7XG4gICAgdmVydGljYWwtYWxpZ246IG1pZGRsZTtcbiAgICBwYWRkaW5nLWxlZnQ6IDQycHg7XG4gICAgcGFkZGluZy1yaWdodDogNDJweDtcbiAgICBmb250LXNpemU6IDE0cHg7XG4gICAgZm9udC13ZWlnaHQ6IGJvbGQ7XG4gICAgLyogVXNlIHRoZSBSb2JvdG8gZm9udCB0aGF0IGlzIGxvYWRlZCBpbiB0aGUgPGhlYWQ+ICovXG4gICAgZm9udC1mYW1pbHk6ICdSb2JvdG8nLCBzYW5zLXNlcmlmO1xuICB9IiwiI2N1c3RvbUJ0biB7XG4gIGRpc3BsYXk6IGlubGluZS1ibG9jaztcbiAgYmFja2dyb3VuZDogd2hpdGU7XG4gIGNvbG9yOiAjNDQ0O1xuICB3aWR0aDogMTkwcHg7XG4gIGJvcmRlci1yYWRpdXM6IDVweDtcbiAgYm9yZGVyOiB0aGluIHNvbGlkICM4ODg7XG4gIGJveC1zaGFkb3c6IDFweCAxcHggMXB4IGdyZXk7XG4gIHdoaXRlLXNwYWNlOiBub3dyYXA7XG59XG5cbiNjdXN0b21CdG46aG92ZXIge1xuICBjdXJzb3I6IHBvaW50ZXI7XG59XG5cbnNwYW4ubGFiZWwge1xuICBmb250LWZhbWlseTogc2VyaWY7XG4gIGZvbnQtd2VpZ2h0OiBub3JtYWw7XG59XG5cbnNwYW4uaWNvbiB7XG4gIGJhY2tncm91bmQ6IHVybChcIi9hc3NldHMvZy1ub3JtYWwucG5nXCIpIHRyYW5zcGFyZW50IDVweCA1MCUgbm8tcmVwZWF0O1xuICBkaXNwbGF5OiBpbmxpbmUtYmxvY2s7XG4gIHZlcnRpY2FsLWFsaWduOiBtaWRkbGU7XG4gIHdpZHRoOiA0MnB4O1xuICBoZWlnaHQ6IDQycHg7XG59XG5cbnNwYW4uYnV0dG9uVGV4dCB7XG4gIGRpc3BsYXk6IGlubGluZS1ibG9jaztcbiAgdmVydGljYWwtYWxpZ246IG1pZGRsZTtcbiAgcGFkZGluZy1sZWZ0OiA0MnB4O1xuICBwYWRkaW5nLXJpZ2h0OiA0MnB4O1xuICBmb250LXNpemU6IDE0cHg7XG4gIGZvbnQtd2VpZ2h0OiBib2xkO1xuICAvKiBVc2UgdGhlIFJvYm90byBmb250IHRoYXQgaXMgbG9hZGVkIGluIHRoZSA8aGVhZD4gKi9cbiAgZm9udC1mYW1pbHk6IFwiUm9ib3RvXCIsIHNhbnMtc2VyaWY7XG59Il19 */";
+    __webpack_exports__["default"] = "#customBtn {\n  display: inline-block;\n  background: white;\n  color: #444;\n  width: 190px;\n  border-radius: 5px;\n  border: thin solid #888;\n  box-shadow: 1px 1px 1px grey;\n  white-space: nowrap;\n}\n\n#customBtn:hover {\n  cursor: pointer;\n}\n\nspan.label {\n  font-family: serif;\n  font-weight: normal;\n}\n\nspan.icon {\n  background: url(\"/assets/g-normal.png\") transparent 5px 50% no-repeat;\n  display: inline-block;\n  vertical-align: middle;\n  width: 42px;\n  height: 42px;\n}\n\nspan.buttonText {\n  display: inline-block;\n  vertical-align: middle;\n  padding-left: 42px;\n  padding-right: 42px;\n  font-size: 14px;\n  font-weight: bold;\n  /* Use the Roboto font that is loaded in the <head> */\n  font-family: \"Roboto\", sans-serif;\n}\n\n.pointer {\n  cursor: pointer;\n}\n\n.green {\n  color: green;\n}\n/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbIi9Vc2Vycy9TaGFiYmlyL3Byb2plY3RzL0RFV19VSS9zcmMvc3RlZWwvV0VCLUFQUExJQ0FUSU9OL2Zyb250ZW5kL3NyYy9hcHAvQGF1dGgvY29tcG9uZW50cy9sb2dpbi9sb2dpbi5jb21wb25lbnQuc2NzcyIsInNyYy9hcHAvQGF1dGgvY29tcG9uZW50cy9sb2dpbi9sb2dpbi5jb21wb25lbnQuc2NzcyJdLCJuYW1lcyI6W10sIm1hcHBpbmdzIjoiQUFBQTtFQUNJLHFCQUFBO0VBQ0EsaUJBQUE7RUFDQSxXQUFBO0VBQ0EsWUFBQTtFQUNBLGtCQUFBO0VBQ0EsdUJBQUE7RUFDQSw0QkFBQTtFQUNBLG1CQUFBO0FDQ0o7O0FEQ0U7RUFDRSxlQUFBO0FDRUo7O0FEQUU7RUFDRSxrQkFBQTtFQUNBLG1CQUFBO0FDR0o7O0FEREU7RUFDRSxxRUFBQTtFQUNBLHFCQUFBO0VBQ0Esc0JBQUE7RUFDQSxXQUFBO0VBQ0EsWUFBQTtBQ0lKOztBREZFO0VBQ0UscUJBQUE7RUFDQSxzQkFBQTtFQUNBLGtCQUFBO0VBQ0EsbUJBQUE7RUFDQSxlQUFBO0VBQ0EsaUJBQUE7RUFDQSxxREFBQTtFQUNBLGlDQUFBO0FDS0o7O0FESEU7RUFDRSxlQUFBO0FDTUo7O0FESEU7RUFDRSxZQUFBO0FDTUoiLCJmaWxlIjoic3JjL2FwcC9AYXV0aC9jb21wb25lbnRzL2xvZ2luL2xvZ2luLmNvbXBvbmVudC5zY3NzIiwic291cmNlc0NvbnRlbnQiOlsiI2N1c3RvbUJ0biB7XG4gICAgZGlzcGxheTogaW5saW5lLWJsb2NrO1xuICAgIGJhY2tncm91bmQ6IHdoaXRlO1xuICAgIGNvbG9yOiAjNDQ0O1xuICAgIHdpZHRoOiAxOTBweDtcbiAgICBib3JkZXItcmFkaXVzOiA1cHg7XG4gICAgYm9yZGVyOiB0aGluIHNvbGlkICM4ODg7XG4gICAgYm94LXNoYWRvdzogMXB4IDFweCAxcHggZ3JleTtcbiAgICB3aGl0ZS1zcGFjZTogbm93cmFwO1xuICB9XG4gICNjdXN0b21CdG46aG92ZXIge1xuICAgIGN1cnNvcjogcG9pbnRlcjtcbiAgfVxuICBzcGFuLmxhYmVsIHtcbiAgICBmb250LWZhbWlseTogc2VyaWY7XG4gICAgZm9udC13ZWlnaHQ6IG5vcm1hbDtcbiAgfVxuICBzcGFuLmljb24ge1xuICAgIGJhY2tncm91bmQ6IHVybCgnL2Fzc2V0cy9nLW5vcm1hbC5wbmcnKSB0cmFuc3BhcmVudCA1cHggNTAlIG5vLXJlcGVhdDtcbiAgICBkaXNwbGF5OiBpbmxpbmUtYmxvY2s7XG4gICAgdmVydGljYWwtYWxpZ246IG1pZGRsZTtcbiAgICB3aWR0aDogNDJweDtcbiAgICBoZWlnaHQ6IDQycHg7XG4gIH1cbiAgc3Bhbi5idXR0b25UZXh0IHtcbiAgICBkaXNwbGF5OiBpbmxpbmUtYmxvY2s7XG4gICAgdmVydGljYWwtYWxpZ246IG1pZGRsZTtcbiAgICBwYWRkaW5nLWxlZnQ6IDQycHg7XG4gICAgcGFkZGluZy1yaWdodDogNDJweDtcbiAgICBmb250LXNpemU6IDE0cHg7XG4gICAgZm9udC13ZWlnaHQ6IGJvbGQ7XG4gICAgLyogVXNlIHRoZSBSb2JvdG8gZm9udCB0aGF0IGlzIGxvYWRlZCBpbiB0aGUgPGhlYWQ+ICovXG4gICAgZm9udC1mYW1pbHk6ICdSb2JvdG8nLCBzYW5zLXNlcmlmO1xuICB9XG4gIC5wb2ludGVye1xuICAgIGN1cnNvcjogcG9pbnRlcjtcbiAgfVxuXG4gIC5ncmVlbntcbiAgICBjb2xvcjogZ3JlZW47O1xuICB9IiwiI2N1c3RvbUJ0biB7XG4gIGRpc3BsYXk6IGlubGluZS1ibG9jaztcbiAgYmFja2dyb3VuZDogd2hpdGU7XG4gIGNvbG9yOiAjNDQ0O1xuICB3aWR0aDogMTkwcHg7XG4gIGJvcmRlci1yYWRpdXM6IDVweDtcbiAgYm9yZGVyOiB0aGluIHNvbGlkICM4ODg7XG4gIGJveC1zaGFkb3c6IDFweCAxcHggMXB4IGdyZXk7XG4gIHdoaXRlLXNwYWNlOiBub3dyYXA7XG59XG5cbiNjdXN0b21CdG46aG92ZXIge1xuICBjdXJzb3I6IHBvaW50ZXI7XG59XG5cbnNwYW4ubGFiZWwge1xuICBmb250LWZhbWlseTogc2VyaWY7XG4gIGZvbnQtd2VpZ2h0OiBub3JtYWw7XG59XG5cbnNwYW4uaWNvbiB7XG4gIGJhY2tncm91bmQ6IHVybChcIi9hc3NldHMvZy1ub3JtYWwucG5nXCIpIHRyYW5zcGFyZW50IDVweCA1MCUgbm8tcmVwZWF0O1xuICBkaXNwbGF5OiBpbmxpbmUtYmxvY2s7XG4gIHZlcnRpY2FsLWFsaWduOiBtaWRkbGU7XG4gIHdpZHRoOiA0MnB4O1xuICBoZWlnaHQ6IDQycHg7XG59XG5cbnNwYW4uYnV0dG9uVGV4dCB7XG4gIGRpc3BsYXk6IGlubGluZS1ibG9jaztcbiAgdmVydGljYWwtYWxpZ246IG1pZGRsZTtcbiAgcGFkZGluZy1sZWZ0OiA0MnB4O1xuICBwYWRkaW5nLXJpZ2h0OiA0MnB4O1xuICBmb250LXNpemU6IDE0cHg7XG4gIGZvbnQtd2VpZ2h0OiBib2xkO1xuICAvKiBVc2UgdGhlIFJvYm90byBmb250IHRoYXQgaXMgbG9hZGVkIGluIHRoZSA8aGVhZD4gKi9cbiAgZm9udC1mYW1pbHk6IFwiUm9ib3RvXCIsIHNhbnMtc2VyaWY7XG59XG5cbi5wb2ludGVyIHtcbiAgY3Vyc29yOiBwb2ludGVyO1xufVxuXG4uZ3JlZW4ge1xuICBjb2xvcjogZ3JlZW47XG59Il19 */";
     /***/
   },
 
@@ -1427,6 +1609,10 @@
         this.router = router;
         this.authService = authService;
         this.alive = true;
+        this.emailId = "";
+        this.password = "";
+        this.hide = true;
+        this.showAlternatelogin = true;
       }
 
       ngOnInit() {
@@ -1435,6 +1621,22 @@
         } else {
           this.alive = false;
         }
+      }
+
+      login() {
+        this.authService.loginWithGoogle();
+      }
+
+      enablePassword() {
+        this.showAlternatelogin = false;
+      }
+
+      disablePassword() {
+        this.showAlternatelogin = true;
+      }
+
+      isAlternateLoginEnable() {
+        return this.showAlternatelogin;
       }
 
     };
@@ -1577,17 +1779,36 @@
     var _http_service_service__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(
     /*! ../http-service.service */
     "./src/app/http-service.service.ts");
+    /* harmony import */
+
+
+    var _state_service_service__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(
+    /*! ../state-service.service */
+    "./src/app/state-service.service.ts");
 
     let InitUserService = class InitUserService {
-      constructor(http, authService) {
+      constructor(http, authService, state) {
         this.http = http;
         this.authService = authService;
+        this.state = state;
         this.login = false;
         this.user = new rxjs__WEBPACK_IMPORTED_MODULE_1__["BehaviorSubject"](null);
       }
 
       getUser() {
         return this.user.asObservable();
+      }
+
+      getUserDetailForRegistration(id) {
+        return new Promise((resolve, reject) => {
+          var param = {
+            token: id
+          };
+          this.http.post("/api/v1/user/getgoogleuserinfo/", param).subscribe(data => {
+            // console.log(data);
+            resolve(data);
+          });
+        });
       }
 
       initCurrentUser() {
@@ -1597,20 +1818,23 @@
         var givenName = this.authService.getCookie("givenName");
         var lastName = this.authService.getCookie("lastName");
         var userId = this.authService.getCookie("userId");
+        var userHandle = this.authService.getCookie("userHandle");
         var result = {
           fullName: fullName,
           emailId: emailId,
           img: img,
           givenName: givenName,
           lastName: lastName,
-          userId: userId
+          userId: userId,
+          userHandle: userHandle
         };
 
-        if (fullName == undefined || fullName == null || fullName == '' || emailId == undefined || emailId == null || emailId == '' || givenName == undefined || givenName == null || givenName == '' || lastName == undefined || lastName == null || lastName == '' || userId == undefined || userId == null || userId == '' || img == undefined || img == null || img == '') {
+        if (fullName == undefined || fullName == null || fullName == "" || userHandle == undefined || userHandle == null || userHandle == "" || emailId == undefined || emailId == null || emailId == "" || givenName == undefined || givenName == null || givenName == "" || lastName == undefined || lastName == null || lastName == "" || userId == undefined || userId == null || userId == "" || img == undefined || img == null || img == "") {
           var param = {
             token: this.authService.getToken()
           };
-          this.http.post('/api/v1/user/getuserinfo/', param).subscribe(data => {
+          this.state.enableLoader();
+          this.http.post("/api/v1/user/getuserinfo/", param).subscribe(data => {
             console.log(data);
             this.authService.setCookie("emailId", data.emailId, 3599);
             this.authService.setCookie("givenName", data.givenName, 3599);
@@ -1618,11 +1842,38 @@
             this.authService.setCookie("img", data.img, 3599);
             this.authService.setCookie("fullName", data.fullName, 3599);
             this.authService.setCookie("userId", data.userId, 3599);
+            this.authService.setCookie("userHandle", data.userHandle, 3599);
+            this.state.disableLoader();
             this.user.next(data);
           });
         } else {
           this.user.next(result);
         }
+      }
+
+      registerUser(params) {
+        var t = new rxjs__WEBPACK_IMPORTED_MODULE_1__["Subject"]();
+        this.http.post("api/v1/user/registerUser/", params).subscribe(data => {
+          if (data.message != undefined && data.message != null) {
+            this.authService.setCookie("token", params.token, 3599);
+            t.next(true);
+          } else {
+            t.next(false);
+          }
+
+          this.state.disableLoader();
+        });
+        return t;
+      }
+
+      checkHandle(params) {
+        var t = new rxjs__WEBPACK_IMPORTED_MODULE_1__["Subject"]();
+        this.state.enableLoader();
+        this.http.post("api/v1/user/validateUserHandle/", params).subscribe(data => {
+          t.next(data);
+          this.state.disableLoader();
+        });
+        return t;
       }
 
     };
@@ -1631,10 +1882,12 @@
       type: _http_service_service__WEBPACK_IMPORTED_MODULE_4__["HttpService"]
     }, {
       type: _auth_service__WEBPACK_IMPORTED_MODULE_3__["AuthService"]
+    }, {
+      type: _state_service_service__WEBPACK_IMPORTED_MODULE_5__["StateService"]
     }];
 
     InitUserService = tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"]([Object(_angular_core__WEBPACK_IMPORTED_MODULE_2__["Injectable"])({
-      providedIn: 'root'
+      providedIn: "root"
     })], InitUserService);
     /***/
   },
@@ -1857,7 +2110,7 @@
     /* harmony default export */
 
 
-    __webpack_exports__["default"] = ".container {\n  margin: 0;\n}\n/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbIi9Vc2Vycy9TaGFiYmlyL3Byb2plY3RzL0RFV19VSS9zcmMvc3RlZWwvV0VCLUFQUExJQ0FUSU9OL2Zyb250ZW5kL3NyYy9hcHAvQGNvcmUvbGF5b3V0L2xheW91dC5jb21wb25lbnQuc2NzcyIsInNyYy9hcHAvQGNvcmUvbGF5b3V0L2xheW91dC5jb21wb25lbnQuc2NzcyJdLCJuYW1lcyI6W10sIm1hcHBpbmdzIjoiQUFBQTtFQUNJLFNBQUE7QUNDSiIsImZpbGUiOiJzcmMvYXBwL0Bjb3JlL2xheW91dC9sYXlvdXQuY29tcG9uZW50LnNjc3MiLCJzb3VyY2VzQ29udGVudCI6WyIuY29udGFpbmVye1xuICAgIG1hcmdpbjogMDtcbn0iLCIuY29udGFpbmVyIHtcbiAgbWFyZ2luOiAwO1xufSJdfQ== */";
+    __webpack_exports__["default"] = "a, a:hover, a:focus {\n  color: inherit;\n  text-decoration: none;\n  -webkit-transition: all 0.3s;\n  transition: all 0.3s;\n}\n\n#sidebar {\n  width: 250px;\n  position: fixed;\n  top: 0;\n  left: 0;\n  height: 100vh;\n  z-index: 999;\n  background: #7386D5;\n  color: #fff;\n  -webkit-transition: all 0.3s;\n  transition: all 0.3s;\n  margin-left: -250px;\n}\n\n#sidebar.active {\n  margin-left: 0;\n}\n\n#sidebar .sidebar-header {\n  padding: 20px;\n  background: #6d7fcc;\n}\n\n#sidebar ul.components {\n  border-bottom: 1px solid #47748b;\n}\n\n#sidebar ul p {\n  color: #fff;\n  padding: 10px;\n}\n\n#sidebar ul li a {\n  padding: 10px;\n  font-size: 1.1em;\n  display: block;\n}\n\n#sidebar ul li a:hover {\n  color: #7386D5;\n  background: #fff;\n}\n\n#sidebar ul li.active > a, a[aria-expanded=true] {\n  color: #fff;\n  background: #6d7fcc;\n}\n\nul ul a {\n  font-size: 0.9em !important;\n  padding-left: 30px !important;\n  background: #6d7fcc;\n}\n\n.container {\n  margin: 0;\n}\n\n.profilePhoto {\n  vertical-align: middle;\n  width: 50px;\n  height: 50px;\n  border-radius: 50%;\n}\n\n.profile {\n  background: url('profilephoto.svg');\n  vertical-align: middle;\n  width: 40px;\n  height: 40px;\n  border-radius: 50%;\n  margin: 4px;\n}\n\n.profile_img img {\n  vertical-align: middle;\n  width: 80px;\n  height: 80px;\n  border-radius: 50%;\n  margin: 4px;\n}\n\n.pointer {\n  cursor: pointer;\n}\n\n.username {\n  vertical-align: middle;\n}\n\n.menu_pointer {\n  margin: 0.3rem;\n  cursor: pointer;\n}\n/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbIi9Vc2Vycy9TaGFiYmlyL3Byb2plY3RzL0RFV19VSS9zcmMvc3RlZWwvV0VCLUFQUExJQ0FUSU9OL2Zyb250ZW5kL3NyYy9hcHAvQGNvcmUvbGF5b3V0L2xheW91dC5jb21wb25lbnQuc2NzcyIsInNyYy9hcHAvQGNvcmUvbGF5b3V0L2xheW91dC5jb21wb25lbnQuc2NzcyJdLCJuYW1lcyI6W10sIm1hcHBpbmdzIjoiQUFBQTtFQUNJLGNBQUE7RUFDQSxxQkFBQTtFQUNBLDRCQUFBO0VBQUEsb0JBQUE7QUNDSjs7QURFQTtFQUNJLFlBQUE7RUFDQSxlQUFBO0VBQ0EsTUFBQTtFQUNBLE9BQUE7RUFDQSxhQUFBO0VBQ0EsWUFBQTtFQUNBLG1CQUFBO0VBQ0EsV0FBQTtFQUNBLDRCQUFBO0VBQUEsb0JBQUE7RUFDQSxtQkFBQTtBQ0NKOztBRENBO0VBQ0ksY0FBQTtBQ0VKOztBREFBO0VBQ0ksYUFBQTtFQUNBLG1CQUFBO0FDR0o7O0FEQUE7RUFFSSxnQ0FBQTtBQ0VKOztBRENBO0VBQ0ksV0FBQTtFQUNBLGFBQUE7QUNFSjs7QURDQTtFQUNJLGFBQUE7RUFDQSxnQkFBQTtFQUNBLGNBQUE7QUNFSjs7QURBQTtFQUNJLGNBQUE7RUFDQSxnQkFBQTtBQ0dKOztBREFBO0VBQ0ksV0FBQTtFQUNBLG1CQUFBO0FDR0o7O0FEREE7RUFDSSwyQkFBQTtFQUNBLDZCQUFBO0VBQ0EsbUJBQUE7QUNJSjs7QUREQTtFQUNJLFNBQUE7QUNJSjs7QUREQTtFQUNJLHNCQUFBO0VBQ0EsV0FBQTtFQUNBLFlBQUE7RUFDQSxrQkFBQTtBQ0lKOztBRERBO0VBQ0ksbUNBQUE7RUFFQSxzQkFBQTtFQUNBLFdBQUE7RUFDQSxZQUFBO0VBQ0Esa0JBQUE7RUFFQSxXQUFBO0FDRUo7O0FEQ0E7RUFFSSxzQkFBQTtFQUNBLFdBQUE7RUFDQSxZQUFBO0VBQ0Esa0JBQUE7RUFFQSxXQUFBO0FDQUo7O0FER0E7RUFDSSxlQUFBO0FDQUo7O0FER0E7RUFDSSxzQkFBQTtBQ0FKOztBRElBO0VBQ0ksY0FBQTtFQUNBLGVBQUE7QUNESiIsImZpbGUiOiJzcmMvYXBwL0Bjb3JlL2xheW91dC9sYXlvdXQuY29tcG9uZW50LnNjc3MiLCJzb3VyY2VzQ29udGVudCI6WyJhLCBhOmhvdmVyLCBhOmZvY3VzIHtcbiAgICBjb2xvcjogaW5oZXJpdDtcbiAgICB0ZXh0LWRlY29yYXRpb246IG5vbmU7XG4gICAgdHJhbnNpdGlvbjogYWxsIDAuM3M7XG59XG5cbiNzaWRlYmFyIHtcbiAgICB3aWR0aDogMjUwcHg7XG4gICAgcG9zaXRpb246IGZpeGVkO1xuICAgIHRvcDogMDtcbiAgICBsZWZ0OiAwO1xuICAgIGhlaWdodDogMTAwdmg7XG4gICAgei1pbmRleDogOTk5O1xuICAgIGJhY2tncm91bmQ6ICM3Mzg2RDU7XG4gICAgY29sb3I6ICNmZmY7XG4gICAgdHJhbnNpdGlvbjogYWxsIDAuM3M7XG4gICAgbWFyZ2luLWxlZnQ6LTI1MHB4O1xufVxuI3NpZGViYXIuYWN0aXZle1xuICAgIG1hcmdpbi1sZWZ0OjA7XG59XG4jc2lkZWJhciAuc2lkZWJhci1oZWFkZXIge1xuICAgIHBhZGRpbmc6IDIwcHg7XG4gICAgYmFja2dyb3VuZDogIzZkN2ZjYztcbn1cblxuI3NpZGViYXIgdWwuY29tcG9uZW50cyB7XG4gICBcbiAgICBib3JkZXItYm90dG9tOiAxcHggc29saWQgIzQ3NzQ4Yjtcbn1cblxuI3NpZGViYXIgdWwgcCB7XG4gICAgY29sb3I6ICNmZmY7XG4gICAgcGFkZGluZzogMTBweDtcbn1cblxuI3NpZGViYXIgdWwgbGkgYSB7XG4gICAgcGFkZGluZzogMTBweDtcbiAgICBmb250LXNpemU6IDEuMWVtO1xuICAgIGRpc3BsYXk6IGJsb2NrO1xufVxuI3NpZGViYXIgdWwgbGkgYTpob3ZlciB7XG4gICAgY29sb3I6ICM3Mzg2RDU7XG4gICAgYmFja2dyb3VuZDogI2ZmZjtcbn1cblxuI3NpZGViYXIgdWwgbGkuYWN0aXZlID4gYSwgYVthcmlhLWV4cGFuZGVkPVwidHJ1ZVwiXSB7XG4gICAgY29sb3I6ICNmZmY7XG4gICAgYmFja2dyb3VuZDogIzZkN2ZjYztcbn1cbnVsIHVsIGEge1xuICAgIGZvbnQtc2l6ZTogMC45ZW0gIWltcG9ydGFudDtcbiAgICBwYWRkaW5nLWxlZnQ6IDMwcHggIWltcG9ydGFudDtcbiAgICBiYWNrZ3JvdW5kOiAjNmQ3ZmNjO1xufVxuXG4uY29udGFpbmVye1xuICAgIG1hcmdpbjogMDtcbn1cblxuLnByb2ZpbGVQaG90b3tcbiAgICB2ZXJ0aWNhbC1hbGlnbjogbWlkZGxlO1xuICAgIHdpZHRoOiA1MHB4O1xuICAgIGhlaWdodDogNTBweDtcbiAgICBib3JkZXItcmFkaXVzOiA1MCU7XG59XG5cbi5wcm9maWxle1xuICAgIGJhY2tncm91bmQ6IHVybChcImFzc2V0cy9wcm9maWxlcGhvdG8uc3ZnXCIpO1xuICAgXG4gICAgdmVydGljYWwtYWxpZ246IG1pZGRsZTtcbiAgICB3aWR0aDogNDBweDtcbiAgICBoZWlnaHQ6IDQwcHg7XG4gICAgYm9yZGVyLXJhZGl1czogNTAlO1xuICBcbiAgICBtYXJnaW46IDRweDtcbn1cblxuLnByb2ZpbGVfaW1nIGltZ3tcbiAgXG4gICAgdmVydGljYWwtYWxpZ246IG1pZGRsZTtcbiAgICB3aWR0aDogODBweDtcbiAgICBoZWlnaHQ6IDgwcHg7XG4gICAgYm9yZGVyLXJhZGl1czogNTAlO1xuICBcbiAgICBtYXJnaW46IDRweDtcbn1cblxuLnBvaW50ZXJ7XG4gICAgY3Vyc29yOiBwb2ludGVyO1xufVxuXG4udXNlcm5hbWV7XG4gICAgdmVydGljYWwtYWxpZ246IG1pZGRsZTtcbiAgLy8gIGNvbG9yOiNlZWU7XG4gICBcbn1cbi5tZW51X3BvaW50ZXJ7XG4gICAgbWFyZ2luOiAuM3JlbTtcbiAgICBjdXJzb3I6IHBvaW50ZXI7XG5cbn0iLCJhLCBhOmhvdmVyLCBhOmZvY3VzIHtcbiAgY29sb3I6IGluaGVyaXQ7XG4gIHRleHQtZGVjb3JhdGlvbjogbm9uZTtcbiAgdHJhbnNpdGlvbjogYWxsIDAuM3M7XG59XG5cbiNzaWRlYmFyIHtcbiAgd2lkdGg6IDI1MHB4O1xuICBwb3NpdGlvbjogZml4ZWQ7XG4gIHRvcDogMDtcbiAgbGVmdDogMDtcbiAgaGVpZ2h0OiAxMDB2aDtcbiAgei1pbmRleDogOTk5O1xuICBiYWNrZ3JvdW5kOiAjNzM4NkQ1O1xuICBjb2xvcjogI2ZmZjtcbiAgdHJhbnNpdGlvbjogYWxsIDAuM3M7XG4gIG1hcmdpbi1sZWZ0OiAtMjUwcHg7XG59XG5cbiNzaWRlYmFyLmFjdGl2ZSB7XG4gIG1hcmdpbi1sZWZ0OiAwO1xufVxuXG4jc2lkZWJhciAuc2lkZWJhci1oZWFkZXIge1xuICBwYWRkaW5nOiAyMHB4O1xuICBiYWNrZ3JvdW5kOiAjNmQ3ZmNjO1xufVxuXG4jc2lkZWJhciB1bC5jb21wb25lbnRzIHtcbiAgYm9yZGVyLWJvdHRvbTogMXB4IHNvbGlkICM0Nzc0OGI7XG59XG5cbiNzaWRlYmFyIHVsIHAge1xuICBjb2xvcjogI2ZmZjtcbiAgcGFkZGluZzogMTBweDtcbn1cblxuI3NpZGViYXIgdWwgbGkgYSB7XG4gIHBhZGRpbmc6IDEwcHg7XG4gIGZvbnQtc2l6ZTogMS4xZW07XG4gIGRpc3BsYXk6IGJsb2NrO1xufVxuXG4jc2lkZWJhciB1bCBsaSBhOmhvdmVyIHtcbiAgY29sb3I6ICM3Mzg2RDU7XG4gIGJhY2tncm91bmQ6ICNmZmY7XG59XG5cbiNzaWRlYmFyIHVsIGxpLmFjdGl2ZSA+IGEsIGFbYXJpYS1leHBhbmRlZD10cnVlXSB7XG4gIGNvbG9yOiAjZmZmO1xuICBiYWNrZ3JvdW5kOiAjNmQ3ZmNjO1xufVxuXG51bCB1bCBhIHtcbiAgZm9udC1zaXplOiAwLjllbSAhaW1wb3J0YW50O1xuICBwYWRkaW5nLWxlZnQ6IDMwcHggIWltcG9ydGFudDtcbiAgYmFja2dyb3VuZDogIzZkN2ZjYztcbn1cblxuLmNvbnRhaW5lciB7XG4gIG1hcmdpbjogMDtcbn1cblxuLnByb2ZpbGVQaG90byB7XG4gIHZlcnRpY2FsLWFsaWduOiBtaWRkbGU7XG4gIHdpZHRoOiA1MHB4O1xuICBoZWlnaHQ6IDUwcHg7XG4gIGJvcmRlci1yYWRpdXM6IDUwJTtcbn1cblxuLnByb2ZpbGUge1xuICBiYWNrZ3JvdW5kOiB1cmwoXCJhc3NldHMvcHJvZmlsZXBob3RvLnN2Z1wiKTtcbiAgdmVydGljYWwtYWxpZ246IG1pZGRsZTtcbiAgd2lkdGg6IDQwcHg7XG4gIGhlaWdodDogNDBweDtcbiAgYm9yZGVyLXJhZGl1czogNTAlO1xuICBtYXJnaW46IDRweDtcbn1cblxuLnByb2ZpbGVfaW1nIGltZyB7XG4gIHZlcnRpY2FsLWFsaWduOiBtaWRkbGU7XG4gIHdpZHRoOiA4MHB4O1xuICBoZWlnaHQ6IDgwcHg7XG4gIGJvcmRlci1yYWRpdXM6IDUwJTtcbiAgbWFyZ2luOiA0cHg7XG59XG5cbi5wb2ludGVyIHtcbiAgY3Vyc29yOiBwb2ludGVyO1xufVxuXG4udXNlcm5hbWUge1xuICB2ZXJ0aWNhbC1hbGlnbjogbWlkZGxlO1xufVxuXG4ubWVudV9wb2ludGVyIHtcbiAgbWFyZ2luOiAwLjNyZW07XG4gIGN1cnNvcjogcG9pbnRlcjtcbn0iXX0= */";
     /***/
   },
 
@@ -1892,8 +2145,83 @@
     var _angular_core__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(
     /*! @angular/core */
     "./node_modules/@angular/core/fesm2015/core.js");
+    /* harmony import */
 
-    let LayoutComponent = class LayoutComponent {};
+
+    var src_app_auth_auth_service__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(
+    /*! src/app/@auth/auth.service */
+    "./src/app/@auth/auth.service.ts");
+    /* harmony import */
+
+
+    var src_app_auth_init_user_service__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(
+    /*! src/app/@auth/init-user.service */
+    "./src/app/@auth/init-user.service.ts");
+    /* harmony import */
+
+
+    var _angular_router__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(
+    /*! @angular/router */
+    "./node_modules/@angular/router/fesm2015/router.js");
+
+    let LayoutComponent = class LayoutComponent {
+      constructor(authService, initUserService, route) {
+        this.authService = authService;
+        this.initUserService = initUserService;
+        this.route = route;
+        this.loggedIn = false;
+        this.menuFlag = false;
+      }
+
+      ngOnInit() {
+        this.initUserService.getUser().subscribe(user => {
+          console.log(user);
+
+          if (user != null) {
+            this.userName = user.givenName;
+            this.fullName = user.fullName;
+            this.img = user.img;
+            this.userHandle = user.userHandle;
+          }
+        });
+        this.authService.isAuthenticated().subscribe(loggedin => {
+          console.log();
+          this.loggedIn = loggedin;
+
+          if (loggedin) {
+            this.initUserService.initCurrentUser();
+          }
+        });
+      }
+
+      loginWithGoogle() {
+        this.authService.loginWithGoogle();
+      }
+
+      closeMenu() {
+        this.menuFlag = false;
+      }
+
+      logout() {
+        console.log("logout"); // this.authService.logout();
+
+        window.location.href = "/auth/logout"; //  window.location.reload();
+      }
+
+      toggle() {
+        this.menuFlag = !this.menuFlag;
+      }
+
+    };
+
+    LayoutComponent.ctorParameters = () => [{
+      type: src_app_auth_auth_service__WEBPACK_IMPORTED_MODULE_2__["AuthService"]
+    }, {
+      type: src_app_auth_init_user_service__WEBPACK_IMPORTED_MODULE_3__["InitUserService"]
+    }, {
+      type: _angular_router__WEBPACK_IMPORTED_MODULE_4__["Router"]
+    }];
+
     LayoutComponent = tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"]([Object(_angular_core__WEBPACK_IMPORTED_MODULE_1__["Component"])({
       selector: 'layout',
       template: tslib__WEBPACK_IMPORTED_MODULE_0__["__importDefault"](__webpack_require__(
@@ -2043,9 +2371,9 @@
     /* harmony import */
 
 
-    var _pages_hlbparser_common_state_service_service__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(
-    /*! ./pages/hlbparser/common/state-service.service */
-    "./src/app/pages/hlbparser/common/state-service.service.ts");
+    var _state_service_service__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(
+    /*! ./state-service.service */
+    "./src/app/state-service.service.ts");
 
     let AppComponent = class AppComponent {
       constructor(state) {
@@ -2063,7 +2391,7 @@
     };
 
     AppComponent.ctorParameters = () => [{
-      type: _pages_hlbparser_common_state_service_service__WEBPACK_IMPORTED_MODULE_2__["StateService"]
+      type: _state_service_service__WEBPACK_IMPORTED_MODULE_2__["StateService"]
     }];
 
     AppComponent = tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"]([Object(_angular_core__WEBPACK_IMPORTED_MODULE_1__["Component"])({
@@ -2160,16 +2488,16 @@
     /* harmony import */
 
 
-    var _pages_hlbparser_common_state_service_service__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(
-    /*! ./pages/hlbparser/common/state-service.service */
-    "./src/app/pages/hlbparser/common/state-service.service.ts");
+    var _state_service_service__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(
+    /*! ./state-service.service */
+    "./src/app/state-service.service.ts");
 
     let AppModule = class AppModule {};
     AppModule = tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"]([Object(_angular_core__WEBPACK_IMPORTED_MODULE_2__["NgModule"])({
       declarations: [_app_component__WEBPACK_IMPORTED_MODULE_4__["AppComponent"]],
       imports: [_auth_auth_module__WEBPACK_IMPORTED_MODULE_9__["AuthModule"].forRoot(), _angular_platform_browser__WEBPACK_IMPORTED_MODULE_1__["BrowserModule"], _angular_platform_browser_animations__WEBPACK_IMPORTED_MODULE_5__["BrowserAnimationsModule"], // PagesModule,
       _angular_router__WEBPACK_IMPORTED_MODULE_7__["RouterModule"], _app_routing_module__WEBPACK_IMPORTED_MODULE_3__["AppRoutingModule"], _angular_common_http__WEBPACK_IMPORTED_MODULE_6__["HttpClientModule"]],
-      providers: [_http_service_service__WEBPACK_IMPORTED_MODULE_8__["HttpService"], _pages_hlbparser_common_state_service_service__WEBPACK_IMPORTED_MODULE_10__["StateService"] // AppService,
+      providers: [_http_service_service__WEBPACK_IMPORTED_MODULE_8__["HttpService"], _state_service_service__WEBPACK_IMPORTED_MODULE_10__["StateService"] // AppService,
       // {
       //   provide: APP_INITIALIZER,
       //   useFactory: (ds: AppService) => function() {return ds.load()},
@@ -2258,7 +2586,7 @@
       }
 
       delete(endpoint, options) {
-        return this.http.delete("".concat(endpoint));
+        return this.http.delete("".concat(this.apiUrl, "/").concat(endpoint), options);
       }
 
     };
@@ -2272,15 +2600,15 @@
   },
 
   /***/
-  "./src/app/pages/hlbparser/common/state-service.service.ts":
-  /*!*****************************************************************!*\
-    !*** ./src/app/pages/hlbparser/common/state-service.service.ts ***!
-    \*****************************************************************/
+  "./src/app/state-service.service.ts":
+  /*!******************************************!*\
+    !*** ./src/app/state-service.service.ts ***!
+    \******************************************/
 
   /*! exports provided: StateService */
 
   /***/
-  function srcAppPagesHlbparserCommonStateServiceServiceTs(module, __webpack_exports__, __webpack_require__) {
+  function srcAppStateServiceServiceTs(module, __webpack_exports__, __webpack_require__) {
     "use strict";
 
     __webpack_require__.r(__webpack_exports__);
@@ -2318,6 +2646,23 @@
         this.bindings = new rxjs__WEBPACK_IMPORTED_MODULE_2__["BehaviorSubject"](null);
         this.experimentName = new rxjs__WEBPACK_IMPORTED_MODULE_2__["BehaviorSubject"]("");
         this.experimentDescription = new rxjs__WEBPACK_IMPORTED_MODULE_2__["BehaviorSubject"]("");
+        this.tokenList = new rxjs__WEBPACK_IMPORTED_MODULE_2__["BehaviorSubject"]("");
+      }
+
+      getTokenLevel() {
+        return this.tokenLevel;
+      }
+
+      setTokenLevel(tokenLevel) {
+        this.tokenLevel = tokenLevel;
+      }
+
+      setTokenList(data) {
+        this.tokenList.next(data);
+      }
+
+      getTokenList() {
+        return this.tokenList.asObservable();
       }
 
       enableLoader() {
