@@ -70,6 +70,8 @@ export class HLBParserComponent implements OnInit {
           });
          
         return "";
+      }else{
+        this.enableView();
       }
     });
   }

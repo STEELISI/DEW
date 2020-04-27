@@ -1310,6 +1310,9 @@ let HLBParserComponent = class HLBParserComponent {
                 });
                 return "";
             }
+            else {
+                this.enableView();
+            }
         });
     }
     enableView() {

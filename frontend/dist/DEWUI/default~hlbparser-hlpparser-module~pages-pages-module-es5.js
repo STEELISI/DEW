@@ -1633,6 +1633,8 @@
               this.state.disableLoader();
             });
             return "";
+          } else {
+            this.enableView();
           }
         });
       }
