@@ -1,11 +1,10 @@
-<div class="row" >
+<div class="row" *ngIf="show">
 
 
 
   <div class="col-md-10" style="    margin: 2em;">
     
     <mat-card> 
-      <button Mat-button class="btn btn-primary" style="float:right;margin: 1em;" (click)="create()">create new experiment</button>
     <table class="table">
       <thead >
           <tr >
@@ -14,7 +13,8 @@
               <th style="min-width:150px">Experiment Description</th>
               <th style="min-width:150px">Last Created Date</th>
               <th style="min-width:150px">Last Updated Date</th>
-              <th ></th>
+              <th >  <button mat-button style="margin: 0;   width:20px; height: 20px;line-height: 0;"><i (click)="create()" class="fas fa-plus"></i></button>
+              </th>
           </tr>
       </thead>
       <tbody *ngIf="experiments.length!=0" >

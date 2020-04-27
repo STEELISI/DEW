@@ -3,7 +3,7 @@ from flask import request, escape
 from flask_restplus import Resource
 sys.path.append('./DEWAPI/api/')
 from DEWAPI.api.restplus import api
-from DEWAPI.api.common.serializers import persist_data, experiment_detail
+from DEWAPI.api.common.serializers import persist_data, experiment_detail,grantaccess
 from DEWAPI.models.user import User
 import persistence.services.sqlite3
 from persistence.services.experiment_manager import ExperimentManager
@@ -133,6 +133,25 @@ class HandleDelete(Resource):
       result['status'] = True
       result['experiment_id'] = copied_experiment['id']
       return result, 201
+    except ValueError as e:
+      if str(e) == "Forbidden":
+        return {}, 403
+
+@ns.route("/experiment/grantaccess")
+class HandleGrantAccess(Resource):
+  @api.expect(grantaccess)
+  def post(self):
+    """
+     Grant experiment access
+    """
+    content = request.get_json(force=True)
+    userId = content['userId']
+    userHandle = content['userHandle']
+    experiment_id = content['id']
+    
+    try:
+      result = em.grantExperimentAccess(experiment_id, userId,userHandle)
+      return result, 200
     except ValueError as e:
       if str(e) == "Forbidden":
         return {}, 403

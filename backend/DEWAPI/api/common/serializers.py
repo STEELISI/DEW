@@ -74,7 +74,11 @@ experiment_detail = api.model('get experiment request', {
   'userId': fields.String(description="user id", required=True),
   'id':fields.String(description="Id of experiment", required=True)
   })
-
+grantaccess = api.model('Grant experiment access', {
+  'userId': fields.String(description="user id", required=True),
+  'userHandle': fields.String(description="user id", required=True),
+  'id':fields.String(description="Id of experiment", required=True)
+  })
 suggestion_v2_object = api.model('Suggestion v2 request',{
   'username': fields.String(description="Username", required=True),
   'type': fields.String(description="Type of suggestions required",required=True, enum=['behavior', 'constraint']),

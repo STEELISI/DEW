@@ -21,7 +21,7 @@
    
         </div>
       </div> 
-      <div class="row" style="margin: .5em;">
+      <div class="row" style="margin: .5em;" *ngIf="id!=-1">
         <div class="col-md-12" style="padding: 0;">
             <mat-card> 
 
@@ -68,7 +68,7 @@
     <div style="text-align: center;padding: 1em;">     
       <button mat-stroked-button (click)="save()" >Save</button>
  </div>
- <div style="text-align: center;padding: 1em;">     
+ <div style="text-align: center;padding: 1em;" *ngIf="id!=-1">     
   <button mat-stroked-button (click)="createToken()" >Create token</button>
 </div>
 

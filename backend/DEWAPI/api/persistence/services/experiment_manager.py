@@ -97,3 +97,14 @@ class ExperimentManager(object):
     def user_can(self, experiment_id, user_id, action):
         ac = AccessControl.query.filter(AccessControl.experiment_id==experiment_id, AccessControl.uid==user_id,AccessControl.expiry_date>datetime.today(), AccessControl.access_level>=action).first()
         return (ac is not None)
+    def grantExperimentAccess(self,experiment_id, userId,userHandle):
+        ac = AccessControl.query.filter(AccessControl.experiment_id==experiment_id, AccessControl.uid==userId,AccessControl.expiry_date>datetime.today(), AccessControl.access_level>=AccessControlEnum.manage.value).first()
+        if ac is not None:
+            u = User.query.filter(User.username==userHandle).first()
+            ac = AccessControl(u.uid, experiment_id, AccessControlEnum.write.value, datetime.utcnow() + relativedelta(years=999), userId)
+            db.session.add(u)
+            db.session.add(ac)
+            db.session.commit()
+            return {'message':'Access granted.'}
+        else:
+            return {'error':'User does not have access.'}

@@ -11,29 +11,27 @@ import { HttpHeaders } from '@angular/common/http';
 })
 export class ExperimentComponent implements OnInit{
   userInfo:any;
+  show:boolean=false;
   ngOnInit() {
     this.initUser.getUser().subscribe(user=>{
      // console.log(user)
       if(user !=null){
           this.userInfo=user;
           this.load(user.userId);
-  
+          this.enableComponent();
   }
   });
   }
-
+  enableComponent(){
+    this.show = true;
+  }
   load(userId){
     this.http.get("v1/persist/getExperimentList/"+userId).subscribe(data=>{
     
       this.experiments = data;
      });
   }
-  experiments:any=[{
-    id:123,
-    name:"Test1",
-    description:"",
-    lastUpdatedDate:"01/27/2020"
-  }]
+  experiments:any=[]
   constructor(private router:Router,private http:HttpService,private initUser:InitUserService){
 
   }
