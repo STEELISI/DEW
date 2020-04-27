@@ -13,7 +13,7 @@ import { RouterModule } from '@angular/router';
 import {MatRadioModule} from '@angular/material/radio';
 import { DashboardRoutingModule } from './dashboard-routing.module';
 import { DashboardComponent } from './dashboard.component';
-import { StateService } from '../hlbparser/common/state-service.service';
+import { StateService } from '../../state-service.service';
 import { ExperimentComponent } from './experiments/experiment.component';
 
 @NgModule({

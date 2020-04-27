@@ -14,7 +14,7 @@ import { AuthGuard } from './@auth/auth.guard';
 import {AuthService} from './@auth/auth.service';
 import { AuthModule } from './@auth/auth.module';
 import { AppService } from './app.service';
-import { StateService } from './pages/hlbparser/common/state-service.service';
+import { StateService } from './state-service.service';
 @NgModule({
   declarations: [
     AppComponent

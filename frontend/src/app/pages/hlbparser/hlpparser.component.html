@@ -1,5 +1,5 @@
 
-  <mat-tab-group>
+  <mat-tab-group *ngIf="isViewEnable()">
     <mat-tab *ngFor="let x of menuList" label="{{ x.name }}">
    
     

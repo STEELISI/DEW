@@ -1,5 +1,5 @@
 import { Pipe, PipeTransform } from '@angular/core';
-import { StateService } from './state-service.service';
+import { StateService } from '../../../state-service.service';
 
 
 @Pipe({

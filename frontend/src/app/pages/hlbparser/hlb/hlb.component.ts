@@ -2,7 +2,7 @@ import { Component, OnInit, Inject, ChangeDetectorRef } from "@angular/core";
 import { CdkDragDrop, moveItemInArray } from "@angular/cdk/drag-drop";
 import * as Quill from "quill";
 import EditorService from "../common/editor-service";
-import { StateService } from "../common/state-service.service";
+import { StateService } from "../../../state-service.service";
 import { MatSnackBar } from "@angular/material";
 import {
   MatDialog,
@@ -34,7 +34,8 @@ export class HlbComponent implements OnInit {
     text: "",
   };
   editIndex: number;
-  behaviorText: String;constraintText:string;
+  behaviorText: String;
+  constraintText: string;
   textBoxId: number;
   behaviorList: any = [];
   constraintWordList: any = [];
@@ -306,7 +307,7 @@ export class HlbComponent implements OnInit {
     this.stateservice.setConstraints(this.contraintList);
     this.http.put("v1/hlb/parse", data).subscribe((data: ParseApiBean) => {
       //console.log(data);
-   //   this.extractInfo(data);
+      //   this.extractInfo(data);
     });
   }
   extractInfo(data: ParseApiBean) {

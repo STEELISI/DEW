@@ -1,7 +1,7 @@
 import { Component, OnInit } from "@angular/core";
 import { Router, ActivatedRoute, ParamMap } from "@angular/router";
 import { AuthService } from "src/app/@auth/auth.service";
-import { StateService } from "./common/state-service.service";
+import { StateService } from "../../state-service.service";
 import { HttpService } from "src/app/http-service.service";
 
 @Component({
@@ -10,6 +10,7 @@ import { HttpService } from "src/app/http-service.service";
   styleUrls: ["./hlpparser.component.scss"],
 })
 export class HLBParserComponent implements OnInit {
+  viewFlag:boolean=false;
   menuList: any = [
     {
       name: "Information",
@@ -58,7 +59,7 @@ export class HLBParserComponent implements OnInit {
         this.http
           .post("api/v1/persist/getExperimentById", input)
           .subscribe((data) => {
-
+            this.enableView();
             this.state.setActors(data.actors);
             this.state.setExperimentName(data.name);
             this.state.setExperimentDescription(data.description);
@@ -72,4 +73,10 @@ export class HLBParserComponent implements OnInit {
       }
     });
   }
+
+  enableView(){
+  this.viewFlag = true;
+  }
+
+  isViewEnable():boolean{return this.viewFlag;}
 }

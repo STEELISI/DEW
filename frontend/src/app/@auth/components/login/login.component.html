@@ -4,25 +4,89 @@
   </div>
 </div>
 
-<div class="row" *ngIf="!alive" style="margin: 5%;margin-left: 26%;margin-right: 26%;">
+<div
+  class="row"
+  *ngIf="!alive"
+  style="margin: 5%; margin-left: 26%; margin-right: 26%;"
+>
   <div class="container">
     <div class="col-md-12">
       <mat-card>
+       
         <div class="row" style="text-align: center;">
-          <div class="col-md-12"><h3>Login!</h3></div>
+          <div class="col-md-12"> <div class="navbar-header">
+            
+            <a class="navbar-brand" href="#">
+              <img
+                src="./assets/isi_logo.gif"
+                class="img-thumbnail"
+                style="border:none;height: 35px;"
+                alt=""
+              />
+            </a>
+           
+            </div></div>
         </div>
         <div class="row" style="text-align: center;">
-          <div class="col-md-12" >
-            <mat-form-field class="col-md-12">
-              <mat-label>Email</mat-label>
-              <input matInput [(ngModel)]="emailId" name="email" />
-            </mat-form-field>
+          <mat-form-field class="col-md-12">
+            <mat-label>Email</mat-label>
+            <input matInput [(ngModel)]="emailId" name="email" />
+            <mat-icon
+              matSuffix
+              *ngIf="emailId.length != 0 && isAlternateLoginEnable()"
+              class="fas fa-angle-right pointer green"
+              (click)="enablePassword()"
+            ></mat-icon>
+          </mat-form-field>
+        </div>
+        <div
+          class="row"
+          style="text-align: center;"
+          *ngIf="isAlternateLoginEnable()"
+        >
+          <div class="col-md-12">
             <p>or</p>
+            <button mat-stroked-button (click)="login()">
+              Login using Google!
+            </button>
           </div>
         </div>
-        <div class="row" style="text-align: center;">
-          <div class="col-md-12" >
-            <button mat-stroked-button (click)="login()">Login using Google!</button>
+        <div
+          class="row"
+          *ngIf="!isAlternateLoginEnable()"
+          style="text-align: center;"
+        >
+          <mat-form-field class="col-md-12">
+            <mat-label>Enter your password</mat-label>
+            <input
+              matInput
+              [type]="hide ? 'password' : 'text'"
+              [(ngModel)]="password"
+            />
+            <button
+              mat-icon-button
+              matSuffix
+              (click)="hide = !hide"
+              [attr.aria-label]="'Hide password'"
+              [attr.aria-pressed]="hide"
+            >
+              <mat-icon>{{ hide ? "visibility_off" : "visibility" }}</mat-icon>
+            </button>
+            <button mat-icon-button matSuffix>
+              <mat-icon
+                *ngIf="password.length != 0"
+                class="fas fa-angle-right pointer green"
+                (click)="enablePassword()"
+              ></mat-icon>
+            </button>
+          </mat-form-field>
+          <div class="col-md-12">
+            <button mat-icon-button matSuffix>
+              <mat-icon
+                class="fas fa-angle-left pointer"
+                (click)="disablePassword()"
+              ></mat-icon>
+            </button>
           </div>
         </div>
       </mat-card>

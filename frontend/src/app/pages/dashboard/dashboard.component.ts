@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { StateService } from '../hlbparser/common/state-service.service';
+import { StateService } from '../../state-service.service';
 
 @Component({
   selector: 'dashboard',
@@ -12,13 +12,9 @@ export class DashboardComponent implements OnInit{
 
 
     menuList:any=[
-      {
-        name:"Home",
-        id:1
-      }
-      ,{
+     {
         name:"List of Experiment",
-        id:2
+        id:1
       
       }   
       ];

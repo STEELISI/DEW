@@ -8,7 +8,7 @@ import { MatCardModule } from "@angular/material/card";
 import { DragDropModule } from "@angular/cdk/drag-drop";
 import { QuillModule } from "ngx-quill";
 import { FontAwesomeModule } from "@fortawesome/angular-fontawesome";
-import { StateService } from './common/state-service.service';
+import { StateService } from '../../state-service.service';
 import { MatButtonModule, MatSnackBarModule, MatDialogModule, MatTableModule } from '@angular/material';
 import { NgxFileDropModule } from 'ngx-file-drop';
 import { HLBParserComponent } from './hlpparser.component';

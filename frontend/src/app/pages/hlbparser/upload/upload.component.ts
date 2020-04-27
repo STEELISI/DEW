@@ -10,7 +10,7 @@ import {
   MatDialogRef,
   MAT_DIALOG_DATA,
 } from "@angular/material/dialog";
-import { StateService } from "../common/state-service.service";
+import { StateService } from "../../../state-service.service";
 import { HttpService } from 'src/app/http-service.service';
 @Component({
   selector: "upload",

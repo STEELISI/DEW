@@ -1,3 +1,11 @@
 .tab{
     overflow: hidden;
 }
+
+.mat-tab-label, .mat-tab-link{
+    font-size: 12px !important;
+}
+
+.mat-tab-label{
+    min-width: 125px !important;
+}

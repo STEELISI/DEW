@@ -1,5 +1,5 @@
 import { Component, OnInit, Input } from "@angular/core";
-import { StateService } from "../common/state-service.service";
+import { StateService } from "../../../state-service.service";
 import { AuthService } from 'src/app/@auth/auth.service';
 import { HttpService } from 'src/app/http-service.service';
 import { Router } from '@angular/router';

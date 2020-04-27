@@ -8,7 +8,6 @@ import { MatCardModule } from "@angular/material/card";
 import { DragDropModule } from "@angular/cdk/drag-drop";
 import { QuillModule } from "ngx-quill";
 import { FontAwesomeModule } from "@fortawesome/angular-fontawesome";
-import { StateService } from './common/state-service.service';
 import { MatButtonModule, MatSnackBarModule, MatDialogModule, MatTableModule } from '@angular/material';
 import { NgxFileDropModule } from 'ngx-file-drop';
 import { HLBParserComponent } from './hlpparser.component';
@@ -25,6 +24,7 @@ import { DependencyGraphComponent } from './dependency-graph/dependency-graph.co
 import {MatRadioModule} from '@angular/material/radio';
 import { InfoComponent } from './experiment-info/info.component';
 import { HttpClientModule } from '@angular/common/http';
+import { StateService } from 'src/app/state-service.service';
 
 @NgModule({
   exports:[HLBParserComponent],

@@ -19,8 +19,12 @@ import {
   MatInputModule,
   MatCardModule,
   MatButtonModule,
+  MatIconModule,
 } from "@angular/material";
 import { BrowserModule } from "@angular/platform-browser";
+import { GoogleRegistrationComponent } from './components/googleregistration/google-registration.component';
+import { StateService } from '../state-service.service';
+import { HttpService } from '../http-service.service';
 
 @NgModule({
   exports: [AuthComponent],
@@ -30,6 +34,7 @@ import { BrowserModule } from "@angular/platform-browser";
     LoginComponent,
     GoogleOAuth2CallbackComponent,
     LogoutComponent,
+    GoogleRegistrationComponent
   ],
   imports: [
     CommonModule,
@@ -39,8 +44,9 @@ import { BrowserModule } from "@angular/platform-browser";
     FormsModule,
     MatCardModule,
     MatButtonModule,
-    MatInputModule
-  ],
+    MatInputModule,
+    MatIconModule
+  ]
 })
 export class AuthModule {
   static forRoot(): ModuleWithProviders {

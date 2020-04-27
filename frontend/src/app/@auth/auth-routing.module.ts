@@ -4,15 +4,16 @@ import { AuthComponent } from "./auth.component";
 import { LoginComponent } from "./components/login/login.component";
 import { GoogleOAuth2CallbackComponent } from './components/googlecallback/google-oauth2-callback.component';
 import { LogoutComponent } from './components/logout/logout.component';
+import { GoogleRegistrationComponent } from './components/googleregistration/google-registration.component';
 
 const routes: Routes = [
-  {
-    path: "",
-    component: AuthComponent,
-    children: [
+  
+   
       {
         path: "",
-        component: LoginComponent
+        pathMatch: 'full',
+        redirectTo:'login'
+        // component: LoginComponent
       },
       {
         path: "login",
@@ -22,11 +23,13 @@ const routes: Routes = [
         path: "googleoauth2callback",
         component: GoogleOAuth2CallbackComponent
       },{
+      path: "registerwithgoogle/:id",
+      component: GoogleRegistrationComponent
+    },{
         path: "logout",
         component: LogoutComponent
-      },
-    ]
-  }
+      }
+   
 ];
 
 @NgModule({

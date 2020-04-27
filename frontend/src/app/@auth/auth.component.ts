@@ -6,9 +6,9 @@ import { Component, OnDestroy } from '@angular/core';
   selector: 'auth',
   styleUrls:['auth.component.scss'],
   template: `
-  <layout>
+
               <router-outlet></router-outlet>
-         </layout>
+        
   `,
 })
 export class AuthComponent {

@@ -84,7 +84,14 @@ suggestion_v2_object = api.model('Suggestion v2 request',{
 user_object = api.model('User information request',{
   'token': fields.String(description="token", required=True),
 })
+user_handle = api.model('User handle verification',{
+  'handle': fields.String(description="handle", required=True),
+})
 
+register_user_handle = api.model('Register a new user ',{
+  'token': fields.String(description="token", required=True),
+  'handle': fields.String(description="handle", required=True),
+})
 
 token_data = api.model('Create token object',{
   'experiment_id': fields.String(description="experiment id for which the token is to be created", required=True),
@@ -95,4 +102,23 @@ token_data = api.model('Create token object',{
 tokenListModel = api.model('Get List of all tokens',{
   'experiment_id': fields.String(description="experiment id for which the token is to be created", required=True),
   'creator_uid': fields.String(description="uid of creator", required=True),
+})
+
+token_data_small = api.model('Toggle token object',{
+  'experiment_id': fields.String(description="experiment id for which the token is to be created", required=True),
+  'token': fields.String(description="Auth token to be toggled", required=True),
+  'current_uid': fields.String(description="uid of current user", required=True),
+})
+
+
+uid_header_parser = api.parser()
+uid_header_parser.add_argument('X-user-id',location='headers')
+
+experiment_update_by_token = api.model('Experiment object update by token', {
+  'name':fields.String(description="Name of experiment", required=True),
+  'description':fields.String(description="Description of experiment", required=True),
+  'behaviors': fields.List(fields.String, description="List of behaviors",required=True),
+  'constraints': fields.List(fields.String, description="List of constraints",required=True),
+  'actors': fields.List(fields.String, description="List of actors",required=True),
+  'bindings': fields.List(fields.String, description="List of bindings",required=True)
 })

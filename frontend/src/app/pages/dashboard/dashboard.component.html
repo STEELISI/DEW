@@ -1,12 +1,7 @@
 
   <mat-tab-group>
     <mat-tab *ngFor="let x of menuList" label="{{ x.name }}">
-
       <div *ngIf="x.id == 1" class="tab">
-
-        Welcome {{userDetails.name}}!
-      </div>
-      <div *ngIf="x.id == 2" class="tab">
         <experiment></experiment>
         </div>
     </mat-tab>

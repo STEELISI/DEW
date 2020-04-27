@@ -2,15 +2,29 @@ import { BehaviorSubject, Observable, of } from 'rxjs';
 import { Injectable } from '@angular/core';
 import { AuthResult } from './auth-result';
 import { tokenName } from '@angular/compiler';
+import { InitUserService } from './init-user.service';
+import { HttpService } from '../http-service.service';
 
 @Injectable({
     providedIn: 'root'
   })
 export class AuthService {
-
+ 
+ 
+  constructor(protected http:HttpService){}
 
   login:boolean=false;
   token:String;
+  expiry:Number;
+
+  startSession(id): Observable<any> {
+    
+      var param = {
+        token:id
+      }
+     return this.http.post('/api/v1/user/validateUser/',param);
+
+  }
   authenticate(arg0: string):Observable<any> {
    // //console.log(window.location.hash.substr(1));
     var params = {}
@@ -19,10 +33,16 @@ export class AuthService {
         params[temp[0]] = temp[1] 
     });
    // //console.log(params);
-    this.isAuthenticate.next(true);
-    this.setCookie("token",params["access_token"],Number(params["expires_in"]));
+  
+    
     this.token = params["access_token"];
-    return of( new AuthResult(true,params["access_token"]));
+    this.expiry = Number(params["expires_in"]);
+    return this.startSession(params["access_token"]);
+  }
+
+  enableAuthentication(){
+    this.isAuthenticate.next(true);
+    this.setCookie("token",this.token,this.expiry);
   }
   getToken() {
     return this.token;

@@ -4,8 +4,18 @@ from flask import request,jsonify
 from DEWAPI.models.user import User
 from extensions import db
 class GoogleLogin():
-
-    def getUserInfo(self,token):
+    def validate(self,token):
+        userInfo = self.googleUserInfo(token)
+        result = {}
+        if userInfo is not None:
+            u = User.query.filter(userInfo['userId'] == User.uid).first()
+            if u is None:
+                result['error'] = 'Invalid User'
+                result['navigateTo'] = 'registration'
+            else:
+                result = userInfo
+        return result
+    def googleUserInfo(self,token):
         try:
             # Specify the CLIENT_ID of the app that accesses the backend:
             CLIENT_ID = '926607687771-0lll564e4sbjo4davt10fufmhuehgl1s.apps.googleusercontent.com'
@@ -21,17 +31,47 @@ class GoogleLogin():
             result['img'] = response['picture']
             result['fullName'] = response['name']
             result['userId'] = uid
-            print(result)
-            self.getOrStoreUserInfo(uid=uid,emailId=response['email'],username=userId,name=response['name'],access_token=token)
+            # print(result)
             return result
         except ValueError as e:
             # Invalid token
-            print(e)
-            pass
+            return None
+    def getUserInfo(self,token):
+        result = self.googleUserInfo(token)
+        r = self.getOrStoreUserInfo(uid=result['userId'],emailId=result['emailId'],username=result['userId'],name=result['fullName'],access_token=token)
+        if r:
+            return result
+        else:
+            return {'error':'Unknown user'}
+        
     def getOrStoreUserInfo(self,uid,username,name,emailId,access_token):
         u = User.query.filter(User.uid == uid).first()
-        print(u)
         if u is None:
-            u = User(username=username, email=emailId, uid=uid, name=name,access_token=access_token)
-            db.session.add(u)
-            db.session.commit()
+            return False
+            # u = User(username=username, email=emailId, uid=uid, name=name,access_token=access_token)
+            # db.session.add(u)
+            # db.session.commit()
+        else:
+            return True
+    def validateHandle(self, handle):
+        u = User.query.filter(User.username == handle.lower()).first()
+        if u is None:
+            return {'valid':True}
+            # u = User(username=username, email=emailId, uid=uid, name=name,access_token=access_token)
+            # db.session.add(u)
+            # db.session.commit()
+        else:
+            return {'valid':False}
+    def registerUserHandle(self,handle,token):
+        
+        if self.validateHandle(handle)['valid']:
+            result = self.googleUserInfo(token)
+            if result is None:
+                return {'error':'token is invalid. Please try again','navigate':'login'}
+            else:
+                u = User(uid=result['userId'],email=result['emailId'],username=handle.lower(),name=result['fullName'],access_token=token)
+                db.session.add(u)
+                db.session.commit()
+                return {'message':'Successfully created!'}
+        else:
+            return {'error':'Handle is already taken','navigate':'login'}

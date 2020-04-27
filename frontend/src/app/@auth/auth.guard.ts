@@ -9,7 +9,7 @@ import { CanActivate, ActivatedRouteSnapshot, RouterStateSnapshot, Router, CanAc
 import { Observable } from 'rxjs';
 import { tap, map } from 'rxjs/operators';
 import {AuthService} from './auth.service';
-import { StateService } from '../pages/hlbparser/common/state-service.service';
+import { StateService } from '../state-service.service';
 
 @Injectable()
 export class AuthGuard implements CanActivate {
