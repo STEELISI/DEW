@@ -39,6 +39,7 @@ export class InitUserService {
     var givenName = this.authService.getCookie("givenName");
     var lastName = this.authService.getCookie("lastName");
     var userId = this.authService.getCookie("userId");
+    var userHandle = this.authService.getCookie("userHandle");
     var result = {
       fullName: fullName,
       emailId: emailId,
@@ -46,11 +47,15 @@ export class InitUserService {
       givenName: givenName,
       lastName: lastName,
       userId: userId,
+      userHandle:userHandle
     };
     if (
       fullName == undefined ||
       fullName == null ||
-      fullName == "" ||
+      fullName == "" || 
+      userHandle == undefined ||
+      userHandle == null ||
+      userHandle == "" ||
       emailId == undefined ||
       emailId == null ||
       emailId == "" ||
@@ -80,6 +85,7 @@ export class InitUserService {
         this.authService.setCookie("img", data.img, 3599);
         this.authService.setCookie("fullName", data.fullName, 3599);
         this.authService.setCookie("userId", data.userId, 3599);
+        this.authService.setCookie("userHandle", data.userHandle, 3599);
         this.state.disableLoader();
         this.user.next(data);
       });

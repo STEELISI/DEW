@@ -123,6 +123,7 @@ export class AuthService {
    this.setCookie("givenName","",0);
    this.setCookie("lastName","",0);
    this.setCookie("img","",0);
+   this.setCookie("userHandle","",0);
    
 
   }

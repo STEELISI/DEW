@@ -31,28 +31,30 @@ class GoogleLogin():
             result['img'] = response['picture']
             result['fullName'] = response['name']
             result['userId'] = uid
-            # print(result)
+            print(result)
             return result
-        except ValueError as e:
+        except KeyError as e:
             # Invalid token
+            # print('error')
+            return None
+        except ValueError as e:
             return None
     def getUserInfo(self,token):
         result = self.googleUserInfo(token)
-        r = self.getOrStoreUserInfo(uid=result['userId'],emailId=result['emailId'],username=result['userId'],name=result['fullName'],access_token=token)
-        if r:
-            return result
+        print(result)
+        if result is not None:
+            r = self.getOrStoreUserInfo(uid=result['userId'],emailId=result['emailId'],username=result['userId'],name=result['fullName'],access_token=token)
+            if r is not None:
+                result['userHandle'] = r['username']
+                return result
+            else:
+                return {'error':'Unknown user'}
         else:
-            return {'error':'Unknown user'}
+            return {'error':'Invalid Token'}
         
     def getOrStoreUserInfo(self,uid,username,name,emailId,access_token):
         u = User.query.filter(User.uid == uid).first()
-        if u is None:
-            return False
-            # u = User(username=username, email=emailId, uid=uid, name=name,access_token=access_token)
-            # db.session.add(u)
-            # db.session.commit()
-        else:
-            return True
+        return u.to_dict()
     def validateHandle(self, handle):
         u = User.query.filter(User.username == handle.lower()).first()
         if u is None:

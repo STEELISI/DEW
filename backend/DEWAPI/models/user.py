@@ -20,3 +20,13 @@ class User(db.Model):
 
     # default_experiment = db.relationship('Experiment', backref=db.backref('user', lazy=True))
 
+    def to_dict(self):
+        return {
+            'uid': self.uid,
+            'email': self.email,
+            'name': self.name,
+            'username': self.username,
+            'created_at': self.created_at,
+            'updated_at': self.updated_at,
+            'access_token': self.access_token
+            }
