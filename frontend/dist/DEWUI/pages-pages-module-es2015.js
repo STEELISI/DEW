@@ -22,7 +22,7 @@ __webpack_require__.r(__webpack_exports__);
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony default export */ __webpack_exports__["default"] = ("<div class=\"row\" >\n\n\n\n  <div class=\"col-md-10\" style=\"    margin: 2em;\">\n    \n    <mat-card> \n      <button Mat-button class=\"btn btn-primary\" style=\"float:right;margin: 1em;\" (click)=\"create()\">create new experiment</button>\n    <table class=\"table\">\n      <thead >\n          <tr >\n            <th style=\"min-width:50px\">Exp. Id</th>\n              <th style=\"min-width:150px\">Experiment Name</th>\n              <th style=\"min-width:150px\">Experiment Description</th>\n              <th style=\"min-width:150px\">Last Created Date</th>\n              <th style=\"min-width:150px\">Last Updated Date</th>\n              <th ></th>\n          </tr>\n      </thead>\n      <tbody *ngIf=\"experiments.length!=0\" >\n          <tr *ngFor=\"let item of experiments; let i=index\" >\n            <td>{{item.experiment_id}}</td>\n              <td><strong>{{ item.name }}</strong></td>\n              <td><strong>{{ item.description }}</strong></td>\n              <td><strong>{{ item.created_date }}</strong></td>\n              <td><strong>{{ item.updated_date }}</strong></td>\n              <td>\n                <i class=\"fas fa-copy pointer\" (click)=\"copy(item)\"></i>\n                <i class=\"fas fa-edit pointer\" (click)=\"edit(item)\"></i>\n                <i class=\"far fa-trash-alt pointer\" (click)=\"delete(item)\"></i></td>\n\n          </tr>\n      </tbody>\n      <tbody class=\"upload-name\"  *ngIf=\"experiments.length==0\" >\n        <tr >\n          <td colspan=\"3\" ><span ><i>No saved experiments.</i> </span></td>\n            \n\n        </tr>\n    </tbody>\n \n  </table>\n  </mat-card>\n    </div>\n</div>");
+/* harmony default export */ __webpack_exports__["default"] = ("<div class=\"row\" *ngIf=\"show\">\n\n\n\n  <div class=\"col-md-10\" style=\"    margin: 2em;\">\n    \n    <mat-card> \n    <table class=\"table\">\n      <thead >\n          <tr >\n            <th style=\"min-width:50px\">Exp. Id</th>\n              <th style=\"min-width:150px\">Experiment Name</th>\n              <th style=\"min-width:150px\">Experiment Description</th>\n              <th style=\"min-width:150px\">Last Created Date</th>\n              <th style=\"min-width:150px\">Last Updated Date</th>\n              <th >  <button mat-button style=\"margin: 0;   width:20px; height: 20px;line-height: 0;\"><i (click)=\"create()\" class=\"fas fa-plus\"></i></button>\n              </th>\n          </tr>\n      </thead>\n      <tbody *ngIf=\"experiments.length!=0\" >\n          <tr *ngFor=\"let item of experiments; let i=index\" >\n            <td>{{item.experiment_id}}</td>\n              <td><strong>{{ item.name }}</strong></td>\n              <td><strong>{{ item.description }}</strong></td>\n              <td><strong>{{ item.created_date }}</strong></td>\n              <td><strong>{{ item.updated_date }}</strong></td>\n              <td>\n                <i class=\"fas fa-copy pointer\" (click)=\"copy(item)\"></i>\n                <i class=\"fas fa-edit pointer\" (click)=\"edit(item)\"></i>\n                <i class=\"far fa-trash-alt pointer\" (click)=\"delete(item)\"></i></td>\n\n          </tr>\n      </tbody>\n      <tbody class=\"upload-name\"  *ngIf=\"experiments.length==0\" >\n        <tr >\n          <td colspan=\"3\" ><span ><i>No saved experiments.</i> </span></td>\n            \n\n        </tr>\n    </tbody>\n \n  </table>\n  </mat-card>\n    </div>\n</div>");
 
 /***/ }),
 
@@ -253,12 +253,8 @@ let ExperimentComponent = class ExperimentComponent {
         this.router = router;
         this.http = http;
         this.initUser = initUser;
-        this.experiments = [{
-                id: 123,
-                name: "Test1",
-                description: "",
-                lastUpdatedDate: "01/27/2020"
-            }];
+        this.show = false;
+        this.experiments = [];
     }
     ngOnInit() {
         this.initUser.getUser().subscribe(user => {
@@ -266,8 +262,12 @@ let ExperimentComponent = class ExperimentComponent {
             if (user != null) {
                 this.userInfo = user;
                 this.load(user.userId);
+                this.enableComponent();
             }
         });
+    }
+    enableComponent() {
+        this.show = true;
     }
     load(userId) {
         this.http.get("v1/persist/getExperimentList/" + userId).subscribe(data => {
