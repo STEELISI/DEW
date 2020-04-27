@@ -81,10 +81,11 @@
                 </div>
                   <div *ngIf="bindingList.length!=0">
                 <ul  class="behavior-list " >
-                  <li class="binding-box" *ngFor="let item of bindingList;let index=index" ><div>
+                  <li  *ngFor="let item of bindingList;let index=index" ><div>
                   
-                    <mat-form-field style="width:100%">
-                      <input matInput placeholder="{{item.key+' represents: '}}" [(ngModel)]="item.value" (change)="storeBinding()">
+                    <mat-form-field style="width:100%" appearance="outline">
+                      <mat-label>{{item.key+' represents: '}}</mat-label>
+                      <input matInput [(ngModel)]="item.value" (change)="storeBinding()">
                     </mat-form-field>
       
                     <span>
