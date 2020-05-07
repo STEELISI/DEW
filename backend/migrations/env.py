@@ -13,11 +13,22 @@ config = context.config
 # This line sets up loggers basically.
 fileConfig(config.config_file_name)
 
+
+# Add sql continuum migration
+from sqlalchemy_continuum import make_versioned
+make_versioned(user_cls=None)
+
 # add your model's MetaData object here
 # for 'autogenerate' support
-# from myapp import mymodel
-# target_metadata = mymodel.Base.metadata
-target_metadata = None
+import sys, os
+sys.path.append(os.getcwd())
+from DEWAPI.models.experiment import Experiment
+from DEWAPI.models.access_control import AccessControl
+from DEWAPI.models.auth_token import AuthToken
+from DEWAPI.models.user import User
+target_metadata = Experiment.metadata
+# target_metadata = None
+
 
 # other values from the config, defined by the needs of env.py,
 # can be acquired:
