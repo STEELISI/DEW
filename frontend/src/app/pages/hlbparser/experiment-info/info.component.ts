@@ -187,7 +187,7 @@ export class InfoComponent implements OnInit {
     let t:string = this.experiment.userId
     console.log(t)
       var dialogRef = this.dialog.open(AddUserPopUp, {
-        width: "70%",
+        width: "40%",
         data: t
       });
   
