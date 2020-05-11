@@ -89,6 +89,7 @@ export class HlbComponent implements OnInit {
           this.bindingMap.set(key, t);
           this.bindingList.push(t);
         });
+        //this.storeBinding()
         //console.log(this.bindingMap);
       }
     });
@@ -312,6 +313,7 @@ export class HlbComponent implements OnInit {
   }
   extractInfo(data: ParseApiBean) {
     this.extractScenario(data.parsedScenario);
+    this.storeBinding()
   }
 
   extractScenario(scenario) {
@@ -364,7 +366,7 @@ export class HlbComponent implements OnInit {
     triggers //,actions,emitters
   ) {
     //console.log(this.bindingMap);
-    if (triggers != null)
+    if (triggers != null){
       triggers.forEach((element) => {
         //console.log(element);
         if (!this.bindingMap.has(element)) {
@@ -375,6 +377,7 @@ export class HlbComponent implements OnInit {
           this.bindingList.push(this.bindingMap.get(element));
         }
       });
+    }
     //   if(actions!=null)
     //   actions.forEach(element => {
     //     //console.log(element);
@@ -405,14 +408,14 @@ export class HlbComponent implements OnInit {
     // //console.log(this.bindingMap);
   }
   logChangeBehavior(event) {
-    if (this.behaviorService.getText().trim() === "") return;
+   // if (this.behaviorService.getText().trim() === "") return;
 
     // var index = this.behaviorService.getText().length-2;
     // if (this.behaviorService.getText().charAt(index) == '\n')
     //     this.updateActors();
   }
   logChangeConstraints(event) {
-    if (this.constraintService.getText().trim() === "") return;
+   // if (this.constraintService.getText().trim() === "") return;
     // //console.log(this.constraintService.getText().charAt(this.constraintService.getText().length-1))
   }
   insertValue(text: any, flag: boolean = false) {

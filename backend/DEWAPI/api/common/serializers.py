@@ -108,6 +108,11 @@ tokenListModel = api.model('Get List of all tokens',{
   'creator_uid': fields.String(description="uid of creator", required=True),
 })
 
+userAccessListModel = api.model('Get List of all access',{
+  'experiment_id': fields.String(description="experiment id", required=True),
+  'userId': fields.String(description="uid of creator", required=True),
+})
+
 token_data_small = api.model('Toggle token object',{
   'experiment_id': fields.String(description="experiment id for which the token is to be created", required=True),
   'token': fields.String(description="Auth token to be toggled", required=True),

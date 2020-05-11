@@ -2,6 +2,9 @@ import requests
 
 from flask import request,jsonify
 from DEWAPI.models.user import User
+from DEWAPI.models.access_control import AccessControl
+from utilities.access_control_enum import AccessControlEnum
+from datetime import datetime
 from extensions import db
 class GoogleLogin():
     def validate(self,token):
@@ -77,3 +80,26 @@ class GoogleLogin():
                 return {'message':'Successfully created!'}
         else:
             return {'error':'Handle is already taken','navigate':'login'}
+    def getUserHandles(self,token):
+        result = None
+        print(token)
+        user1 = User.query.filter(User.uid == token).first()
+        if user1 == None:
+            result = {'error':'Unauthorized access','location':'logout'}
+        else:
+            u = User.query.filter(User.uid != token).all()
+            r = [{'name':i.name,'handle':i.username} for i in u]
+            result = {'userList':r}
+        return result
+    def getUserAccessList(self,userId,experimentId):
+        ac = AccessControl.query.filter(AccessControl.experiment_id==experimentId, AccessControl.uid==userId,AccessControl.expiry_date>datetime.today(), AccessControl.access_level>=AccessControlEnum.manage.value).first()
+        result = {}
+        if ac is not None:
+            ac1 = AccessControl.query.filter(AccessControl.experiment_id==experimentId, AccessControl.uid!=userId,AccessControl.expiry_date>datetime.today(), AccessControl.access_level>AccessControlEnum.none.value).all()
+            r = [i.uid for i in ac1] 
+            
+            result['userList'] = [{'name':i.name,'handle':i.username} for i in User.query.filter(User.uid.in_(r)).all()]
+        
+        else:
+            result = {'error':'Un Authorized user','location':'logout'}
+        return result

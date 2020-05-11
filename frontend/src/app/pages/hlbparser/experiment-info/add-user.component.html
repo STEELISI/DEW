@@ -1,0 +1,63 @@
+<!-- <h1 mat-dialog-title>Hi {{data.name}}</h1>
+<div mat-dialog-content>
+  <p>What's your favorite animal?</p>
+  <mat-form-field>
+    <input matInput [(ngModel)]="data.animal">
+  </mat-form-field>
+</div>
+<div mat-dialog-actions>
+  <button mat-button (click)="onNoClick()">No Thanks</button>
+  <button mat-button [mat-dialog-close]="data.animal" cdkFocusInitial>Ok</button>
+</div> -->
+
+
+
+<div mat-dialog-content>
+  <div class="row" style="margin: .5em;" >
+    <div class="col-md-12" style="padding: 0;">
+  
+         <h1>Hello</h1>
+
+          <div class="row">
+           
+              <mat-form-field class="col-md-8">
+                <input type="text"
+                       placeholder="User Name"
+                       aria-label="string"
+                       matInput
+                       [(ngModel)]="UserObj.handle"
+                       [formControl]="userHandleSelect"
+                       [matAutocomplete]="UserInfo">
+                <mat-autocomplete #UserInfo="matAutocomplete">
+                  <mat-option *ngFor="let option of filteredUserHandle | async" [value]="option.value">
+                   {{option.name +" <"+option.value+"> "}}
+                  </mat-option>
+                </mat-autocomplete>
+              </mat-form-field>
+        
+
+        <mat-form-field class="col-md-4">
+          <input type="text"
+                 placeholder="Access Level"
+                 aria-label="string"
+                 matInput
+                 [(ngModel)]="UserObj.access"
+                 [formControl]="accessLevelControl"
+                 [matAutocomplete]="auto">
+          <mat-autocomplete #auto="matAutocomplete">
+            <mat-option *ngFor="let option of filteredLevels | async" [value]="option.value">
+              {{option.name}}
+            </mat-option>
+          </mat-autocomplete>
+        </mat-form-field>
+      </div>
+
+
+    </div>
+  </div> 
+</div>
+
+      <div mat-dialog-actions>
+        <button mat-button (click)="onNoClick()">Cancel</button>
+        <button mat-button [mat-dialog-close]="UserObj" cdkFocusInitial>Add</button>
+      </div>  

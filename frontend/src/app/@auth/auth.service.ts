@@ -97,8 +97,8 @@ export class AuthService {
   }
 
   loginWithGoogle(){
-    var redirect = 'http://dew.isi.edu/auth/googleoauth2callback';
-    //var redirect = 'http://localhost:4200/auth/googleoauth2callback';
+    // var redirect = 'http://dew.isi.edu/auth/googleoauth2callback';
+    var redirect = 'http://localhost:4200/auth/googleoauth2callback';
     var client_id = '926607687771-0lll564e4sbjo4davt10fufmhuehgl1s.apps.googleusercontent.com';
     var url = [];
   //  var apuUrl = "https://accounts.google.com/o/oauth2/v2/auth";

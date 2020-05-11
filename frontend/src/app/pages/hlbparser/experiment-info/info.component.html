@@ -6,17 +6,23 @@
     <div class="row" style="margin: .5em;">
         <div class="col-md-12" style="padding: 0;">
             <mat-card> 
-              
+              <div class="row" >
               <mat-form-field class="col-md-12" appearance="outline">
                 <mat-label>Experiment Name</mat-label>
-                <input matInput [(ngModel)]="experiment.name" (change)="setExperimentName()">
+                <input matInput [(ngModel)]="experiment.name" (change)="setExperimentName()" pattern="^([\s]*[\w]+[\s]*)+" [formControl]="nameControl" required>
+                <mat-hint>Experiment name can be any alphanumeric phrase. For example <i>Manhattan project.</i></mat-hint>
+                <mat-error>
+                  Please enter a name.
+                </mat-error>
               </mat-form-field>
-            
+            </div>
+            <div class="row" style="margin-top: 1rem;">
               <mat-form-field class="col-md-12" appearance="outline">
                 <mat-label>Experiment Description</mat-label>
-                <textarea matInput [(ngModel)]="experiment.description" (change)="setExperimentDescription()"></textarea>
+                <textarea matInput [(ngModel)]="experiment.description" maxlength="4000" rows="10" (change)="setExperimentDescription()"></textarea>
+                <mat-hint>[Optional] Few lines to describe the project. Not more than 4000 character.</mat-hint>
               </mat-form-field>
-               
+            </div>
             </mat-card>
    
         </div>
@@ -24,7 +30,53 @@
       <div class="row" style="margin: .5em;" *ngIf="id!=-1">
         <div class="col-md-12" style="padding: 0;">
             <mat-card> 
-
+              <div class="row" style="margin: .5em;" >
+                <div class="col-md-12" style="padding: 0;">
+                  <ul>
+           <li > <p>List of user having access for this experiment.</p>
+             
+              <table class="table">
+                <thead >
+                    <tr >
+                     
+                        <th style="min-width:250px">Name</th>
+                        <th style="min-width:50px">Handle</th>
+                        <!-- <th style="min-width:50px">Last Created Date</th> -->
+                       
+                        <th ><button mat-button style="margin: 0;   width:20px; height: 20px;line-height: 0;"><i (click)="addUserPopUp()" class="fas fa-plus"></i></button></th>
+                    </tr>
+                </thead>
+                <tbody *ngIf="userAccessList.length!=0" >
+                    <tr *ngFor="let item of userAccessList; let i=index" >
+                     
+                        <td><strong>{{ item.name }}</strong></td>
+                        <td><strong>{{ '@'+item.handle }}</strong></td>
+                        <!-- <td><strong>{{ item.created_date }}</strong></td> -->
+       
+                        <td>
+               
+                          <i class="far fa-trash-alt pointer" (click)="delete(i)"></i></td>
+          
+                    </tr>
+                </tbody>
+                <tbody style="text-align: center;"  *ngIf="userAccessList.length==0" >
+                  <tr >
+                    <td colspan="3" ><span ><i>No User has been granted access for this experiment.</i> </span></td>
+                      
+          
+                  </tr>
+              </tbody>
+           
+            </table>
+          </li> 
+                <!-- </div>
+              </div>
+              <hr>
+      <div class="row" style="margin: .5em;" *ngIf="id!=-1">
+        <div class="col-md-12" style="padding: 0;"> -->
+        
+          <li>  <p>List of public urls</p>
+           
               
               <table class="table">
                 <thead >
@@ -34,7 +86,7 @@
                         <th style="min-width:50px">Status</th>
                         <!-- <th style="min-width:50px">Last Created Date</th> -->
                        
-                        <th ></th>
+                        <th ><button mat-button style="margin: 0;   width:20px; height: 20px;line-height: 0;"><i (click)="createToken()" class="fas fa-plus"></i></button></th>
                     </tr>
                 </thead>
                 <tbody *ngIf="tokenList.length!=0" >
@@ -59,18 +111,22 @@
               </tbody>
            
             </table>
-            </mat-card>
+          </li>  
+          </ul>
    
-        </div>
+     </div>
       </div> 
-  </div>
+  
+</mat-card>
+   
+</div>
+</div> 
+ </div>
   <div class="col-md-4">
     <div style="text-align: center;padding: 1em;">     
       <button mat-stroked-button (click)="save()" >Save</button>
  </div>
- <div style="text-align: center;padding: 1em;" *ngIf="id!=-1">     
-  <button mat-stroked-button (click)="createToken()" >Create token</button>
-</div>
+
 
   </div>
 </div> 
