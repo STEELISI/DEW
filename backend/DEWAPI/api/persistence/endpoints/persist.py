@@ -115,6 +115,24 @@ class HandleDelete(Resource):
         return {}, 403
 
 
+@ns.route("/experiment/versions")
+class Handleversions(Resource):
+    @api.expect(experiment_detail)
+    def post(self):
+        """
+          Get versions of experiment from database
+        """
+        content = request.get_json(force=True)
+        userId = content['userId']
+        experiment_id = content['id']
+
+        try:
+            return em.get_experiment_versions(experiment_id, userId)
+        except ValueError as e:
+            if str(e) == "Forbidden":
+                return {}, 403
+
+
 @ns.route("/experiment/copy")
 class HandleDelete(Resource):
   @api.expect(experiment_detail)
