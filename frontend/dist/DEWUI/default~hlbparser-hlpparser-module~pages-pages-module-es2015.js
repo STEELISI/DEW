@@ -13,6 +13,19 @@ __webpack_require__.r(__webpack_exports__);
 
 /***/ }),
 
+/***/ "./node_modules/raw-loader/dist/cjs.js!./src/app/pages/hlbparser/experiment-info/add-user.component.html":
+/*!***************************************************************************************************************!*\
+  !*** ./node_modules/raw-loader/dist/cjs.js!./src/app/pages/hlbparser/experiment-info/add-user.component.html ***!
+  \***************************************************************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony default export */ __webpack_exports__["default"] = ("<!-- <h1 mat-dialog-title>Hi {{data.name}}</h1>\n<div mat-dialog-content>\n  <p>What's your favorite animal?</p>\n  <mat-form-field>\n    <input matInput [(ngModel)]=\"data.animal\">\n  </mat-form-field>\n</div>\n<div mat-dialog-actions>\n  <button mat-button (click)=\"onNoClick()\">No Thanks</button>\n  <button mat-button [mat-dialog-close]=\"data.animal\" cdkFocusInitial>Ok</button>\n</div> -->\n\n\n\n<div mat-dialog-content>\n  <div class=\"row\" style=\"margin: .5em;\" >\n    <div class=\"col-md-12\" style=\"padding: 0;\">\n  \n          <div class=\"row\">\n           \n              <mat-form-field class=\"col-md-8\">\n                <input type=\"text\"\n                       placeholder=\"User Name\"\n                       aria-label=\"string\"\n                       matInput\n                       [(ngModel)]=\"UserObj.handle\"\n                       [formControl]=\"userHandleSelect\"\n                       [matAutocomplete]=\"UserInfo\">\n                <mat-autocomplete #UserInfo=\"matAutocomplete\">\n                  <mat-option *ngFor=\"let option of filteredUserHandle | async\" [value]=\"option.value\">\n                   {{option.name +\" <\"+option.value+\"> \"}}\n                  </mat-option>\n                </mat-autocomplete>\n              </mat-form-field>\n        \n\n        <mat-form-field class=\"col-md-4\">\n          <input type=\"text\"\n                 placeholder=\"Access Level\"\n                 aria-label=\"string\"\n                 matInput\n                 [(ngModel)]=\"UserObj.access\"\n                 [formControl]=\"accessLevelControl\"\n                 [matAutocomplete]=\"auto\">\n          <mat-autocomplete #auto=\"matAutocomplete\">\n            <mat-option *ngFor=\"let option of filteredLevels | async\" [value]=\"option.value\">\n              {{option.name}}\n            </mat-option>\n          </mat-autocomplete>\n        </mat-form-field>\n      </div>\n\n\n    </div>\n  </div> \n</div>\n\n      <div mat-dialog-actions>\n        <button mat-button (click)=\"onNoClick()\">Cancel</button>\n        <button mat-button [mat-dialog-close]=\"UserObj\" cdkFocusInitial>Add</button>\n      </div>  ");
+
+/***/ }),
+
 /***/ "./node_modules/raw-loader/dist/cjs.js!./src/app/pages/hlbparser/experiment-info/info.component.html":
 /*!***********************************************************************************************************!*\
   !*** ./node_modules/raw-loader/dist/cjs.js!./src/app/pages/hlbparser/experiment-info/info.component.html ***!
@@ -22,7 +35,7 @@ __webpack_require__.r(__webpack_exports__);
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony default export */ __webpack_exports__["default"] = ("\n <div class=\"row\">\n<div class=\"col-md-8\">\n\n  \n    <div class=\"row\" style=\"margin: .5em;\">\n        <div class=\"col-md-12\" style=\"padding: 0;\">\n            <mat-card> \n              \n              <mat-form-field class=\"col-md-12\" appearance=\"outline\">\n                <mat-label>Experiment Name</mat-label>\n                <input matInput [(ngModel)]=\"experiment.name\" (change)=\"setExperimentName()\">\n              </mat-form-field>\n            \n              <mat-form-field class=\"col-md-12\" appearance=\"outline\">\n                <mat-label>Experiment Description</mat-label>\n                <textarea matInput [(ngModel)]=\"experiment.description\" (change)=\"setExperimentDescription()\"></textarea>\n              </mat-form-field>\n               \n            </mat-card>\n   \n        </div>\n      </div> \n      <div class=\"row\" style=\"margin: .5em;\" *ngIf=\"id!=-1\">\n        <div class=\"col-md-12\" style=\"padding: 0;\">\n            <mat-card> \n\n              \n              <table class=\"table\">\n                <thead >\n                    <tr >\n                     \n                        <th style=\"min-width:250px\">Url</th>\n                        <th style=\"min-width:50px\">Status</th>\n                        <!-- <th style=\"min-width:50px\">Last Created Date</th> -->\n                       \n                        <th ></th>\n                    </tr>\n                </thead>\n                <tbody *ngIf=\"tokenList.length!=0\" >\n                    <tr *ngFor=\"let item of tokenList; let i=index\" >\n                     \n                        <td><strong>{{ 'http://dew.isi.edu/public/hlb/view/'+item.token }}</strong></td>\n                        <td><strong>{{ (item.status)?'Active':'Not Active' }}</strong></td>\n                        <!-- <td><strong>{{ item.created_date }}</strong></td> -->\n       \n                        <td>\n               \n                          <i class=\"far fa-trash-alt pointer\" (click)=\"delete(i)\"></i></td>\n          \n                    </tr>\n                </tbody>\n                <tbody style=\"text-align: center;\"  *ngIf=\"tokenList.length==0\" >\n                  <tr >\n                    <td colspan=\"3\" ><span ><i>No public urls.</i> </span></td>\n                      \n          \n                  </tr>\n              </tbody>\n           \n            </table>\n            </mat-card>\n   \n        </div>\n      </div> \n  </div>\n  <div class=\"col-md-4\">\n    <div style=\"text-align: center;padding: 1em;\">     \n      <button mat-stroked-button (click)=\"save()\" >Save</button>\n </div>\n <div style=\"text-align: center;padding: 1em;\" *ngIf=\"id!=-1\">     \n  <button mat-stroked-button (click)=\"createToken()\" >Create token</button>\n</div>\n\n  </div>\n</div> \n\n");
+/* harmony default export */ __webpack_exports__["default"] = ("\n <div class=\"row\">\n<div class=\"col-md-8\">\n\n  \n    <div class=\"row\" style=\"margin: .5em;\">\n        <div class=\"col-md-12\" style=\"padding: 0;\">\n            <mat-card> \n              <div class=\"row\" >\n              <mat-form-field class=\"col-md-12\" appearance=\"outline\">\n                <mat-label>Experiment Name</mat-label>\n                <input matInput [(ngModel)]=\"experiment.name\" (change)=\"setExperimentName()\" pattern=\"^([\\s]*[\\w]+[\\s]*)+\" [formControl]=\"nameControl\" required>\n                <mat-hint>Experiment name can be any alphanumeric phrase. For example <i>Manhattan project.</i></mat-hint>\n                <mat-error>\n                  Please enter a name.\n                </mat-error>\n              </mat-form-field>\n            </div>\n            <div class=\"row\" style=\"margin-top: 1rem;\">\n              <mat-form-field class=\"col-md-12\" appearance=\"outline\">\n                <mat-label>Experiment Description</mat-label>\n                <textarea matInput [(ngModel)]=\"experiment.description\" maxlength=\"4000\" rows=\"10\" (change)=\"setExperimentDescription()\"></textarea>\n                <mat-hint>[Optional] Few lines to describe the project. Not more than 4000 character.</mat-hint>\n              </mat-form-field>\n            </div>\n            </mat-card>\n   \n        </div>\n      </div> \n      <div class=\"row\" style=\"margin: .5em;\" *ngIf=\"id!=-1\">\n        <div class=\"col-md-12\" style=\"padding: 0;\">\n            <mat-card> \n              <div class=\"row\" style=\"margin: .5em;\" >\n                <div class=\"col-md-12\" style=\"padding: 0;\">\n                  <ul>\n           <li > <p>List of user having access for this experiment.</p>\n             \n              <table class=\"table\">\n                <thead >\n                    <tr >\n                     \n                        <th style=\"min-width:250px\">Name</th>\n                        <th style=\"min-width:50px\">Handle</th>\n                        <!-- <th style=\"min-width:50px\">Last Created Date</th> -->\n                       \n                        <th ><button mat-button style=\"margin: 0;   width:20px; height: 20px;line-height: 0;\"><i (click)=\"addUserPopUp()\" class=\"fas fa-plus\"></i></button></th>\n                    </tr>\n                </thead>\n                <tbody *ngIf=\"userAccessList.length!=0\" >\n                    <tr *ngFor=\"let item of userAccessList; let i=index\" >\n                     \n                        <td><strong>{{ item.name }}</strong></td>\n                        <td><strong>{{ '@'+item.handle }}</strong></td>\n                        <!-- <td><strong>{{ item.created_date }}</strong></td> -->\n       \n                        <td>\n               \n                          <i class=\"far fa-trash-alt pointer\" (click)=\"delete(i)\"></i></td>\n          \n                    </tr>\n                </tbody>\n                <tbody style=\"text-align: center;\"  *ngIf=\"userAccessList.length==0\" >\n                  <tr >\n                    <td colspan=\"3\" ><span ><i>No User has been granted access for this experiment.</i> </span></td>\n                      \n          \n                  </tr>\n              </tbody>\n           \n            </table>\n          </li> \n                <!-- </div>\n              </div>\n              <hr>\n      <div class=\"row\" style=\"margin: .5em;\" *ngIf=\"id!=-1\">\n        <div class=\"col-md-12\" style=\"padding: 0;\"> -->\n        \n          <li>  <p>List of public urls</p>\n           \n              \n              <table class=\"table\">\n                <thead >\n                    <tr >\n                     \n                        <th style=\"min-width:250px\">Url</th>\n                        <th style=\"min-width:50px\">Status</th>\n                        <!-- <th style=\"min-width:50px\">Last Created Date</th> -->\n                       \n                        <th ><button mat-button style=\"margin: 0;   width:20px; height: 20px;line-height: 0;\"><i (click)=\"createToken()\" class=\"fas fa-plus\"></i></button></th>\n                    </tr>\n                </thead>\n                <tbody *ngIf=\"tokenList.length!=0\" >\n                    <tr *ngFor=\"let item of tokenList; let i=index\" >\n                     \n                        <td><strong>{{ 'http://dew.isi.edu/public/hlb/view/'+item.token }}</strong></td>\n                        <td><strong>{{ (item.status)?'Active':'Not Active' }}</strong></td>\n                        <!-- <td><strong>{{ item.created_date }}</strong></td> -->\n       \n                        <td>\n               \n                          <i class=\"far fa-trash-alt pointer\" (click)=\"delete(i)\"></i></td>\n          \n                    </tr>\n                </tbody>\n                <tbody style=\"text-align: center;\"  *ngIf=\"tokenList.length==0\" >\n                  <tr >\n                    <td colspan=\"3\" ><span ><i>No public urls.</i> </span></td>\n                      \n          \n                  </tr>\n              </tbody>\n           \n            </table>\n          </li>  \n          </ul>\n   \n     </div>\n      </div> \n  \n</mat-card>\n   \n</div>\n</div> \n </div>\n  <div class=\"col-md-4\">\n    <div style=\"text-align: center;padding: 1em;\">     \n      <button mat-stroked-button (click)=\"save()\" >Save</button>\n </div>\n\n\n  </div>\n</div> \n\n");
 
 /***/ }),
 
@@ -35,7 +48,7 @@ __webpack_require__.r(__webpack_exports__);
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony default export */ __webpack_exports__["default"] = ("<!-- <h1 mat-dialog-title>Hi {{data.name}}</h1>\n<div mat-dialog-content>\n  <p>What's your favorite animal?</p>\n  <mat-form-field>\n    <input matInput [(ngModel)]=\"data.animal\">\n  </mat-form-field>\n</div>\n<div mat-dialog-actions>\n  <button mat-button (click)=\"onNoClick()\">No Thanks</button>\n  <button mat-button [mat-dialog-close]=\"data.animal\" cdkFocusInitial>Ok</button>\n</div> -->\n\n\n<div mat-dialog-content>\n<div class=\"row\" style=\"margin: .5em;\">\n    <div class=\"col-md-12\">\n    \n              \n        <div style=\"text-align: center;\">  Bindings</div> \n        \n          <hr>\n          <div *ngIf=\"bindingList.length==0\" style=\"font-size: .8em;text-align: center;\">\n            <span ><i>No Bindings Needed</i></span>\n          </div>\n            <div *ngIf=\"bindingList.length!=0\">\n          <ul  class=\"behavior-list \" >\n            <li class=\"binding-box\" *ngFor=\"let item of bindingList;let index=index\" ><div>\n            \n              <mat-form-field style=\"width:100%\">\n                <input matInput placeholder=\"{{item.key+' represents: '}}\" [(ngModel)]=\"item.value\">\n              </mat-form-field>\n\n              <span>\n              </span>\n             \n            </div>\n              </li>\n        </ul>\n        </div>\n\n        \n\n      </div>\n      </div></div>\n\n      <div mat-dialog-actions>\n        <button mat-button (click)=\"onNoClick()\">Back</button>\n        <button mat-button [mat-dialog-close]=\"bindingList\" cdkFocusInitial>Download</button>\n      </div> ");
+/* harmony default export */ __webpack_exports__["default"] = ("<!-- <h1 mat-dialog-title>Hi {{data.name}}</h1>\n<div mat-dialog-content>\n  <p>What's your favorite animal?</p>\n  <mat-form-field>\n    <input matInput [(ngModel)]=\"data.animal\">\n  </mat-form-field>\n</div>\n<div mat-dialog-actions>\n  <button mat-button (click)=\"onNoClick()\">No Thanks</button>\n  <button mat-button [mat-dialog-close]=\"data.animal\" cdkFocusInitial>Ok</button>\n</div> -->\n\n\n<div mat-dialog-content>\n<div class=\"row\" style=\"margin: .5em;\">\n    <div class=\"col-md-12\">\n    \n              \n        <div style=\"text-align: center;\">  \n          \n          <h2>Bindings</h2></div> \n        \n          <hr>\n          <div *ngIf=\"bindingList.length==0\" style=\"font-size: .8em;text-align: center;\">\n            <span ><i>No Bindings Needed</i></span>\n          </div>\n            <div *ngIf=\"bindingList.length!=0\">\n          <ul  class=\"behavior-list \" >\n            <li class=\"binding-box\" *ngFor=\"let item of bindingList;let index=index\" ><div>\n            \n              <mat-form-field style=\"width:100%\">\n                <input matInput placeholder=\"{{item.key+' represents: '}}\" [(ngModel)]=\"item.value\">\n              </mat-form-field>\n\n              <span>\n              </span>\n             \n            </div>\n              </li>\n        </ul>\n        </div>\n\n        \n\n      </div>\n      </div></div>\n\n      <div mat-dialog-actions>\n        <button mat-button (click)=\"onNoClick()\">Back</button>\n        <button mat-button [mat-dialog-close]=\"bindingList\" cdkFocusInitial>Download</button>\n      </div> ");
 
 /***/ }),
 
@@ -48,7 +61,7 @@ __webpack_require__.r(__webpack_exports__);
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony default export */ __webpack_exports__["default"] = ("\n <div class=\"row\">\n<div class=\"col-md-9\">\n\n  \n    <div class=\"row\" style=\"margin: .5em;\">\n        <div class=\"col-md-12\" style=\"padding: 0;\">\n            <mat-card> \n               \n                 <div style=\"text-align: center;\">  Behavior</div> \n               <hr>\n               <div class=\"row\">\n               <div class=\"col-md-12\" (click)=\"selectTextBox(2)\">\n                  <div style=\"margin: .6em;border-bottom: 1px solid #eee;\" [hidden]=\"!isEnable(2)\">\n                      <span>Suggestions:</span>\n                     \n                      <button type=\"button\" class=\"btn btn-outline-primary word-bubble-button\" *ngFor=\"let word of behaviorWordList | slice:0:3 | textfilter:behaviorTextFilter \"  (click)=\"insertValue(word.value)\" [disabled]=\"word.flag\">{{word.value}}</button>\n                      <button type=\"button\" *ngIf=\"suggestionbehaviorMessage!=null\" class=\"btn btn-outline-primary word-bubble-button\" [disabled]=\"true\">{{suggestionbehaviorMessage}}</button>\n                      \n                      \n                   </div>\n                <div class=\"flex-container\" (blur)=\"onBlurMethod()\" >\n                    \n                      <quill-editor \n                     \n                      [styles]=\"{height: '400px',border:'none'}\"\n                      [modules]=\"{  counter: { container: '#editor1'} ,toolbar: false }\"\n                      [(ngModel)]=\"behaviorText\" \n                      (onContentChanged)=\"logChangeBehavior($event);\"\n                      (onEditorCreated)=\"created($event,2)\"></quill-editor>\n                    </div>\n                     \n                  \n                  </div>\n                  </div>\n                 \n            </mat-card>\n   \n        </div>\n      </div> \n      <div class=\"row\" style=\"margin: .5em;\">\n          <div class=\"col-md-12\" style=\"padding: 0;\">\n              <mat-card> \n                \n                <div style=\"text-align: center;\">  Constraints</div> \n                \n                  <hr>\n                  <div class=\"row\">\n                  <div class=\"col-md-12\" (click)=\"selectTextBox(3)\">\n                    <div style=\"margin: .6em;border-bottom: 1px solid #eee;\" [hidden]=\"!isEnable(3)\">\n                       <span>Suggestions:</span>\n                       <button type=\"button\" class=\"btn btn-outline-primary word-bubble-button\" *ngFor=\"let word of constraintWordList | slice:0:3 | textfilter:constraintTextFilter\"  (click)=\"insertValueInConstraint(word.value)\">{{word.value}}</button>\n                      <button type=\"button\" *ngIf=\"suggestionConstraintMessage!=null\" class=\"btn btn-outline-primary word-bubble-button\" [disabled]=\"true\">{{suggestionConstraintMessage}}</button>\n                           \n                \n                    </div>\n                      <div class=\"flex-container\">\n                    \n                          <quill-editor \n                         \n                          [styles]=\"{height: '400px',border:'none'}\"\n                          [modules]=\"{  counter: { container: '#editor1'} ,toolbar: false }\"\n                          [(ngModel)]=\"constraintText\" \n                          (onContentChanged)=\"logChangeConstraints($event);\"\n                          (onEditorCreated)=\"created($event,3)\"></quill-editor>\n                        </div>\n                      </div>\n                      </div>\n              </mat-card>\n          </div>\n        </div>\n         <div class=\"row\" style=\"margin: .5em;\">\n          <div class=\"col-md-12\" style=\"padding: 0;\">\n            <mat-card> \n                    \n              <div style=\"text-align: center;\">  Bindings</div> \n              \n                <hr>\n                <div *ngIf=\"bindingList.length==0\" style=\"font-size: .8em;text-align: center;\">\n                  <span ><i>No Bindings Needed</i></span>\n                </div>\n                  <div *ngIf=\"bindingList.length!=0\">\n                <ul  class=\"behavior-list \" >\n                  <li  *ngFor=\"let item of bindingList;let index=index\" ><div>\n                  \n                    <mat-form-field style=\"width:100%\" appearance=\"outline\">\n                      <mat-label>{{item.key+' represents: '}}</mat-label>\n                      <input matInput [(ngModel)]=\"item.value\" (change)=\"storeBinding()\">\n                    </mat-form-field>\n      \n                    <span>\n                    </span>\n                   \n                  </div>\n                    </li>\n              </ul>\n              </div>\n      \n              \n            </mat-card> \n            </div>\n            </div> \n   \n\n \n  </div>\n<div class=\"col-md-3\" style=\"margin: 0;\">\n\n  <div class=\"row\">\n    <div class=\"col-md-12\" style=\"padding: 1em;\">\n        \n      <div style=\"text-align: center;padding: .1em;\">     \n         <button mat-stroked-button (click)=\"addBindings()\" >Generate Ns File</button>\n         \n    </div>\n \n    </div>\n    </div>\n  \n  <div class=\"row\" style=\"margin-top: .1em;\n  margin-bottom: .1em;\">\n    <div class=\"col-md-12\" style=\"padding: 0;\">\n\n      <mat-card>  \n        <div style=\"text-align: center;\">Actors\n         </div>\n\n        \n        <hr>\n        <div *ngIf=\"actorsList.length==0\" style=\"font-size: .8em;text-align: center;\">\n          <span ><i>No Actors</i></span>\n        </div>\n          <div *ngIf=\"actorsList.length!=0\" style=\"  height: auto;\n          display: flow-root;\n          padding: 0;\">\n        \n\n      <div *ngFor=\"let item of actorsList;let index=index\" class=\"binding-word-bubble\" style=\"  border: 1px solid black;\">\n          \n        <span>\n        {{item.text}} </span>\n       \n        </div>\n      </div>\n      </mat-card>\n\n    </div>\n  </div>\n\n  <div class=\"row\" style=\"margin-top: .1em;\n  margin-bottom: .1em;\">\n    <div class=\"col-md-12\" style=\"padding: 0;\">\n\n      <mat-card>  \n        <div style=\"text-align: center;\">Bindings Needed\n\n        \n         </div>\n\n        \n        <hr>\n        <div *ngIf=\"bindingList.length==0\" style=\"font-size: .8em;text-align: center;\">\n          <span ><i>No Bindings Needed.</i></span>\n        </div>\n        \n          <div *ngIf=\"bindingList.length!=0\" style=\"  height: auto;\n          display: flow-root;\n          padding: 0;\">\n        \n          <div *ngFor=\"let item of bindingList;let index=index\" class=\"binding-word-bubble\" >\n          \n            <span>\n            {{item.key}} </span>\n            <i class=\"fas fa-exclamation-circle\" style=\"color: red;\" *ngIf=\"isEmpty(item)\"></i>\n            <i class=\"fa fa-check-circle\" style=\"color: green;\"  *ngIf=\"!isEmpty(item)\" ></i>\n           \n            </div>\n      \n      </div>\n      </mat-card>\n\n    </div>\n  </div>\n  </div>\n</div> \n\n");
+/* harmony default export */ __webpack_exports__["default"] = ("<div class=\"row\">\n  <div class=\"col-md-9\">\n    <div class=\"row\" style=\"margin: 0.5em;\">\n      <div class=\"col-md-12\" style=\"padding: 0;\">\n        <mat-card>\n          <div style=\"text-align: center;\"><h2>Behavior</h2></div>\n\n          <ul>\n            <li>Define steps to be executed during this experiment.</li>\n            <li>\n              <dl>\n                <dt>\n                  For example:\n                </dt>\n                <ul>\n                  <li>\n                    <span class=\"actor_example_color\">actor0</span>&nbsp;<span\n                      class=\"binding_example_color\"\n                      >start_log</span\n                    >\n                  </li>\n                  <li>\n                    wait t0\n                    <span class=\"actor_example_color\">actor1</span>&nbsp;<span\n                      class=\"binding_example_color\"\n                      >legitimate</span\n                    >\n                  </li>\n                  <li>\n                    when&nbsp;<span class=\"binding_example_color\"\n                      >stop_attack_done</span\n                    >&nbsp;wait t3&nbsp;<span class=\"actor_example_color\"\n                      >actor1</span\n                    >&nbsp;<span class=\"binding_example_color\"\n                      >stop_legitimate</span\n                    >&nbsp;emit&nbsp;<span class=\"binding_example_color\"\n                      >stop_legitimate_done</span\n                    >\n                  </li>\n                </ul>\n              </dl>\n            </li>\n            <li>\n              As you start typing there will be auto-suggestion displayed near\n              the top of the text area.\n            </li>\n            <li>\n              Press tab to use the first auto suggested word. It will append the\n              word near the cursor in the textarea.\n            </li>\n            <li>\n              There will also be suggestion displayed along with suggested text.\n              This will help you to write the next word or phrase.\n            </li>\n          </ul>\n          <hr />\n          <div class=\"row\">\n            <div class=\"col-md-12\" (click)=\"selectTextBox(2)\">\n              <div\n                style=\"margin: 0.6em; border-bottom: 1px solid #eee;\"\n                [hidden]=\"!isEnable(2)\"\n              >\n                <span>Suggestions:</span>\n\n                <button\n                  type=\"button\"\n                  class=\"btn btn-outline-primary word-bubble-button\"\n                  *ngFor=\"\n                    let word of behaviorWordList\n                      | slice: 0:3\n                      | textfilter: behaviorTextFilter\n                  \"\n                  (click)=\"insertValue(word.value)\"\n                  [disabled]=\"word.flag\"\n                >\n                  {{ word.value }}\n                </button>\n                <button\n                  type=\"button\"\n                  *ngIf=\"suggestionbehaviorMessage != null\"\n                  class=\"btn btn-outline-primary word-bubble-button\"\n                  [disabled]=\"true\"\n                >\n                  {{ suggestionbehaviorMessage }}\n                </button>\n              </div>\n              <div class=\"flex-container\" (blur)=\"onBlurMethod()\">\n                <quill-editor\n                  [styles]=\"{ height: '400px', border: 'none' }\"\n                  [modules]=\"{\n                    counter: { container: '#editor1' },\n                    toolbar: false\n                  }\"\n                  placeholder=\"Enter Steps to be executed during the experiment. For example: Actor0 start_log\"\n                  [(ngModel)]=\"behaviorText\"\n                  (onContentChanged)=\"logChangeBehavior($event)\"\n                  (onEditorCreated)=\"created($event, 2)\"\n                ></quill-editor>\n              </div>\n            </div>\n          </div>\n        </mat-card>\n      </div>\n    </div>\n    <div class=\"row\" style=\"margin: 0.5em;\">\n      <div class=\"col-md-12\" style=\"padding: 0;\">\n        <mat-card>\n          <div style=\"text-align: center;\"><h2>Constraints</h2></div>\n          <ul>\n            <li>Define all the constraints for this experiment.</li>\n            <li>\n              <dl>\n                <dt>\n                  For example:\n                </dt>\n                <ul>\n                  <li>\n                    server&nbsp;os&nbsp;Ubuntu-latest\n                  </li>\n                  <li>\n                    attacker&nbsp;num&nbsp;3\n                  </li>\n                  <li>\n                    lan&nbsp;client&nbsp;attacker&nbsp;router\n                  </li>\n                  <li>\n                    link&nbsp;router&nbsp;server\n                  </li>\n                </ul>\n              </dl>\n            </li>\n            <li>\n              As you start typing there will be auto-suggestion displayed near\n              the top of the text area.\n            </li>\n            <li>\n              Press tab to use the first auto suggested word. It will append the\n              word near the cursor in the textarea.\n            </li>\n            <li>\n              There will also be suggestion displayed along with suggested text.\n              This will help you to write the next word or phrase.\n            </li>\n          </ul>\n          <hr />\n          <div class=\"row\">\n            <div class=\"col-md-12\" (click)=\"selectTextBox(3)\">\n              <div\n                style=\"margin: 0.6em; border-bottom: 1px solid #eee;\"\n                [hidden]=\"!isEnable(3)\"\n              >\n                <span>Suggestions:</span>\n                <button\n                  type=\"button\"\n                  class=\"btn btn-outline-primary word-bubble-button\"\n                  *ngFor=\"\n                    let word of constraintWordList\n                      | slice: 0:3\n                      | textfilter: constraintTextFilter\n                  \"\n                  (click)=\"insertValueInConstraint(word.value)\"\n                >\n                  {{ word.value }}\n                </button>\n                <button\n                  type=\"button\"\n                  *ngIf=\"suggestionConstraintMessage != null\"\n                  class=\"btn btn-outline-primary word-bubble-button\"\n                  [disabled]=\"true\"\n                >\n                  {{ suggestionConstraintMessage }}\n                </button>\n              </div>\n              <div class=\"flex-container\">\n                <quill-editor\n                  [styles]=\"{ height: '400px', border: 'none' }\"\n                  [modules]=\"{\n                    counter: { container: '#editor1' },\n                    toolbar: false\n                  }\"\n                  [(ngModel)]=\"constraintText\"\n                  (onContentChanged)=\"logChangeConstraints($event)\"\n                  (onEditorCreated)=\"created($event, 3)\"\n                ></quill-editor>\n              </div>\n            </div>\n          </div>\n        </mat-card>\n      </div>\n    </div>\n    <div class=\"row\" style=\"margin: 0.5em;\">\n      <div class=\"col-md-12\" style=\"padding: 0;\">\n        <mat-card>\n          <div style=\"text-align: center;\"><h2>Bindings</h2></div>\n          <ul>\n            <li>Define all the constraints for this experiment.</li>\n            <li>\n              <dl>\n                <dt>\n                  For example:\n                </dt>\n                <ul>\n                  <li>\n                    <span class=\"binding_example_color\"> install_iperf</span\n                    >&nbsp;apt-get install iperf -y\n                  </li>\n                  <li>\n                    <span class=\"binding_example_color\"> install_tcpdump</span\n                    >&nbsp;apt-get install tcpdump -y\n                  </li>\n                  <li>\n                    <span class=\"binding_example_color\"> install_flooder</span\n                    >&nbsp;/scripts/common/install_flooder.sh\n                  </li>\n                  <li>\n                    <span class=\"binding_example_color\"> start_server</span\n                    >&nbsp;iperf -s\n                  </li>\n                </ul>\n              </dl>\n            </li>\n            <li>\n              As you start typing behaior above this area will be populated with\n              the terms which require defination for the experiment to execute.\n            </li>\n            <li>\n              Below will be a list of text box with the term that requires more\n              input. As you fill the script, there will be a green tick ( like\n              this\n              <i class=\"fa fa-check-circle\" style=\"color: green;\"></i>&nbsp;) inside\n              the binding needed section on the top. This shows that the binding\n              is complete for that term\n            </li>\n          </ul>\n          <hr />\n          <div\n            *ngIf=\"bindingList.length == 0\"\n            style=\"font-size: 0.8em; text-align: center;\"\n          >\n            <span><i>No Bindings Needed</i></span>\n          </div>\n          <div *ngIf=\"bindingList.length != 0\">\n            <ul class=\"behavior-list\">\n              <li *ngFor=\"let item of bindingList; let index = index\">\n                <div>\n                  <mat-form-field style=\"width: 100%;\" appearance=\"outline\">\n                    <mat-label>{{ item.key + \" represents: \" }}</mat-label>\n                    <input\n                      matInput\n                      [(ngModel)]=\"item.value\"\n                      (change)=\"storeBinding()\"\n                    />\n                  </mat-form-field>\n\n                  <span> </span>\n                </div>\n              </li>\n            </ul>\n          </div>\n        </mat-card>\n      </div>\n    </div>\n  </div>\n  <div class=\"col-md-3\" style=\"margin: 0;\">\n    <div class=\"row\">\n      <div class=\"col-md-12\" style=\"padding: 1em;\">\n        <div style=\"text-align: center; padding: 0.1em;\">\n          <button mat-stroked-button (click)=\"addBindings()\">\n            Generate Ns File\n          </button>\n        </div>\n      </div>\n    </div>\n\n    <div class=\"row\" style=\"margin-top: 0.1em; margin-bottom: 0.1em;\">\n      <div class=\"col-md-12\" style=\"padding: 0;\">\n        <mat-card>\n          <div style=\"text-align: center;\">Actors</div>\n\n          <hr />\n          <div\n            *ngIf=\"actorsList.length == 0\"\n            style=\"font-size: 0.8em; text-align: center;\"\n          >\n            <span><i>No Actors</i></span>\n          </div>\n          <div\n            *ngIf=\"actorsList.length != 0\"\n            style=\"height: auto; display: flow-root; padding: 0;\"\n          >\n            <div\n              *ngFor=\"let item of actorsList; let index = index\"\n              class=\"binding-word-bubble\"\n              style=\"border: 1px solid black;\"\n            >\n              <span> {{ item.text }} </span>\n            </div>\n          </div>\n        </mat-card>\n      </div>\n    </div>\n\n    <div class=\"row\" style=\"margin-top: 0.1em; margin-bottom: 0.1em;\">\n      <div class=\"col-md-12\" style=\"padding: 0;\">\n        <mat-card>\n          <div style=\"text-align: center;\">Bindings Needed</div>\n\n          <hr />\n          <div\n            *ngIf=\"bindingList.length == 0\"\n            style=\"font-size: 0.8em; text-align: center;\"\n          >\n            <span><i>No Bindings Needed.</i></span>\n          </div>\n\n          <div\n            *ngIf=\"bindingList.length != 0\"\n            style=\"height: auto; display: flow-root; padding: 0;\"\n          >\n            <div\n              *ngFor=\"let item of bindingList; let index = index\"\n              class=\"binding-word-bubble\"\n            >\n              <span> {{ item.key }} </span>\n              <i\n                class=\"fas fa-exclamation-circle\"\n                style=\"color: red;\"\n                *ngIf=\"isEmpty(item)\"\n              ></i>\n              <i\n                class=\"fa fa-check-circle\"\n                style=\"color: green;\"\n                *ngIf=\"!isEmpty(item)\"\n              ></i>\n            </div>\n          </div>\n        </mat-card>\n      </div>\n    </div>\n  </div>\n</div>\n");
 
 /***/ }),
 
@@ -453,7 +466,7 @@ DependencyGraphComponent = tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"]([
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony default export */ __webpack_exports__["default"] = ("\n/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbXSwibmFtZXMiOltdLCJtYXBwaW5ncyI6IiIsImZpbGUiOiJzcmMvYXBwL3BhZ2VzL2hsYnBhcnNlci9leHBlcmltZW50LWluZm8vaW5mby5jb21wb25lbnQuc2NzcyJ9 */");
+/* harmony default export */ __webpack_exports__["default"] = (".profile_img img {\n  vertical-align: middle;\n  width: 40px;\n  height: 40px;\n  border-radius: 50%;\n  margin: 4px;\n}\n/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbIi9Vc2Vycy9TaGFiYmlyL3Byb2plY3RzL0RFV19VSS9zcmMvc3RlZWwvV0VCLUFQUExJQ0FUSU9OL2Zyb250ZW5kL3NyYy9hcHAvcGFnZXMvaGxicGFyc2VyL2V4cGVyaW1lbnQtaW5mby9pbmZvLmNvbXBvbmVudC5zY3NzIiwic3JjL2FwcC9wYWdlcy9obGJwYXJzZXIvZXhwZXJpbWVudC1pbmZvL2luZm8uY29tcG9uZW50LnNjc3MiXSwibmFtZXMiOltdLCJtYXBwaW5ncyI6IkFBQUE7RUFFSSxzQkFBQTtFQUNBLFdBQUE7RUFDQSxZQUFBO0VBQ0Esa0JBQUE7RUFFQSxXQUFBO0FDREoiLCJmaWxlIjoic3JjL2FwcC9wYWdlcy9obGJwYXJzZXIvZXhwZXJpbWVudC1pbmZvL2luZm8uY29tcG9uZW50LnNjc3MiLCJzb3VyY2VzQ29udGVudCI6WyIucHJvZmlsZV9pbWcgaW1ne1xuICBcbiAgICB2ZXJ0aWNhbC1hbGlnbjogbWlkZGxlO1xuICAgIHdpZHRoOiA0MHB4O1xuICAgIGhlaWdodDogNDBweDtcbiAgICBib3JkZXItcmFkaXVzOiA1MCU7XG4gIFxuICAgIG1hcmdpbjogNHB4O1xufSIsIi5wcm9maWxlX2ltZyBpbWcge1xuICB2ZXJ0aWNhbC1hbGlnbjogbWlkZGxlO1xuICB3aWR0aDogNDBweDtcbiAgaGVpZ2h0OiA0MHB4O1xuICBib3JkZXItcmFkaXVzOiA1MCU7XG4gIG1hcmdpbjogNHB4O1xufSJdfQ== */");
 
 /***/ }),
 
@@ -461,18 +474,25 @@ __webpack_require__.r(__webpack_exports__);
 /*!*******************************************************************!*\
   !*** ./src/app/pages/hlbparser/experiment-info/info.component.ts ***!
   \*******************************************************************/
-/*! exports provided: InfoComponent */
+/*! exports provided: InfoComponent, AddUserPopUp */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "InfoComponent", function() { return InfoComponent; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "AddUserPopUp", function() { return AddUserPopUp; });
 /* harmony import */ var tslib__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! tslib */ "./node_modules/tslib/tslib.es6.js");
 /* harmony import */ var _angular_core__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @angular/core */ "./node_modules/@angular/core/fesm2015/core.js");
 /* harmony import */ var _state_service_service__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../../state-service.service */ "./src/app/state-service.service.ts");
 /* harmony import */ var src_app_auth_auth_service__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! src/app/@auth/auth.service */ "./src/app/@auth/auth.service.ts");
 /* harmony import */ var src_app_http_service_service__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! src/app/http-service.service */ "./src/app/http-service.service.ts");
 /* harmony import */ var _angular_router__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! @angular/router */ "./node_modules/@angular/router/fesm2015/router.js");
+/* harmony import */ var _angular_forms__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! @angular/forms */ "./node_modules/@angular/forms/fesm2015/forms.js");
+/* harmony import */ var rxjs_operators__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! rxjs/operators */ "./node_modules/rxjs/_esm2015/operators/index.js");
+/* harmony import */ var _angular_material__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! @angular/material */ "./node_modules/@angular/material/esm2015/material.js");
+
+
+
 
 
 
@@ -480,9 +500,10 @@ __webpack_require__.r(__webpack_exports__);
 
 
 let InfoComponent = class InfoComponent {
-    constructor(state, auth, http, route) {
+    constructor(state, auth, dialog, http, route) {
         this.state = state;
         this.auth = auth;
+        this.dialog = dialog;
         this.http = http;
         this.route = route;
         this.experiment = {
@@ -492,36 +513,52 @@ let InfoComponent = class InfoComponent {
             behaviors: [],
             actors: [],
             bindings: [],
-            constraints: []
+            constraints: [],
         };
         this.tokenList = [];
+        this.options = ["One", "Two", "Three"];
+        this.userAccessList = [];
+        this.nameControl = new _angular_forms__WEBPACK_IMPORTED_MODULE_6__["FormControl"]();
     }
     ngOnInit() {
         this.loadTokenList();
         if (this.id != undefined && this.id != null && this.id != -1)
-            this.experiment['id'] = this.id;
-        this.state.getExperimentName().subscribe(name => {
+            this.experiment["id"] = this.id;
+        this.state.getExperimentName().subscribe((name) => {
             this.experiment.name = name;
         });
-        this.state.getExperimentDescription().subscribe(description => {
+        this.state.getExperimentDescription().subscribe((description) => {
             this.experiment.description = description;
         });
-        this.state.getBehavior().subscribe(behaviorList => {
+        this.state.getBehavior().subscribe((behaviorList) => {
             this.experiment.behaviors = behaviorList;
         });
-        this.state.getActors().subscribe(actorList => {
+        this.state.getActors().subscribe((actorList) => {
             this.experiment.actors = actorList;
         });
-        this.state.getBindings().subscribe(bindingList => {
+        this.state.getBindings().subscribe((bindingList) => {
             this.experiment.bindings = bindingList;
         });
-        this.state.getConstraints().subscribe(constraintsList => {
+        this.state.getConstraints().subscribe((constraintsList) => {
             this.experiment.constraints = constraintsList;
         });
-        this.state.getTokenList().subscribe(data => {
+        this.state.getTokenList().subscribe((data) => {
             if (data != null) {
                 this.tokenList = data;
             }
+        });
+        this.getUserAccessList();
+    }
+    getUserAccessList() {
+        var params = {
+            experiment_id: this.experiment['id'],
+            userId: this.experiment.userId
+        };
+        this.http.post("api/v1/user/getUserAccessList/", params).subscribe(data => {
+            if (data.userList != undefined && data.userList != null)
+                this.userAccessList = data.userList;
+            else
+                this.userAccessList = [];
         });
     }
     setExperimentName() {
@@ -542,28 +579,96 @@ let InfoComponent = class InfoComponent {
         });
     }
     save() {
-        this.http.put("v1/persist/save", this.experiment).subscribe(data => {
-            if (data.saved) {
-                alert("Successfully saved!");
-                this.route.navigate(["pages/dashboard"]);
+        if (this.experiment.name != undefined &&
+            this.experiment.name != null &&
+            this.experiment.name.trim() != "") {
+            if (this.experiment.description == undefined ||
+                this.experiment.description == null)
+                this.experiment.description = "";
+            if (this.experiment.behaviors == undefined ||
+                this.experiment.behaviors == null)
+                this.experiment.behaviors = [];
+            if (this.experiment.actors == undefined || this.experiment.actors == null)
+                this.experiment.actors = [];
+            if (this.experiment.bindings == undefined ||
+                this.experiment.bindings == null)
+                this.experiment.bindings = [];
+            if (this.experiment.constraints == undefined ||
+                this.experiment.constraints == null)
+                this.experiment.constraints = [];
+            var bindingFLag = false;
+            if (this.experiment.bindings.length != 0) {
+                this.experiment.bindings.forEach(element => {
+                    var list = element.trim().split(" ");
+                    var key = list[0];
+                    var value = list.splice(1).join(" ");
+                    if (value.trim() == '')
+                        bindingFLag = true;
+                });
             }
-        });
+            var continueFlag = confirm("Few bindings are missing, Do you still want to continue?");
+            if (continueFlag)
+                this.http.put("v1/persist/save", this.experiment).subscribe((data) => {
+                    if (data.saved) {
+                        alert("Successfully saved!");
+                        this.route.navigate(["pages/dashboard"]);
+                    }
+                }, (error) => {
+                    alert("Error occured. Please try again later");
+                });
+        }
+        else {
+            alert("Please Enter Name to save the experiment.");
+            this.nameControl.markAsTouched();
+        }
         console.log(this.experiment);
     }
     createToken() {
         var params = {
-            "experiment_id": this.id,
-            "access_level": "write",
-            "creator_uid": this.auth.getCookie("userId")
+            experiment_id: this.id,
+            access_level: "write",
+            creator_uid: this.auth.getCookie("userId"),
         };
-        this.http.post("api/v1/token-based-auth/create", params).subscribe(data => {
+        this.http
+            .post("api/v1/token-based-auth/create", params)
+            .subscribe((data) => {
             this.loadTokenList();
+        });
+    }
+    addUserPopUp() {
+        let t = this.experiment.userId;
+        console.log(t);
+        var dialogRef = this.dialog.open(AddUserPopUp, {
+            width: "40%",
+            data: t
+        });
+        dialogRef.afterClosed().subscribe((result) => {
+            console.log(result);
+            if (result != undefined)
+                this.addUser(result);
+        });
+    }
+    addUser(userobj) {
+        var params = {
+            "userId": this.experiment.userId,
+            "userHandle": userobj.handle,
+            "id": this.experiment["id"]
+        };
+        this.http.post("api/v1/persist/experiment/grantaccess", params).subscribe(data => {
+            console.log(data);
+            if (data.error != undefined && data.error != null)
+                alert("Error in granting access.");
+            else
+                this.getUserAccessList();
+        }, error => {
+            alert("Error in granting access.");
         });
     }
 };
 InfoComponent.ctorParameters = () => [
     { type: _state_service_service__WEBPACK_IMPORTED_MODULE_2__["StateService"] },
     { type: src_app_auth_auth_service__WEBPACK_IMPORTED_MODULE_3__["AuthService"] },
+    { type: _angular_material__WEBPACK_IMPORTED_MODULE_8__["MatDialog"] },
     { type: src_app_http_service_service__WEBPACK_IMPORTED_MODULE_4__["HttpService"] },
     { type: _angular_router__WEBPACK_IMPORTED_MODULE_5__["Router"] }
 ];
@@ -578,6 +683,54 @@ InfoComponent = tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"]([
     })
 ], InfoComponent);
 
+let AddUserPopUp = class AddUserPopUp {
+    constructor(dialogRef, http, token) {
+        this.dialogRef = dialogRef;
+        this.http = http;
+        this.token = token;
+        this.userHandleSelect = new _angular_forms__WEBPACK_IMPORTED_MODULE_6__["FormControl"]();
+        this.accessLevelControl = new _angular_forms__WEBPACK_IMPORTED_MODULE_6__["FormControl"]();
+        this.UserObj = {
+            handle: "",
+            access: ""
+        };
+        this.options = [{ name: 'Read', value: 'read' }, { name: 'Write', value: 'write' }];
+        this.userOptions = [];
+    }
+    ngOnInit() {
+        this.http.get("v1/user/getUserHandles/" + this.token).subscribe(data => {
+            //console.log(data);
+            this.userOptions = [];
+            if (data.userList != undefined && data.userList != null)
+                data.userList.forEach(element => {
+                    this.userOptions.push({ name: element['name'], value: element.handle });
+                });
+        });
+        this.filteredUserHandle = this.userHandleSelect.valueChanges.pipe(Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_7__["startWith"])(""), Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_7__["map"])((value) => this._filter(value, this.userOptions)));
+        this.filteredLevels = this.accessLevelControl.valueChanges.pipe(Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_7__["startWith"])(""), Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_7__["map"])((value) => this._filter(value, this.options)));
+    }
+    onNoClick() {
+        this.dialogRef.close();
+    }
+    _filter(value, options) {
+        const filterValue = value.toLowerCase();
+        return options.filter((option) => option.value.toLowerCase().includes(filterValue) || option.name.toLowerCase().includes(filterValue));
+    }
+};
+AddUserPopUp.ctorParameters = () => [
+    { type: _angular_material__WEBPACK_IMPORTED_MODULE_8__["MatDialogRef"] },
+    { type: src_app_http_service_service__WEBPACK_IMPORTED_MODULE_4__["HttpService"] },
+    { type: undefined, decorators: [{ type: _angular_core__WEBPACK_IMPORTED_MODULE_1__["Inject"], args: [_angular_material__WEBPACK_IMPORTED_MODULE_8__["MAT_DIALOG_DATA"],] }] }
+];
+AddUserPopUp = tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"]([
+    Object(_angular_core__WEBPACK_IMPORTED_MODULE_1__["Component"])({
+        selector: "add-user",
+        template: tslib__WEBPACK_IMPORTED_MODULE_0__["__importDefault"](__webpack_require__(/*! raw-loader!./add-user.component.html */ "./node_modules/raw-loader/dist/cjs.js!./src/app/pages/hlbparser/experiment-info/add-user.component.html")).default,
+        styles: [tslib__WEBPACK_IMPORTED_MODULE_0__["__importDefault"](__webpack_require__(/*! ./info.component.scss */ "./src/app/pages/hlbparser/experiment-info/info.component.scss")).default]
+    }),
+    tslib__WEBPACK_IMPORTED_MODULE_0__["__param"](2, Object(_angular_core__WEBPACK_IMPORTED_MODULE_1__["Inject"])(_angular_material__WEBPACK_IMPORTED_MODULE_8__["MAT_DIALOG_DATA"]))
+], AddUserPopUp);
+
 
 
 /***/ }),
@@ -591,7 +744,7 @@ InfoComponent = tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"]([
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony default export */ __webpack_exports__["default"] = (".behavior-list {\n  margin: 0.1em;\n  list-style: none;\n  padding: 0;\n}\n\n.behavior-box {\n  margin: 0.5em;\n  border: 1px solid #ccc;\n  padding: 0.5em;\n}\n\n.word-bubble {\n  border: 1px dotted black;\n  border-radius: 1em;\n  padding: 0.4em;\n  margin: 0.1em;\n  cursor: pointer;\n}\n\n.binding-word-bubble {\n  border: 1px solid black;\n  float: left;\n  margin: 2px;\n  border-radius: 8px;\n  padding: 3px;\n}\n\n.word-bubble-button {\n  border-radius: 1em;\n  padding: 0.4em;\n  margin: 0.1em;\n}\n\n.float-left {\n  float: left;\n}\n\n.actions {\n  float: right;\n  cursor: pointer;\n  display: none;\n}\n\n.behavior-list:hover .actions {\n  display: block;\n}\n\n.disabled {\n  pointer-events: none;\n}\n\n.grabbable {\n  cursor: move;\n  /* fallback if grab cursor is unsupported */\n  cursor: grab;\n  cursor: -webkit-grab;\n}\n\n/* (Optional) Apply a \"closed-hand\" cursor during drag operation. */\n\n.grabbable:active {\n  cursor: grabbing;\n  cursor: -webkit-grabbing;\n}\n\n.mat-radio-button ~ .mat-radio-button {\n  margin-left: 16px;\n}\n\n.padding-left-right {\n  padding-left: 5px;\n  padding-right: 5px;\n}\n\n.button-padding {\n  margin-left: 0.1em;\n}\n\n.expand {\n  float: right;\n  cursor: pointer;\n}\n\n.hide {\n  display: none;\n}\n/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbIi9Vc2Vycy9TaGFiYmlyL3Byb2plY3RzL0RFV19VSS9zcmMvc3RlZWwvV0VCLUFQUExJQ0FUSU9OL2Zyb250ZW5kL3NyYy9hcHAvcGFnZXMvaGxicGFyc2VyL2hsYi9obGIuY29tcG9uZW50LnNjc3MiLCJzcmMvYXBwL3BhZ2VzL2hsYnBhcnNlci9obGIvaGxiLmNvbXBvbmVudC5zY3NzIl0sIm5hbWVzIjpbXSwibWFwcGluZ3MiOiJBQUFBO0VBQ0ksYUFBQTtFQUNBLGdCQUFBO0VBQ0EsVUFBQTtBQ0NKOztBREVBO0VBQ0ksYUFBQTtFQUNBLHNCQUFBO0VBQ0EsY0FBQTtBQ0NKOztBREdBO0VBQ0ksd0JBQUE7RUFDQSxrQkFBQTtFQUNBLGNBQUE7RUFDQSxhQUFBO0VBQ0EsZUFBQTtBQ0FKOztBRElBO0VBQ0ksdUJBQUE7RUFDQSxXQUFBO0VBQ0EsV0FBQTtFQUNBLGtCQUFBO0VBQ0EsWUFBQTtBQ0RKOztBREdBO0VBQ0ksa0JBQUE7RUFDQSxjQUFBO0VBQ0EsYUFBQTtBQ0FKOztBREdBO0VBQ0ksV0FBQTtBQ0FKOztBREdBO0VBQ0ksWUFBQTtFQUNBLGVBQUE7RUFDQSxhQUFBO0FDQUo7O0FER0E7RUFDSSxjQUFBO0FDQUo7O0FER0E7RUFDSSxvQkFBQTtBQ0FKOztBREdBO0VBQ0ksWUFBQTtFQUFjLDJDQUFBO0VBQ2QsWUFBQTtFQUVBLG9CQUFBO0FDQ0o7O0FERUMsbUVBQUE7O0FBQ0Q7RUFDSSxnQkFBQTtFQUVBLHdCQUFBO0FDQ0o7O0FERUE7RUFDSSxpQkFBQTtBQ0NKOztBREVFO0VBQ0ksaUJBQUE7RUFDQSxrQkFBQTtBQ0NOOztBREdFO0VBQ0ksa0JBQUE7QUNBTjs7QURHRTtFQUNJLFlBQUE7RUFDQSxlQUFBO0FDQU47O0FER0U7RUFDSSxhQUFBO0FDQU4iLCJmaWxlIjoic3JjL2FwcC9wYWdlcy9obGJwYXJzZXIvaGxiL2hsYi5jb21wb25lbnQuc2NzcyIsInNvdXJjZXNDb250ZW50IjpbIi5iZWhhdmlvci1saXN0e1xuICAgIG1hcmdpbjouMWVtO1xuICAgIGxpc3Qtc3R5bGU6IG5vbmU7XG4gICAgcGFkZGluZzogMDtcbn1cblxuLmJlaGF2aW9yLWJveHtcbiAgICBtYXJnaW46IC41ZW07XG4gICAgYm9yZGVyOiAxcHggc29saWQgI2NjYztcbiAgICBwYWRkaW5nOiAuNWVtO1xufVxuXG5cbi53b3JkLWJ1YmJsZXtcbiAgICBib3JkZXI6IDFweCBkb3R0ZWQgYmxhY2s7XG4gICAgYm9yZGVyLXJhZGl1czogMWVtO1xuICAgIHBhZGRpbmc6IDAuNGVtO1xuICAgIG1hcmdpbjogMC4xZW07XG4gICAgY3Vyc29yOiBwb2ludGVyO1xuIFxufVxuXG4uYmluZGluZy13b3JkLWJ1YmJsZXtcbiAgICBib3JkZXI6IDFweCBzb2xpZCBibGFjaztcbiAgICBmbG9hdDogbGVmdDtcbiAgICBtYXJnaW46IDJweDtcbiAgICBib3JkZXItcmFkaXVzOiA4cHg7XG4gICAgcGFkZGluZzogM3B4O1xufVxuLndvcmQtYnViYmxlLWJ1dHRvbntcbiAgICBib3JkZXItcmFkaXVzOiAxZW07XG4gICAgcGFkZGluZzogMC40ZW07XG4gICAgbWFyZ2luOiAwLjFlbTtcbiBcbn1cbi5mbG9hdC1sZWZ0e1xuICAgIGZsb2F0OmxlZnQ7XG59XG5cbi5hY3Rpb25ze1xuICAgIGZsb2F0OnJpZ2h0O1xuICAgIGN1cnNvcjogcG9pbnRlcjtcbiAgICBkaXNwbGF5OiBub25lO1xufVxuXG4uYmVoYXZpb3ItbGlzdDpob3ZlciAuYWN0aW9uc3tcbiAgICBkaXNwbGF5OiBibG9jaztcbn1cblxuLmRpc2FibGVke1xuICAgIHBvaW50ZXItZXZlbnRzOiBub25lOyAgIFxufVxuXG4uZ3JhYmJhYmxlIHtcbiAgICBjdXJzb3I6IG1vdmU7IC8qIGZhbGxiYWNrIGlmIGdyYWIgY3Vyc29yIGlzIHVuc3VwcG9ydGVkICovXG4gICAgY3Vyc29yOiBncmFiO1xuICAgIGN1cnNvcjogLW1vei1ncmFiO1xuICAgIGN1cnNvcjogLXdlYmtpdC1ncmFiO1xufVxuXG4gLyogKE9wdGlvbmFsKSBBcHBseSBhIFwiY2xvc2VkLWhhbmRcIiBjdXJzb3IgZHVyaW5nIGRyYWcgb3BlcmF0aW9uLiAqL1xuLmdyYWJiYWJsZTphY3RpdmUge1xuICAgIGN1cnNvcjogZ3JhYmJpbmc7XG4gICAgY3Vyc29yOiAtbW96LWdyYWJiaW5nO1xuICAgIGN1cnNvcjogLXdlYmtpdC1ncmFiYmluZztcbn1cblxuLm1hdC1yYWRpby1idXR0b24gfiAubWF0LXJhZGlvLWJ1dHRvbiB7XG4gICAgbWFyZ2luLWxlZnQ6IDE2cHg7XG4gIH1cblxuICAucGFkZGluZy1sZWZ0LXJpZ2h0e1xuICAgICAgcGFkZGluZy1sZWZ0OiA1cHg7XG4gICAgICBwYWRkaW5nLXJpZ2h0OiA1cHg7XG4gIH1cblxuIFxuICAuYnV0dG9uLXBhZGRpbmd7XG4gICAgICBtYXJnaW4tbGVmdDogLjFlbTtcbiAgfVxuXG4gIC5leHBhbmR7XG4gICAgICBmbG9hdDogcmlnaHQ7XG4gICAgICBjdXJzb3I6IHBvaW50ZXI7XG4gIH1cblxuICAuaGlkZXtcbiAgICAgIGRpc3BsYXk6IG5vbmU7XG4gIH0iLCIuYmVoYXZpb3ItbGlzdCB7XG4gIG1hcmdpbjogMC4xZW07XG4gIGxpc3Qtc3R5bGU6IG5vbmU7XG4gIHBhZGRpbmc6IDA7XG59XG5cbi5iZWhhdmlvci1ib3gge1xuICBtYXJnaW46IDAuNWVtO1xuICBib3JkZXI6IDFweCBzb2xpZCAjY2NjO1xuICBwYWRkaW5nOiAwLjVlbTtcbn1cblxuLndvcmQtYnViYmxlIHtcbiAgYm9yZGVyOiAxcHggZG90dGVkIGJsYWNrO1xuICBib3JkZXItcmFkaXVzOiAxZW07XG4gIHBhZGRpbmc6IDAuNGVtO1xuICBtYXJnaW46IDAuMWVtO1xuICBjdXJzb3I6IHBvaW50ZXI7XG59XG5cbi5iaW5kaW5nLXdvcmQtYnViYmxlIHtcbiAgYm9yZGVyOiAxcHggc29saWQgYmxhY2s7XG4gIGZsb2F0OiBsZWZ0O1xuICBtYXJnaW46IDJweDtcbiAgYm9yZGVyLXJhZGl1czogOHB4O1xuICBwYWRkaW5nOiAzcHg7XG59XG5cbi53b3JkLWJ1YmJsZS1idXR0b24ge1xuICBib3JkZXItcmFkaXVzOiAxZW07XG4gIHBhZGRpbmc6IDAuNGVtO1xuICBtYXJnaW46IDAuMWVtO1xufVxuXG4uZmxvYXQtbGVmdCB7XG4gIGZsb2F0OiBsZWZ0O1xufVxuXG4uYWN0aW9ucyB7XG4gIGZsb2F0OiByaWdodDtcbiAgY3Vyc29yOiBwb2ludGVyO1xuICBkaXNwbGF5OiBub25lO1xufVxuXG4uYmVoYXZpb3ItbGlzdDpob3ZlciAuYWN0aW9ucyB7XG4gIGRpc3BsYXk6IGJsb2NrO1xufVxuXG4uZGlzYWJsZWQge1xuICBwb2ludGVyLWV2ZW50czogbm9uZTtcbn1cblxuLmdyYWJiYWJsZSB7XG4gIGN1cnNvcjogbW92ZTtcbiAgLyogZmFsbGJhY2sgaWYgZ3JhYiBjdXJzb3IgaXMgdW5zdXBwb3J0ZWQgKi9cbiAgY3Vyc29yOiBncmFiO1xuICBjdXJzb3I6IC1tb3otZ3JhYjtcbiAgY3Vyc29yOiAtd2Via2l0LWdyYWI7XG59XG5cbi8qIChPcHRpb25hbCkgQXBwbHkgYSBcImNsb3NlZC1oYW5kXCIgY3Vyc29yIGR1cmluZyBkcmFnIG9wZXJhdGlvbi4gKi9cbi5ncmFiYmFibGU6YWN0aXZlIHtcbiAgY3Vyc29yOiBncmFiYmluZztcbiAgY3Vyc29yOiAtbW96LWdyYWJiaW5nO1xuICBjdXJzb3I6IC13ZWJraXQtZ3JhYmJpbmc7XG59XG5cbi5tYXQtcmFkaW8tYnV0dG9uIH4gLm1hdC1yYWRpby1idXR0b24ge1xuICBtYXJnaW4tbGVmdDogMTZweDtcbn1cblxuLnBhZGRpbmctbGVmdC1yaWdodCB7XG4gIHBhZGRpbmctbGVmdDogNXB4O1xuICBwYWRkaW5nLXJpZ2h0OiA1cHg7XG59XG5cbi5idXR0b24tcGFkZGluZyB7XG4gIG1hcmdpbi1sZWZ0OiAwLjFlbTtcbn1cblxuLmV4cGFuZCB7XG4gIGZsb2F0OiByaWdodDtcbiAgY3Vyc29yOiBwb2ludGVyO1xufVxuXG4uaGlkZSB7XG4gIGRpc3BsYXk6IG5vbmU7XG59Il19 */");
+/* harmony default export */ __webpack_exports__["default"] = (".behavior-list {\n  margin: 0.1em;\n  list-style: none;\n  padding: 0;\n}\n\n.behavior-box {\n  margin: 0.5em;\n  border: 1px solid #ccc;\n  padding: 0.5em;\n}\n\n.word-bubble {\n  border: 1px dotted black;\n  border-radius: 1em;\n  padding: 0.4em;\n  margin: 0.1em;\n  cursor: pointer;\n}\n\n.actor_example_color {\n  color: orange;\n}\n\n.binding_example_color {\n  color: green;\n}\n\n.binding-word-bubble {\n  border: 1px solid black;\n  float: left;\n  margin: 2px;\n  border-radius: 8px;\n  padding: 3px;\n}\n\n.word-bubble-button {\n  border-radius: 1em;\n  padding: 0.4em;\n  margin: 0.1em;\n}\n\n.float-left {\n  float: left;\n}\n\n.actions {\n  float: right;\n  cursor: pointer;\n  display: none;\n}\n\n.behavior-list:hover .actions {\n  display: block;\n}\n\n.disabled {\n  pointer-events: none;\n}\n\n.grabbable {\n  cursor: move;\n  /* fallback if grab cursor is unsupported */\n  cursor: grab;\n  cursor: -webkit-grab;\n}\n\n/* (Optional) Apply a \"closed-hand\" cursor during drag operation. */\n\n.grabbable:active {\n  cursor: grabbing;\n  cursor: -webkit-grabbing;\n}\n\n.mat-radio-button ~ .mat-radio-button {\n  margin-left: 16px;\n}\n\n.padding-left-right {\n  padding-left: 5px;\n  padding-right: 5px;\n}\n\n.button-padding {\n  margin-left: 0.1em;\n}\n\n.expand {\n  float: right;\n  cursor: pointer;\n}\n\n.hide {\n  display: none;\n}\n/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbIi9Vc2Vycy9TaGFiYmlyL3Byb2plY3RzL0RFV19VSS9zcmMvc3RlZWwvV0VCLUFQUExJQ0FUSU9OL2Zyb250ZW5kL3NyYy9hcHAvcGFnZXMvaGxicGFyc2VyL2hsYi9obGIuY29tcG9uZW50LnNjc3MiLCJzcmMvYXBwL3BhZ2VzL2hsYnBhcnNlci9obGIvaGxiLmNvbXBvbmVudC5zY3NzIl0sIm5hbWVzIjpbXSwibWFwcGluZ3MiOiJBQUFBO0VBQ0ksYUFBQTtFQUNBLGdCQUFBO0VBQ0EsVUFBQTtBQ0NKOztBREVBO0VBQ0ksYUFBQTtFQUNBLHNCQUFBO0VBQ0EsY0FBQTtBQ0NKOztBREdBO0VBQ0ksd0JBQUE7RUFDQSxrQkFBQTtFQUNBLGNBQUE7RUFDQSxhQUFBO0VBQ0EsZUFBQTtBQ0FKOztBRElBO0VBQ0ksYUFBQTtBQ0RKOztBRElBO0VBQ0ksWUFBQTtBQ0RKOztBRElBO0VBQ0ksdUJBQUE7RUFDQSxXQUFBO0VBQ0EsV0FBQTtFQUNBLGtCQUFBO0VBQ0EsWUFBQTtBQ0RKOztBREdBO0VBQ0ksa0JBQUE7RUFDQSxjQUFBO0VBQ0EsYUFBQTtBQ0FKOztBREdBO0VBQ0ksV0FBQTtBQ0FKOztBREdBO0VBQ0ksWUFBQTtFQUNBLGVBQUE7RUFDQSxhQUFBO0FDQUo7O0FER0E7RUFDSSxjQUFBO0FDQUo7O0FER0E7RUFDSSxvQkFBQTtBQ0FKOztBREdBO0VBQ0ksWUFBQTtFQUFjLDJDQUFBO0VBQ2QsWUFBQTtFQUVBLG9CQUFBO0FDQ0o7O0FERUMsbUVBQUE7O0FBQ0Q7RUFDSSxnQkFBQTtFQUVBLHdCQUFBO0FDQ0o7O0FERUE7RUFDSSxpQkFBQTtBQ0NKOztBREVFO0VBQ0ksaUJBQUE7RUFDQSxrQkFBQTtBQ0NOOztBREdFO0VBQ0ksa0JBQUE7QUNBTjs7QURHRTtFQUNJLFlBQUE7RUFDQSxlQUFBO0FDQU47O0FER0U7RUFDSSxhQUFBO0FDQU4iLCJmaWxlIjoic3JjL2FwcC9wYWdlcy9obGJwYXJzZXIvaGxiL2hsYi5jb21wb25lbnQuc2NzcyIsInNvdXJjZXNDb250ZW50IjpbIi5iZWhhdmlvci1saXN0e1xuICAgIG1hcmdpbjouMWVtO1xuICAgIGxpc3Qtc3R5bGU6IG5vbmU7XG4gICAgcGFkZGluZzogMDtcbn1cblxuLmJlaGF2aW9yLWJveHtcbiAgICBtYXJnaW46IC41ZW07XG4gICAgYm9yZGVyOiAxcHggc29saWQgI2NjYztcbiAgICBwYWRkaW5nOiAuNWVtO1xufVxuXG5cbi53b3JkLWJ1YmJsZXtcbiAgICBib3JkZXI6IDFweCBkb3R0ZWQgYmxhY2s7XG4gICAgYm9yZGVyLXJhZGl1czogMWVtO1xuICAgIHBhZGRpbmc6IDAuNGVtO1xuICAgIG1hcmdpbjogMC4xZW07XG4gICAgY3Vyc29yOiBwb2ludGVyO1xuIFxufVxuXG4uYWN0b3JfZXhhbXBsZV9jb2xvcntcbiAgICBjb2xvcjogb3JhbmdlXG59XG5cbi5iaW5kaW5nX2V4YW1wbGVfY29sb3J7XG4gICAgY29sb3I6IGdyZWVuXG59XG5cbi5iaW5kaW5nLXdvcmQtYnViYmxle1xuICAgIGJvcmRlcjogMXB4IHNvbGlkIGJsYWNrO1xuICAgIGZsb2F0OiBsZWZ0O1xuICAgIG1hcmdpbjogMnB4O1xuICAgIGJvcmRlci1yYWRpdXM6IDhweDtcbiAgICBwYWRkaW5nOiAzcHg7XG59XG4ud29yZC1idWJibGUtYnV0dG9ue1xuICAgIGJvcmRlci1yYWRpdXM6IDFlbTtcbiAgICBwYWRkaW5nOiAwLjRlbTtcbiAgICBtYXJnaW46IDAuMWVtO1xuIFxufVxuLmZsb2F0LWxlZnR7XG4gICAgZmxvYXQ6bGVmdDtcbn1cblxuLmFjdGlvbnN7XG4gICAgZmxvYXQ6cmlnaHQ7XG4gICAgY3Vyc29yOiBwb2ludGVyO1xuICAgIGRpc3BsYXk6IG5vbmU7XG59XG5cbi5iZWhhdmlvci1saXN0OmhvdmVyIC5hY3Rpb25ze1xuICAgIGRpc3BsYXk6IGJsb2NrO1xufVxuXG4uZGlzYWJsZWR7XG4gICAgcG9pbnRlci1ldmVudHM6IG5vbmU7ICAgXG59XG5cbi5ncmFiYmFibGUge1xuICAgIGN1cnNvcjogbW92ZTsgLyogZmFsbGJhY2sgaWYgZ3JhYiBjdXJzb3IgaXMgdW5zdXBwb3J0ZWQgKi9cbiAgICBjdXJzb3I6IGdyYWI7XG4gICAgY3Vyc29yOiAtbW96LWdyYWI7XG4gICAgY3Vyc29yOiAtd2Via2l0LWdyYWI7XG59XG5cbiAvKiAoT3B0aW9uYWwpIEFwcGx5IGEgXCJjbG9zZWQtaGFuZFwiIGN1cnNvciBkdXJpbmcgZHJhZyBvcGVyYXRpb24uICovXG4uZ3JhYmJhYmxlOmFjdGl2ZSB7XG4gICAgY3Vyc29yOiBncmFiYmluZztcbiAgICBjdXJzb3I6IC1tb3otZ3JhYmJpbmc7XG4gICAgY3Vyc29yOiAtd2Via2l0LWdyYWJiaW5nO1xufVxuXG4ubWF0LXJhZGlvLWJ1dHRvbiB+IC5tYXQtcmFkaW8tYnV0dG9uIHtcbiAgICBtYXJnaW4tbGVmdDogMTZweDtcbiAgfVxuXG4gIC5wYWRkaW5nLWxlZnQtcmlnaHR7XG4gICAgICBwYWRkaW5nLWxlZnQ6IDVweDtcbiAgICAgIHBhZGRpbmctcmlnaHQ6IDVweDtcbiAgfVxuXG4gXG4gIC5idXR0b24tcGFkZGluZ3tcbiAgICAgIG1hcmdpbi1sZWZ0OiAuMWVtO1xuICB9XG5cbiAgLmV4cGFuZHtcbiAgICAgIGZsb2F0OiByaWdodDtcbiAgICAgIGN1cnNvcjogcG9pbnRlcjtcbiAgfVxuXG4gIC5oaWRle1xuICAgICAgZGlzcGxheTogbm9uZTtcbiAgfSIsIi5iZWhhdmlvci1saXN0IHtcbiAgbWFyZ2luOiAwLjFlbTtcbiAgbGlzdC1zdHlsZTogbm9uZTtcbiAgcGFkZGluZzogMDtcbn1cblxuLmJlaGF2aW9yLWJveCB7XG4gIG1hcmdpbjogMC41ZW07XG4gIGJvcmRlcjogMXB4IHNvbGlkICNjY2M7XG4gIHBhZGRpbmc6IDAuNWVtO1xufVxuXG4ud29yZC1idWJibGUge1xuICBib3JkZXI6IDFweCBkb3R0ZWQgYmxhY2s7XG4gIGJvcmRlci1yYWRpdXM6IDFlbTtcbiAgcGFkZGluZzogMC40ZW07XG4gIG1hcmdpbjogMC4xZW07XG4gIGN1cnNvcjogcG9pbnRlcjtcbn1cblxuLmFjdG9yX2V4YW1wbGVfY29sb3Ige1xuICBjb2xvcjogb3JhbmdlO1xufVxuXG4uYmluZGluZ19leGFtcGxlX2NvbG9yIHtcbiAgY29sb3I6IGdyZWVuO1xufVxuXG4uYmluZGluZy13b3JkLWJ1YmJsZSB7XG4gIGJvcmRlcjogMXB4IHNvbGlkIGJsYWNrO1xuICBmbG9hdDogbGVmdDtcbiAgbWFyZ2luOiAycHg7XG4gIGJvcmRlci1yYWRpdXM6IDhweDtcbiAgcGFkZGluZzogM3B4O1xufVxuXG4ud29yZC1idWJibGUtYnV0dG9uIHtcbiAgYm9yZGVyLXJhZGl1czogMWVtO1xuICBwYWRkaW5nOiAwLjRlbTtcbiAgbWFyZ2luOiAwLjFlbTtcbn1cblxuLmZsb2F0LWxlZnQge1xuICBmbG9hdDogbGVmdDtcbn1cblxuLmFjdGlvbnMge1xuICBmbG9hdDogcmlnaHQ7XG4gIGN1cnNvcjogcG9pbnRlcjtcbiAgZGlzcGxheTogbm9uZTtcbn1cblxuLmJlaGF2aW9yLWxpc3Q6aG92ZXIgLmFjdGlvbnMge1xuICBkaXNwbGF5OiBibG9jaztcbn1cblxuLmRpc2FibGVkIHtcbiAgcG9pbnRlci1ldmVudHM6IG5vbmU7XG59XG5cbi5ncmFiYmFibGUge1xuICBjdXJzb3I6IG1vdmU7XG4gIC8qIGZhbGxiYWNrIGlmIGdyYWIgY3Vyc29yIGlzIHVuc3VwcG9ydGVkICovXG4gIGN1cnNvcjogZ3JhYjtcbiAgY3Vyc29yOiAtbW96LWdyYWI7XG4gIGN1cnNvcjogLXdlYmtpdC1ncmFiO1xufVxuXG4vKiAoT3B0aW9uYWwpIEFwcGx5IGEgXCJjbG9zZWQtaGFuZFwiIGN1cnNvciBkdXJpbmcgZHJhZyBvcGVyYXRpb24uICovXG4uZ3JhYmJhYmxlOmFjdGl2ZSB7XG4gIGN1cnNvcjogZ3JhYmJpbmc7XG4gIGN1cnNvcjogLW1vei1ncmFiYmluZztcbiAgY3Vyc29yOiAtd2Via2l0LWdyYWJiaW5nO1xufVxuXG4ubWF0LXJhZGlvLWJ1dHRvbiB+IC5tYXQtcmFkaW8tYnV0dG9uIHtcbiAgbWFyZ2luLWxlZnQ6IDE2cHg7XG59XG5cbi5wYWRkaW5nLWxlZnQtcmlnaHQge1xuICBwYWRkaW5nLWxlZnQ6IDVweDtcbiAgcGFkZGluZy1yaWdodDogNXB4O1xufVxuXG4uYnV0dG9uLXBhZGRpbmcge1xuICBtYXJnaW4tbGVmdDogMC4xZW07XG59XG5cbi5leHBhbmQge1xuICBmbG9hdDogcmlnaHQ7XG4gIGN1cnNvcjogcG9pbnRlcjtcbn1cblxuLmhpZGUge1xuICBkaXNwbGF5OiBub25lO1xufSJdfQ== */");
 
 /***/ }),
 
@@ -680,6 +833,7 @@ let HlbComponent = class HlbComponent {
                     this.bindingMap.set(key, t);
                     this.bindingList.push(t);
                 });
+                //this.storeBinding()
                 //console.log(this.bindingMap);
             }
         });
@@ -892,6 +1046,7 @@ let HlbComponent = class HlbComponent {
     }
     extractInfo(data) {
         this.extractScenario(data.parsedScenario);
+        this.storeBinding();
     }
     extractScenario(scenario) {
         //console.log(scenario);
@@ -938,7 +1093,7 @@ let HlbComponent = class HlbComponent {
     extractEvents(triggers //,actions,emitters
     ) {
         //console.log(this.bindingMap);
-        if (triggers != null)
+        if (triggers != null) {
             triggers.forEach((element) => {
                 //console.log(element);
                 if (!this.bindingMap.has(element)) {
@@ -950,6 +1105,7 @@ let HlbComponent = class HlbComponent {
                     this.bindingList.push(this.bindingMap.get(element));
                 }
             });
+        }
         //   if(actions!=null)
         //   actions.forEach(element => {
         //     //console.log(element);
@@ -975,15 +1131,13 @@ let HlbComponent = class HlbComponent {
         // //console.log(this.bindingMap);
     }
     logChangeBehavior(event) {
-        if (this.behaviorService.getText().trim() === "")
-            return;
+        // if (this.behaviorService.getText().trim() === "") return;
         // var index = this.behaviorService.getText().length-2;
         // if (this.behaviorService.getText().charAt(index) == '\n')
         //     this.updateActors();
     }
     logChangeConstraints(event) {
-        if (this.constraintService.getText().trim() === "")
-            return;
+        // if (this.constraintService.getText().trim() === "") return;
         // //console.log(this.constraintService.getText().charAt(this.constraintService.getText().length-1))
     }
     insertValue(text, flag = false) {
@@ -1414,11 +1568,15 @@ HLBParserModule = tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"]([
             _upload_upload_component__WEBPACK_IMPORTED_MODULE_21__["UploadComponent"],
             _upload_upload_component__WEBPACK_IMPORTED_MODULE_21__["FilePreviewComponent"],
             _hlb_hlb_component__WEBPACK_IMPORTED_MODULE_18__["BindingPopUp"],
-            _experiment_info_info_component__WEBPACK_IMPORTED_MODULE_25__["InfoComponent"]
+            _experiment_info_info_component__WEBPACK_IMPORTED_MODULE_25__["InfoComponent"],
+            _experiment_info_info_component__WEBPACK_IMPORTED_MODULE_25__["AddUserPopUp"]
         ],
         imports: [
             _angular_common__WEBPACK_IMPORTED_MODULE_15__["CommonModule"],
             src_app_auth_auth_module__WEBPACK_IMPORTED_MODULE_22__["AuthModule"].forRoot(),
+            _angular_forms__WEBPACK_IMPORTED_MODULE_3__["FormsModule"],
+            _angular_forms__WEBPACK_IMPORTED_MODULE_3__["ReactiveFormsModule"],
+            _angular_material__WEBPACK_IMPORTED_MODULE_11__["MatAutocompleteModule"],
             _angular_router__WEBPACK_IMPORTED_MODULE_17__["RouterModule"],
             _angular_material_radio__WEBPACK_IMPORTED_MODULE_24__["MatRadioModule"],
             _swimlane_ngx_graph__WEBPACK_IMPORTED_MODULE_14__["NgxGraphModule"],
@@ -1437,7 +1595,7 @@ HLBParserModule = tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"]([
             _angular_material_input__WEBPACK_IMPORTED_MODULE_5__["MatInputModule"],
             ngx_file_drop__WEBPACK_IMPORTED_MODULE_12__["NgxFileDropModule"]
         ],
-        entryComponents: [_upload_upload_component__WEBPACK_IMPORTED_MODULE_21__["FilePreviewComponent"], _hlb_hlb_component__WEBPACK_IMPORTED_MODULE_18__["BindingPopUp"]],
+        entryComponents: [_upload_upload_component__WEBPACK_IMPORTED_MODULE_21__["FilePreviewComponent"], _hlb_hlb_component__WEBPACK_IMPORTED_MODULE_18__["BindingPopUp"], _experiment_info_info_component__WEBPACK_IMPORTED_MODULE_25__["AddUserPopUp"]],
         providers: [_state_service_service__WEBPACK_IMPORTED_MODULE_10__["StateService"]],
         bootstrap: [_hlpparser_component__WEBPACK_IMPORTED_MODULE_13__["HLBParserComponent"]]
     })
