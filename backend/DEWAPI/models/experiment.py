@@ -1,7 +1,12 @@
 from extensions import db
 from datetime import datetime
+from sqlalchemy_continuum.plugins import FlaskPlugin
+from sqlalchemy_continuum import make_versioned
+
+make_versioned( user_cls=None)
 
 class Experiment(db.Model):
+    __versioned__ = {}
 
     experiment_id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     name = db.Column(db.String, default='untitled')
