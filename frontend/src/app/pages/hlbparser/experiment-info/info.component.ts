@@ -37,9 +37,10 @@ export class InfoComponent implements OnInit {
     protected route: Router
   ) {}
   nameControl = new FormControl();
+  experimentControl = 4;
   ngOnInit(): void {
     
-    this.loadTokenList();
+    
     if (this.id != undefined && this.id != null && this.id != -1)
       this.experiment["id"] = this.id;
     this.state.getExperimentName().subscribe((name) => {
@@ -60,14 +61,24 @@ export class InfoComponent implements OnInit {
     this.state.getConstraints().subscribe((constraintsList) => {
       this.experiment.constraints = constraintsList;
     });
-
+    this.state.getExperimentControl().subscribe(data =>{
+      this.experimentControl = data
+    });
+    if(this.experimentControl>3){
+    this.loadTokenList();
     this.state.getTokenList().subscribe((data) => {
       if (data != null) {
         this.tokenList = data;
       }
     });
-
     this.getUserAccessList();
+  }
+
+   
+  }
+
+  isExperimentDisabled():boolean {
+      return this.experimentControl == 2
   }
   getUserAccessList(){
     var params = {
@@ -148,9 +159,10 @@ export class InfoComponent implements OnInit {
                 bindingFLag = true
           })
         }
-
+        if (bindingFLag)
         var continueFlag = confirm("Few bindings are missing, Do you still want to continue?")
-        
+        else
+        continueFlag = !bindingFLag
         if(continueFlag)
       this.http.put("v1/persist/save", this.experiment).subscribe(
         (data) => {
@@ -204,7 +216,8 @@ export class InfoComponent implements OnInit {
     var params = {
       "userId": this.experiment.userId,
       "userHandle": userobj.handle,
-      "id": this.experiment["id"]
+      "id": this.experiment["id"],
+      "accessLevel":userobj.access
     }
 
     this.http.post("api/v1/persist/experiment/grantaccess",params).subscribe(data=>{
@@ -241,7 +254,7 @@ export class AddUserPopUp implements OnInit {
     @Inject(MAT_DIALOG_DATA) public token: any
   ) {}
 
-  options = [{name:'Read',value:'read'},{name:'Write',value:'write'}]
+  options = [{name:'Read',value:'2'},{name:'Write',value:'3'},{name:'Write',value:'4'}]
   userOptions = [];
   ngOnInit(): void {
     this.http.get("v1/user/getUserHandles/"+this.token).subscribe(data=>{
@@ -269,7 +282,7 @@ export class AddUserPopUp implements OnInit {
     const filterValue = value.toLowerCase();
 
     return options.filter((option) =>
-      option.value.toLowerCase().includes(filterValue) || option.name.toLowerCase().includes(filterValue)
+      option.name.toLowerCase().includes(filterValue)
     );
   }
 }

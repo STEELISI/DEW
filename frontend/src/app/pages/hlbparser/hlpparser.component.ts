@@ -11,7 +11,7 @@ import { HttpService } from "src/app/http-service.service";
 })
 export class HLBParserComponent implements OnInit {
   viewFlag:boolean=false;
-  menuList: any = [
+  menuList: any =  [
     {
       name: "Information",
       id: 1,
@@ -21,26 +21,12 @@ export class HLBParserComponent implements OnInit {
       name: "HLB",
       id: 2,
       html: "<hlb></hlb>",
-    },
-    {
-      name: "NLP",
-      id: 3,
-      html: "<nlp></nlp>",
-    },
-    {
-      name: "Behavior Dependency Graph",
-      id: 4,
-      html: "<p>In Progress.....</p>",
-    },
-    {
-      name: "Upload",
-      id: 5,
-      html: "<upload></upload>",
-    },
-  ];
+    }]
   experimentId: Number = -1;
+  experimentControl:Number = 4;
   constructor(
     private route: ActivatedRoute,
+    private router:Router,
     protected http: HttpService,
     private state: StateService,
     private auth: AuthService
@@ -57,6 +43,13 @@ export class HLBParserComponent implements OnInit {
         this.experimentId = params["id"];
         this.state.enableLoader();
         this.http
+          .post("api/v1/persist/experiment/control", input)
+          .subscribe((controlData) => {
+            if(controlData.code!= undefined && controlData.code!=null){
+            this.state.setExperimentControl(controlData.code);
+            this.experimentControl = controlData.code;
+            console.log(this.experimentControl)
+        this.http
           .post("api/v1/persist/getExperimentById", input)
           .subscribe((data) => {
             this.enableView();
@@ -68,15 +61,47 @@ export class HLBParserComponent implements OnInit {
             this.state.setConstraints(data.constraints);
            this.state.disableLoader();
           });
+        }else{
+          alert("Don't have control for this experiment");
+          this.router.navigate(['pages/dashboard']);
+        }
+        });
+     
          
         return "";
       }else{
         this.enableView();
       }
     });
+
   }
 
   enableView(){
+   
+    let menu =  [{
+        name: "NLP",
+        id: 3,
+        html: "<nlp></nlp>",
+      },
+      {
+        name: "Behavior Dependency Graph",
+        id: 4,
+        html: "<p>In Progress.....</p>",
+      },
+      {
+        name: "Upload",
+        id: 5,
+        html: "<upload></upload>",
+      },
+    ];
+    if(this.experimentControl >2){
+      menu.forEach(item=>{
+        this.menuList.push(item);
+      });
+      
+    }
+   
+    
   this.viewFlag = true;
   }
 

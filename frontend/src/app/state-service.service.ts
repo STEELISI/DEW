@@ -3,6 +3,7 @@ import { BehaviorSubject, Observable } from "rxjs";
 
 @Injectable()
 export class StateService {
+ 
   
   
   loaderSwitch: BehaviorSubject<boolean> = new BehaviorSubject(false);
@@ -13,10 +14,17 @@ export class StateService {
   experimentName: BehaviorSubject<String> = new BehaviorSubject("");
   experimentDescription: BehaviorSubject<String> = new BehaviorSubject("");
   tokenList: BehaviorSubject<any> = new BehaviorSubject("");
+  experimentControl: BehaviorSubject<number> = new BehaviorSubject(4);
   userDetails: any;
   currentBehaviorWord: String;
   currentConstraintWord: String;
   tokenLevel: String;
+  setExperimentControl(code: number) {
+    this.experimentControl.next(code);
+  }
+  getExperimentControl() {
+   return this.experimentControl.asObservable();
+  }
   getTokenLevel():String {return this.tokenLevel;}
   setTokenLevel(tokenLevel) {this.tokenLevel=tokenLevel;}
   setTokenList(data: any) {

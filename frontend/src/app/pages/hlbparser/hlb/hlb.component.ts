@@ -50,6 +50,7 @@ export class HlbComponent implements OnInit {
   inputText: string = "";
   actors: String = "";
   selectedIndex: number = 0;
+  experimentAccess:number = 4;
   constructor(
     private http: HttpService,
     public dialog: MatDialog,
@@ -112,7 +113,12 @@ export class HlbComponent implements OnInit {
         instance.constraintText = text;
       }
     });
+    this.stateservice.getExperimentControl().subscribe(flag=>{
+      this.experimentAccess = flag
+    })
   }
+
+  isExperimentDisabled():boolean{return this.experimentAccess == 2}
   drop(event: CdkDragDrop<string[]>, list: Array<any>) {
     moveItemInArray(list, event.previousIndex, event.currentIndex);
   }

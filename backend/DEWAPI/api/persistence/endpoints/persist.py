@@ -166,9 +166,30 @@ class HandleGrantAccess(Resource):
     userId = content['userId']
     userHandle = content['userHandle']
     experiment_id = content['id']
+    accessLevel = content['accessLevel']
+    try:
+      if int(accessLevel)>0 and int(accessLevel)<=4:
+        result = em.grantExperimentAccess(experiment_id, userId,userHandle,accessLevel)
+      else:
+        result = {'error':'Invalid Access Level'}
+      return result, 200
+    except ValueError as e:
+      if str(e) == "Forbidden":
+        return {}, 403
+
+@ns.route("/experiment/control")
+class HandleExperimentControl(Resource):
+  @api.expect(experiment_detail)
+  def post(self):
+    """
+     Grant experiment access
+    """
+    content = request.get_json(force=True)
+    userId = content['userId']
+    experiment_id = content['id']
     
     try:
-      result = em.grantExperimentAccess(experiment_id, userId,userHandle)
+      result = em.getExperimentControlInfoByUserId(experiment_id, userId)
       return result, 200
     except ValueError as e:
       if str(e) == "Forbidden":

@@ -55,10 +55,10 @@
           </ul>
           <hr />
           <div class="row">
-            <div class="col-md-12" (click)="selectTextBox(2)">
+            <div class="col-md-12" (click)="selectTextBox(2)" >
               <div
                 style="margin: 0.6em; border-bottom: 1px solid #eee;"
-                [hidden]="!isEnable(2)"
+                [hidden]="!isEnable(2) || isExperimentDisabled()"
               >
                 <span>Suggestions:</span>
 
@@ -93,6 +93,7 @@
                   }"
                   placeholder="Enter Steps to be executed during the experiment. For example: Actor0 start_log"
                   [(ngModel)]="behaviorText"
+                  [disabled]="isExperimentDisabled()"
                   (onContentChanged)="logChangeBehavior($event)"
                   (onEditorCreated)="created($event, 2)"
                 ></quill-editor>
@@ -147,7 +148,7 @@
             <div class="col-md-12" (click)="selectTextBox(3)">
               <div
                 style="margin: 0.6em; border-bottom: 1px solid #eee;"
-                [hidden]="!isEnable(3)"
+                [hidden]="!isEnable(3) || isExperimentDisabled()"
               >
                 <span>Suggestions:</span>
                 <button
@@ -178,6 +179,7 @@
                     counter: { container: '#editor1' },
                     toolbar: false
                   }"
+                  [disabled]="isExperimentDisabled()"
                   [(ngModel)]="constraintText"
                   (onContentChanged)="logChangeConstraints($event)"
                   (onEditorCreated)="created($event, 3)"
@@ -247,6 +249,7 @@
                     <mat-label>{{ item.key + " represents: " }}</mat-label>
                     <input
                       matInput
+                      [disabled]="isExperimentDisabled()"
                       [(ngModel)]="item.value"
                       (change)="storeBinding()"
                     />
