@@ -2647,6 +2647,15 @@
         this.experimentName = new rxjs__WEBPACK_IMPORTED_MODULE_2__["BehaviorSubject"]("");
         this.experimentDescription = new rxjs__WEBPACK_IMPORTED_MODULE_2__["BehaviorSubject"]("");
         this.tokenList = new rxjs__WEBPACK_IMPORTED_MODULE_2__["BehaviorSubject"]("");
+        this.experimentControl = new rxjs__WEBPACK_IMPORTED_MODULE_2__["BehaviorSubject"](4);
+      }
+
+      setExperimentControl(code) {
+        this.experimentControl.next(code);
+      }
+
+      getExperimentControl() {
+        return this.experimentControl.asObservable();
       }
 
       getTokenLevel() {
