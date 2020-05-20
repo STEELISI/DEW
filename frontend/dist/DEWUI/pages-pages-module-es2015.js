@@ -22,7 +22,7 @@ __webpack_require__.r(__webpack_exports__);
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony default export */ __webpack_exports__["default"] = ("<div class=\"row\" *ngIf=\"show\">\n\n\n\n  <div class=\"col-md-10\" style=\"    margin: 2em;\">\n    \n    <mat-card> \n    <table class=\"table\">\n      <thead >\n          <tr >\n            <th style=\"min-width:50px\">Exp. Id</th>\n              <th style=\"min-width:150px\">Experiment Name</th>\n              <th style=\"min-width:150px\">Experiment Description</th>\n              <th style=\"min-width:150px\">Last Created Date</th>\n              <th style=\"min-width:150px\">Last Updated Date</th>\n              <th >  <button mat-button style=\"margin: 0;   width:20px; height: 20px;line-height: 0;\"><i (click)=\"create()\" class=\"fas fa-plus\"></i></button>\n              </th>\n          </tr>\n      </thead>\n      <tbody *ngIf=\"experiments.length!=0\" >\n          <tr *ngFor=\"let item of experiments; let i=index\" >\n            <td>{{item.experiment_id}}</td>\n              <td><strong>{{ item.name }}</strong></td>\n              <td><strong>{{ item.description }}</strong></td>\n              <td><strong>{{ item.created_date }}</strong></td>\n              <td><strong>{{ item.updated_date }}</strong></td>\n              <td>\n                <i class=\"fas fa-copy pointer\" (click)=\"copy(item)\"></i>\n                <i class=\"fas fa-edit pointer\" (click)=\"edit(item)\"></i>\n                <i class=\"far fa-trash-alt pointer\" (click)=\"delete(item)\"></i></td>\n\n          </tr>\n      </tbody>\n      <tbody class=\"upload-name\"  *ngIf=\"experiments.length==0\" >\n        <tr >\n          <td colspan=\"3\" ><span ><i>No saved experiments.</i> </span></td>\n            \n\n        </tr>\n    </tbody>\n \n  </table>\n  </mat-card>\n    </div>\n</div>");
+/* harmony default export */ __webpack_exports__["default"] = ("<div class=\"row\" *ngIf=\"show\">\n\n\n\n  <div class=\"col-md-10\" style=\"    margin: 2em;\">\n    \n    <mat-card> \n    <table class=\"table\">\n      <thead >\n          <tr >\n            <th style=\"min-width:50px\">Exp. Id</th>\n              <th style=\"min-width:150px\">Experiment Name</th>\n              <th style=\"min-width:150px\">Experiment Description</th>\n              <th style=\"min-width:150px\">Last Created Date</th>\n              <th style=\"min-width:150px\">Last Updated Date</th>\n              <th >  <button mat-button matTooltip=\"Create a new experiment.\" style=\"margin: 0;   width:20px; height: 20px;line-height: 0;\"><i (click)=\"create()\" class=\"fas fa-plus\"></i></button>\n              </th>\n          </tr>\n      </thead>\n      <tbody *ngIf=\"experiments.length!=0\" >\n          <tr *ngFor=\"let item of experiments; let i=index\" >\n            <td>{{item.experiment_id}}</td>\n              <td><strong>{{ item.name }}</strong></td>\n              <td><strong>{{ item.description }}</strong></td>\n              <td><strong>{{ item.created_date }}</strong></td>\n              <td><strong>{{ item.updated_date }}</strong></td>\n              <td>\n                <i class=\"fas fa-copy pointer\" (click)=\"copy(item)\" matTooltip=\"Copy experiment.\"></i>\n                <i class=\"fas fa-edit pointer\" (click)=\"edit(item)\" matTooltip=\"Edit experiment.\"></i>\n                <!-- <i class=\"far fa-trash-alt pointer\" (click)=\"delete(item)\"></i>--></td> \n\n          </tr>\n      </tbody>\n      <tbody class=\"upload-name\"  *ngIf=\"experiments.length==0\" >\n        <tr >\n          <td colspan=\"3\" ><span ><i>No saved experiments.</i> </span></td>\n            \n\n        </tr>\n    </tbody>\n \n  </table>\n  </mat-card>\n    </div>\n</div>");
 
 /***/ }),
 
@@ -197,6 +197,7 @@ DashboardModule = tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"]([
             _angular_material__WEBPACK_IMPORTED_MODULE_9__["MatSnackBarModule"],
             _fortawesome_angular_fontawesome__WEBPACK_IMPORTED_MODULE_8__["FontAwesomeModule"],
             _angular_material_tabs__WEBPACK_IMPORTED_MODULE_2__["MatTabsModule"],
+            _angular_material__WEBPACK_IMPORTED_MODULE_9__["MatTooltipModule"],
             _angular_cdk_drag_drop__WEBPACK_IMPORTED_MODULE_7__["DragDropModule"],
             _angular_forms__WEBPACK_IMPORTED_MODULE_3__["FormsModule"],
             _angular_material__WEBPACK_IMPORTED_MODULE_9__["MatTableModule"],
@@ -241,8 +242,6 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _angular_router__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @angular/router */ "./node_modules/@angular/router/fesm2015/router.js");
 /* harmony import */ var src_app_auth_init_user_service__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! src/app/@auth/init-user.service */ "./src/app/@auth/init-user.service.ts");
 /* harmony import */ var src_app_http_service_service__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! src/app/http-service.service */ "./src/app/http-service.service.ts");
-/* harmony import */ var _angular_common_http__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! @angular/common/http */ "./node_modules/@angular/common/fesm2015/http.js");
-
 
 
 
@@ -288,20 +287,6 @@ let ExperimentComponent = class ExperimentComponent {
         };
         this.http.post("api/v1/persist/experiment/copy", params).subscribe(data => {
             this.edit(data);
-        });
-    }
-    delete(experiments) {
-        var header = {
-            headers: new _angular_common_http__WEBPACK_IMPORTED_MODULE_5__["HttpHeaders"]({ 'Content-Type': 'application/json' }),
-            body: {
-                userId: this.userInfo.userId,
-                id: experiments.experiment_id + ""
-            }
-        };
-        this.http.delete("v1/persist/experiment/delete", header).subscribe(data => {
-            console.log(data);
-            alert("experiment is delete;");
-            this.load(this.userInfo.userId);
         });
     }
 };
