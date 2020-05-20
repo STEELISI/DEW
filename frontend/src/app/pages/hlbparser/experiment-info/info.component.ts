@@ -7,6 +7,7 @@ import { FormControl } from "@angular/forms";
 import { Observable } from "rxjs";
 import { startWith, map } from "rxjs/operators";
 import { MatDialogRef, MAT_DIALOG_DATA, MatDialog } from '@angular/material';
+import { HttpHeaders } from '@angular/common/http';
 
 @Component({
   selector: "experiment-info",
@@ -230,6 +231,21 @@ export class InfoComponent implements OnInit {
       alert("Error in granting access.")
     })
   }
+
+  delete(){
+    var header = {
+      headers: new HttpHeaders({ 'Content-Type': 'application/json' }),
+      body:{
+      userId:this.experiment.userId,
+      id:this.experiment['id']
+    }}
+    this.http.delete("v1/persist/experiment/delete",header).subscribe(data=>{
+      alert("experiment is delete.");
+      this.route.navigate(["/pages/dashboard"])
+    },error=>{
+      alert('There is some error while deleting the experiment. Please try again after sometime.');
+    })
+  }
 }
 
 
@@ -254,7 +270,7 @@ export class AddUserPopUp implements OnInit {
     @Inject(MAT_DIALOG_DATA) public token: any
   ) {}
 
-  options = [{name:'Read',value:'2'},{name:'Write',value:'3'},{name:'Write',value:'4'}]
+  options = [{name:'Read',value:'2'},{name:'Write',value:'3'},{name:'Manage',value:'4'}]
   userOptions = [];
   ngOnInit(): void {
     this.http.get("v1/user/getUserHandles/"+this.token).subscribe(data=>{
@@ -276,6 +292,14 @@ export class AddUserPopUp implements OnInit {
   }
   onNoClick(): void {
     this.dialogRef.close();
+  }
+
+  isAddDisabled():boolean{
+    let flag = true
+
+    if (this.UserObj.handle.trim()!='' && this.UserObj.access.trim()!='')
+    flag = false
+    return flag
   }
 
   private _filter(value: string, options): string[] {

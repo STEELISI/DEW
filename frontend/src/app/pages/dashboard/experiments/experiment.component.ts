@@ -56,18 +56,6 @@ export class ExperimentComponent implements OnInit{
      });
   }
 
-  delete(experiments){
-    var header = {
-      headers: new HttpHeaders({ 'Content-Type': 'application/json' }),
-      body:{
-      userId:this.userInfo.userId,
-      id:experiments.experiment_id+""
-    }}
-    this.http.delete("v1/persist/experiment/delete",header).subscribe(data=>{
-      console.log(data);
-      alert("experiment is delete;");
-      this.load(this.userInfo.userId);
-    })
-  }
+ 
 
 }

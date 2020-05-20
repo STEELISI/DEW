@@ -18,9 +18,10 @@
   
           <div class="row">
            
-              <mat-form-field class="col-md-8">
+              <mat-form-field class="col-md-8" appearance="outline">
+                <mat-label>User Handle</mat-label>
                 <input type="text"
-                       placeholder="User Name"
+                       placeholder="User Handle"
                        aria-label="string"
                        matInput
                        [(ngModel)]="UserObj.handle"
@@ -33,21 +34,15 @@
                 </mat-autocomplete>
               </mat-form-field>
         
-
-        <mat-form-field class="col-md-4">
-          <input type="text"
-                 placeholder="Access Level"
-                 aria-label="string"
-                 matInput
-                 [(ngModel)]="UserObj.access"
-                 [formControl]="accessLevelControl"
-                 [matAutocomplete]="auto">
-          <mat-autocomplete #auto="matAutocomplete">
-            <mat-option *ngFor="let option of filteredLevels | async" [value]="option.value">
-              {{option.name}}
-            </mat-option>
-          </mat-autocomplete>
-        </mat-form-field>
+              <mat-form-field class="col-md-4" appearance="outline">
+                <mat-label>Access Level</mat-label>
+                <mat-select [(ngModel)]="this.UserObj.access" required >
+                  <mat-option *ngFor="let option of filteredLevels | async" [value]="option.value">
+                    {{option.name}}
+                  </mat-option>
+                </mat-select>
+              </mat-form-field>
+       
       </div>
 
 
@@ -57,5 +52,5 @@
 
       <div mat-dialog-actions>
         <button mat-button (click)="onNoClick()">Cancel</button>
-        <button mat-button [mat-dialog-close]="UserObj" cdkFocusInitial>Add</button>
+        <button mat-button [disabled]="isAddDisabled()" [mat-dialog-close]="UserObj" cdkFocusInitial>Add</button>
       </div>  

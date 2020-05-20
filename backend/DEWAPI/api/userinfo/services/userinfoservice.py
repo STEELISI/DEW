@@ -97,8 +97,17 @@ class GoogleLogin():
         if ac is not None:
             ac1 = AccessControl.query.filter(AccessControl.experiment_id==experimentId, AccessControl.uid!=userId,AccessControl.expiry_date>datetime.today(), AccessControl.access_level>AccessControlEnum.none.value).all()
             r = [i.uid for i in ac1] 
-            
-            result['userList'] = [{'name':i.name,'handle':i.username} for i in User.query.filter(User.uid.in_(r)).all()]
+            userList = {}
+            for i in ac1:
+                if i.access_level == AccessControlEnum.read.value:
+                    userList[i.uid] = 'Read'
+                elif i.access_level == AccessControlEnum.write.value:
+                    userList[i.uid] = 'Write'
+                elif i.access_level == AccessControlEnum.manage.value:
+                    userList[i.uid] = 'Mange'
+                else:
+                    userList[i.uid] = 'None'
+            result['userList'] = [{'name':i.name,'handle':i.username,'accessLevel':userList[i.uid]} for i in User.query.filter(User.uid.in_(r)).all()]
         
         else:
             result = {'error':'Un Authorized user','location':'logout'}

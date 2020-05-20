@@ -1,4 +1,16 @@
 
+  <div class="row">
+    <div class="col-md-12">
+      <div class="action_menu">
+      <ul >
+          <li *ngIf="!isExperimentDisabled()"><i class="fas fa-save pointer" (click)="save()" matTooltip="Save"></i></li>
+          <li *ngIf="id!=-1 && experimentControl>3"><i class="far fa-trash-alt pointer" (click)="delete()" matTooltip="Delete"></i></li>
+          <li *ngIf="id!=-1 && experimentControl>3"><i class="fas fa-share-square pointer" (click)="addUserPopUp()" matTooltip="Share it with User"></i></li>
+          <li *ngIf="id!=-1 && experimentControl>3"><i class="fas fa-external-link-alt pointer" (click)="createToken()" matTooltip="Get external url"></i></li>
+      </ul>
+    </div>
+      </div>
+  </div>
  <div class="row">
 <div class="col-md-8">
 
@@ -9,8 +21,8 @@
               <div class="row" >
               <mat-form-field class="col-md-12" appearance="outline">
                 <mat-label>Experiment Name</mat-label>
-                <input matInput *ngIf="!isExperimentDisabled()" [(ngModel)]="experiment.name" (change)="setExperimentName()" pattern="^([\s]*[\w]+[\s]*)+" [formControl]="nameControl" required>
-                <input matInput *ngIf="isExperimentDisabled()" [disabled]="isExperimentDisabled()" [(ngModel)]="experiment.name" (change)="setExperimentName()" pattern="^([\s]*[\w]+[\s]*)+"  required>
+                <input matInput [hidden]="isExperimentDisabled()" [(ngModel)]="experiment.name" (change)="setExperimentName()" pattern="^([\s]*[\w]+[\s]*)+" [formControl]="nameControl" required>
+                <input matInput [hidden]="!isExperimentDisabled()" [disabled]="isExperimentDisabled()" [(ngModel)]="experiment.name" (change)="setExperimentName()" pattern="^([\s]*[\w]+[\s]*)+"  required>
                 <mat-hint>Experiment name can be any alphanumeric phrase. For example <i>Manhattan project.</i></mat-hint>
                 <mat-error>
                   Please enter a valid name. Experiment name can be any alphanumeric phrase.
@@ -42,9 +54,9 @@
                      
                         <th style="min-width:250px">Name</th>
                         <th style="min-width:50px">Handle</th>
-                        <!-- <th style="min-width:50px">Last Created Date</th> -->
+                        <th style="min-width:50px">Access Level</th> 
                        
-                        <th ><button mat-button style="margin: 0;   width:20px; height: 20px;line-height: 0;"><i (click)="addUserPopUp()" class="fas fa-plus"></i></button></th>
+                        <th ></th>
                     </tr>
                 </thead>
                 <tbody *ngIf="userAccessList.length!=0" >
@@ -52,7 +64,7 @@
                      
                         <td><strong>{{ item.name }}</strong></td>
                         <td><strong>{{ '@'+item.handle }}</strong></td>
-                        <!-- <td><strong>{{ item.created_date }}</strong></td> -->
+                         <td><strong>{{ item.accessLevel }}</strong></td> 
        
                         <td>
                
@@ -87,7 +99,7 @@
                         <th style="min-width:50px">Status</th>
                         <!-- <th style="min-width:50px">Last Created Date</th> -->
                        
-                        <th ><button mat-button style="margin: 0;   width:20px; height: 20px;line-height: 0;"><i (click)="createToken()" class="fas fa-plus"></i></button></th>
+                        <th ></th>
                     </tr>
                 </thead>
                 <tbody *ngIf="tokenList.length!=0" >
@@ -123,12 +135,12 @@
 </div>
 </div> 
  </div>
-  <div class="col-md-4" *ngIf="!isExperimentDisabled()">
+  <!-- <div class="col-md-4" *ngIf="!isExperimentDisabled()">
     <div style="text-align: center;padding: 1em;">     
       <button mat-stroked-button (click)="save()" >Save</button>
  </div>
 
 
-  </div>
+  </div> -->
 </div> 
 

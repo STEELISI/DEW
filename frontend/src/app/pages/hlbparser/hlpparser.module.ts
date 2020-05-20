@@ -9,7 +9,7 @@ import { DragDropModule } from "@angular/cdk/drag-drop";
 import { QuillModule } from "ngx-quill";
 import { FontAwesomeModule } from "@fortawesome/angular-fontawesome";
 import { StateService } from '../../state-service.service';
-import { MatButtonModule, MatSnackBarModule, MatDialogModule, MatTableModule, MatAutocompleteModule } from '@angular/material';
+import { MatButtonModule, MatSnackBarModule, MatDialogModule, MatTableModule, MatAutocompleteModule, MatSelectModule, MatTooltipModule } from '@angular/material';
 import { NgxFileDropModule } from 'ngx-file-drop';
 import { HLBParserComponent } from './hlpparser.component';
 import {NgxGraphModule} from "@swimlane/ngx-graph"
@@ -47,6 +47,8 @@ import { InfoComponent, AddUserPopUp } from './experiment-info/info.component';
     ReactiveFormsModule,
     MatAutocompleteModule,
     RouterModule,
+    MatTooltipModule,
+    MatSelectModule,
     MatRadioModule,
     NgxGraphModule,
     MatDialogModule,

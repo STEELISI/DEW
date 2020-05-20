@@ -13,7 +13,7 @@
               <th style="min-width:150px">Experiment Description</th>
               <th style="min-width:150px">Last Created Date</th>
               <th style="min-width:150px">Last Updated Date</th>
-              <th >  <button mat-button style="margin: 0;   width:20px; height: 20px;line-height: 0;"><i (click)="create()" class="fas fa-plus"></i></button>
+              <th >  <button mat-button matTooltip="Create a new experiment." style="margin: 0;   width:20px; height: 20px;line-height: 0;"><i (click)="create()" class="fas fa-plus"></i></button>
               </th>
           </tr>
       </thead>
@@ -25,9 +25,9 @@
               <td><strong>{{ item.created_date }}</strong></td>
               <td><strong>{{ item.updated_date }}</strong></td>
               <td>
-                <i class="fas fa-copy pointer" (click)="copy(item)"></i>
-                <i class="fas fa-edit pointer" (click)="edit(item)"></i>
-                <i class="far fa-trash-alt pointer" (click)="delete(item)"></i></td>
+                <i class="fas fa-copy pointer" (click)="copy(item)" matTooltip="Copy experiment."></i>
+                <i class="fas fa-edit pointer" (click)="edit(item)" matTooltip="Edit experiment."></i>
+                <!-- <i class="far fa-trash-alt pointer" (click)="delete(item)"></i>--></td> 
 
           </tr>
       </tbody>
