@@ -104,7 +104,24 @@ class ExperimentManager(object):
             return True, "Successfull"
         else:
             raise ValueError("Forbidden")
+    def soft_delete_access(self,current_user_id, experiment_id,userHandle):
+        ac = self.user_can(experiment_id, current_user_id, AccessControlEnum.manage.value)
+        if ac is not None:
+            user = User.query.filter(User.username == userHandle).first()
+            ac1 = AccessControl.query.filter(AccessControl.experiment_id == experiment_id, AccessControl.uid == user.uid,
+                                        AccessControl.expiry_date > datetime.utcnow()).first()
+            if ac1 is None:
+                raise {"message":"Successfully deleted."}
 
+            # print("inside soft delete")
+            ac1.expiry_date = datetime.utcnow()
+            ac1.updated_at = datetime.utcnow()
+            # print(ac)
+            db.session.add(ac1)
+            db.session.commit()
+            return True, "Successfull"
+        else:
+            raise ValueError("Forbidden")
     def copy_experiment(self, original_experiment, user_id):
         return self.create_experiment(user_id, original_experiment.content, None, original_experiment.name,
                                       original_experiment.description)
@@ -120,12 +137,11 @@ class ExperimentManager(object):
     def grantExperimentAccess(self, experiment_id, userId, userHandle, accessLevel):
         e = self.experimentExists(experiment_id)
         ac = AccessControl.query.filter(AccessControl.experiment_id == experiment_id, AccessControl.uid == userId,
-                                        AccessControl.expiry_date > datetime.today(),
+                                        AccessControl.expiry_date > datetime.utcnow(),
                                         AccessControl.access_level >= AccessControlEnum.manage.value).first()
         if ac is not None and e is not None:
             u = User.query.filter(User.username == userHandle).first()
             ac = AccessControl.query.filter(AccessControl.experiment_id == experiment_id, AccessControl.uid == u.uid,
-                                        AccessControl.expiry_date > datetime.today(),
                                         AccessControl.access_level >= AccessControlEnum.none.value).first()
             if ac is None:
                 ac = AccessControl(u.uid, experiment_id, accessLevel,
@@ -133,6 +149,8 @@ class ExperimentManager(object):
             else:
                 ac.access_level = accessLevel
                 ac.updated_at = datetime.utcnow()
+                ac.expiry_date = datetime.utcnow() + relativedelta(years=999)
+                ac.last_updated_by_user = userId
             db.session.add(u)
             db.session.add(ac)
             db.session.commit()

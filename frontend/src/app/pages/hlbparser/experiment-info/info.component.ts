@@ -231,7 +231,22 @@ export class InfoComponent implements OnInit {
       alert("Error in granting access.")
     })
   }
-
+  deleteUser(user){
+    var header = {
+      headers: new HttpHeaders({ 'Content-Type': 'application/json' }),
+      body:{
+      userId:this.experiment.userId,
+      id:this.experiment['id'],
+      userHandle:user.handle
+    }}
+    this.http.delete("v1/persist/experiment/removeaccess",header).subscribe(data=>{
+      alert("User is removed.")
+      this.getUserAccessList()
+    },error=>{
+      alert('There is some error while deleting the experiment. Please try again after sometime.');
+    })
+  }
+  
   delete(){
     var header = {
       headers: new HttpHeaders({ 'Content-Type': 'application/json' }),

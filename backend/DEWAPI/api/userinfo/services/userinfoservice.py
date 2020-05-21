@@ -92,10 +92,10 @@ class GoogleLogin():
             result = {'userList':r}
         return result
     def getUserAccessList(self,userId,experimentId):
-        ac = AccessControl.query.filter(AccessControl.experiment_id==experimentId, AccessControl.uid==userId,AccessControl.expiry_date>datetime.today(), AccessControl.access_level>=AccessControlEnum.manage.value).first()
+        ac = AccessControl.query.filter(AccessControl.experiment_id==experimentId, AccessControl.uid==userId,AccessControl.expiry_date>datetime.utcnow(), AccessControl.access_level>=AccessControlEnum.manage.value).first()
         result = {}
         if ac is not None:
-            ac1 = AccessControl.query.filter(AccessControl.experiment_id==experimentId, AccessControl.uid!=userId,AccessControl.expiry_date>datetime.today(), AccessControl.access_level>AccessControlEnum.none.value).all()
+            ac1 = AccessControl.query.filter(AccessControl.experiment_id==experimentId, AccessControl.uid!=userId,AccessControl.expiry_date>datetime.utcnow(), AccessControl.access_level>AccessControlEnum.none.value).all()
             r = [i.uid for i in ac1] 
             userList = {}
             for i in ac1:
