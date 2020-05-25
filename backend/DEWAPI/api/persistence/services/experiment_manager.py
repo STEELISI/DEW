@@ -70,16 +70,20 @@ class ExperimentManager(object):
                                         AccessControl.access_level >= AccessControlEnum.none.value).all()
 
         experiment_ids = [e.experiment_id for e in ac]
-
+        experimentControl = {e.experiment_id:e.access_level for e in ac}
         experiments = [e.to_dict() for e in Experiment.query.filter(Experiment.experiment_id.in_(experiment_ids),
                                                                     Experiment.deleted_at == None).all()]
 
         print(experiments)
         result = []
         for e in experiments:
-            obj = {'experiment_id': e['id'], 'name': e['name'], 'description': e['description'],
+            obj = {'experiment_id': e['id'], 
+                    'name': e['name'],
+                     'description': e['description'],
                    'created_date': e['created_at'].date().strftime('%m-%d-%Y'),
-                   'updated_date': e['updated_at'].date().strftime('%m-%d-%Y')}
+                   'updated_date': e['updated_at'].date().strftime('%m-%d-%Y'),
+                   'accessLevel':experimentControl[e['id']]
+                   }
             result.append(obj)
 
         return result

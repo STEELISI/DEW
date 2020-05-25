@@ -5,3 +5,28 @@
     margin: .2em;
     cursor: pointer;
 }
+
+.action_menu ul{
+    list-style-type: none;
+    padding-left: 2rem;
+    margin: 0;
+    border-bottom: 1px solid #ccc;
+    overflow: hidden;
+  }
+  .action_menu ul li{
+      float: left;
+  }
+  
+  .action_menu ul li i {
+      display: block;
+      color: black;
+      text-align: center;
+      padding: .31rem;
+      text-decoration: none;
+    }
+    
+  .action_menu ul li i:hover {
+      background-color: #ccc;
+    }
+  
+   
