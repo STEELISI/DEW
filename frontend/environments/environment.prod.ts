@@ -1,3 +1,4 @@
 export const environment = {
-  production: true
+  production: true,
+  authRedirectUrl: 'http://dew.isi.edu/auth/googleoauth2callback'
 };

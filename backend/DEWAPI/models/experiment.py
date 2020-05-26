@@ -17,6 +17,7 @@ class Experiment(db.Model):
     deleted_at = db.Column(db.DateTime)
     updated_at = db.Column(db.DateTime,onupdate=datetime.utcnow, default=datetime.utcnow)
     uid = db.Column(db.String, db.ForeignKey('user.uid'))
+    driveId = db.Column(db.String)
 
 
     def to_dict(self):
@@ -29,7 +30,8 @@ class Experiment(db.Model):
             'created_at': self.created_at,
             'updated_at': self.updated_at,
             'deleted_at': self.deleted_at,
-            'uid': self.uid
+            'uid': self.uid,
+            'driveId': self.driveId,
             }
 
 

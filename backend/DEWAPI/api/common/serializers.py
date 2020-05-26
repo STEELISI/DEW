@@ -64,10 +64,11 @@ persist_data = api.model('Save request', {
   'name':fields.String(description="Name of experiment", required=True),
   'id':fields.String(description="Id of experiment", required=False),
   'description':fields.String(description="Description of experiment", required=True),
-  'behaviors': fields.List(fields.String, description="List of behaviors",required=True),
-  'constraints': fields.List(fields.String, description="List of constraints",required=True),
-  'actors': fields.List(fields.String, description="List of actors",required=True),
-  'bindings': fields.List(fields.String, description="List of bindings",required=True)
+  'behaviors': fields.List(fields.String, description="List of behaviors", required=True),
+  'constraints': fields.List(fields.String, description="List of constraints", required=True),
+  'actors': fields.List(fields.String, description="List of actors", required=True),
+  'bindings': fields.List(fields.String, description="List of bindings", required=True),
+  'driveId': fields.String(description="File id of gogole drive", required=False),
   })
 
 experiment_detail = api.model('get experiment request', {
@@ -77,7 +78,7 @@ experiment_detail = api.model('get experiment request', {
 grantaccess = api.model('Grant experiment access', {
   'userId': fields.String(description="user id", required=True),
   'userHandle': fields.String(description="user id", required=True),
-  'id':fields.String(description="Id of experiment", required=True)
+  'id': fields.String(description="Id of experiment", required=True)
   })
 suggestion_v2_object = api.model('Suggestion v2 request',{
   'username': fields.String(description="Username", required=True),

@@ -39,7 +39,7 @@ class ExperimentManager(object):
                 return [{'content': v.content, 'name': v.name, 'updated_at': v.updated_at, 'description': v.description} for v in list(e.versions)]
 
 
-    def update_experiment(self, experiment_id, current_user_id, name, content, description):
+    def update_experiment(self, experiment_id, current_user_id, name, content, description, driveId):
 
         e = Experiment.query.filter(Experiment.experiment_id == experiment_id).first()
         if e is None:
@@ -51,6 +51,8 @@ class ExperimentManager(object):
                 e.content = content
             if description is not None:
                 e.description = description
+            if driveId is not None:
+                e.driveId = driveId
 
             db.session.commit()
             return True, "Successfull"

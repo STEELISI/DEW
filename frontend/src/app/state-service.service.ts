@@ -12,6 +12,7 @@ export class StateService {
   bindings: BehaviorSubject<any> = new BehaviorSubject(null);
   experimentName: BehaviorSubject<String> = new BehaviorSubject("");
   experimentDescription: BehaviorSubject<String> = new BehaviorSubject("");
+  driveId: BehaviorSubject<String> = new BehaviorSubject("");
   tokenList: BehaviorSubject<any> = new BehaviorSubject("");
   userDetails: any;
   currentBehaviorWord: String;
@@ -38,6 +39,11 @@ export class StateService {
   getExperimentName(): Observable<any> {
     return this.experimentName.asObservable();
   }
+
+  getDriveId(): Observable<any> {
+    return this.driveId.asObservable();
+  }
+
   getExperimentDescription(): Observable<any> {
     return this.experimentDescription.asObservable();
   }
@@ -86,6 +92,10 @@ export class StateService {
   setExperimentName(data: String) {
     this.experimentName.next(data);
   }
+  setDriveId(data: String) {
+    this.driveId.next(data);
+  }
+
   setExperimentDescription(data: String) {
     this.experimentDescription.next(data);
   }

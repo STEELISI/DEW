@@ -30,6 +30,8 @@ class HandleSave(Resource):
           experimentId = content['id']
         name = content['name']
         description = content['description']
+        driveId = content['driveId']
+        print("driveId: ", driveId)
         experiment_content = json.dumps({'actors': actors, 'constraints': constraints, 'behaviors': behaviors, 'bindings': bindings})
         print("Experiment : ", json.loads(json.dumps({'actors': actors, 'constraints': constraints, 'behaviors': behaviors, 'bindings': bindings},ensure_ascii=False)))
 
@@ -40,7 +42,7 @@ class HandleSave(Resource):
             
         else: 
           try:
-            flag , message = em.update_experiment(experimentId,userId,name=name, description=description,content=experiment_content)
+            flag , message = em.update_experiment(experimentId,userId,name=name, description=description,content=experiment_content,driveId=driveId)
             return {'saved': flag,'message':message }
           except ValueError as e:
             msg = {'saved': False, 'message': str(e)}
@@ -89,7 +91,7 @@ class HandleRetrieve(Resource):
           result=json.loads(r['content'])
           result['name'] = r['name']
           result['description'] = r['description']
-          
+          result['driveId'] = r['driveId']
         return result
       except ValueError as e:
         if str(e) == "Forbidden":

@@ -1,6 +1,7 @@
 import { Component, OnInit, Input, Inject } from "@angular/core";
 import { StateService } from "../../../state-service.service";
 import { AuthService } from "src/app/@auth/auth.service";
+import { GoogleDriveService } from "src/app/google-drive-service.service";
 import { HttpService } from "src/app/http-service.service";
 import { Router } from "@angular/router";
 import { FormControl } from "@angular/forms";
@@ -12,6 +13,7 @@ import { MatDialogRef, MAT_DIALOG_DATA, MatDialog } from '@angular/material';
   selector: "experiment-info",
   templateUrl: "./info.component.html",
   styleUrls: ["./info.component.scss"],
+  providers: [GoogleDriveService]
 })
 export class InfoComponent implements OnInit {
   @Input() id: Number;
@@ -23,6 +25,7 @@ export class InfoComponent implements OnInit {
     actors: [],
     bindings: [],
     constraints: [],
+    driveId: "",
   };
   tokenList = [];
 
@@ -34,8 +37,10 @@ export class InfoComponent implements OnInit {
     protected auth: AuthService,
     public dialog: MatDialog,
     protected http: HttpService,
-    protected route: Router
+    protected route: Router,
+    protected gdrive: GoogleDriveService
   ) {}
+  // gdrive = new GoogleDriveService(this.http, this.auth);
   nameControl = new FormControl();
   ngOnInit(): void {
     
@@ -59,6 +64,9 @@ export class InfoComponent implements OnInit {
     });
     this.state.getConstraints().subscribe((constraintsList) => {
       this.experiment.constraints = constraintsList;
+    });
+    this.state.getDriveId().subscribe((driveId) => {
+      this.experiment.driveId = driveId;
     });
 
     this.state.getTokenList().subscribe((data) => {
@@ -86,6 +94,11 @@ export class InfoComponent implements OnInit {
   setExperimentName() {
     this.state.setExperimentName(this.experiment.name);
   }
+
+  setDriveId(){
+    this.state.setDriveId(this.experiment.driveId);
+  }
+
   setExperimentDescription() {
     this.state.setExperimentDescription(this.experiment.description);
   }
@@ -103,6 +116,80 @@ export class InfoComponent implements OnInit {
   }
 
   save() {
+    if (
+      this.experiment.name != undefined &&
+      this.experiment.name != null &&
+      this.experiment.name.trim() != ""
+    ) {
+      if (
+        this.experiment.description == undefined ||
+        this.experiment.description == null
+      )
+        this.experiment.description = "";
+      
+      if (
+        this.experiment.driveId == undefined ||
+        this.experiment.driveId == null
+      )
+        this.experiment.driveId = "";
+
+      if (
+        this.experiment.behaviors == undefined ||
+        this.experiment.behaviors == null
+      )
+        this.experiment.behaviors = [];
+
+      if (this.experiment.actors == undefined || this.experiment.actors == null)
+        this.experiment.actors = [];
+
+      if (
+        this.experiment.bindings == undefined ||
+        this.experiment.bindings == null
+      )
+        this.experiment.bindings = [];
+      if (
+        this.experiment.constraints == undefined ||
+        this.experiment.constraints == null
+      )
+        this.experiment.constraints = [];
+
+        var bindingFLag = false
+        if (
+          this.experiment.bindings.length!=0
+        ){
+          this.experiment.bindings.forEach(element=>{
+            var list = element.trim().split(" ");
+
+            var key = list[0];
+
+              var value = list.splice(1).join(" ");
+              if (value.trim() == '')
+                bindingFLag = true
+          })
+        }
+
+        var continueFlag = confirm("Few bindings are missing, Do you still want to continue?")
+        console.log(this.experiment)
+        if(continueFlag)
+      this.http.put("v1/persist/save", this.experiment).subscribe(
+        (data) => {
+          if (data.saved) {
+            alert("Successfully saved!");
+            this.route.navigate(["pages/dashboard"]);
+          }
+        },
+        (error) => {
+          alert("Error occured. Please try again later");
+        }
+      );
+    } else {
+      alert("Please Enter Name to save the experiment.");
+      this.nameControl.markAsTouched();
+    }
+    console.log(this.experiment);
+  }
+
+  saveDrive(){
     if (
       this.experiment.name != undefined &&
       this.experiment.name != null &&
@@ -151,23 +238,50 @@ export class InfoComponent implements OnInit {
 
         var continueFlag = confirm("Few bindings are missing, Do you still want to continue?")
         
-        if(continueFlag)
-      this.http.put("v1/persist/save", this.experiment).subscribe(
-        (data) => {
-          if (data.saved) {
-            alert("Successfully saved!");
-            this.route.navigate(["pages/dashboard"]);
+        if(continueFlag){
+          console.log(this.experiment.driveId)
+          if (this.experiment.driveId == null) {
+            this.gdrive.create(this.experiment.name+".dew").subscribe((data) => {
+              this.experiment.driveId = data.id
+              this.setDriveId()
+              this.updateDrive()
+            })
+          } else {
+            this.updateDrive()
+            
           }
-        },
-        (error) => {
-          alert("Error occured. Please try again later");
         }
-      );
+      
     } else {
       alert("Please Enter Name to save the experiment.");
       this.nameControl.markAsTouched();
     }
     console.log(this.experiment);
+    this.save()
+  }
+
+  updateDrive() {
+    this.gdrive.update(this.experiment.driveId, JSON.stringify(this.experiment)).subscribe(
+      (data) => {
+        if (data.id) {
+          this.http.put("v1/persist/save", this.experiment).subscribe(
+            (data) => {
+              if (data.saved) {
+                alert("Successfully saved!");
+                this.route.navigate(["pages/dashboard"]);
+              }
+            },
+            (error) => {
+              alert("Error occured. Please try again later");
+            }
+          );
+        }
+      },
+      (error) => {
+        console.error(error)
+        alert("Error occured. Please try again later");
+      }
+    );
   }
 
   createToken() {

@@ -4,6 +4,7 @@ import { AuthResult } from './auth-result';
 import { tokenName } from '@angular/compiler';
 import { InitUserService } from './init-user.service';
 import { HttpService } from '../http-service.service';
+import { environment } from '../../environments/environment'
 
 @Injectable({
     providedIn: 'root'
@@ -97,16 +98,17 @@ export class AuthService {
   }
 
   loginWithGoogle(){
-     var redirect = 'http://dew.isi.edu/auth/googleoauth2callback';
-    //var redirect = 'http://localhost:4200/auth/googleoauth2callback';
-    var client_id = '926607687771-0lll564e4sbjo4davt10fufmhuehgl1s.apps.googleusercontent.com';
+    //  var redirect = 'http://dew.isi.edu/auth/googleoauth2callback';
+    // var redirect = 'http://localhost:4200/auth/googleoauth2callback';
+    var redirect = environment.authRedirectUrl
+    var client_id = '789341153375-qeeo9deuouq9ea3ke4ou0ipqr2gjd0vr.apps.googleusercontent.com';
     var url = [];
   //  var apuUrl = "https://accounts.google.com/o/oauth2/v2/auth";
     var apiurl = "https://accounts.google.com/o/oauth2/auth";
     url.push(apiurl);
     url.push("?redirect_uri="+encodeURIComponent( redirect));
     url.push("&response_type=token");
-    url.push("&scope=email%20profile%20openid%20"+encodeURIComponent("https://www.googleapis.com/auth/userinfo.profile")+"&fetch_basic_profile=true");
+    url.push("&scope=email%20profile%20openid%20"+encodeURIComponent("https://www.googleapis.com/auth/userinfo.profile")+"%20"+encodeURIComponent("https://www.googleapis.com/auth/drive.file")+"&fetch_basic_profile=true");
     url.push("&client_id="+client_id);
    // url.push("&ss_domain=https%3A%2F%2Fdevelopers-dot-devsite-v2-prod.appspot.com&gsiwebsdk=2");
     //console.log(url.join(""));

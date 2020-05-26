@@ -66,6 +66,7 @@ export class HLBParserComponent implements OnInit {
             this.state.setBehavior(data.behaviors);
             this.state.setBindings(data.bindings);
             this.state.setConstraints(data.constraints);
+            this.state.setDriveId(data.driveId);
            this.state.disableLoader();
           });
          

@@ -5,6 +5,7 @@
 export const environment = {
   production: false,
   apiUrl: 'http://localhost:5000',
+  authRedirectUrl: 'http://localhost:4200/auth/googleoauth2callback'
 };
 
 /*
