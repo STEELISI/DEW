@@ -51,7 +51,7 @@ export class ExperimentComponent implements OnInit{
     );
       else
     return options.filter((option) =>
-      option.accessLevel == value.select
+      option.accessLevel >= value.select
     ).filter((option) =>
     option.name.toLowerCase().includes(value.search.toLowerCase()) || option.description.toLowerCase().includes(value.search.toLowerCase())
   );
