@@ -287,7 +287,7 @@ let ExperimentComponent = class ExperimentComponent {
         else if (value.select == '')
             return options.filter((option) => option.name.toLowerCase().includes(value.search.toLowerCase()) || option.description.toLowerCase().includes(value.search.toLowerCase()));
         else
-            return options.filter((option) => option.accessLevel == value.select).filter((option) => option.name.toLowerCase().includes(value.search.toLowerCase()) || option.description.toLowerCase().includes(value.search.toLowerCase()));
+            return options.filter((option) => option.accessLevel >= value.select).filter((option) => option.name.toLowerCase().includes(value.search.toLowerCase()) || option.description.toLowerCase().includes(value.search.toLowerCase()));
     }
     enableComponent() {
         this.show = true;
