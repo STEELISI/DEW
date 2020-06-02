@@ -3,13 +3,62 @@ from flask import request, escape
 from flask_restplus import Resource
 sys.path.append('./DEWAPI/api/')
 from DEWAPI.api.restplus import api
-from DEWAPI.api.common.serializers import persist_data, experiment_detail,grantaccess
+from DEWAPI.api.common.serializers import persist_data, experiment_detail,grantaccess, push_to_drive_data
 from DEWAPI.models.user import User
 import persistence.services.sqlite3
 from persistence.services.experiment_manager import ExperimentManager
 
 ns = api.namespace('v1/persist', description='Persistence related opertions')
 em = ExperimentManager()
+
+@ns.route("/save_drive")
+class HandlePushToDrive(Resource):
+
+    @api.expect(push_to_drive_data)
+    def put(self):
+        """
+            Save and push to drive
+        """
+        content = request.get_json(force=True)
+        userId = content['userId']
+        actors = content['actors']
+        constraints = content['constraints']
+        behaviors = content['behaviors']
+        bindings = content['bindings']
+        create_new_file = content['create_new_file']
+        token = content['token']
+        experimentId = None
+        if 'id' in content:
+            experimentId = content['id']
+        name = content['name']
+        description = content['description']
+
+        experiment_content = json.dumps(
+            {'actors': actors, 'constraints': constraints, 'behaviors': behaviors, 'bindings': bindings})
+
+        if experimentId is None or experimentId.strip() == '':
+            try:
+                experiment = em.create_experiment(userId, experiment_content, experimentId, name, description)
+                print(experiment.to_dict())
+                res = em.push_to_drive(experiment_id=experiment.experiment_id, current_user_id=userId, token=token,
+                                 create_new_file=create_new_file)
+            except ValueError as e:
+                msg = {'saved': False, 'message': str(e)}
+                return msg, 403
+            if res:
+                return {'saved': True, 'message': "Successful"}
+
+        else:
+            try:
+                flag, message = em.update_experiment(experimentId, userId, name=name, description=description,
+                                                     content=experiment_content)
+                em.push_to_drive(experiment_id=experimentId, current_user_id=userId, token=token,
+                                 create_new_file=create_new_file)
+                return {'saved': flag, 'message': message}
+            except ValueError as e:
+                msg = {'saved': False, 'message': str(e)}
+                return msg, 403
+
 
 @ns.route('/save')
 class HandleSave(Resource):

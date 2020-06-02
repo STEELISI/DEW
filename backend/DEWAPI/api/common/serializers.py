@@ -71,6 +71,19 @@ persist_data = api.model('Save request', {
   'driveId': fields.String(description="File id of gogole drive", required=False),
   })
 
+push_to_drive_data = api.model('Save request', {
+  'userId': fields.String(description="user id", required=True),
+  'name':fields.String(description="Name of experiment", required=True),
+  'id':fields.String(description="Id of experiment", required=False),
+  'description':fields.String(description="Description of experiment", required=True),
+  'behaviors': fields.List(fields.String, description="List of behaviors", required=True),
+  'constraints': fields.List(fields.String, description="List of constraints", required=True),
+  'actors': fields.List(fields.String, description="List of actors", required=True),
+  'bindings': fields.List(fields.String, description="List of bindings", required=True),
+  'create_new_file': fields.Boolean(description="Create a new file in drive", default=False),
+  'token': fields.String(description='Token used to authorize google apis', required=True)
+  })
+
 experiment_detail = api.model('get experiment request', {
   'userId': fields.String(description="user id", required=True),
   'id':fields.String(description="Id of experiment", required=True)

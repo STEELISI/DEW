@@ -1,10 +1,13 @@
 from extensions import db
 from DEWAPI.models.user import User
 from DEWAPI.models.experiment import Experiment
+from DEWAPI.models.drive_table import DriveTable
 from DEWAPI.models.access_control import AccessControl
 from utilities.access_control_enum import AccessControlEnum
 from datetime import datetime
 from dateutil.relativedelta import relativedelta
+import requests
+import json
 from sqlite3 import Error
 
 
@@ -30,6 +33,47 @@ class ExperimentManager(object):
         db.session.commit()
         return e
 
+    def push_to_drive(self, experiment_id, current_user_id, token, create_new_file=False):
+        driveId = DriveTable.query.filter(DriveTable.experiment_id == experiment_id, DriveTable.uid == current_user_id).first().driveFileId
+        if self.user_can(experiment_id,current_user_id,AccessControlEnum.write):
+            if driveId is None:
+                if create_new_file:
+                    driveId = self.create_new_drive_file(experiment_id, current_user_id, token)
+                    d = DriveTable(drive_file_id=driveId,experiment_id=experiment_id,uid=current_user_id)
+                    db.session.add(d)
+                    db.session.commit()
+                else:
+                    raise ValueError("Forbidden")
+
+            response = requests.patch(
+                "https://www.googleapis.com/upload/drive/v3/files/"+driveId+"?uploadType=media",
+                 data=self.dew_content(experiment_id),
+                 headers={'Content-Type': 'text/plain', 'Authorization': 'Bearer '+ token},
+                 timeout=2.0
+            )
+            if(response.status_code != 200):
+                raise ValueError("Error occured")
+            else:
+                return True
+
+
+    def dew_content(self, experiment_id):
+        x = json.dumps(Experiment.query.get(experiment_id).content)
+        print(x)
+        return x
+
+
+    def create_new_drive_file(self, experiment_id, current_user_id, token):
+        e = self.get_experiment(experiment_id,current_user_id)
+        response = requests.post(
+            "https://www.googleapis.com/drive/v3/files",
+            data=json.dumps({'name': e.name}),
+            headers={'Content-Type': 'application/json', 'Authorization': 'Bearer '+ token}
+        )
+        print(json.loads(response.content))
+        return json.loads(response.content)['id']
+
+
     def get_experiment_versions(self, experiment_id, current_user_id):
         if self.user_can(experiment_id, current_user_id, AccessControlEnum.read.value):
             e = Experiment.query.filter(Experiment.experiment_id == experiment_id).first()
@@ -39,7 +83,7 @@ class ExperimentManager(object):
                 return [{'content': v.content, 'name': v.name, 'updated_at': v.updated_at, 'description': v.description} for v in list(e.versions)]
 
 
-    def update_experiment(self, experiment_id, current_user_id, name, content, description, driveId):
+    def update_experiment(self, experiment_id, current_user_id, name, content, description, driveId=None):
 
         e = Experiment.query.filter(Experiment.experiment_id == experiment_id).first()
         if e is None:
