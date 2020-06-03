@@ -75,7 +75,7 @@ class ExperimentManager(object):
 
 
     def get_experiment_versions(self, experiment_id, current_user_id):
-        if self.user_can(experiment_id, current_user_id, AccessControlEnum.read.value):
+        if self.user_can(experiment_id, current_user_id, AccessControlEnum.read.value) is not None:
             e = Experiment.query.filter(Experiment.experiment_id == experiment_id).first()
             if e is None:
                 raise ValueError("Forbidden")
@@ -88,7 +88,7 @@ class ExperimentManager(object):
         e = Experiment.query.filter(Experiment.experiment_id == experiment_id).first()
         if e is None:
             raise ValueError("Forbidden")
-        if self.user_can(experiment_id, current_user_id, AccessControlEnum.write.value):
+        if self.user_can(experiment_id, current_user_id, AccessControlEnum.write.value) is not None:
             if name is not None:
                 e.name = name
             if content is not None:
@@ -104,7 +104,7 @@ class ExperimentManager(object):
             raise ValueError("Forbidden")
 
     def get_experiment(self, experiment_id, current_user_id):
-        if self.user_can(experiment_id, current_user_id, AccessControlEnum.read.value):
+        if self.user_can(experiment_id, current_user_id, AccessControlEnum.read.value) is not None:
             e = Experiment.query.filter(Experiment.experiment_id == experiment_id,
                                         Experiment.deleted_at == None).first()
             return e
@@ -116,32 +116,62 @@ class ExperimentManager(object):
                                         AccessControl.access_level >= AccessControlEnum.none.value).all()
 
         experiment_ids = [e.experiment_id for e in ac]
-
+        experimentControl = {e.experiment_id:e.access_level for e in ac}
         experiments = [e.to_dict() for e in Experiment.query.filter(Experiment.experiment_id.in_(experiment_ids),
                                                                     Experiment.deleted_at == None).all()]
 
         print(experiments)
         result = []
         for e in experiments:
-            obj = {'experiment_id': e['id'], 'name': e['name'], 'description': e['description'],
+            obj = {'experiment_id': e['id'], 
+                    'name': e['name'],
+                     'description': e['description'],
                    'created_date': e['created_at'].date().strftime('%m-%d-%Y'),
-                   'updated_date': e['updated_at'].date().strftime('%m-%d-%Y')}
+                   'updated_date': e['updated_at'].date().strftime('%m-%d-%Y'),
+                   'accessLevel':experimentControl[e['id']]
+                   }
             result.append(obj)
 
         return result
 
     def soft_delete_experiment(self, current_user_id, experiment_id):
-        if self.user_can(experiment_id, current_user_id, AccessControlEnum.manage.value):
+        ac = self.user_can(experiment_id, current_user_id, AccessControlEnum.manage.value)
+        if ac is not None:
             e = Experiment.query.filter(Experiment.experiment_id == experiment_id,
                                         Experiment.deleted_at == None).first()
             if e is None:
                 raise ValueError("Forbidden")
+
+            print("inside soft delete")
             e.deleted_at = datetime.utcnow()
+
+            ac.expiry_date = datetime.utcnow()
+            ac.updated_at = datetime.utcnow()
+            print(ac)
+            db.session.add(ac)
+            db.session.add(e)
             db.session.commit()
             return True, "Successfull"
         else:
             raise ValueError("Forbidden")
+    def soft_delete_access(self,current_user_id, experiment_id,userHandle):
+        ac = self.user_can(experiment_id, current_user_id, AccessControlEnum.manage.value)
+        if ac is not None:
+            user = User.query.filter(User.username == userHandle).first()
+            ac1 = AccessControl.query.filter(AccessControl.experiment_id == experiment_id, AccessControl.uid == user.uid,
+                                        AccessControl.expiry_date > datetime.utcnow()).first()
+            if ac1 is None:
+                raise {"message":"Successfully deleted."}
 
+            # print("inside soft delete")
+            ac1.expiry_date = datetime.utcnow()
+            ac1.updated_at = datetime.utcnow()
+            # print(ac)
+            db.session.add(ac1)
+            db.session.commit()
+            return True, "Successfull"
+        else:
+            raise ValueError("Forbidden")
     def copy_experiment(self, original_experiment, user_id):
         return self.create_experiment(user_id, original_experiment.content, None, original_experiment.name,
                                       original_experiment.description)
@@ -150,19 +180,51 @@ class ExperimentManager(object):
         ac = AccessControl.query.filter(AccessControl.experiment_id == experiment_id, AccessControl.uid == user_id,
                                         AccessControl.expiry_date > datetime.today(),
                                         AccessControl.access_level >= action).first()
-        return (ac is not None)
-
-    def grantExperimentAccess(self, experiment_id, userId, userHandle):
+        return ac
+    def experimentExists(self,experiment_id):
+        return Experiment.query.filter(Experiment.experiment_id == experiment_id,
+                                        Experiment.deleted_at == None).first()
+    def grantExperimentAccess(self, experiment_id, userId, userHandle, accessLevel):
+        e = self.experimentExists(experiment_id)
         ac = AccessControl.query.filter(AccessControl.experiment_id == experiment_id, AccessControl.uid == userId,
-                                        AccessControl.expiry_date > datetime.today(),
+                                        AccessControl.expiry_date > datetime.utcnow(),
                                         AccessControl.access_level >= AccessControlEnum.manage.value).first()
-        if ac is not None:
+        if ac is not None and e is not None:
             u = User.query.filter(User.username == userHandle).first()
-            ac = AccessControl(u.uid, experiment_id, AccessControlEnum.write.value,
+            ac = AccessControl.query.filter(AccessControl.experiment_id == experiment_id, AccessControl.uid == u.uid,
+                                        AccessControl.access_level >= AccessControlEnum.none.value).first()
+            if ac is None:
+                ac = AccessControl(u.uid, experiment_id, accessLevel,
                                datetime.utcnow() + relativedelta(years=999), userId)
+            else:
+                ac.access_level = accessLevel
+                ac.updated_at = datetime.utcnow()
+                ac.expiry_date = datetime.utcnow() + relativedelta(years=999)
+                ac.last_updated_by_user = userId
             db.session.add(u)
             db.session.add(ac)
             db.session.commit()
             return {'message': 'Access granted.'}
+        else:
+            return {'error': 'User does not have access.'}
+    
+    def getExperimentControlInfoByUserId(self,experiment_id,userId):
+        result = {}
+        ac = AccessControl.query.filter(AccessControl.experiment_id == experiment_id, AccessControl.uid == userId,
+                                        AccessControl.expiry_date > datetime.utcnow()).first()
+        if ac is not None:
+            if AccessControlEnum.manage.value == ac.access_level:
+                result['accessLevel'] = 'Manage'
+                result['code'] = AccessControlEnum.manage.value
+            elif AccessControlEnum.read.value == ac.access_level:
+                result['accessLevel'] = 'Read'
+                result['code'] = AccessControlEnum.read.value
+            elif AccessControlEnum.write.value == ac.access_level:
+                result['accessLevel'] = 'Write'
+                result['code'] = AccessControlEnum.write.value
+            else:
+                result['error'] = 'User does not have access.'
+
+            return result
         else:
             return {'error': 'User does not have access.'}

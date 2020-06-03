@@ -3,6 +3,8 @@ import { Router } from '@angular/router';
 import { InitUserService } from 'src/app/@auth/init-user.service';
 import { HttpService } from 'src/app/http-service.service';
 import { HttpHeaders } from '@angular/common/http';
+import { FormControl, FormGroup } from '@angular/forms';
+import { startWith, map } from 'rxjs/operators';
 
 @Component({
   selector: 'experiment',
@@ -12,6 +14,16 @@ import { HttpHeaders } from '@angular/common/http';
 export class ExperimentComponent implements OnInit{
   userInfo:any;
   show:boolean=false;
+  filterSelect = new FormGroup({
+    select: new FormControl(''),
+    search: new FormControl('')
+  });
+  filteredLevels = [{name:'Read',value:'2'},{name:'Write',value:'3'},{name:'Manage',value:'4'}]
+  
+  experiments:any=[]
+  filterExperiments:any=[]
+ 
+  constructor(private router:Router,private http:HttpService,private initUser:InitUserService){ }
   ngOnInit() {
     this.initUser.getUser().subscribe(user=>{
      // console.log(user)
@@ -21,7 +33,30 @@ export class ExperimentComponent implements OnInit{
           this.enableComponent();
   }
   });
+
+  this.filterExperiments = this.filterSelect.valueChanges.pipe(
+      startWith(""),
+      map((value) => this._filter(value, this.experiments))
+    );
+
   }
+
+  private _filter(value: any, options): [] {
+    console.log(value)
+    if (value == '')
+    return options
+    else if(value.select == '')
+      return options.filter((option) =>
+      option.name.toLowerCase().includes(value.search.toLowerCase()) || option.description.toLowerCase().includes(value.search.toLowerCase())
+    );
+      else
+    return options.filter((option) =>
+      option.accessLevel >= value.select
+    ).filter((option) =>
+    option.name.toLowerCase().includes(value.search.toLowerCase()) || option.description.toLowerCase().includes(value.search.toLowerCase())
+  );
+  }
+
   enableComponent(){
     this.show = true;
   }
@@ -30,10 +65,6 @@ export class ExperimentComponent implements OnInit{
     
       this.experiments = data;
      });
-  }
-  experiments:any=[]
-  constructor(private router:Router,private http:HttpService,private initUser:InitUserService){
-
   }
   edit(experiments){
     console.log(experiments)
@@ -56,18 +87,6 @@ export class ExperimentComponent implements OnInit{
      });
   }
 
-  delete(experiments){
-    var header = {
-      headers: new HttpHeaders({ 'Content-Type': 'application/json' }),
-      body:{
-      userId:this.userInfo.userId,
-      id:experiments.experiment_id+""
-    }}
-    this.http.delete("v1/persist/experiment/delete",header).subscribe(data=>{
-      console.log(data);
-      alert("experiment is delete;");
-      this.load(this.userInfo.userId);
-    })
-  }
+ 
 
 }

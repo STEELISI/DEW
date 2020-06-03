@@ -1,45 +1,113 @@
-<div class="row" *ngIf="show">
-
-
-
-  <div class="col-md-10" style="    margin: 2em;">
-    
-    <mat-card> 
-    <table class="table">
-      <thead >
-          <tr >
-            <th style="min-width:50px">Exp. Id</th>
-              <th style="min-width:150px">Experiment Name</th>
-              <th style="min-width:150px">Experiment Description</th>
-              <th style="min-width:150px">Last Created Date</th>
-              <th style="min-width:150px">Last Updated Date</th>
-              <th >  <button mat-button style="margin: 0;   width:20px; height: 20px;line-height: 0;"><i (click)="create()" class="fas fa-plus"></i></button>
+<form class="row" *ngIf="show" [formGroup]="filterSelect" >
+  <div class="row" style="margin: 2em;">
+    <div class="col-md-12">
+      <mat-card>
+        <div>
+          <label style="float: left; padding: 3px;">Filter Access Level by:</label>
+          <select
+            class="form-control"
+            formControlName="select"
+            style="width: 150px; float: left; height: 25px;"
+      
+          >
+            <option value="" selected>Show All</option>
+            <option value="4">Admin</option>
+            <option value="3">Developer</option>
+            <option value="2">Spectator</option>
+          </select>
+        </div>
+        <div style="float:right;width: 250px;height: 25px;">
+        
+          
+            <input
+            class="form-control"
+            style="height: 25px;"
+            formControlName="search"
+              placeholder="Search by..."
+              name="search"
+              
+            />
+          
+           
+          
+        </div>
+        <table class="table">
+          <thead>
+            <tr>
+              <th style="min-width: 80px;">Exp. Id</th>
+              <th style="min-width: 150px;">Experiment Name</th>
+              <th style="min-width: 150px;">Experiment Description</th>
+              <th style="min-width: 150px;">Last Created Date</th>
+              <th style="min-width: 150px;">Last Updated Date</th>
+              <th style="min-width: 150px;">Access Level</th>
+              <th>
+                <button
+                  mat-button
+                  matTooltip="Create a new experiment."
+                  style="margin: 0; width: 20px; height: 20px; line-height: 0;"
+                >
+                  <i (click)="create()" class="fas fa-plus"></i>
+                </button>
               </th>
-          </tr>
-      </thead>
-      <tbody *ngIf="experiments.length!=0" >
-          <tr *ngFor="let item of experiments; let i=index" >
-            <td>{{item.experiment_id}}</td>
-              <td><strong>{{ item.name }}</strong></td>
-              <td><strong>{{ item.description }}</strong></td>
-              <td><strong>{{ item.created_date }}</strong></td>
-              <td><strong>{{ item.updated_date }}</strong></td>
+            </tr>
+          </thead>
+          <tbody *ngIf="experiments.length != 0">
+            <tr *ngFor="let item of filterExperiments | async; let i = index">
+              <td>{{ item.experiment_id }}</td>
               <td>
-                <i class="fas fa-copy pointer" (click)="copy(item)"></i>
-                <i class="fas fa-edit pointer" (click)="edit(item)"></i>
-                <i class="far fa-trash-alt pointer" (click)="delete(item)"></i></td>
-
-          </tr>
-      </tbody>
-      <tbody class="upload-name"  *ngIf="experiments.length==0" >
-        <tr >
-          <td colspan="3" ><span ><i>No saved experiments.</i> </span></td>
-            
-
-        </tr>
-    </tbody>
- 
-  </table>
-  </mat-card>
+                <strong>{{ item.name }}</strong>
+              </td>
+              <td>
+                <strong>{{ item.description }}</strong>
+              </td>
+              <td>
+                <strong>{{ item.created_date }}</strong>
+              </td>
+              <td>
+                <strong>{{ item.updated_date }}</strong>
+              </td>
+              <td>
+                <strong
+                  matTooltip="{{
+                    item.accessLevel == 4
+                      ? 'Full Access'
+                      : item.accessLevel == 3
+                      ? 'Write only'
+                      : 'Read only'
+                  }}"
+                  >{{
+                    item.accessLevel == 4
+                      ? "Admin"
+                      : item.accessLevel == 3
+                      ? "Developer"
+                      : "Spectator"
+                  }}</strong
+                >
+              </td>
+              <td>
+                <i
+                  class="fas fa-copy pointer"
+                  (click)="copy(item)"
+                  matTooltip="Copy experiment."
+                ></i>
+                <i
+                  class="fas fa-edit pointer"
+                  (click)="edit(item)"
+                  matTooltip="Edit experiment."
+                ></i>
+                <!-- <i class="far fa-trash-alt pointer" (click)="delete(item)"></i>-->
+              </td>
+            </tr>
+          </tbody>
+          <tbody class="upload-name" *ngIf="experiments.length == 0">
+            <tr>
+              <td colspan="3">
+                <span><i>No saved experiments.</i> </span>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </mat-card>
     </div>
-</div>
+  </div>
+</form>

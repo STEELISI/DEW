@@ -3,7 +3,7 @@ from flask import request, escape
 from flask_restplus import Resource
 sys.path.append('./DEWAPI/api/')
 from DEWAPI.api.restplus import api
-from DEWAPI.api.common.serializers import persist_data, experiment_detail,grantaccess, push_to_drive_data
+from DEWAPI.api.common.serializers import persist_data, experiment_detail,grantaccess, push_to_drive_data,remove_access
 from DEWAPI.models.user import User
 import persistence.services.sqlite3
 from persistence.services.experiment_manager import ExperimentManager
@@ -165,6 +165,23 @@ class HandleDelete(Resource):
       if str(e) == "Forbidden":
         return {}, 403
 
+@ns.route("/experiment/removeaccess")
+class HandleAccessRemoval(Resource):
+  @api.expect(removeaccess)
+  def delete(self):
+    """
+      Delete experiment from database
+    """
+    content = request.get_json(force=True)
+    userId = content['userId']
+    experiment_id = content['id']
+    userHandle= content['userHandle']
+    try:
+      em.soft_delete_access(userId, experiment_id,userHandle)
+      return None, 200
+    except ValueError as e:
+      if str(e) == "Forbidden":
+        return {}, 403
 
 @ns.route("/experiment/versions")
 class Handleversions(Resource):
@@ -217,9 +234,30 @@ class HandleGrantAccess(Resource):
     userId = content['userId']
     userHandle = content['userHandle']
     experiment_id = content['id']
+    accessLevel = content['accessLevel']
+    try:
+      if int(accessLevel)>0 and int(accessLevel)<=4:
+        result = em.grantExperimentAccess(experiment_id, userId,userHandle,accessLevel)
+      else:
+        result = {'error':'Invalid Access Level'}
+      return result, 200
+    except ValueError as e:
+      if str(e) == "Forbidden":
+        return {}, 403
+
+@ns.route("/experiment/control")
+class HandleExperimentControl(Resource):
+  @api.expect(experiment_detail)
+  def post(self):
+    """
+     Grant experiment access
+    """
+    content = request.get_json(force=True)
+    userId = content['userId']
+    experiment_id = content['id']
     
     try:
-      result = em.grantExperimentAccess(experiment_id, userId,userHandle)
+      result = em.getExperimentControlInfoByUserId(experiment_id, userId)
       return result, 200
     except ValueError as e:
       if str(e) == "Forbidden":

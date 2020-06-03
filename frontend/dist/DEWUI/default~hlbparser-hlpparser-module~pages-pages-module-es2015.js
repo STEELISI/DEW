@@ -22,7 +22,7 @@ __webpack_require__.r(__webpack_exports__);
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony default export */ __webpack_exports__["default"] = ("<!-- <h1 mat-dialog-title>Hi {{data.name}}</h1>\n<div mat-dialog-content>\n  <p>What's your favorite animal?</p>\n  <mat-form-field>\n    <input matInput [(ngModel)]=\"data.animal\">\n  </mat-form-field>\n</div>\n<div mat-dialog-actions>\n  <button mat-button (click)=\"onNoClick()\">No Thanks</button>\n  <button mat-button [mat-dialog-close]=\"data.animal\" cdkFocusInitial>Ok</button>\n</div> -->\n\n\n\n<div mat-dialog-content>\n  <div class=\"row\" style=\"margin: .5em;\" >\n    <div class=\"col-md-12\" style=\"padding: 0;\">\n  \n          <div class=\"row\">\n           \n              <mat-form-field class=\"col-md-8\">\n                <input type=\"text\"\n                       placeholder=\"User Name\"\n                       aria-label=\"string\"\n                       matInput\n                       [(ngModel)]=\"UserObj.handle\"\n                       [formControl]=\"userHandleSelect\"\n                       [matAutocomplete]=\"UserInfo\">\n                <mat-autocomplete #UserInfo=\"matAutocomplete\">\n                  <mat-option *ngFor=\"let option of filteredUserHandle | async\" [value]=\"option.value\">\n                   {{option.name +\" <\"+option.value+\"> \"}}\n                  </mat-option>\n                </mat-autocomplete>\n              </mat-form-field>\n        \n\n        <mat-form-field class=\"col-md-4\">\n          <input type=\"text\"\n                 placeholder=\"Access Level\"\n                 aria-label=\"string\"\n                 matInput\n                 [(ngModel)]=\"UserObj.access\"\n                 [formControl]=\"accessLevelControl\"\n                 [matAutocomplete]=\"auto\">\n          <mat-autocomplete #auto=\"matAutocomplete\">\n            <mat-option *ngFor=\"let option of filteredLevels | async\" [value]=\"option.value\">\n              {{option.name}}\n            </mat-option>\n          </mat-autocomplete>\n        </mat-form-field>\n      </div>\n\n\n    </div>\n  </div> \n</div>\n\n      <div mat-dialog-actions>\n        <button mat-button (click)=\"onNoClick()\">Cancel</button>\n        <button mat-button [mat-dialog-close]=\"UserObj\" cdkFocusInitial>Add</button>\n      </div>  ");
+/* harmony default export */ __webpack_exports__["default"] = ("<!-- <h1 mat-dialog-title>Hi {{data.name}}</h1>\n<div mat-dialog-content>\n  <p>What's your favorite animal?</p>\n  <mat-form-field>\n    <input matInput [(ngModel)]=\"data.animal\">\n  </mat-form-field>\n</div>\n<div mat-dialog-actions>\n  <button mat-button (click)=\"onNoClick()\">No Thanks</button>\n  <button mat-button [mat-dialog-close]=\"data.animal\" cdkFocusInitial>Ok</button>\n</div> -->\n\n\n\n<div mat-dialog-content>\n  <div class=\"row\" style=\"margin: .5em;\" >\n    <div class=\"col-md-12\" style=\"padding: 0;\">\n  \n          <div class=\"row\">\n           \n              <mat-form-field class=\"col-md-8\" appearance=\"outline\">\n                <mat-label>User Handle</mat-label>\n                <input type=\"text\"\n                       placeholder=\"User Handle\"\n                       aria-label=\"string\"\n                       matInput\n                       [(ngModel)]=\"UserObj.handle\"\n                       [formControl]=\"userHandleSelect\"\n                       [matAutocomplete]=\"UserInfo\">\n                <mat-autocomplete #UserInfo=\"matAutocomplete\">\n                  <mat-option *ngFor=\"let option of filteredUserHandle | async\" [value]=\"option.value\">\n                   {{option.name +\" <\"+option.value+\"> \"}}\n                  </mat-option>\n                </mat-autocomplete>\n              </mat-form-field>\n        \n              <mat-form-field class=\"col-md-4\" appearance=\"outline\">\n                <mat-label>Access Level</mat-label>\n                <mat-select [(ngModel)]=\"this.UserObj.access\" required >\n                  <mat-option *ngFor=\"let option of filteredLevels | async\" [value]=\"option.value\">\n                    {{option.name}}\n                  </mat-option>\n                </mat-select>\n              </mat-form-field>\n       \n      </div>\n\n\n    </div>\n  </div> \n</div>\n\n      <div mat-dialog-actions>\n        <button mat-button (click)=\"onNoClick()\">Cancel</button>\n        <button mat-button [disabled]=\"isAddDisabled()\" [mat-dialog-close]=\"UserObj\" cdkFocusInitial>Add</button>\n      </div>  ");
 
 /***/ }),
 
@@ -35,7 +35,7 @@ __webpack_require__.r(__webpack_exports__);
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony default export */ __webpack_exports__["default"] = ("\n <div class=\"row\">\n<div class=\"col-md-8\">\n\n  \n    <div class=\"row\" style=\"margin: .5em;\">\n        <div class=\"col-md-12\" style=\"padding: 0;\">\n            <mat-card> \n              <div class=\"row\" >\n              <mat-form-field class=\"col-md-12\" appearance=\"outline\">\n                <mat-label>Experiment Name</mat-label>\n                <input matInput [(ngModel)]=\"experiment.name\" (change)=\"setExperimentName()\" pattern=\"^([\\s]*[\\w]+[\\s]*)+\" [formControl]=\"nameControl\" required>\n                <mat-hint>Experiment name can be any alphanumeric phrase. For example <i>Manhattan project.</i></mat-hint>\n                <mat-error>\n                  Please enter a name.\n                </mat-error>\n              </mat-form-field>\n            </div>\n            <div class=\"row\" style=\"margin-top: 1rem;\">\n              <mat-form-field class=\"col-md-12\" appearance=\"outline\">\n                <mat-label>Experiment Description</mat-label>\n                <textarea matInput [(ngModel)]=\"experiment.description\" maxlength=\"4000\" rows=\"10\" (change)=\"setExperimentDescription()\"></textarea>\n                <mat-hint>[Optional] Few lines to describe the project. Not more than 4000 character.</mat-hint>\n              </mat-form-field>\n            </div>\n            </mat-card>\n   \n        </div>\n      </div> \n      <div class=\"row\" style=\"margin: .5em;\" *ngIf=\"id!=-1\">\n        <div class=\"col-md-12\" style=\"padding: 0;\">\n            <mat-card> \n              <div class=\"row\" style=\"margin: .5em;\" >\n                <div class=\"col-md-12\" style=\"padding: 0;\">\n                  <ul>\n           <li > <p>List of user having access for this experiment.</p>\n             \n              <table class=\"table\">\n                <thead >\n                    <tr >\n                     \n                        <th style=\"min-width:250px\">Name</th>\n                        <th style=\"min-width:50px\">Handle</th>\n                        <!-- <th style=\"min-width:50px\">Last Created Date</th> -->\n                       \n                        <th ><button mat-button style=\"margin: 0;   width:20px; height: 20px;line-height: 0;\"><i (click)=\"addUserPopUp()\" class=\"fas fa-plus\"></i></button></th>\n                    </tr>\n                </thead>\n                <tbody *ngIf=\"userAccessList.length!=0\" >\n                    <tr *ngFor=\"let item of userAccessList; let i=index\" >\n                     \n                        <td><strong>{{ item.name }}</strong></td>\n                        <td><strong>{{ '@'+item.handle }}</strong></td>\n                        <!-- <td><strong>{{ item.created_date }}</strong></td> -->\n       \n                        <td>\n               \n                          <i class=\"far fa-trash-alt pointer\" (click)=\"delete(i)\"></i></td>\n          \n                    </tr>\n                </tbody>\n                <tbody style=\"text-align: center;\"  *ngIf=\"userAccessList.length==0\" >\n                  <tr >\n                    <td colspan=\"3\" ><span ><i>No User has been granted access for this experiment.</i> </span></td>\n                      \n          \n                  </tr>\n              </tbody>\n           \n            </table>\n          </li> \n                <!-- </div>\n              </div>\n              <hr>\n      <div class=\"row\" style=\"margin: .5em;\" *ngIf=\"id!=-1\">\n        <div class=\"col-md-12\" style=\"padding: 0;\"> -->\n        \n          <li>  <p>List of public urls</p>\n           \n              \n              <table class=\"table\">\n                <thead >\n                    <tr >\n                     \n                        <th style=\"min-width:250px\">Url</th>\n                        <th style=\"min-width:50px\">Status</th>\n                        <!-- <th style=\"min-width:50px\">Last Created Date</th> -->\n                       \n                        <th ><button mat-button style=\"margin: 0;   width:20px; height: 20px;line-height: 0;\"><i (click)=\"createToken()\" class=\"fas fa-plus\"></i></button></th>\n                    </tr>\n                </thead>\n                <tbody *ngIf=\"tokenList.length!=0\" >\n                    <tr *ngFor=\"let item of tokenList; let i=index\" >\n                     \n                        <td><strong>{{ 'http://dew.isi.edu/public/hlb/view/'+item.token }}</strong></td>\n                        <td><strong>{{ (item.status)?'Active':'Not Active' }}</strong></td>\n                        <!-- <td><strong>{{ item.created_date }}</strong></td> -->\n       \n                        <td>\n               \n                          <i class=\"far fa-trash-alt pointer\" (click)=\"delete(i)\"></i></td>\n          \n                    </tr>\n                </tbody>\n                <tbody style=\"text-align: center;\"  *ngIf=\"tokenList.length==0\" >\n                  <tr >\n                    <td colspan=\"3\" ><span ><i>No public urls.</i> </span></td>\n                      \n          \n                  </tr>\n              </tbody>\n           \n            </table>\n          </li>  \n          </ul>\n   \n     </div>\n      </div> \n  \n</mat-card>\n   \n</div>\n</div> \n </div>\n  <div class=\"col-md-4\">\n    <div style=\"text-align: center;padding: 1em;\">     \n      <button mat-stroked-button (click)=\"save()\" >Save</button>\n </div>\n\n\n  </div>\n</div> \n\n");
+/* harmony default export */ __webpack_exports__["default"] = ("\n  <div class=\"row\">\n    <div class=\"col-md-12\">\n      <div class=\"action_menu\">\n      <ul >\n          <li *ngIf=\"!isExperimentDisabled()\"><i class=\"fas fa-save pointer\" (click)=\"save()\" matTooltip=\"Save\"></i></li>\n          <li *ngIf=\"id!=-1 && experimentControl>3\"><i class=\"far fa-trash-alt pointer\" (click)=\"delete()\" matTooltip=\"Delete\"></i></li>\n          <li *ngIf=\"id!=-1 && experimentControl>3\"><i class=\"fas fa-share-square pointer\" (click)=\"addUserPopUp()\" matTooltip=\"Share it with User\"></i></li>\n          <li *ngIf=\"id!=-1 && experimentControl>3\"><i class=\"fas fa-external-link-alt pointer\" (click)=\"createToken()\" matTooltip=\"Get external url\"></i></li>\n      </ul>\n    </div>\n      </div>\n  </div>\n <div class=\"row\">\n<div class=\"col-md-8\">\n\n  \n    <div class=\"row\" style=\"margin: .5em;\">\n        <div class=\"col-md-12\" style=\"padding: 0;\">\n            <mat-card> \n              <div class=\"row\" >\n              <mat-form-field class=\"col-md-12\" appearance=\"outline\">\n                <mat-label>Experiment Name</mat-label>\n                <input matInput [hidden]=\"isExperimentDisabled()\" [(ngModel)]=\"experiment.name\" (change)=\"setExperimentName()\" pattern=\"^([\\s]*[\\w]+[\\s]*)+\" [formControl]=\"nameControl\" required>\n                <input matInput [hidden]=\"!isExperimentDisabled()\" [disabled]=\"isExperimentDisabled()\" [(ngModel)]=\"experiment.name\" (change)=\"setExperimentName()\" pattern=\"^([\\s]*[\\w]+[\\s]*)+\"  required>\n                <mat-hint>Experiment name can be any alphanumeric phrase. For example <i>Manhattan project.</i></mat-hint>\n                <mat-error>\n                  Please enter a valid name. Experiment name can be any alphanumeric phrase.\n                </mat-error>\n              </mat-form-field>\n            </div>\n            <div class=\"row\" style=\"margin-top: 1rem;\">\n              <mat-form-field class=\"col-md-12\" appearance=\"outline\">\n                <mat-label>Experiment Description</mat-label>\n                <textarea matInput [disabled]=\"isExperimentDisabled()\" [(ngModel)]=\"experiment.description\" maxlength=\"4000\" rows=\"10\" (change)=\"setExperimentDescription()\"></textarea>\n                <mat-hint>[Optional] Few lines to describe the project. Not more than 4000 character.</mat-hint>\n              </mat-form-field>\n            </div>\n            </mat-card>\n   \n        </div>\n      </div> \n      <div class=\"row\" style=\"margin: .5em;\" *ngIf=\"id!=-1 && experimentControl>3\">\n        <div class=\"col-md-12\" style=\"padding: 0;\">\n            <mat-card> \n              <div class=\"row\" style=\"margin: .5em;\" >\n                <div class=\"col-md-12\" style=\"padding: 0;\">\n                  <ul>\n           <li > <p>List of user having access for this experiment.</p>\n             \n              <table class=\"table\">\n                <thead >\n                    <tr >\n                     \n                        <th style=\"min-width:250px\">Name</th>\n                        <th style=\"min-width:50px\">Handle</th>\n                        <th style=\"min-width:50px\">Access Level</th> \n                       \n                        <th ></th>\n                    </tr>\n                </thead>\n                <tbody *ngIf=\"userAccessList.length!=0\" >\n                    <tr *ngFor=\"let item of userAccessList; let i=index\" >\n                     \n                        <td><strong>{{ item.name }}</strong></td>\n                        <td><strong>{{ '@'+item.handle }}</strong></td>\n                         <td><strong>{{ item.accessLevel }}</strong></td> \n       \n                        <td>\n               \n                          <i class=\"far fa-trash-alt pointer\" (click)=\"deleteUser(item)\"></i></td>\n          \n                    </tr>\n                </tbody>\n                <tbody style=\"text-align: center;\"  *ngIf=\"userAccessList.length==0\" >\n                  <tr >\n                    <td colspan=\"3\" ><span ><i>No User has been granted access for this experiment.</i> </span></td>\n                      \n          \n                  </tr>\n              </tbody>\n           \n            </table>\n          </li> \n                <!-- </div>\n              </div>\n              <hr>\n      <div class=\"row\" style=\"margin: .5em;\" *ngIf=\"id!=-1\">\n        <div class=\"col-md-12\" style=\"padding: 0;\"> -->\n        \n          <li>  <p>List of public urls</p>\n           \n              \n              <table class=\"table\">\n                <thead >\n                    <tr >\n                     \n                        <th style=\"min-width:250px\">Url</th>\n                        <th style=\"min-width:50px\">Status</th>\n                        <!-- <th style=\"min-width:50px\">Last Created Date</th> -->\n                       \n                        <th ></th>\n                    </tr>\n                </thead>\n                <tbody *ngIf=\"tokenList.length!=0\" >\n                    <tr *ngFor=\"let item of tokenList; let i=index\" >\n                     \n                        <td><strong>{{ 'http://dew.isi.edu/public/hlb/view/'+item.token }}</strong></td>\n                        <td><strong>{{ (item.status)?'Active':'Not Active' }}</strong></td>\n                        <!-- <td><strong>{{ item.created_date }}</strong></td> -->\n       \n                        <td>\n               \n                          <i class=\"far fa-trash-alt pointer\" (click)=\"deleteToken(i)\"></i></td>\n          \n                    </tr>\n                </tbody>\n                <tbody style=\"text-align: center;\"  *ngIf=\"tokenList.length==0\" >\n                  <tr >\n                    <td colspan=\"3\" ><span ><i>No public urls.</i> </span></td>\n                      \n          \n                  </tr>\n              </tbody>\n           \n            </table>\n          </li>  \n          </ul>\n   \n     </div>\n      </div> \n  \n</mat-card>\n   \n</div>\n</div> \n </div>\n  <!-- <div class=\"col-md-4\" *ngIf=\"!isExperimentDisabled()\">\n    <div style=\"text-align: center;padding: 1em;\">     \n      <button mat-stroked-button (click)=\"save()\" >Save</button>\n </div>\n\n\n  </div> -->\n</div> \n\n");
 
 /***/ }),
 
@@ -61,7 +61,7 @@ __webpack_require__.r(__webpack_exports__);
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony default export */ __webpack_exports__["default"] = ("<div class=\"row\">\n  <div class=\"col-md-9\">\n    <div class=\"row\" style=\"margin: 0.5em;\">\n      <div class=\"col-md-12\" style=\"padding: 0;\">\n        <mat-card>\n          <div style=\"text-align: center;\"><h2>Behavior</h2></div>\n\n          <ul>\n            <li>Define steps to be executed during this experiment.</li>\n            <li>\n              <dl>\n                <dt>\n                  For example:\n                </dt>\n                <ul>\n                  <li>\n                    <span class=\"actor_example_color\">actor0</span>&nbsp;<span\n                      class=\"binding_example_color\"\n                      >start_log</span\n                    >\n                  </li>\n                  <li>\n                    wait t0\n                    <span class=\"actor_example_color\">actor1</span>&nbsp;<span\n                      class=\"binding_example_color\"\n                      >legitimate</span\n                    >\n                  </li>\n                  <li>\n                    when&nbsp;<span class=\"binding_example_color\"\n                      >stop_attack_done</span\n                    >&nbsp;wait t3&nbsp;<span class=\"actor_example_color\"\n                      >actor1</span\n                    >&nbsp;<span class=\"binding_example_color\"\n                      >stop_legitimate</span\n                    >&nbsp;emit&nbsp;<span class=\"binding_example_color\"\n                      >stop_legitimate_done</span\n                    >\n                  </li>\n                </ul>\n              </dl>\n            </li>\n            <li>\n              As you start typing there will be auto-suggestion displayed near\n              the top of the text area.\n            </li>\n            <li>\n              Press tab to use the first auto suggested word. It will append the\n              word near the cursor in the textarea.\n            </li>\n            <li>\n              There will also be suggestion displayed along with suggested text.\n              This will help you to write the next word or phrase.\n            </li>\n          </ul>\n          <hr />\n          <div class=\"row\">\n            <div class=\"col-md-12\" (click)=\"selectTextBox(2)\">\n              <div\n                style=\"margin: 0.6em; border-bottom: 1px solid #eee;\"\n                [hidden]=\"!isEnable(2)\"\n              >\n                <span>Suggestions:</span>\n\n                <button\n                  type=\"button\"\n                  class=\"btn btn-outline-primary word-bubble-button\"\n                  *ngFor=\"\n                    let word of behaviorWordList\n                      | slice: 0:3\n                      | textfilter: behaviorTextFilter\n                  \"\n                  (click)=\"insertValue(word.value)\"\n                  [disabled]=\"word.flag\"\n                >\n                  {{ word.value }}\n                </button>\n                <button\n                  type=\"button\"\n                  *ngIf=\"suggestionbehaviorMessage != null\"\n                  class=\"btn btn-outline-primary word-bubble-button\"\n                  [disabled]=\"true\"\n                >\n                  {{ suggestionbehaviorMessage }}\n                </button>\n              </div>\n              <div class=\"flex-container\" (blur)=\"onBlurMethod()\">\n                <quill-editor\n                  [styles]=\"{ height: '400px', border: 'none' }\"\n                  [modules]=\"{\n                    counter: { container: '#editor1' },\n                    toolbar: false\n                  }\"\n                  placeholder=\"Enter Steps to be executed during the experiment. For example: Actor0 start_log\"\n                  [(ngModel)]=\"behaviorText\"\n                  (onContentChanged)=\"logChangeBehavior($event)\"\n                  (onEditorCreated)=\"created($event, 2)\"\n                ></quill-editor>\n              </div>\n            </div>\n          </div>\n        </mat-card>\n      </div>\n    </div>\n    <div class=\"row\" style=\"margin: 0.5em;\">\n      <div class=\"col-md-12\" style=\"padding: 0;\">\n        <mat-card>\n          <div style=\"text-align: center;\"><h2>Constraints</h2></div>\n          <ul>\n            <li>Define all the constraints for this experiment.</li>\n            <li>\n              <dl>\n                <dt>\n                  For example:\n                </dt>\n                <ul>\n                  <li>\n                    server&nbsp;os&nbsp;Ubuntu-latest\n                  </li>\n                  <li>\n                    attacker&nbsp;num&nbsp;3\n                  </li>\n                  <li>\n                    lan&nbsp;client&nbsp;attacker&nbsp;router\n                  </li>\n                  <li>\n                    link&nbsp;router&nbsp;server\n                  </li>\n                </ul>\n              </dl>\n            </li>\n            <li>\n              As you start typing there will be auto-suggestion displayed near\n              the top of the text area.\n            </li>\n            <li>\n              Press tab to use the first auto suggested word. It will append the\n              word near the cursor in the textarea.\n            </li>\n            <li>\n              There will also be suggestion displayed along with suggested text.\n              This will help you to write the next word or phrase.\n            </li>\n          </ul>\n          <hr />\n          <div class=\"row\">\n            <div class=\"col-md-12\" (click)=\"selectTextBox(3)\">\n              <div\n                style=\"margin: 0.6em; border-bottom: 1px solid #eee;\"\n                [hidden]=\"!isEnable(3)\"\n              >\n                <span>Suggestions:</span>\n                <button\n                  type=\"button\"\n                  class=\"btn btn-outline-primary word-bubble-button\"\n                  *ngFor=\"\n                    let word of constraintWordList\n                      | slice: 0:3\n                      | textfilter: constraintTextFilter\n                  \"\n                  (click)=\"insertValueInConstraint(word.value)\"\n                >\n                  {{ word.value }}\n                </button>\n                <button\n                  type=\"button\"\n                  *ngIf=\"suggestionConstraintMessage != null\"\n                  class=\"btn btn-outline-primary word-bubble-button\"\n                  [disabled]=\"true\"\n                >\n                  {{ suggestionConstraintMessage }}\n                </button>\n              </div>\n              <div class=\"flex-container\">\n                <quill-editor\n                  [styles]=\"{ height: '400px', border: 'none' }\"\n                  [modules]=\"{\n                    counter: { container: '#editor1' },\n                    toolbar: false\n                  }\"\n                  [(ngModel)]=\"constraintText\"\n                  (onContentChanged)=\"logChangeConstraints($event)\"\n                  (onEditorCreated)=\"created($event, 3)\"\n                ></quill-editor>\n              </div>\n            </div>\n          </div>\n        </mat-card>\n      </div>\n    </div>\n    <div class=\"row\" style=\"margin: 0.5em;\">\n      <div class=\"col-md-12\" style=\"padding: 0;\">\n        <mat-card>\n          <div style=\"text-align: center;\"><h2>Bindings</h2></div>\n          <ul>\n            <li>Define all the constraints for this experiment.</li>\n            <li>\n              <dl>\n                <dt>\n                  For example:\n                </dt>\n                <ul>\n                  <li>\n                    <span class=\"binding_example_color\"> install_iperf</span\n                    >&nbsp;apt-get install iperf -y\n                  </li>\n                  <li>\n                    <span class=\"binding_example_color\"> install_tcpdump</span\n                    >&nbsp;apt-get install tcpdump -y\n                  </li>\n                  <li>\n                    <span class=\"binding_example_color\"> install_flooder</span\n                    >&nbsp;/scripts/common/install_flooder.sh\n                  </li>\n                  <li>\n                    <span class=\"binding_example_color\"> start_server</span\n                    >&nbsp;iperf -s\n                  </li>\n                </ul>\n              </dl>\n            </li>\n            <li>\n              As you start typing behaior above this area will be populated with\n              the terms which require defination for the experiment to execute.\n            </li>\n            <li>\n              Below will be a list of text box with the term that requires more\n              input. As you fill the script, there will be a green tick ( like\n              this\n              <i class=\"fa fa-check-circle\" style=\"color: green;\"></i>&nbsp;) inside\n              the binding needed section on the top. This shows that the binding\n              is complete for that term\n            </li>\n          </ul>\n          <hr />\n          <div\n            *ngIf=\"bindingList.length == 0\"\n            style=\"font-size: 0.8em; text-align: center;\"\n          >\n            <span><i>No Bindings Needed</i></span>\n          </div>\n          <div *ngIf=\"bindingList.length != 0\">\n            <ul class=\"behavior-list\">\n              <li *ngFor=\"let item of bindingList; let index = index\">\n                <div>\n                  <mat-form-field style=\"width: 100%;\" appearance=\"outline\">\n                    <mat-label>{{ item.key + \" represents: \" }}</mat-label>\n                    <input\n                      matInput\n                      [(ngModel)]=\"item.value\"\n                      (change)=\"storeBinding()\"\n                    />\n                  </mat-form-field>\n\n                  <span> </span>\n                </div>\n              </li>\n            </ul>\n          </div>\n        </mat-card>\n      </div>\n    </div>\n  </div>\n  <div class=\"col-md-3\" style=\"margin: 0;\">\n    <div class=\"row\">\n      <div class=\"col-md-12\" style=\"padding: 1em;\">\n        <div style=\"text-align: center; padding: 0.1em;\">\n          <button mat-stroked-button (click)=\"addBindings()\">\n            Generate Ns File\n          </button>\n        </div>\n      </div>\n    </div>\n\n    <div class=\"row\" style=\"margin-top: 0.1em; margin-bottom: 0.1em;\">\n      <div class=\"col-md-12\" style=\"padding: 0;\">\n        <mat-card>\n          <div style=\"text-align: center;\">Actors</div>\n\n          <hr />\n          <div\n            *ngIf=\"actorsList.length == 0\"\n            style=\"font-size: 0.8em; text-align: center;\"\n          >\n            <span><i>No Actors</i></span>\n          </div>\n          <div\n            *ngIf=\"actorsList.length != 0\"\n            style=\"height: auto; display: flow-root; padding: 0;\"\n          >\n            <div\n              *ngFor=\"let item of actorsList; let index = index\"\n              class=\"binding-word-bubble\"\n              style=\"border: 1px solid black;\"\n            >\n              <span> {{ item.text }} </span>\n            </div>\n          </div>\n        </mat-card>\n      </div>\n    </div>\n\n    <div class=\"row\" style=\"margin-top: 0.1em; margin-bottom: 0.1em;\">\n      <div class=\"col-md-12\" style=\"padding: 0;\">\n        <mat-card>\n          <div style=\"text-align: center;\">Bindings Needed</div>\n\n          <hr />\n          <div\n            *ngIf=\"bindingList.length == 0\"\n            style=\"font-size: 0.8em; text-align: center;\"\n          >\n            <span><i>No Bindings Needed.</i></span>\n          </div>\n\n          <div\n            *ngIf=\"bindingList.length != 0\"\n            style=\"height: auto; display: flow-root; padding: 0;\"\n          >\n            <div\n              *ngFor=\"let item of bindingList; let index = index\"\n              class=\"binding-word-bubble\"\n            >\n              <span> {{ item.key }} </span>\n              <i\n                class=\"fas fa-exclamation-circle\"\n                style=\"color: red;\"\n                *ngIf=\"isEmpty(item)\"\n              ></i>\n              <i\n                class=\"fa fa-check-circle\"\n                style=\"color: green;\"\n                *ngIf=\"!isEmpty(item)\"\n              ></i>\n            </div>\n          </div>\n        </mat-card>\n      </div>\n    </div>\n  </div>\n</div>\n");
+/* harmony default export */ __webpack_exports__["default"] = ("<div class=\"row\">\n  <div class=\"col-md-9\">\n    <div class=\"row\" style=\"margin: 0.5em;\">\n      <div class=\"col-md-12\" style=\"padding: 0;\">\n        <mat-card>\n          <div style=\"text-align: center;\"><h2>Behavior</h2></div>\n\n          <ul>\n            <li>Define steps to be executed during this experiment.</li>\n            <li>\n              <dl>\n                <dt>\n                  For example:\n                </dt>\n                <ul>\n                  <li>\n                    <span class=\"actor_example_color\">actor0</span>&nbsp;<span\n                      class=\"binding_example_color\"\n                      >start_log</span\n                    >\n                  </li>\n                  <li>\n                    wait t0\n                    <span class=\"actor_example_color\">actor1</span>&nbsp;<span\n                      class=\"binding_example_color\"\n                      >legitimate</span\n                    >\n                  </li>\n                  <li>\n                    when&nbsp;<span class=\"binding_example_color\"\n                      >stop_attack_done</span\n                    >&nbsp;wait t3&nbsp;<span class=\"actor_example_color\"\n                      >actor1</span\n                    >&nbsp;<span class=\"binding_example_color\"\n                      >stop_legitimate</span\n                    >&nbsp;emit&nbsp;<span class=\"binding_example_color\"\n                      >stop_legitimate_done</span\n                    >\n                  </li>\n                </ul>\n              </dl>\n            </li>\n            <li>\n              As you start typing there will be auto-suggestion displayed near\n              the top of the text area.\n            </li>\n            <li>\n              Press tab to use the first auto suggested word. It will append the\n              word near the cursor in the textarea.\n            </li>\n            <li>\n              There will also be suggestion displayed along with suggested text.\n              This will help you to write the next word or phrase.\n            </li>\n          </ul>\n          <hr />\n          <div class=\"row\">\n            <div class=\"col-md-12\" (click)=\"selectTextBox(2)\" >\n              <div\n                style=\"margin: 0.6em; border-bottom: 1px solid #eee;\"\n                [hidden]=\"!isEnable(2) || isExperimentDisabled()\"\n              >\n                <span>Suggestions:</span>\n\n                <button\n                  type=\"button\"\n                  class=\"btn btn-outline-primary word-bubble-button\"\n                  *ngFor=\"\n                    let word of behaviorWordList\n                      | slice: 0:3\n                      | textfilter: behaviorTextFilter\n                  \"\n                  (click)=\"insertValue(word.value)\"\n                  [disabled]=\"word.flag\"\n                >\n                  {{ word.value }}\n                </button>\n                <button\n                  type=\"button\"\n                  *ngIf=\"suggestionbehaviorMessage != null\"\n                  class=\"btn btn-outline-primary word-bubble-button\"\n                  [disabled]=\"true\"\n                >\n                  {{ suggestionbehaviorMessage }}\n                </button>\n              </div>\n              <div class=\"flex-container\" (blur)=\"onBlurMethod()\">\n                <quill-editor\n                  [styles]=\"{ height: '400px', border: 'none' }\"\n                  [modules]=\"{\n                    counter: { container: '#editor1' },\n                    toolbar: false\n                  }\"\n                  placeholder=\"Enter Steps to be executed during the experiment. For example: Actor0 start_log\"\n                  [(ngModel)]=\"behaviorText\"\n                  [disabled]=\"isExperimentDisabled()\"\n                  (onContentChanged)=\"logChangeBehavior($event)\"\n                  (onEditorCreated)=\"created($event, 2)\"\n                ></quill-editor>\n              </div>\n            </div>\n          </div>\n        </mat-card>\n      </div>\n    </div>\n    <div class=\"row\" style=\"margin: 0.5em;\">\n      <div class=\"col-md-12\" style=\"padding: 0;\">\n        <mat-card>\n          <div style=\"text-align: center;\"><h2>Constraints</h2></div>\n          <ul>\n            <li>Define all the constraints for this experiment.</li>\n            <li>\n              <dl>\n                <dt>\n                  For example:\n                </dt>\n                <ul>\n                  <li>\n                    server&nbsp;os&nbsp;Ubuntu-latest\n                  </li>\n                  <li>\n                    attacker&nbsp;num&nbsp;3\n                  </li>\n                  <li>\n                    lan&nbsp;client&nbsp;attacker&nbsp;router\n                  </li>\n                  <li>\n                    link&nbsp;router&nbsp;server\n                  </li>\n                </ul>\n              </dl>\n            </li>\n            <li>\n              As you start typing there will be auto-suggestion displayed near\n              the top of the text area.\n            </li>\n            <li>\n              Press tab to use the first auto suggested word. It will append the\n              word near the cursor in the textarea.\n            </li>\n            <li>\n              There will also be suggestion displayed along with suggested text.\n              This will help you to write the next word or phrase.\n            </li>\n          </ul>\n          <hr />\n          <div class=\"row\">\n            <div class=\"col-md-12\" (click)=\"selectTextBox(3)\">\n              <div\n                style=\"margin: 0.6em; border-bottom: 1px solid #eee;\"\n                [hidden]=\"!isEnable(3) || isExperimentDisabled()\"\n              >\n                <span>Suggestions:</span>\n                <button\n                  type=\"button\"\n                  class=\"btn btn-outline-primary word-bubble-button\"\n                  *ngFor=\"\n                    let word of constraintWordList\n                      | slice: 0:3\n                      | textfilter: constraintTextFilter\n                  \"\n                  (click)=\"insertValueInConstraint(word.value)\"\n                >\n                  {{ word.value }}\n                </button>\n                <button\n                  type=\"button\"\n                  *ngIf=\"suggestionConstraintMessage != null\"\n                  class=\"btn btn-outline-primary word-bubble-button\"\n                  [disabled]=\"true\"\n                >\n                  {{ suggestionConstraintMessage }}\n                </button>\n              </div>\n              <div class=\"flex-container\">\n                <quill-editor\n                  [styles]=\"{ height: '400px', border: 'none' }\"\n                  [modules]=\"{\n                    counter: { container: '#editor1' },\n                    toolbar: false\n                  }\"\n                  [disabled]=\"isExperimentDisabled()\"\n                  [(ngModel)]=\"constraintText\"\n                  (onContentChanged)=\"logChangeConstraints($event)\"\n                  (onEditorCreated)=\"created($event, 3)\"\n                ></quill-editor>\n              </div>\n            </div>\n          </div>\n        </mat-card>\n      </div>\n    </div>\n    <div class=\"row\" style=\"margin: 0.5em;\">\n      <div class=\"col-md-12\" style=\"padding: 0;\">\n        <mat-card>\n          <div style=\"text-align: center;\"><h2>Bindings</h2></div>\n          <ul>\n            <li>Define all the constraints for this experiment.</li>\n            <li>\n              <dl>\n                <dt>\n                  For example:\n                </dt>\n                <ul>\n                  <li>\n                    <span class=\"binding_example_color\"> install_iperf</span\n                    >&nbsp;apt-get install iperf -y\n                  </li>\n                  <li>\n                    <span class=\"binding_example_color\"> install_tcpdump</span\n                    >&nbsp;apt-get install tcpdump -y\n                  </li>\n                  <li>\n                    <span class=\"binding_example_color\"> install_flooder</span\n                    >&nbsp;/scripts/common/install_flooder.sh\n                  </li>\n                  <li>\n                    <span class=\"binding_example_color\"> start_server</span\n                    >&nbsp;iperf -s\n                  </li>\n                </ul>\n              </dl>\n            </li>\n            <li>\n              As you start typing behaior above this area will be populated with\n              the terms which require defination for the experiment to execute.\n            </li>\n            <li>\n              Below will be a list of text box with the term that requires more\n              input. As you fill the script, there will be a green tick ( like\n              this\n              <i class=\"fa fa-check-circle\" style=\"color: green;\"></i>&nbsp;) inside\n              the binding needed section on the top. This shows that the binding\n              is complete for that term\n            </li>\n          </ul>\n          <hr />\n          <div\n            *ngIf=\"bindingList.length == 0\"\n            style=\"font-size: 0.8em; text-align: center;\"\n          >\n            <span><i>No Bindings Needed</i></span>\n          </div>\n          <div *ngIf=\"bindingList.length != 0\">\n            <ul class=\"behavior-list\">\n              <li *ngFor=\"let item of bindingList; let index = index\">\n                <div>\n                  <mat-form-field style=\"width: 100%;\" appearance=\"outline\">\n                    <mat-label>{{ item.key + \" represents: \" }}</mat-label>\n                    <input\n                      matInput\n                      [disabled]=\"isExperimentDisabled()\"\n                      [(ngModel)]=\"item.value\"\n                      (change)=\"storeBinding()\"\n                    />\n                  </mat-form-field>\n\n                  <span> </span>\n                </div>\n              </li>\n            </ul>\n          </div>\n        </mat-card>\n      </div>\n    </div>\n  </div>\n  <div class=\"col-md-3\" style=\"margin: 0;\">\n    <div class=\"row\">\n      <div class=\"col-md-12\" style=\"padding: 1em;\">\n        <div style=\"text-align: center; padding: 0.1em;\">\n          <button mat-stroked-button (click)=\"addBindings()\">\n            Generate Ns File\n          </button>\n        </div>\n      </div>\n    </div>\n\n    <div class=\"row\" style=\"margin-top: 0.1em; margin-bottom: 0.1em;\">\n      <div class=\"col-md-12\" style=\"padding: 0;\">\n        <mat-card>\n          <div style=\"text-align: center;\">Actors</div>\n\n          <hr />\n          <div\n            *ngIf=\"actorsList.length == 0\"\n            style=\"font-size: 0.8em; text-align: center;\"\n          >\n            <span><i>No Actors</i></span>\n          </div>\n          <div\n            *ngIf=\"actorsList.length != 0\"\n            style=\"height: auto; display: flow-root; padding: 0;\"\n          >\n            <div\n              *ngFor=\"let item of actorsList; let index = index\"\n              class=\"binding-word-bubble\"\n              style=\"border: 1px solid black;\"\n            >\n              <span> {{ item.text }} </span>\n            </div>\n          </div>\n        </mat-card>\n      </div>\n    </div>\n\n    <div class=\"row\" style=\"margin-top: 0.1em; margin-bottom: 0.1em;\">\n      <div class=\"col-md-12\" style=\"padding: 0;\">\n        <mat-card>\n          <div style=\"text-align: center;\">Bindings Needed</div>\n\n          <hr />\n          <div\n            *ngIf=\"bindingList.length == 0\"\n            style=\"font-size: 0.8em; text-align: center;\"\n          >\n            <span><i>No Bindings Needed.</i></span>\n          </div>\n\n          <div\n            *ngIf=\"bindingList.length != 0\"\n            style=\"height: auto; display: flow-root; padding: 0;\"\n          >\n            <div\n              *ngFor=\"let item of bindingList; let index = index\"\n              class=\"binding-word-bubble\"\n            >\n              <span> {{ item.key }} </span>\n              <i\n                class=\"fas fa-exclamation-circle\"\n                style=\"color: red;\"\n                *ngIf=\"isEmpty(item)\"\n              ></i>\n              <i\n                class=\"fa fa-check-circle\"\n                style=\"color: green;\"\n                *ngIf=\"!isEmpty(item)\"\n              ></i>\n            </div>\n          </div>\n        </mat-card>\n      </div>\n    </div>\n  </div>\n</div>\n");
 
 /***/ }),
 
@@ -74,7 +74,7 @@ __webpack_require__.r(__webpack_exports__);
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony default export */ __webpack_exports__["default"] = ("\n  <mat-tab-group *ngIf=\"isViewEnable()\">\n    <mat-tab *ngFor=\"let x of menuList\" label=\"{{ x.name }}\">\n   \n    \n      <div *ngIf=\"x.id ==1\" class=\"tab\">\n        <experiment-info [id]=experimentId></experiment-info>\n      </div>\n      <div *ngIf=\"x.id ==2\" class=\"tab\">\n        <hlb></hlb>\n      </div>\n\n      <div *ngIf=\"x.id ==3\" class=\"tab\">\n        <nlp></nlp>\n      </div>\n\n      <div *ngIf=\"x.id ==4\" class=\"tab\">\n        <dependency-graph></dependency-graph>\n      </div> \n\n      <div *ngIf=\"x.id ==5\" class=\"tab\">\n        <upload></upload>\n      </div> \n      \n    </mat-tab>\n  </mat-tab-group> \n\n");
+/* harmony default export */ __webpack_exports__["default"] = ("\n  <mat-tab-group *ngIf=\"isViewEnable()\">\n    <mat-tab *ngFor=\"let x of menuList\" label=\"{{ x.name }}\">\n   \n    \n      <div *ngIf=\"x.id ==1\" class=\"tab\">\n        <experiment-info [id]=experimentId></experiment-info>\n      </div>\n      <div *ngIf=\"x.id ==2\" class=\"tab\">\n        <hlb></hlb>\n      </div>\n\n      <div *ngIf=\"x.id ==3 && experimentControl > 2\" class=\"tab\">\n        <nlp></nlp>\n      </div>\n\n      <div *ngIf=\"x.id ==4 && experimentControl > 2\" class=\"tab\">\n        <dependency-graph></dependency-graph>\n      </div> \n\n      <div *ngIf=\"x.id ==5 && experimentControl > 2\" class=\"tab\">\n        <upload></upload>\n      </div> \n      \n    </mat-tab>\n  </mat-tab-group> \n\n");
 
 /***/ }),
 
@@ -466,7 +466,7 @@ DependencyGraphComponent = tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"]([
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony default export */ __webpack_exports__["default"] = (".profile_img img {\n  vertical-align: middle;\n  width: 40px;\n  height: 40px;\n  border-radius: 50%;\n  margin: 4px;\n}\n/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbIi9Vc2Vycy9TaGFiYmlyL3Byb2plY3RzL0RFV19VSS9zcmMvc3RlZWwvV0VCLUFQUExJQ0FUSU9OL2Zyb250ZW5kL3NyYy9hcHAvcGFnZXMvaGxicGFyc2VyL2V4cGVyaW1lbnQtaW5mby9pbmZvLmNvbXBvbmVudC5zY3NzIiwic3JjL2FwcC9wYWdlcy9obGJwYXJzZXIvZXhwZXJpbWVudC1pbmZvL2luZm8uY29tcG9uZW50LnNjc3MiXSwibmFtZXMiOltdLCJtYXBwaW5ncyI6IkFBQUE7RUFFSSxzQkFBQTtFQUNBLFdBQUE7RUFDQSxZQUFBO0VBQ0Esa0JBQUE7RUFFQSxXQUFBO0FDREoiLCJmaWxlIjoic3JjL2FwcC9wYWdlcy9obGJwYXJzZXIvZXhwZXJpbWVudC1pbmZvL2luZm8uY29tcG9uZW50LnNjc3MiLCJzb3VyY2VzQ29udGVudCI6WyIucHJvZmlsZV9pbWcgaW1ne1xuICBcbiAgICB2ZXJ0aWNhbC1hbGlnbjogbWlkZGxlO1xuICAgIHdpZHRoOiA0MHB4O1xuICAgIGhlaWdodDogNDBweDtcbiAgICBib3JkZXItcmFkaXVzOiA1MCU7XG4gIFxuICAgIG1hcmdpbjogNHB4O1xufSIsIi5wcm9maWxlX2ltZyBpbWcge1xuICB2ZXJ0aWNhbC1hbGlnbjogbWlkZGxlO1xuICB3aWR0aDogNDBweDtcbiAgaGVpZ2h0OiA0MHB4O1xuICBib3JkZXItcmFkaXVzOiA1MCU7XG4gIG1hcmdpbjogNHB4O1xufSJdfQ== */");
+/* harmony default export */ __webpack_exports__["default"] = (".profile_img img {\n  vertical-align: middle;\n  width: 40px;\n  height: 40px;\n  border-radius: 50%;\n  margin: 4px;\n}\n\n.action_menu ul {\n  list-style-type: none;\n  padding-left: 2rem;\n  margin: 0;\n  border-bottom: 1px solid #ccc;\n  overflow: hidden;\n}\n\n.action_menu ul li {\n  float: left;\n}\n\n.action_menu ul li i {\n  display: block;\n  color: black;\n  text-align: center;\n  padding: 0.31rem;\n  text-decoration: none;\n}\n\n.action_menu ul li i:hover {\n  background-color: #ccc;\n}\n\n.pointer {\n  cursor: pointer;\n}\n/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbIi9Vc2Vycy9TaGFiYmlyL3Byb2plY3RzL0RFV19VSS9zcmMvc3RlZWwvV0VCLUFQUExJQ0FUSU9OL2Zyb250ZW5kL3NyYy9hcHAvcGFnZXMvaGxicGFyc2VyL2V4cGVyaW1lbnQtaW5mby9pbmZvLmNvbXBvbmVudC5zY3NzIiwic3JjL2FwcC9wYWdlcy9obGJwYXJzZXIvZXhwZXJpbWVudC1pbmZvL2luZm8uY29tcG9uZW50LnNjc3MiXSwibmFtZXMiOltdLCJtYXBwaW5ncyI6IkFBQUE7RUFFSSxzQkFBQTtFQUNBLFdBQUE7RUFDQSxZQUFBO0VBQ0Esa0JBQUE7RUFFQSxXQUFBO0FDREo7O0FESUE7RUFDRSxxQkFBQTtFQUNBLGtCQUFBO0VBQ0EsU0FBQTtFQUNBLDZCQUFBO0VBQ0EsZ0JBQUE7QUNERjs7QURHQTtFQUNJLFdBQUE7QUNBSjs7QURHQTtFQUNJLGNBQUE7RUFDQSxZQUFBO0VBQ0Esa0JBQUE7RUFDQSxnQkFBQTtFQUNBLHFCQUFBO0FDQUo7O0FER0E7RUFDSSxzQkFBQTtBQ0FKOztBREdFO0VBQ0ksZUFBQTtBQ0FOIiwiZmlsZSI6InNyYy9hcHAvcGFnZXMvaGxicGFyc2VyL2V4cGVyaW1lbnQtaW5mby9pbmZvLmNvbXBvbmVudC5zY3NzIiwic291cmNlc0NvbnRlbnQiOlsiLnByb2ZpbGVfaW1nIGltZ3tcbiAgXG4gICAgdmVydGljYWwtYWxpZ246IG1pZGRsZTtcbiAgICB3aWR0aDogNDBweDtcbiAgICBoZWlnaHQ6IDQwcHg7XG4gICAgYm9yZGVyLXJhZGl1czogNTAlO1xuICBcbiAgICBtYXJnaW46IDRweDtcbn1cblxuLmFjdGlvbl9tZW51IHVse1xuICBsaXN0LXN0eWxlLXR5cGU6IG5vbmU7XG4gIHBhZGRpbmctbGVmdDogMnJlbTtcbiAgbWFyZ2luOiAwO1xuICBib3JkZXItYm90dG9tOiAxcHggc29saWQgI2NjYztcbiAgb3ZlcmZsb3c6IGhpZGRlbjtcbn1cbi5hY3Rpb25fbWVudSB1bCBsaXtcbiAgICBmbG9hdDogbGVmdDtcbn1cblxuLmFjdGlvbl9tZW51IHVsIGxpIGkge1xuICAgIGRpc3BsYXk6IGJsb2NrO1xuICAgIGNvbG9yOiBibGFjaztcbiAgICB0ZXh0LWFsaWduOiBjZW50ZXI7XG4gICAgcGFkZGluZzogLjMxcmVtO1xuICAgIHRleHQtZGVjb3JhdGlvbjogbm9uZTtcbiAgfVxuICBcbi5hY3Rpb25fbWVudSB1bCBsaSBpOmhvdmVyIHtcbiAgICBiYWNrZ3JvdW5kLWNvbG9yOiAjY2NjO1xuICB9XG5cbiAgLnBvaW50ZXJ7XG4gICAgICBjdXJzb3I6IHBvaW50ZXI7XG4gIH0iLCIucHJvZmlsZV9pbWcgaW1nIHtcbiAgdmVydGljYWwtYWxpZ246IG1pZGRsZTtcbiAgd2lkdGg6IDQwcHg7XG4gIGhlaWdodDogNDBweDtcbiAgYm9yZGVyLXJhZGl1czogNTAlO1xuICBtYXJnaW46IDRweDtcbn1cblxuLmFjdGlvbl9tZW51IHVsIHtcbiAgbGlzdC1zdHlsZS10eXBlOiBub25lO1xuICBwYWRkaW5nLWxlZnQ6IDJyZW07XG4gIG1hcmdpbjogMDtcbiAgYm9yZGVyLWJvdHRvbTogMXB4IHNvbGlkICNjY2M7XG4gIG92ZXJmbG93OiBoaWRkZW47XG59XG5cbi5hY3Rpb25fbWVudSB1bCBsaSB7XG4gIGZsb2F0OiBsZWZ0O1xufVxuXG4uYWN0aW9uX21lbnUgdWwgbGkgaSB7XG4gIGRpc3BsYXk6IGJsb2NrO1xuICBjb2xvcjogYmxhY2s7XG4gIHRleHQtYWxpZ246IGNlbnRlcjtcbiAgcGFkZGluZzogMC4zMXJlbTtcbiAgdGV4dC1kZWNvcmF0aW9uOiBub25lO1xufVxuXG4uYWN0aW9uX21lbnUgdWwgbGkgaTpob3ZlciB7XG4gIGJhY2tncm91bmQtY29sb3I6ICNjY2M7XG59XG5cbi5wb2ludGVyIHtcbiAgY3Vyc29yOiBwb2ludGVyO1xufSJdfQ== */");
 
 /***/ }),
 
@@ -490,6 +490,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _angular_forms__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! @angular/forms */ "./node_modules/@angular/forms/fesm2015/forms.js");
 /* harmony import */ var rxjs_operators__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! rxjs/operators */ "./node_modules/rxjs/_esm2015/operators/index.js");
 /* harmony import */ var _angular_material__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! @angular/material */ "./node_modules/@angular/material/esm2015/material.js");
+/* harmony import */ var _angular_common_http__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! @angular/common/http */ "./node_modules/@angular/common/fesm2015/http.js");
+
 
 
 
@@ -519,9 +521,9 @@ let InfoComponent = class InfoComponent {
         this.options = ["One", "Two", "Three"];
         this.userAccessList = [];
         this.nameControl = new _angular_forms__WEBPACK_IMPORTED_MODULE_6__["FormControl"]();
+        this.experimentControl = 4;
     }
     ngOnInit() {
-        this.loadTokenList();
         if (this.id != undefined && this.id != null && this.id != -1)
             this.experiment["id"] = this.id;
         this.state.getExperimentName().subscribe((name) => {
@@ -542,12 +544,21 @@ let InfoComponent = class InfoComponent {
         this.state.getConstraints().subscribe((constraintsList) => {
             this.experiment.constraints = constraintsList;
         });
-        this.state.getTokenList().subscribe((data) => {
-            if (data != null) {
-                this.tokenList = data;
-            }
+        this.state.getExperimentControl().subscribe(data => {
+            this.experimentControl = data;
         });
-        this.getUserAccessList();
+        if (this.experimentControl > 3) {
+            this.loadTokenList();
+            this.state.getTokenList().subscribe((data) => {
+                if (data != null) {
+                    this.tokenList = data;
+                }
+            });
+            this.getUserAccessList();
+        }
+    }
+    isExperimentDisabled() {
+        return this.experimentControl == 2;
     }
     getUserAccessList() {
         var params = {
@@ -606,7 +617,10 @@ let InfoComponent = class InfoComponent {
                         bindingFLag = true;
                 });
             }
-            var continueFlag = confirm("Few bindings are missing, Do you still want to continue?");
+            if (bindingFLag)
+                var continueFlag = confirm("Few bindings are missing, Do you still want to continue?");
+            else
+                continueFlag = !bindingFLag;
             if (continueFlag)
                 this.http.put("v1/persist/save", this.experiment).subscribe((data) => {
                     if (data.saved) {
@@ -652,7 +666,8 @@ let InfoComponent = class InfoComponent {
         var params = {
             "userId": this.experiment.userId,
             "userHandle": userobj.handle,
-            "id": this.experiment["id"]
+            "id": this.experiment["id"],
+            "accessLevel": userobj.access
         };
         this.http.post("api/v1/persist/experiment/grantaccess", params).subscribe(data => {
             console.log(data);
@@ -662,6 +677,37 @@ let InfoComponent = class InfoComponent {
                 this.getUserAccessList();
         }, error => {
             alert("Error in granting access.");
+        });
+    }
+    deleteUser(user) {
+        var header = {
+            headers: new _angular_common_http__WEBPACK_IMPORTED_MODULE_9__["HttpHeaders"]({ 'Content-Type': 'application/json' }),
+            body: {
+                userId: this.experiment.userId,
+                id: this.experiment['id'],
+                userHandle: user.handle
+            }
+        };
+        this.http.delete("v1/persist/experiment/removeaccess", header).subscribe(data => {
+            alert("User is removed.");
+            this.getUserAccessList();
+        }, error => {
+            alert('There is some error while deleting the experiment. Please try again after sometime.');
+        });
+    }
+    delete() {
+        var header = {
+            headers: new _angular_common_http__WEBPACK_IMPORTED_MODULE_9__["HttpHeaders"]({ 'Content-Type': 'application/json' }),
+            body: {
+                userId: this.experiment.userId,
+                id: this.experiment['id']
+            }
+        };
+        this.http.delete("v1/persist/experiment/delete", header).subscribe(data => {
+            alert("experiment is delete.");
+            this.route.navigate(["/pages/dashboard"]);
+        }, error => {
+            alert('There is some error while deleting the experiment. Please try again after sometime.');
         });
     }
 };
@@ -694,7 +740,7 @@ let AddUserPopUp = class AddUserPopUp {
             handle: "",
             access: ""
         };
-        this.options = [{ name: 'Read', value: 'read' }, { name: 'Write', value: 'write' }];
+        this.options = [{ name: 'Read', value: '2' }, { name: 'Write', value: '3' }, { name: 'Manage', value: '4' }];
         this.userOptions = [];
     }
     ngOnInit() {
@@ -712,9 +758,15 @@ let AddUserPopUp = class AddUserPopUp {
     onNoClick() {
         this.dialogRef.close();
     }
+    isAddDisabled() {
+        let flag = true;
+        if (this.UserObj.handle.trim() != '' && this.UserObj.access.trim() != '')
+            flag = false;
+        return flag;
+    }
     _filter(value, options) {
         const filterValue = value.toLowerCase();
-        return options.filter((option) => option.value.toLowerCase().includes(filterValue) || option.name.toLowerCase().includes(filterValue));
+        return options.filter((option) => option.name.toLowerCase().includes(filterValue));
     }
 };
 AddUserPopUp.ctorParameters = () => [
@@ -805,6 +857,7 @@ let HlbComponent = class HlbComponent {
         this.inputText = "";
         this.actors = "";
         this.selectedIndex = 0;
+        this.experimentAccess = 4;
     }
     ngOnInit() {
         this.bindingMap = new Map();
@@ -856,7 +909,11 @@ let HlbComponent = class HlbComponent {
                 instance.constraintText = text;
             }
         });
+        this.stateservice.getExperimentControl().subscribe(flag => {
+            this.experimentAccess = flag;
+        });
     }
+    isExperimentDisabled() { return this.experimentAccess == 2; }
     drop(event, list) {
         Object(_angular_cdk_drag_drop__WEBPACK_IMPORTED_MODULE_2__["moveItemInArray"])(list, event.previousIndex, event.currentIndex);
     }
@@ -1406,8 +1463,9 @@ __webpack_require__.r(__webpack_exports__);
 
 
 let HLBParserComponent = class HLBParserComponent {
-    constructor(route, http, state, auth) {
+    constructor(route, router, http, state, auth) {
         this.route = route;
+        this.router = router;
         this.http = http;
         this.state = state;
         this.auth = auth;
@@ -1422,8 +1480,54 @@ let HLBParserComponent = class HLBParserComponent {
                 name: "HLB",
                 id: 2,
                 html: "<hlb></hlb>",
-            },
-            {
+            }
+        ];
+        this.experimentId = -1;
+        this.experimentControl = 4;
+    }
+    ngOnInit() {
+        this.route.params.subscribe((params) => {
+            if (params["id"] != "") {
+                var input = {
+                    userId: this.auth.getCookie("userId"),
+                    id: params["id"],
+                };
+                this.experimentId = params["id"];
+                this.state.enableLoader();
+                this.http
+                    .post("api/v1/persist/experiment/control", input)
+                    .subscribe((controlData) => {
+                    if (controlData.code != undefined && controlData.code != null) {
+                        this.state.setExperimentControl(controlData.code);
+                        this.experimentControl = controlData.code;
+                        console.log(this.experimentControl);
+                        this.http
+                            .post("api/v1/persist/getExperimentById", input)
+                            .subscribe((data) => {
+                            this.enableView();
+                            this.state.setActors(data.actors);
+                            this.state.setExperimentName(data.name);
+                            this.state.setExperimentDescription(data.description);
+                            this.state.setBehavior(data.behaviors);
+                            this.state.setBindings(data.bindings);
+                            this.state.setConstraints(data.constraints);
+                            this.state.disableLoader();
+                        });
+                    }
+                    else {
+                        alert("Don't have control for this experiment");
+                        this.router.navigate(['pages/dashboard']);
+                    }
+                });
+                return "";
+            }
+            else {
+                this.enableView();
+            }
+        });
+    }
+    enableView() {
+        let menu = [{
                 name: "NLP",
                 id: 3,
                 html: "<nlp></nlp>",
@@ -1439,43 +1543,18 @@ let HLBParserComponent = class HLBParserComponent {
                 html: "<upload></upload>",
             },
         ];
-        this.experimentId = -1;
-    }
-    ngOnInit() {
-        this.route.params.subscribe((params) => {
-            if (params["id"] != "") {
-                var input = {
-                    userId: this.auth.getCookie("userId"),
-                    id: params["id"],
-                };
-                this.experimentId = params["id"];
-                this.state.enableLoader();
-                this.http
-                    .post("api/v1/persist/getExperimentById", input)
-                    .subscribe((data) => {
-                    this.enableView();
-                    this.state.setActors(data.actors);
-                    this.state.setExperimentName(data.name);
-                    this.state.setExperimentDescription(data.description);
-                    this.state.setBehavior(data.behaviors);
-                    this.state.setBindings(data.bindings);
-                    this.state.setConstraints(data.constraints);
-                    this.state.disableLoader();
-                });
-                return "";
-            }
-            else {
-                this.enableView();
-            }
-        });
-    }
-    enableView() {
+        if (this.experimentControl > 2) {
+            menu.forEach(item => {
+                this.menuList.push(item);
+            });
+        }
         this.viewFlag = true;
     }
     isViewEnable() { return this.viewFlag; }
 };
 HLBParserComponent.ctorParameters = () => [
     { type: _angular_router__WEBPACK_IMPORTED_MODULE_2__["ActivatedRoute"] },
+    { type: _angular_router__WEBPACK_IMPORTED_MODULE_2__["Router"] },
     { type: src_app_http_service_service__WEBPACK_IMPORTED_MODULE_5__["HttpService"] },
     { type: _state_service_service__WEBPACK_IMPORTED_MODULE_4__["StateService"] },
     { type: src_app_auth_auth_service__WEBPACK_IMPORTED_MODULE_3__["AuthService"] }
@@ -1578,6 +1657,8 @@ HLBParserModule = tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"]([
             _angular_forms__WEBPACK_IMPORTED_MODULE_3__["ReactiveFormsModule"],
             _angular_material__WEBPACK_IMPORTED_MODULE_11__["MatAutocompleteModule"],
             _angular_router__WEBPACK_IMPORTED_MODULE_17__["RouterModule"],
+            _angular_material__WEBPACK_IMPORTED_MODULE_11__["MatTooltipModule"],
+            _angular_material__WEBPACK_IMPORTED_MODULE_11__["MatSelectModule"],
             _angular_material_radio__WEBPACK_IMPORTED_MODULE_24__["MatRadioModule"],
             _swimlane_ngx_graph__WEBPACK_IMPORTED_MODULE_14__["NgxGraphModule"],
             _angular_material__WEBPACK_IMPORTED_MODULE_11__["MatDialogModule"],

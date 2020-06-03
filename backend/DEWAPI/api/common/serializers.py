@@ -91,7 +91,14 @@ experiment_detail = api.model('get experiment request', {
 grantaccess = api.model('Grant experiment access', {
   'userId': fields.String(description="user id", required=True),
   'userHandle': fields.String(description="user id", required=True),
-  'id': fields.String(description="Id of experiment", required=True)
+  'id':fields.String(description="Id of experiment", required=True),
+  'accessLevel':fields.String(description="Access level read,write or manage", required=True)
+  })
+
+removeaccess = api.model('Remove experiment access', {
+  'userId': fields.String(description="user id", required=True),
+  'userHandle': fields.String(description="user id", required=True),
+  'id':fields.String(description="Id of experiment", required=True)
   })
 suggestion_v2_object = api.model('Suggestion v2 request',{
   'username': fields.String(description="Username", required=True),

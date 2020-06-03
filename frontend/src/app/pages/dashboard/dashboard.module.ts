@@ -1,13 +1,13 @@
 
 import { NgModule } from "@angular/core";
 import { MatTabsModule } from "@angular/material/tabs";
-import { FormsModule } from "@angular/forms";
+import { FormsModule, ReactiveFormsModule } from "@angular/forms";
 import { MatExpansionModule } from "@angular/material/expansion";
 import { MatInputModule } from "@angular/material/input";
 import { MatCardModule } from "@angular/material/card";
 import { DragDropModule } from "@angular/cdk/drag-drop";
 import { FontAwesomeModule } from "@fortawesome/angular-fontawesome";
-import { MatButtonModule, MatSnackBarModule, MatDialogModule, MatTableModule } from '@angular/material';
+import { MatButtonModule, MatSnackBarModule, MatDialogModule, MatTableModule, MatTooltipModule, MatSelectModule, MatIconModule } from '@angular/material';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import {MatRadioModule} from '@angular/material/radio';
@@ -25,19 +25,24 @@ import { ExperimentComponent } from './experiments/experiment.component';
   imports: [
     CommonModule,
     RouterModule,
+    FormsModule,
+    ReactiveFormsModule,
     MatRadioModule,
     MatDialogModule,
     MatButtonModule,
     MatSnackBarModule,
     FontAwesomeModule,
     MatTabsModule,
+    MatTooltipModule,
     DragDropModule,
     FormsModule,
     MatTableModule,
+    MatSelectModule,
     MatExpansionModule,
     MatCardModule,
     DashboardRoutingModule,
     MatInputModule,
+    MatIconModule
   ],  providers: [StateService],
   bootstrap:[DashboardComponent]
 })

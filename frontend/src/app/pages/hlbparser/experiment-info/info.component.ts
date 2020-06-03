@@ -8,6 +8,7 @@ import { FormControl } from "@angular/forms";
 import { Observable } from "rxjs";
 import { startWith, map } from "rxjs/operators";
 import { MatDialogRef, MAT_DIALOG_DATA, MatDialog } from '@angular/material';
+import { HttpHeaders } from '@angular/common/http';
 
 @Component({
   selector: "experiment-info",
@@ -42,9 +43,10 @@ export class InfoComponent implements OnInit {
   ) {}
   // gdrive = new GoogleDriveService(this.http, this.auth);
   nameControl = new FormControl();
+  experimentControl = 4;
   ngOnInit(): void {
     
-    this.loadTokenList();
+    
     if (this.id != undefined && this.id != null && this.id != -1)
       this.experiment["id"] = this.id;
     this.state.getExperimentName().subscribe((name) => {
@@ -69,13 +71,24 @@ export class InfoComponent implements OnInit {
       this.experiment.driveId = driveId;
     });
 
+    this.state.getExperimentControl().subscribe(data =>{
+      this.experimentControl = data
+    });
+    if(this.experimentControl>3){
+    this.loadTokenList();
     this.state.getTokenList().subscribe((data) => {
       if (data != null) {
         this.tokenList = data;
       }
     });
-
     this.getUserAccessList();
+  }
+
+   
+  }
+
+  isExperimentDisabled():boolean {
+      return this.experimentControl == 2
   }
   getUserAccessList(){
     var params = {
@@ -167,9 +180,10 @@ export class InfoComponent implements OnInit {
                 bindingFLag = true
           })
         }
-
+        if (bindingFLag)
         var continueFlag = confirm("Few bindings are missing, Do you still want to continue?")
-        console.log(this.experiment)
+        else
+        continueFlag = !bindingFLag
         if(continueFlag)
       this.http.put("v1/persist/save", this.experiment).subscribe(
         (data) => {
@@ -318,7 +332,8 @@ export class InfoComponent implements OnInit {
     var params = {
       "userId": this.experiment.userId,
       "userHandle": userobj.handle,
-      "id": this.experiment["id"]
+      "id": this.experiment["id"],
+      "accessLevel":userobj.access
     }
 
     this.http.post("api/v1/persist/experiment/grantaccess",params).subscribe(data=>{
@@ -329,6 +344,36 @@ export class InfoComponent implements OnInit {
       this.getUserAccessList()
     },error=>{
       alert("Error in granting access.")
+    })
+  }
+  deleteUser(user){
+    var header = {
+      headers: new HttpHeaders({ 'Content-Type': 'application/json' }),
+      body:{
+      userId:this.experiment.userId,
+      id:this.experiment['id'],
+      userHandle:user.handle
+    }}
+    this.http.delete("v1/persist/experiment/removeaccess",header).subscribe(data=>{
+      alert("User is removed.")
+      this.getUserAccessList()
+    },error=>{
+      alert('There is some error while deleting the experiment. Please try again after sometime.');
+    })
+  }
+  
+  delete(){
+    var header = {
+      headers: new HttpHeaders({ 'Content-Type': 'application/json' }),
+      body:{
+      userId:this.experiment.userId,
+      id:this.experiment['id']
+    }}
+    this.http.delete("v1/persist/experiment/delete",header).subscribe(data=>{
+      alert("experiment is delete.");
+      this.route.navigate(["/pages/dashboard"])
+    },error=>{
+      alert('There is some error while deleting the experiment. Please try again after sometime.');
     })
   }
 }
@@ -355,7 +400,7 @@ export class AddUserPopUp implements OnInit {
     @Inject(MAT_DIALOG_DATA) public token: any
   ) {}
 
-  options = [{name:'Read',value:'read'},{name:'Write',value:'write'}]
+  options = [{name:'Read',value:'2'},{name:'Write',value:'3'},{name:'Manage',value:'4'}]
   userOptions = [];
   ngOnInit(): void {
     this.http.get("v1/user/getUserHandles/"+this.token).subscribe(data=>{
@@ -379,11 +424,19 @@ export class AddUserPopUp implements OnInit {
     this.dialogRef.close();
   }
 
+  isAddDisabled():boolean{
+    let flag = true
+
+    if (this.UserObj.handle.trim()!='' && this.UserObj.access.trim()!='')
+    flag = false
+    return flag
+  }
+
   private _filter(value: string, options): string[] {
     const filterValue = value.toLowerCase();
 
     return options.filter((option) =>
-      option.value.toLowerCase().includes(filterValue) || option.name.toLowerCase().includes(filterValue)
+      option.name.toLowerCase().includes(filterValue)
     );
   }
 }
