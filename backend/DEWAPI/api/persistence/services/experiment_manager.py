@@ -34,19 +34,19 @@ class ExperimentManager(object):
         return e
 
     def push_to_drive(self, experiment_id, current_user_id, token, create_new_file=False):
-        driveId = DriveTable.query.filter(DriveTable.experiment_id == experiment_id, DriveTable.uid == current_user_id).first().driveFileId
+        driveId = DriveTable.query.filter(DriveTable.experiment_id == experiment_id, DriveTable.uid == current_user_id).first()
         if self.user_can(experiment_id,current_user_id,AccessControlEnum.write):
             if driveId is None:
                 if create_new_file:
                     driveId = self.create_new_drive_file(experiment_id, current_user_id, token)
-                    d = DriveTable(drive_file_id=driveId,experiment_id=experiment_id,uid=current_user_id)
+                    d = DriveTable(drive_file_id=driveId.driveFileId,experiment_id=experiment_id,uid=current_user_id)
                     db.session.add(d)
                     db.session.commit()
                 else:
                     raise ValueError("Forbidden")
 
             response = requests.patch(
-                "https://www.googleapis.com/upload/drive/v3/files/"+driveId+"?uploadType=media",
+                "https://www.googleapis.com/upload/drive/v3/files/"+driveId.driveFileId+"?uploadType=media",
                  data=self.dew_content(experiment_id),
                  headers={'Content-Type': 'text/plain', 'Authorization': 'Bearer '+ token},
                  timeout=2.0
@@ -71,7 +71,7 @@ class ExperimentManager(object):
             headers={'Content-Type': 'application/json', 'Authorization': 'Bearer '+ token}
         )
         print(json.loads(response.content))
-        return json.loads(response.content)['id']
+        return DriveTable(drive_file_id=json.loads(response.content)['id'],experiment_id=experiment_id, uid=current_user_id)
 
 
     def get_experiment_versions(self, experiment_id, current_user_id):

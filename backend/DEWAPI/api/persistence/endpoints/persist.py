@@ -167,7 +167,7 @@ class HandleDelete(Resource):
 
 @ns.route("/experiment/removeaccess")
 class HandleAccessRemoval(Resource):
-  @api.expect(removeaccess)
+  @api.expect(remove_access)
   def delete(self):
     """
       Delete experiment from database

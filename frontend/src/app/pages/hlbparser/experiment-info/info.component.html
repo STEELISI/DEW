@@ -4,6 +4,7 @@
       <div class="action_menu">
       <ul >
           <li *ngIf="!isExperimentDisabled()"><i class="fas fa-save pointer" (click)="save()" matTooltip="Save"></i></li>
+          <li *ngIf="!isExperimentDisabled()"><i class="fab fa-google-drive pointer" (click)="saveDrive()" matTooltip="Save to google drive"></i></li>
           <li *ngIf="id!=-1 && experimentControl>3"><i class="far fa-trash-alt pointer" (click)="delete()" matTooltip="Delete"></i></li>
           <li *ngIf="id!=-1 && experimentControl>3"><i class="fas fa-share-square pointer" (click)="addUserPopUp()" matTooltip="Share it with User"></i></li>
           <li *ngIf="id!=-1 && experimentControl>3"><i class="fas fa-external-link-alt pointer" (click)="createToken()" matTooltip="Get external url"></i></li>

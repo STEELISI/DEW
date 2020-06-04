@@ -214,6 +214,12 @@ export class InfoComponent implements OnInit {
         this.experiment.description == null
       )
         this.experiment.description = "";
+      
+      if (
+        this.experiment.driveId == undefined ||
+        this.experiment.driveId == null
+      )
+        this.experiment.driveId = "";
 
       if (
         this.experiment.behaviors == undefined ||
@@ -250,28 +256,31 @@ export class InfoComponent implements OnInit {
           })
         }
 
+        var data = {...this.experiment}
+        data['token'] = this.auth.getCookie("token")
+        data['create_new_file'] = true
+
+        if (bindingFLag)
         var continueFlag = confirm("Few bindings are missing, Do you still want to continue?")
-        
-        if(continueFlag){
-          console.log(this.experiment.driveId)
-          if (this.experiment.driveId == null) {
-            this.gdrive.create(this.experiment.name+".dew").subscribe((data) => {
-              this.experiment.driveId = data.id
-              this.setDriveId()
-              this.updateDrive()
-            })
-          } else {
-            this.updateDrive()
-            
+        else
+        continueFlag = !bindingFLag
+        if(continueFlag)
+      this.http.put("v1/persist/save_drive", data).subscribe(
+        (data) => {
+          if (data.saved) {
+            alert("Successfully saved!");
+            this.route.navigate(["pages/dashboard"]);
           }
+        },
+        (error) => {
+          alert("Error occured. Please try again later");
         }
-      
+      );
     } else {
       alert("Please Enter Name to save the experiment.");
       this.nameControl.markAsTouched();
     }
     console.log(this.experiment);
-    this.save()
   }
 
   updateDrive() {

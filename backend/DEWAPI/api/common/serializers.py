@@ -95,7 +95,7 @@ grantaccess = api.model('Grant experiment access', {
   'accessLevel':fields.String(description="Access level read,write or manage", required=True)
   })
 
-removeaccess = api.model('Remove experiment access', {
+remove_access = api.model('Remove experiment access', {
   'userId': fields.String(description="user id", required=True),
   'userHandle': fields.String(description="user id", required=True),
   'id':fields.String(description="Id of experiment", required=True)
