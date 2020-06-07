@@ -22,10 +22,10 @@ def upgrade():
         'auth_tokens',
         sa.Column('experiment_id', sa.Integer,nullable=False),
         sa.Column('token',sa.String(255),primary_key=True),
-        sa.Column('access_level',sa.String,nullable=False),
+        sa.Column('access_level',sa.String(255),nullable=False),
         sa.Column('created_at',sa.DateTime, nullable=False,default=datetime.utcnow),
     	sa.Column('updated_at',sa.DateTime, onupdate=datetime.utcnow),
-        sa.Column('creator_uid', sa.String, primary_key=True),
+        sa.Column('creator_uid', sa.String(255), primary_key=True),
         sa.Column('active',sa.Boolean,default=True)
     )
 

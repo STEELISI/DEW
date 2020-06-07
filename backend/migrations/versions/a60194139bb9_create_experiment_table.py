@@ -21,13 +21,13 @@ def upgrade():
     op.create_table(
         'experiment',
         sa.Column('experiment_id', sa.Integer, primary_key=True),
-        sa.Column('name', sa.String, default='untitled'),
+        sa.Column('name', sa.String(255), default='untitled'),
         sa.Column('description', sa.Text),
         sa.Column('nlp_content', sa.Text),
         sa.Column('content', sa.Text),
         sa.Column('created_at', sa.DateTime,default=datetime.utcnow),
         sa.Column('updated_at', sa.DateTime,onupdate=datetime.utcnow),
-        sa.Column('uid',sa.String, sa.ForeignKey('user.uid'))
+        sa.Column('uid',sa.String(255), sa.ForeignKey('user.uid'))
 
     )
 

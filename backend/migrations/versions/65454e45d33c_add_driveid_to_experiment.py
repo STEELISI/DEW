@@ -18,10 +18,10 @@ depends_on = None
 
 def upgrade():
     op.add_column('experiment',
-        sa.Column('driveId', sa.String, nullable=True)
+        sa.Column('driveId', sa.String(255), nullable=True)
     )
     op.add_column('experiment_version',
-        sa.Column('driveId', sa.String, nullable=True)
+        sa.Column('driveId', sa.String(255), nullable=True)
     )
 
 

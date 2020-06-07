@@ -19,8 +19,8 @@ depends_on = None
 def upgrade():
     op.create_table(
         'transaction',
-        sa.Column('issued_at',sa.String),
-        sa.Column('remote_addr', sa.String)
+        sa.Column('issued_at',sa.String(255)),
+        sa.Column('remote_addr', sa.String(255)),
     )
 
 
