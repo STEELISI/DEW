@@ -317,6 +317,10 @@ export class HlbComponent implements OnInit {
     this.extractScenario(data.parsedScenario);
   }
 
+  onBlurMethod(){
+    
+  }
+
   extractScenario(scenario) {
     //console.log(scenario);
     // this.bindingMap = new Map<String,any>();

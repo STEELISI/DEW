@@ -111,6 +111,10 @@ return null;
    
   }
 
+  enablePassword(){
+    
+  }
+
   isEnable():boolean{
     return this.active;
   }

@@ -283,6 +283,10 @@ export class InfoComponent implements OnInit {
     console.log(this.experiment);
   }
 
+  deleteToken(i){
+
+  }
+
   updateDrive() {
     this.gdrive.update(this.experiment.driveId, JSON.stringify(this.experiment)).subscribe(
       (data) => {
