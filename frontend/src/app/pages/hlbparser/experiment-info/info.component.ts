@@ -204,11 +204,14 @@ export class InfoComponent implements OnInit {
   }
 
   saveDrive(){
-    if (
-      this.experiment.name != undefined &&
-      this.experiment.name != null &&
-      this.experiment.name.trim() != ""
-    ) {
+    this.state.enableLoader()
+    this.auth.authorizeGoogleDrive(this.id).then(() => {
+      this.state.disableLoader()
+      if(
+        this.experiment.name != undefined &&
+        this.experiment.name != null &&
+        this.experiment.name.trim() != ""
+      ) {
       if (
         this.experiment.description == undefined ||
         this.experiment.description == null
@@ -257,7 +260,7 @@ export class InfoComponent implements OnInit {
         }
 
         var data = {...this.experiment}
-        data['token'] = this.auth.getCookie("token")
+        data['token'] = this.auth.getCookie("drive_token")
         data['create_new_file'] = true
 
         if (bindingFLag)
@@ -281,7 +284,9 @@ export class InfoComponent implements OnInit {
       this.nameControl.markAsTouched();
     }
     console.log(this.experiment);
-  }
+    })}
+
+  
 
   deleteToken(i){
 

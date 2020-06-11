@@ -108,12 +108,34 @@ export class AuthService {
     url.push(apiurl);
     url.push("?redirect_uri="+encodeURIComponent( redirect));
     url.push("&response_type=token");
-    url.push("&scope=email%20profile%20openid%20"+encodeURIComponent("https://www.googleapis.com/auth/userinfo.profile")+"%20"+encodeURIComponent("https://www.googleapis.com/auth/drive.file")+"&fetch_basic_profile=true");
+    url.push("&scope=email%20profile%20openid%20"+encodeURIComponent("https://www.googleapis.com/auth/userinfo.profile")+"&fetch_basic_profile=true");
     url.push("&client_id="+client_id);
    // url.push("&ss_domain=https%3A%2F%2Fdevelopers-dot-devsite-v2-prod.appspot.com&gsiwebsdk=2");
     //console.log(url.join(""));
     window.location.href = url.join("");
   }
+
+  authorizeGoogleDrive(experiment_id){
+    const scopes = [
+      "email",
+      "profile",
+      "openid",
+      encodeURIComponent("https://www.googleapis.com/auth/userinfo.profile"),
+      encodeURIComponent("https://www.googleapis.com/auth/drive.file")
+    ]
+    var apiurl = `https://accounts.google.com/o/oauth2/v2/auth?client_id=${environment.googleClientId}&response_type=token&state=${experiment_id}&scope=${scopes.join("%20")}&redirect_uri=${encodeURIComponent(environment.googleDriveRedirectUrl)}&include_granted_scopes=true`
+    var popupWindow = window.open(apiurl, 'authorize')
+    var prom = (resolve) => {  
+      if(popupWindow.closed)
+      {
+        resolve();
+      } else {
+        setTimeout(_ => prom(resolve), 1000)
+      }
+    }
+    return new Promise(prom)
+  }
+
   logout() {
    //console.log("logout");
    this.isAuthenticate.next(false);

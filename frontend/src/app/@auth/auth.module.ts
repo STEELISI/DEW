@@ -8,6 +8,7 @@ import { LoginComponent } from "./components/login/login.component";
 import { CoreModule } from "../@core/core.module";
 import { AuthRoutingModule } from "./auth-routing.module";
 import { GoogleOAuth2CallbackComponent } from "./components/googlecallback/google-oauth2-callback.component";
+import { GoogleDriveCallbackComponent } from "./components/googledrivecallback/google-drive-callback.component";
 import { AuthResult } from "./auth-result";
 import { InitUserService } from "./init-user.service";
 import { LogoutComponent } from "./components/logout/logout.component";
@@ -33,6 +34,7 @@ import { HttpService } from '../http-service.service';
     AuthComponent,
     LoginComponent,
     GoogleOAuth2CallbackComponent,
+    GoogleDriveCallbackComponent,
     LogoutComponent,
     GoogleRegistrationComponent
   ],
