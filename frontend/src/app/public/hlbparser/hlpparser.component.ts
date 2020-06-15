@@ -28,7 +28,7 @@ export class HLBParserComponent implements OnInit {
         this.experimentId = params["id"];
         this.state.enableLoader();
         this.http
-          .get("v1/token-based-auth/get/" + this.experimentId)
+          .get("v1/pr/token-based-auth/get/" + this.experimentId, {withCredential:true})
           .subscribe((resultT) => {
             if (
               resultT.data != null &&
@@ -36,7 +36,7 @@ export class HLBParserComponent implements OnInit {
               resultT.data.status
             ) {
               this.http
-                .get("v1/token-based-auth/getdetails/" + this.experimentId)
+                .get("v1/pr/token-based-auth/getdetails/" + this.experimentId, {withCredential:true})
                 .subscribe(
                   (result) => {
                     var data = result.data;

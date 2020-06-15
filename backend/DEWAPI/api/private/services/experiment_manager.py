@@ -1,0 +1,250 @@
+from extensions import db
+from DEWAPI.models.user import User
+from DEWAPI.models.experiment import Experiment
+from DEWAPI.models.drive_table import DriveTable
+from DEWAPI.models.access_control import AccessControl
+from utilities.access_control_enum import AccessControlEnum
+from datetime import datetime
+from dateutil.relativedelta import relativedelta
+import requests
+import json
+from sqlite3 import Error
+
+
+class ExperimentManager(object):
+    def create_experiment(self, userId, experiment, id, name, description):
+        # try:
+        u = User.query.filter(User.uid == userId).first()
+
+        if u is None:
+            return False, "Invalid User"
+
+        e = Experiment(uid=u.uid, content=experiment, description=description, name=name)
+        db.session.add(e)
+        db.session.commit()
+
+        u.default_experiment_id = e.experiment_id
+
+        ac = AccessControl(u.uid, e.experiment_id, AccessControlEnum.manage.value,
+                           datetime.utcnow() + relativedelta(years=999), u.uid)
+
+        db.session.add(u)
+        db.session.add(ac)
+        db.session.commit()
+        return e
+
+    def push_to_drive(self, experiment_id, current_user_id, token, create_new_file=False):
+        driveId = DriveTable.query.filter(DriveTable.experiment_id == experiment_id, DriveTable.uid == current_user_id).first()
+        if self.user_can(experiment_id,current_user_id,AccessControlEnum.write):
+            if driveId is None:
+                if create_new_file:
+                    driveId = self.create_new_drive_file(experiment_id, current_user_id, token)
+                    d = DriveTable(drive_file_id=driveId.driveFileId,experiment_id=experiment_id,uid=current_user_id)
+                    db.session.add(d)
+                    db.session.commit()
+                else:
+                    raise ValueError("Forbidden")
+
+            response = requests.patch(
+                "https://www.googleapis.com/upload/drive/v3/files/"+driveId.driveFileId+"?uploadType=media",
+                 data=self.dew_content(experiment_id),
+                 headers={'Content-Type': 'text/plain', 'Authorization': 'Bearer '+ token},
+                 timeout=2.0
+            )
+            if(response.status_code != 200):
+                raise ValueError("Error occured")
+            else:
+                return True
+
+
+    def dew_content(self, experiment_id):
+        x = json.dumps(Experiment.query.get(experiment_id).content)
+        print(x)
+        return x
+
+
+    def create_new_drive_file(self, experiment_id, current_user_id, token):
+        e = self.get_experiment(experiment_id,current_user_id)
+        response = requests.post(
+            "https://www.googleapis.com/drive/v3/files",
+            data=json.dumps({'name': e.name}),
+            headers={'Content-Type': 'application/json', 'Authorization': 'Bearer '+ token}
+        )
+        print(json.loads(response.content))
+        return DriveTable(drive_file_id=json.loads(response.content)['id'],experiment_id=experiment_id, uid=current_user_id)
+
+
+    def get_experiment_versions(self, experiment_id, current_user_id):
+        if self.user_can(experiment_id, current_user_id, AccessControlEnum.read.value) is not None:
+            e = Experiment.query.filter(Experiment.experiment_id == experiment_id).first()
+            if e is None:
+                raise ValueError("Forbidden")
+            else:
+                return [{'content': v.content, 'name': v.name, 'updated_at': v.updated_at, 'description': v.description} for v in list(e.versions)]
+
+
+    def update_experiment(self, experiment_id, current_user_id, name, content, description, driveId=None):
+
+        e = Experiment.query.filter(Experiment.experiment_id == experiment_id).first()
+        if e is None:
+            raise ValueError("Forbidden")
+        if self.user_can(experiment_id, current_user_id, AccessControlEnum.write.value) is not None:
+            if name is not None:
+                e.name = name
+            if content is not None:
+                e.content = content
+            if description is not None:
+                e.description = description
+            if driveId is not None:
+                e.driveId = driveId
+
+            db.session.commit()
+            return True, "Successfull"
+        else:
+            raise ValueError("Forbidden")
+
+    def get_experiment(self, experiment_id, current_user_id):
+        if self.user_can(experiment_id, current_user_id, AccessControlEnum.read.value) is not None:
+            e = Experiment.query.filter(Experiment.experiment_id == experiment_id,
+                                        Experiment.deleted_at == None).first()
+            return e
+        else:
+            raise ValueError("Forbidden")
+
+    def get_accessible_experiments(self, user_id):
+        ac = AccessControl.query.filter(AccessControl.uid == user_id, AccessControl.expiry_date > datetime.today(),
+                                        AccessControl.access_level >= AccessControlEnum.none.value).all()
+
+        experiment_ids = [e.experiment_id for e in ac]
+        experimentControl = {e.experiment_id:e.access_level for e in ac}
+        experiments = [e.to_dict() for e in Experiment.query.filter(Experiment.experiment_id.in_(experiment_ids),
+                                                                    Experiment.deleted_at == None).all()]
+
+        result = []
+        for e in experiments:
+            obj = {'experiment_id': e['id'], 
+                    'name': e['name'],
+                     'description': e['description'],
+                   'created_date': e['created_at'].date().strftime('%m-%d-%Y'),
+                   'updated_date': e['updated_at'].date().strftime('%m-%d-%Y'),
+                   'accessLevel':experimentControl[e['id']]
+                   }
+            result.append(obj)
+
+        return result
+
+    def soft_delete_experiment(self, current_user_id, experiment_id):
+        ac = self.user_can(experiment_id, current_user_id, AccessControlEnum.manage.value)
+        if ac is not None:
+            e = Experiment.query.filter(Experiment.experiment_id == experiment_id,
+                                        Experiment.deleted_at == None).first()
+            if e is None:
+                raise ValueError("Forbidden")
+
+            print("inside soft delete")
+            e.deleted_at = datetime.utcnow()
+
+            ac.expiry_date = datetime.utcnow()
+            ac.updated_at = datetime.utcnow()
+            print(ac)
+            db.session.add(ac)
+            db.session.add(e)
+            db.session.commit()
+            return True, "Successfull"
+        else:
+            raise ValueError("Forbidden")
+    def soft_delete_access(self,current_user_id, experiment_id,userHandle):
+        ac = self.user_can(experiment_id, current_user_id, AccessControlEnum.manage.value)
+        if ac is not None:
+            user = User.query.filter(User.username == userHandle).first()
+            ac1 = AccessControl.query.filter(AccessControl.experiment_id == experiment_id, AccessControl.uid == user.uid,
+                                        AccessControl.expiry_date > datetime.utcnow()).first()
+            if ac1 is None:
+                raise {"message":"Successfully deleted."}
+
+            # print("inside soft delete")
+            ac1.expiry_date = datetime.utcnow()
+            ac1.updated_at = datetime.utcnow()
+            # print(ac)
+            db.session.add(ac1)
+            db.session.commit()
+            return True, "Successfull"
+        else:
+            raise ValueError("Forbidden")
+    def copy_experiment(self, original_experiment, user_id):
+        return self.create_experiment(user_id, original_experiment.content, None, original_experiment.name,
+                                      original_experiment.description)
+
+    def user_can(self, experiment_id, user_id, action):
+        ac = AccessControl.query.filter(AccessControl.experiment_id == experiment_id, AccessControl.uid == user_id,
+                                        AccessControl.expiry_date > datetime.today(),
+                                        AccessControl.access_level >= action).first()
+        return ac
+    def experimentExists(self,experiment_id):
+        return Experiment.query.filter(Experiment.experiment_id == experiment_id,
+                                        Experiment.deleted_at == None).first()
+    def grantExperimentAccess(self, experiment_id, userId, userHandle, accessLevel):
+        e = self.experimentExists(experiment_id)
+        ac = AccessControl.query.filter(AccessControl.experiment_id == experiment_id, AccessControl.uid == userId,
+                                        AccessControl.expiry_date > datetime.utcnow(),
+                                        AccessControl.access_level >= AccessControlEnum.manage.value).first()
+        if ac is not None and e is not None:
+            u = User.query.filter(User.username == userHandle).first()
+            ac = AccessControl.query.filter(AccessControl.experiment_id == experiment_id, AccessControl.uid == u.uid,
+                                        AccessControl.access_level >= AccessControlEnum.none.value).first()
+            if ac is None:
+                ac = AccessControl(u.uid, experiment_id, accessLevel,
+                               datetime.utcnow() + relativedelta(years=999), userId)
+            else:
+                ac.access_level = accessLevel
+                ac.updated_at = datetime.utcnow()
+                ac.expiry_date = datetime.utcnow() + relativedelta(years=999)
+                ac.last_updated_by_user = userId
+            db.session.add(u)
+            db.session.add(ac)
+            db.session.commit()
+            return {'message': 'Access granted.'}
+        else:
+            return {'error': 'User does not have access.'}
+    
+    def getExperimentControlInfoByUserId(self,experiment_id,userId):
+        result = {}
+        ac = AccessControl.query.filter(AccessControl.experiment_id == experiment_id, AccessControl.uid == userId,
+                                        AccessControl.expiry_date > datetime.utcnow()).first()
+        if ac is not None:
+            if AccessControlEnum.manage.value == ac.access_level:
+                result['accessLevel'] = 'Manage'
+                result['code'] = AccessControlEnum.manage.value
+            elif AccessControlEnum.read.value == ac.access_level:
+                result['accessLevel'] = 'Read'
+                result['code'] = AccessControlEnum.read.value
+            elif AccessControlEnum.write.value == ac.access_level:
+                result['accessLevel'] = 'Write'
+                result['code'] = AccessControlEnum.write.value
+            else:
+                result['error'] = 'User does not have access.'
+
+            return result
+        else:
+            return {'error': 'User does not have access.'}
+    def getUserAccessList(self,userId,experimentId):
+        ac = AccessControl.query.filter(AccessControl.experiment_id==experimentId, AccessControl.uid==userId,AccessControl.expiry_date>datetime.utcnow(), AccessControl.access_level>=AccessControlEnum.manage.value).first()
+        result = {}
+        if ac is not None:
+            ac1 = AccessControl.query.filter(AccessControl.experiment_id==experimentId, AccessControl.uid!=userId,AccessControl.expiry_date>datetime.utcnow(), AccessControl.access_level>AccessControlEnum.none.value).all()
+            r = [i.uid for i in ac1] 
+            userList = {}
+            for i in ac1:
+                if i.access_level == AccessControlEnum.read.value:
+                    userList[i.uid] = 'Read'
+                elif i.access_level == AccessControlEnum.write.value:
+                    userList[i.uid] = 'Write'
+                elif i.access_level == AccessControlEnum.manage.value:
+                    userList[i.uid] = 'Mange'
+                else:
+                    userList[i.uid] = 'None'
+            result['userList'] = [{'name':i.name,'handle':i.username,'accessLevel':userList[i.uid]} for i in User.query.filter(User.uid.in_(r)).all()]
+        
+        else:
+            result = {'error':'Un Authorized user','location':'logout'}
+        return result

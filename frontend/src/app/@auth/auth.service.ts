@@ -23,7 +23,7 @@ export class AuthService {
       var param = {
         token:id
       }
-     return this.http.post('/api/v1/user/validateUser/',param);
+     return this.http.post('/api/v1/p/user/validateUser/',param,{withCredential:true});
 
   }
   authenticate(arg0: string):Observable<any> {

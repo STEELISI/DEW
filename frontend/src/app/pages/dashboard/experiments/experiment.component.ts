@@ -61,7 +61,7 @@ export class ExperimentComponent implements OnInit{
     this.show = true;
   }
   load(userId){
-    this.http.get("v1/persist/getExperimentList/"+userId).subscribe(data=>{
+    this.http.get("v1/pr/persist/getExperimentList/"+userId,{withCredentials: true}).subscribe(data=>{
     
       this.experiments = data;
      });
@@ -81,7 +81,7 @@ export class ExperimentComponent implements OnInit{
       "userId": this.userInfo.userId,
       "id": item.experiment_id+""
     }
-    this.http.post("api/v1/persist/experiment/copy",params).subscribe(data=>{
+    this.http.post("api/v1/pr/persist/experiment/copy",params,{withCredentials: true}).subscribe(data=>{
     
       this.edit(data);
      });

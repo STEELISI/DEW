@@ -25,7 +25,7 @@ export class InitUserService {
         token: id,
       };
       this.http
-        .post("/api/v1/user/getgoogleuserinfo/", param)
+        .post("/api/v1/p/user/getgoogleuserinfo/", param,{withCredential:true})
         .subscribe((data) => {
           // console.log(data);
           resolve(data);
@@ -76,7 +76,7 @@ export class InitUserService {
         token: this.authService.getToken(),
       };
       this.state.enableLoader();
-      this.http.post("/api/v1/user/getuserinfo/", param).subscribe((data) => {
+      this.http.post("/api/v1/p/user/getuserinfo/", param,{withCredential:true}).subscribe((data) => {
         console.log(data);
 
         this.authService.setCookie("emailId", data.emailId, 3599);
@@ -96,7 +96,7 @@ export class InitUserService {
 
   registerUser(params): Observable<any> {
     var t = new Subject();
-    this.http.post("api/v1/user/registerUser/", params).subscribe(data=>{
+    this.http.post("api/v1/p/user/registerUser/", params,{withCredential:true}).subscribe(data=>{
 
       if(data.message!=undefined && data.message!=null){
         this.authService.setCookie("token",params.token, 3599);   t.next(true);
@@ -113,7 +113,7 @@ export class InitUserService {
 
     var t = new Subject();
     this.state.enableLoader();
-    this.http.post("api/v1/user/validateUserHandle/", params).subscribe(data=>{
+    this.http.post("api/v1/p/user/validateUserHandle/", params,{withCredential:true}).subscribe(data=>{
       t.next(data);
       this.state.disableLoader();
     });

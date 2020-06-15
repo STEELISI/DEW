@@ -53,7 +53,7 @@ export class NlpComponent {
     };
 
     this.stateservice.enableLoader();
-    this.http.put("v1/nlp/behavior", data, null).subscribe(
+    this.http.put("v1/pr/nlp/behavior", data, {withCredential:true}).subscribe(
       (data) => {
         console.log(data);
         this.stateservice.disableLoader();

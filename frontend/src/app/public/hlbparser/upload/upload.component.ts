@@ -93,7 +93,7 @@ export class UploadComponent {
       formData.append("file", file);
 
       this.http
-        .put("v1/upload/dew", formData, { responseType: "blob" })
+        .put("v1/pr/upload/dew", formData, { responseType: "blob",withCredential:true })
         .subscribe(
           (data) => {
             this.state.disableLoader();

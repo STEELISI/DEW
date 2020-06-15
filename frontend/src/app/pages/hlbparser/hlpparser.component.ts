@@ -43,14 +43,14 @@ export class HLBParserComponent implements OnInit {
         this.experimentId = params["id"];
         this.state.enableLoader();
         this.http
-          .post("api/v1/persist/experiment/control", input)
+          .post("api/v1/pr/persist/experiment/control", input,{withCredential:true})
           .subscribe((controlData) => {
             if(controlData.code!= undefined && controlData.code!=null){
             this.state.setExperimentControl(controlData.code);
             this.experimentControl = controlData.code;
             console.log(this.experimentControl)
         this.http
-          .post("api/v1/persist/getExperimentById", input)
+          .post("api/v1/pr/persist/getExperimentById", input,{withCredential:true})
           .subscribe((data) => {
             this.enableView();
             this.state.setActors(data.actors);
