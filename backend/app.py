@@ -13,7 +13,6 @@ from DEWAPI import settings
 # from DEWAPI.api.token_based.endpoints.token import ns as token_namespace
 from DEWAPI.api.private.endpoints.privateapi import ns as private_namespace
 from DEWAPI.api.public.endpoints.publicapi import ns as public_namespace
-import DEWAPI.api.persistence.services.sqlite3
 from DEWAPI.api.restplus import api
 from extensions import db
 from DEWAPI.authenticationFilter import AuthFilter

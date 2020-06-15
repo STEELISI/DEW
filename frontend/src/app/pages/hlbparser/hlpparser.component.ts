@@ -35,7 +35,6 @@ export class HLBParserComponent implements OnInit {
     this.route.params.subscribe((params) => {
       if (params["id"] != "") {
         var input = {
-          userId: this.auth.getCookie("userId"),
           id: params["id"],
         };
 

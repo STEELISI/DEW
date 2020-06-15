@@ -112,7 +112,7 @@ class HandleExperimentPushToDrive(Resource):
             Save and push to drive
         """
         content = request.get_json(force=True)
-        userId = content['userId']
+        userId = userObj.getUserId()
         actors = content['actors']
         constraints = content['constraints']
         behaviors = content['behaviors']
@@ -161,7 +161,7 @@ class HandleExperimentSave(Resource):
           Save content to database
         """
         content = request.get_json(force=True)
-        userId = content['userId']
+        userId = userObj.getUserId()
         actors = content['actors']
         constraints = content['constraints']
         behaviors = content['behaviors']
@@ -195,19 +195,16 @@ class HandleExperimentSave(Resource):
         # return response
 
 
-@ns.route("/persist/getExperimentList/<userId>")
+@ns.route("/persist/getExperimentList")
 class HandleExperimentListRetrieval(Resource):
-    @api.doc(params={'userId': 'Username of the experiment'})
-    def get(self, userId):
+    
+    def get(self):
         """
             Retrieve content from database
         """
 
         token = userObj.getToken()
-        print("hello:"+token)
-
-        experiment = em.get_accessible_experiments(userId)
-
+        experiment = em.get_accessible_experiments(userObj.getUserId())
         result = []
         if experiment is not None:
             result=experiment
@@ -223,7 +220,7 @@ class HandleSingleExperimentRetrieval(Resource):
         """
         
         content = request.get_json(force=True)
-        userId = content['userId']
+        userId = userObj.getUserId()
         id1 = content['id']
         try:
             experiment = em.get_experiment(id1, userId)
@@ -249,7 +246,7 @@ class HandleExperimentDelete(Resource):
       Delete experiment from database
     """
     content = request.get_json(force=True)
-    userId = content['userId']
+    userId = userObj.getUserId()
     experiment_id = content['id']
     
     try:
@@ -267,7 +264,7 @@ class HandleExperimentAccessRemoval(Resource):
       Delete experiment from database
     """
     content = request.get_json(force=True)
-    userId = content['userId']
+    userId = userObj.getUserId()
     experiment_id = content['id']
     userHandle= content['userHandle']
     try:
@@ -285,7 +282,7 @@ class HandleExperimentVersions(Resource):
           Get versions of experiment from database
         """
         content = request.get_json(force=True)
-        userId = content['userId']
+        userId = userObj.getUserId()
         experiment_id = content['id']
 
         try:
@@ -303,7 +300,7 @@ class HandleExperimentCopy(Resource):
       Duplicate the experiment
     """
     content = request.get_json(force=True)
-    userId = content['userId']
+    userId = userObj.getUserId()
     experiment_id = content['id']
     
     try:
@@ -325,7 +322,7 @@ class HandleExperimentAccess(Resource):
      Grant experiment access
     """
     content = request.get_json(force=True)
-    userId = content['userId']
+    userId = userObj.getUserId()
     userHandle = content['userHandle']
     experiment_id = content['id']
     accessLevel = content['accessLevel']
@@ -347,7 +344,7 @@ class HandleExperimentControl(Resource):
      Grant experiment Control
     """
     content = request.get_json(force=True)
-    userId = content['userId']
+    userId = userObj.getUserId()
     experiment_id = content['id']
     
     try:
@@ -361,7 +358,7 @@ class HandleExperimentUserControlList(Resource):
     @api.expect(userAccessListModel)
     def post(self):
         json_data = request.get_json(force=True)
-        return em.getUserAccessList(json_data['userId'],json_data['experiment_id'])
+        return em.getUserAccessList(userObj.getUserId(),json_data['experiment_id'])
 
 @ns.route('/upload/dew')
 class HandleUploadParser(Resource):
@@ -386,7 +383,7 @@ class HandleTokenBasedAuthCreateToken(Resource):
         content = request.get_json(force=True)
         experiment_id = content['experiment_id']
         access_level = content['access_level']
-        creator_uid = content['creator_uid']
+        creator_uid = userObj.getUserId()
 
         try:
             token = tm.create_token(experiment_id, access_level, creator_uid)
@@ -405,7 +402,7 @@ class HandleTokenBasedAuthTokenList(Resource):
         """
         content = request.get_json(force=True)
         experiment_id = content['experiment_id']
-        creator_uid = content['creator_uid']
+        creator_uid = userObj.getUserId()
 
         try:
             result = []

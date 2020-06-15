@@ -19,7 +19,6 @@ import { HttpHeaders } from '@angular/common/http';
 export class InfoComponent implements OnInit {
   @Input() id: Number;
   experiment = {
-    userId: this.auth.getCookie("userId"),
     name: "",
     description: "",
     behaviors: [],
@@ -92,8 +91,7 @@ export class InfoComponent implements OnInit {
   }
   getUserAccessList(){
     var params = {
-      experiment_id: this.experiment['id'],
-      userId: this.experiment.userId
+      experiment_id: this.experiment['id']
     }
     this.http.post("api/v1/pr/persist/getUserAccessList/",params,{withCredential:true}).subscribe(data=>{
       if(data.userList!=undefined && data.userList !=null)
@@ -118,7 +116,6 @@ export class InfoComponent implements OnInit {
 
   loadTokenList() {
     var input1 = {
-      creator_uid: this.auth.getCookie("userId"),
       experiment_id: this.id,
     };
     this.http
@@ -319,8 +316,7 @@ export class InfoComponent implements OnInit {
   createToken() {
     var params = {
       experiment_id: this.id,
-      access_level: "write",
-      creator_uid: this.auth.getCookie("userId"),
+      access_level: "write"
     };
     this.http
       .post("api/v1/pr/token-based-auth/create", params,{withCredential:true})
@@ -330,7 +326,7 @@ export class InfoComponent implements OnInit {
   }
 
   addUserPopUp(){
-    let t:string = this.experiment.userId
+    let t:string = this.auth.getCookie('userId')
     console.log(t)
       var dialogRef = this.dialog.open(AddUserPopUp, {
         width: "40%",
@@ -348,7 +344,6 @@ export class InfoComponent implements OnInit {
   addUser(userobj){
 
     var params = {
-      "userId": this.experiment.userId,
       "userHandle": userobj.handle,
       "id": this.experiment["id"],
       "accessLevel":userobj.access
@@ -368,7 +363,6 @@ export class InfoComponent implements OnInit {
     var header = {
       headers: new HttpHeaders({ 'Content-Type': 'application/json' }),
       body:{
-      userId:this.experiment.userId,
       id:this.experiment['id'],
       userHandle:user.handle
     }}
@@ -384,7 +378,6 @@ export class InfoComponent implements OnInit {
     var header = {
       headers: new HttpHeaders({ 'Content-Type': 'application/json' }),
       body:{
-      userId:this.experiment.userId,
       id:this.experiment['id']
     }}
     this.http.delete("v1/pr/persist/experiment/delete",header).subscribe(data=>{

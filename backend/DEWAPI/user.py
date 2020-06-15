@@ -9,6 +9,22 @@ class SessionUser():
     
     def getToken(self):
         return self.token
+    def setUserId(self,userId):
+        self.userId = userId
+    
+    def getUserId(self):
+        return self.userId
+    def setUserHandle(self,userHandle):
+        self.userHandle = userHandle
+    
+    def getUserHandle(self):
+        return self.userHandle
+    def setEmailId(self,EmailId):
+        self.EmailId = EmailId
+    
+    def getEmailId(self):
+        return self.EmailId
+    
 
 userObj = SessionUser()
 

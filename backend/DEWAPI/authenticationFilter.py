@@ -38,7 +38,11 @@ class AuthFilter():
             return False, False, "Unauthorized ussage."
     def authorizeUser(self):
         cookies = request.cookies
-        userObj.setToken(cookies['userId'])
+        # print(cookies)
+        userObj.setToken(cookies['token'])
+        userObj.setUserId(cookies['userId'])
+        userObj.setUserHandle(cookies['userHandle'])
+        userObj.setEmailId(cookies['emailId'])
         
 
             
