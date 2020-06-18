@@ -1,3 +1,4 @@
+import os
 # Flask settings
 FLASK_SERVER_NAME = 'localhost:8800'
 FLASK_DEBUG = False # Do not use debug mode in production
@@ -9,5 +10,10 @@ RESTPLUS_VALIDATE = True
 RESTPLUS_MASK_SWAGGER = False
 RESTPLUS_ERROR_404_HELP = False
 
-SQLALCHEMY_DATABASE_URI = 'sqlite:////app/db/database.db'
+SQLALCHEMY_DATABASE_URI = os.environ.get("DATABASE_URI")
+
+if not SQLALCHEMY_DATABASE_URI:
+    raise ValueError("Valid database URI not provided")
+
+
 SQLALCHEMY_TRACK_MODIFICATIONS = False

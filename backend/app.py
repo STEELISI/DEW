@@ -51,7 +51,6 @@ def register_extensions(app):
     app.register_blueprint(blueprint)
     db.init_app(app)
 
-
 def create_app():
     flask_app = Flask(__name__)
 # app.debug = true
