@@ -35,6 +35,9 @@ nodeA ubuntu").
 By default, the generator used is "bash", meaning the output produced will
 be bash scripts.
 
+Also generator will produce NS file("nsFile.txt") from the input DEW constraints.
+E.g., python3 run_generator.py DEW_Example.txt
+
 For a generator to be loaded, there needs to be a python module within this
 directory of the form of:
 	GENERATOR/GENERATOR.py
@@ -59,7 +62,7 @@ directory. By default, scripts are generated in /tmp.
 
 * README.md 	- this file
 * example.hlb 	- example of HLB+Constraints input file for generators
-* generator.py 	- superclass for generators which handles commmon functions
+* generator.py 	- superclass for generators which handles commmon functions and generate NS file
 * XXX/XXX.py	- generator directory format, e.g. bash/bash.py
 
 

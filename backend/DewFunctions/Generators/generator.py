@@ -2,7 +2,6 @@
 # In the meantime:
 import os.path
 import sys
-import globals
 # cwd = os.path.dirname(os.path.realpath(__file__))
 # parentDir = os.path.abspath(os.path.join(cwd, os.pardir))
 # # print(parentDir + '/UI/HighLevelBehaviorLanguage/')
@@ -12,7 +11,11 @@ import globals
 sys.path.append('../UI/HighLevelBehaviorLanguage/')
 sys.path.append('../UI/')
 
+import globals
+
 from hlb_parser import HLBParser, ConstraintParser
+
+nsCommands = ""
 
 class GeneralGenerator(object):
     # scenario and constraints given as a list.
@@ -53,7 +56,7 @@ class GeneralGenerator(object):
             # when we can't parse a statement, instead the parser returns a tuplet of Nones.
             if all(x == None for x in parsedTuple):
                 print("ERROR:\tUnparsable constraint: %s\n" % c)
-                return False
+                #return False
 
             # XXX Right now, for generation we only care about 'num' constraints.
             # XXX At some point we may care about others, like 'os'.
@@ -69,9 +72,9 @@ class GeneralGenerator(object):
             # See above comment - we return all Nones if statement is un-parsable.
             if all(x == None for x in parsedTuple):
                 print("ERROR:\tUnparsable Scenario statement: %s\n" % s)
-                return False
+                #return False
             self.scenario_parsed.append(parsedTuple)
-        
+
     # def graphDependency(self):
     #     # We only need dependencies for Scenario.
     #     pass
@@ -100,9 +103,160 @@ class GeneralGenerator(object):
     #     pass
 
 
-    # def output(self, filename=None):
-    #     pass
+    def outputNS(self, filename="nsFile.txt"):
+        #This function writes the generated NS commands to nsFile.txt.
+        global nsCommands
+        opt = "set ns [new Simulator]\n"
+        opt += "source tb_compat.tcl\n"
+        opt += nsCommands
+        opt += "$ns rtproto Static\n"
+        opt += "$ns run\n"
+        with open(filename, 'w') as f:
+            f.write(opt)
 
-    
+    def generateNS(self, constraintList):
+        #This function generates the corresponding NS commands based on the constraint List.
+        #Currently, we are handling node, link, lan and os list.
+        #Any new constraint list must be handled here.
+        nodeList = []
+        linkList = []
+        lanList = []
+        locationList = []
+        osList = []
 
+        for i in constraintList:
+            for x in i:
+                if x == "num":
+                    nodeList.append(i)
+                    #print(nodeList)
+                    break
+                elif x == "os":
+                    osList.append(i)
+                    #print(osList)
+                    break
+                elif x == "lan":
+                    lanList.append(i)
+                    #print(lanList)
+                    break
+                elif x == "location":
+                    locationList.append(i)
+                    #print(locationList)
+                    break
+                elif x == "link":
+                    linkList.append(i)
+                    #print(linkList)
+                    break
+        global nsCommands
+        clientServerList = {}
+        if len(nodeList):
+            for x in nodeList:
+                sampleString = "for { set i 0} {$i < "
+                count = 0
+                for y in x:
+                    if y == "num" or y == None:
+                        continue
+                    for k in y:
+                        if not k.isnumeric():
+                            temp = k
+                        else:
+                            count = k
+                clientServerList[str(temp)] = int(count)
+                if int(count) == 0:
+                    print("ERROR:\t Invalid statement, Cannot be converted to NS command:", x)
+                    continue;
+                sampleString += count
+                sampleString += "} {incr i} {\n"
+                sampleString += "\tset "
+                sampleString += str(temp)
+                sampleString += "$i [$ns node]\n"
+                sampleString += "}\n"
+                nsCommands += sampleString
 
+        if len(linkList):
+           counter = 0
+           sampleList = []
+           for x in linkList:
+                c = 0
+                sampleList.clear()
+                for y in x:
+                    if y == "link" or y == None:
+                        continue
+                    for k in y:
+                        c+=1
+                        sampleList.append(k)
+                if c != 2:
+                    print("ERROR:\t Invalid statement, Cannot be converted to NS command:", x)
+                    continue;
+                minimum = 0xffffffff;
+                for k in sampleList:
+                    if str(k) in clientServerList:
+                        if int(clientServerList[str(k)]) < minimum:
+                            minimum = clientServerList[k]
+                    else:
+                        print("ERROR:\t Node is not defined, Cannot be converted to NS command:", x)
+                        minimum = 0
+                        break;
+                for j in range(0,minimum):
+                    counter+=1
+                    nsCommands += "set link"+ str(counter) +" "
+                    nsCommands += "[$ns duplex-link "
+                    nsCommands += "$"+ str(sampleList[0]) + str(j) +" "
+                    nsCommands += "$"+ str(sampleList[1]) + str(j) +" "
+                    nsCommands += "1Gb 0ms DropTail]\n"
+
+        if len(osList):
+           for x in osList:
+                node = ""
+                for y in x:
+                    if y == "os" or y == None:
+                        continue
+                    for k in y:
+                        if k in clientServerList:
+                            node = k
+                        else:
+                            os = k
+
+                if str(node) in clientServerList:
+                    for j in range(0,clientServerList[str(node)]):
+                        nsCommands += "tb-set-node-os"
+                        nsCommands += " " + "$" + str(node) + str(j)
+                        nsCommands += " " + str(os)
+                        nsCommands += "\n"
+                else:
+                    print("ERROR:\t Node is not defined, Cannot be converted to NS command:", x)
+
+        if len(lanList):
+           counter = 0
+           sampleLanList = []
+           for x in lanList:
+                c = 0
+                sampleLanList.clear()
+                for y in x:
+                    if y == "lan" or y == None:
+                        continue
+                    for k in y:
+                        c+=1
+                        sampleLanList.append(k)
+                if c != 2:
+                    print("ERROR:\t Invalid statement, Cannot be converted to NS command:", x)
+                    continue;
+                minimum = 0xffffffff;
+                for k in sampleLanList:
+                    if str(k) in clientServerList:
+                        if int(clientServerList[str(k)]) < minimum:
+                            minimum = int(clientServerList[str(k)])
+                for k in sampleLanList:
+                    for j in range(0,minimum):
+                        counter+=1
+                        nsCommands += "set lan"+ str(counter) +" "
+                        nsCommands += "[$ns make-lan"
+                        nsCommands += " \""
+                        nsCommands += "$"+ str(sampleLanList[0]) + str(j) +" "
+                        nsCommands += "$"+ str(sampleLanList[1]) + str(j)
+                        nsCommands += "\""
+                        nsCommands += " " + "100Mb 0ms" + "]\n"
+                        nsCommands += "tb-set-lan-loss"
+                        nsCommands += " " + "$" + "lan" + str(counter) + " " + ".02"
+                        nsCommands += "\n"
+                    break
+        self.outputNS()

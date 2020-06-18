@@ -33,7 +33,8 @@ if __name__ == "__main__":
 
     chosenGenerator = __import__(args.generatorType, fromlist=['Generator'])
     generator = chosenGenerator.Generator(scenario, constraints=constraints)
-    generator.generate()
+    [t, y] = generator.generate()
+    generator.generateNS(y)
 
 
 
