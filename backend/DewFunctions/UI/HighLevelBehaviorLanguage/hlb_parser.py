@@ -29,10 +29,10 @@ class ConstraintParser():
     nodetype_keyword = CaselessKeyword("nodetype")
     not_akeyword = (NotAny(num_keyword) + NotAny(os_keyword) + NotAny(link_keyword) + NotAny(lan_keyword) + NotAny(interfaces_keyword) + NotAny(location_keyword) + NotAny(nodetype_keyword))
     
-    actor = (not_akeyword + Word(alphanums))
+    actor = (not_akeyword + Word(alphanums+'_'))
     actors = actor + ZeroOrMore(wsp + actor)
     actor_pair = actor + wsp + actor
-    strValue = (not_akeyword + Word(alphanums))
+    strValue = (not_akeyword + Word(alphanums+'_'))
     numValue = (not_akeyword + Word(nums))
     
     single_entity_num_constraint = num_keyword
@@ -67,14 +67,14 @@ class HLBParser():
     comma = Literal(",").suppress()
     newline = Literal("\n")
     wsp = White().suppress()
-    actor = (not_akeyword + Word(alphanums))
+    actor = (not_akeyword + Word(alphanums+'_'))
     actors = actor + ZeroOrMore((comma + wsp + actor | comma + actor))
     #action = (Optional(CaselessKeyword("start") | CaselessKeyword("stop") | CaselessKeyword("restart") | CaselessKeyword("check")) + (not_akeyword + Word(alphanums)))	
-    action = (not_akeyword + Word(alphanums))
-    event = (not_akeyword + Word(alphanums))
+    action = (not_akeyword + Word(alphanums+'_'))
+    event = (not_akeyword + Word(alphanums+'_'))
     events = event + ZeroOrMore((comma + wsp + event | comma + event))
     when_trigger = when_keyword + events("t_events")
-    wait_time = (not_akeyword + Word(alphanums))
+    wait_time = (not_akeyword + Word(alphanums+'_'))
     wait_trigger = (wait_keyword + wait_time("wait_time"))
     trigger = (when_trigger + wsp + wait_trigger | when_trigger | wait_trigger)
     

@@ -175,7 +175,7 @@ export class HlbComponent implements OnInit {
               params.constraints = constraintsList;
             }
             this.behaviorTextFilter.text = "";
-            this.http.put("v1/hlb/suggestions", params).subscribe((data) => {
+            this.http.put("v1/pr/hlb/suggestions", params,{withCredential:true}).subscribe((data) => {
               var list = [];
               data.suggestions.forEach((element) => {
                 list.push({ value: element, flag: false });
@@ -239,7 +239,7 @@ export class HlbComponent implements OnInit {
               params.behaviors = behaviorsList;
             }
             this.constraintTextFilter.text = "";
-            this.http.put("v1/hlb/suggestions", params).subscribe((data) => {
+            this.http.put("v1/pr/hlb/suggestions", params,{withCredential:true}).subscribe((data) => {
               var list = [];
               data.suggestions.forEach((element) => {
                 list.push({ value: element, flag: false });
@@ -285,7 +285,7 @@ export class HlbComponent implements OnInit {
     });
     this.stateservice.setBehavior(this.behaviorList);
 
-    this.http.put("v1/hlb/parse", data).subscribe((data: ParseApiBean) => {
+    this.http.put("v1/pr/hlb/parse", data,{withCredential:true}).subscribe((data: ParseApiBean) => {
       this.extractInfo(data);
     });
   }
@@ -312,7 +312,7 @@ export class HlbComponent implements OnInit {
     });
 
     this.stateservice.setConstraints(this.contraintList);
-    this.http.put("v1/hlb/parse", data).subscribe((data: ParseApiBean) => {
+    this.http.put("v1/pr/hlb/parse", data,{withCredential:true}).subscribe((data: ParseApiBean) => {
       //console.log(data);
       //   this.extractInfo(data);
     });
@@ -529,7 +529,7 @@ export class HlbComponent implements OnInit {
 
     if (flag) return;
     this.stateservice.enableLoader();
-    this.http.put("v1/hlb/generateNs", data, null).subscribe(
+    this.http.put("v1/pr/hlb/generateNs", data, {withCredential:true}).subscribe(
       (data) => {
         //console.log(data);
         this.stateservice.disableLoader();
