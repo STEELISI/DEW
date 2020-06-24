@@ -269,6 +269,13 @@ class HLBService():
         #     response = {"_id":str(uuid.uuid4()),"errors":errors}
         # return jsonify(response)
 
+    def HandleGraphParse(self, sceanrios):
+        output = []
+        parser = HLBParser([])
+        for scenario in sceanrios:
+            _t,v,_h = parser.extract_partial(scenario)
+            output.append(v)
+        return output
 
     #Handle generateNS
     def HandleNS(self,json_data):
