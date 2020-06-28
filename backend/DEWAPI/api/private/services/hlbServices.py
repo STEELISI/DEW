@@ -272,39 +272,10 @@ class HLBService():
 
     #Handle generateNS
     def HandleNS(self,json_data):
-
-        # EXPECTED = {
-        #     "Actors":{"min":1,"max":500},
-        #     "Scenario":{"min":1,"max":500},
-        #     "Constraints":{"min":0,"max":500},
-        #     "Bindings":{"min":0,"max":500}
-        # }
         errors = []
-
-
-
-        # Check for valid input fields
-        # for name in json_data:
-        #     if name in EXPECTED:
-        #         value = json_data[name]
-        #         expected_min = EXPECTED[name]['min']
-        #         expected_max = EXPECTED[name]['max']
-        #         if len(value) < expected_min or len(value) > expected_max:
-        #             errors.append(f"Out of bounds: {name}, has size of: {len(value)}, but should be between {expected_min} and {expected_max}.")
-        #     else:
-        #         errors.append(f"Unexpected field: {name}.")
-
-        # # Check for missing input fields
-        # for name in EXPECTED:
-        #     if name not in json_data:
-        #         errors.append(f"Missing value: {name}.")
-
-        ns_script = "set ns [new Simulator]\nsource tb_compat.tcl\n# Nodes\nforeach node {\n"
-
-        for actor in json_data['actors']:
-            ns_script += "\t" + actor + "\n"
-        ns_script += "} {\n\tset $node [$ns node]\n\ttb-set-node-os $node Ubuntu-STD\n}\nset lan0 [$ns make-lan \""
-        for a in json_data['actors']:
-            ns_script += "$" + a + " "
-        ns_script += "\" 100000.0kb 0.0ms]\n\n$ns rtproto Static\n$ns run"
+        scenario = json_data['behaviors']
+        constraints = json_data['constraints']
+        generator = bashGenerator(scenario, constraints=constraints)
+        scenario_parsed, constraints_parsed = generator.generate()
+        ns_script = generator.generateNS(constraints_parsed)
         return ns_script
