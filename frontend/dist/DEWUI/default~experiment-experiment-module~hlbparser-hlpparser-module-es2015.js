@@ -61,7 +61,7 @@ __webpack_require__.r(__webpack_exports__);
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony default export */ __webpack_exports__["default"] = ("<div mat-dialog-content>\n  <nlp></nlp>\n</div>\n\n<div mat-dialog-actions>\n  <button\n    mat-button\n\n    cdkFocusInitial\n  >\n  Close\n  </button>\n</div>\n");
+/* harmony default export */ __webpack_exports__["default"] = ("<div mat-dialog-content>\n  <nlp></nlp>\n</div>\n\n<div mat-dialog-actions>\n  <button\n    mat-button\n    [mat-dialog-close]=\"\"\n    cdkFocusInitial\n  >\n  Close\n  </button>\n</div>\n");
 
 /***/ }),
 
@@ -74,7 +74,7 @@ __webpack_require__.r(__webpack_exports__);
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony default export */ __webpack_exports__["default"] = ("<div mat-dialog-content>\n    <upload></upload>\n  </div>\n  \n  <div mat-dialog-actions>\n    <button\n      mat-button\n   \n      cdkFocusInitial\n    >\n      Close\n    </button>\n  </div>\n  ");
+/* harmony default export */ __webpack_exports__["default"] = ("<div mat-dialog-content>\n    <upload></upload>\n  </div>\n  \n  <div mat-dialog-actions>\n    <button\n      mat-button\n      [mat-dialog-close]=\"\"\n      cdkFocusInitial\n    >\n      Close\n    </button>\n  </div>\n  ");
 
 /***/ }),
 
