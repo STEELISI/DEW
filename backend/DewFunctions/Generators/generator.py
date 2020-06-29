@@ -15,7 +15,6 @@ import globals
 
 from hlb_parser import HLBParser, ConstraintParser
 
-nsCommands = ""
 
 class GeneralGenerator(object):
     # scenario and constraints given as a list.
@@ -103,21 +102,22 @@ class GeneralGenerator(object):
     #     pass
 
 
-    def outputNS(self, filename="nsFile.txt"):
-        #This function writes the generated NS commands to nsFile.txt.
-        global nsCommands
-        opt = "set ns [new Simulator]\n"
-        opt += "source tb_compat.tcl\n"
-        opt += nsCommands
-        opt += "$ns rtproto Static\n"
-        opt += "$ns run\n"
-        with open(filename, 'w') as f:
-            f.write(opt)
+    # def outputNS(self, filename="nsFile.txt"):
+    #    #This function writes the generated NS commands to nsFile.txt.
+    #    global nsCommands
+    #    opt = "set ns [new Simulator]\n"
+    #    opt += "source tb_compat.tcl\n"
+    #    opt += nsCommands
+    #    opt += "$ns rtproto Static\n"
+    #    opt += "$ns run\n"
+    #    with open(filename, 'w') as f:
+    #        f.write(opt)
 
     def generateNS(self, constraintList):
         #This function generates the corresponding NS commands based on the constraint List.
         #Currently, we are handling node, link, lan and os list.
         #Any new constraint list must be handled here.
+        nsCommands = ""
         nodeList = []
         linkList = []
         lanList = []
@@ -147,7 +147,6 @@ class GeneralGenerator(object):
                     linkList.append(i)
                     #print(linkList)
                     break
-        global nsCommands
         clientServerList = {}
         if len(nodeList):
             for x in nodeList:
@@ -210,13 +209,13 @@ class GeneralGenerator(object):
         if len(osList):
            for x in osList:
                 node = ""
+                os = ""
                 for y in x:
                     if y == "os" or y == None:
                         continue
+                    counter = 0
                     for k in y:
-                        if k in osSupported:
-                            os = k
-                        else:
+                        if counter == 0:
                             if k in clientServerList:
                                 node = k
                             else:
@@ -225,6 +224,11 @@ class GeneralGenerator(object):
                                 node = k
                                 clientServerList[str(node)] = 1
                                 nsCommands += "set " + str(node) + "0" + " [$ns node]\n"
+                        elif counter == 1:
+                            os = k
+                            if k not in osSupported:
+                                print("ALERT:\t Invalid Operating System")
+                        counter+=1
 
                 if node != "":
                     for j in range(0,clientServerList[str(node)]):
