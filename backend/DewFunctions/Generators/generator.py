@@ -210,10 +210,10 @@ class GeneralGenerator(object):
            for x in osList:
                 node = ""
                 os = ""
+                counter = 0
                 for y in x:
                     if y == "os" or y == None:
                         continue
-                    counter = 0
                     for k in y:
                         if counter == 0:
                             if k in clientServerList:
@@ -228,7 +228,7 @@ class GeneralGenerator(object):
                             os = k
                             if k not in osSupported:
                                 print("ALERT:\t Invalid Operating System")
-                        counter+=1
+                    counter+=1
 
                 if node != "":
                     for j in range(0,clientServerList[str(node)]):
