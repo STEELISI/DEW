@@ -15,7 +15,6 @@ import globals
 
 from hlb_parser import HLBParser, ConstraintParser
 
-nsCommands = ""
 
 class GeneralGenerator(object):
     # scenario and constraints given as a list.
@@ -103,26 +102,28 @@ class GeneralGenerator(object):
     #     pass
 
 
-    def outputNS(self, filename="nsFile.txt"):
-        #This function writes the generated NS commands to nsFile.txt.
-        global nsCommands
-        opt = "set ns [new Simulator]\n"
-        opt += "source tb_compat.tcl\n"
-        opt += nsCommands
-        opt += "$ns rtproto Static\n"
-        opt += "$ns run\n"
-        with open(filename, 'w') as f:
-            f.write(opt)
+    # def outputNS(self, filename="nsFile.txt"):
+    #    #This function writes the generated NS commands to nsFile.txt.
+    #    global nsCommands
+    #    opt = "set ns [new Simulator]\n"
+    #    opt += "source tb_compat.tcl\n"
+    #    opt += nsCommands
+    #    opt += "$ns rtproto Static\n"
+    #    opt += "$ns run\n"
+    #    with open(filename, 'w') as f:
+    #        f.write(opt)
 
     def generateNS(self, constraintList):
         #This function generates the corresponding NS commands based on the constraint List.
         #Currently, we are handling node, link, lan and os list.
         #Any new constraint list must be handled here.
+        nsCommands = ""
         nodeList = []
         linkList = []
         lanList = []
         locationList = []
         osList = []
+        osSupported = ['ubuntu','fedora','freebsd','fbsd','centos','kali','metasploitable','linux','windows','winxp']
 
         for i in constraintList:
             for x in i:
@@ -146,7 +147,6 @@ class GeneralGenerator(object):
                     linkList.append(i)
                     #print(linkList)
                     break
-        global nsCommands
         clientServerList = {}
         if len(nodeList):
             for x in nodeList:
@@ -193,9 +193,11 @@ class GeneralGenerator(object):
                         if int(clientServerList[str(k)]) < minimum:
                             minimum = clientServerList[k]
                     else:
-                        print("ERROR:\t Node is not defined, Cannot be converted to NS command:", x)
-                        minimum = 0
-                        break;
+                        #print("ERROR:\t Node is not defined, Cannot be converted to NS command:", x)
+                        #print("ALERT:\t Node is not defined, Creating a node:", str(k))
+                        minimum = 1
+                        clientServerList[str(k)] = minimum
+                        nsCommands += "set " + str(k) + "0" + " [$ns node]\n"
                 for j in range(0,minimum):
                     counter+=1
                     nsCommands += "set link"+ str(counter) +" "
@@ -207,23 +209,33 @@ class GeneralGenerator(object):
         if len(osList):
            for x in osList:
                 node = ""
+                os = ""
+                counter = 0
                 for y in x:
                     if y == "os" or y == None:
                         continue
                     for k in y:
-                        if k in clientServerList:
-                            node = k
-                        else:
+                        if counter == 0:
+                            if k in clientServerList:
+                                node = k
+                            else:
+                                #print("ERROR:\t Node is not defined, Cannot be converted to NS command:", x)
+                                #print("ALERT:\t Node is not defined, Creating a node:", node)
+                                node = k
+                                clientServerList[str(node)] = 1
+                                nsCommands += "set " + str(node) + "0" + " [$ns node]\n"
+                        elif counter == 1:
                             os = k
+                            if k not in osSupported:
+                                print("ALERT:\t Invalid Operating System")
+                    counter+=1
 
-                if str(node) in clientServerList:
+                if node != "":
                     for j in range(0,clientServerList[str(node)]):
                         nsCommands += "tb-set-node-os"
                         nsCommands += " " + "$" + str(node) + str(j)
                         nsCommands += " " + str(os)
                         nsCommands += "\n"
-                else:
-                    print("ERROR:\t Node is not defined, Cannot be converted to NS command:", x)
 
         if len(lanList):
            counter = 0
@@ -245,6 +257,13 @@ class GeneralGenerator(object):
                     if str(k) in clientServerList:
                         if int(clientServerList[str(k)]) < minimum:
                             minimum = int(clientServerList[str(k)])
+                    else:
+                        #print("ERROR:\t Node is not defined, Cannot be converted to NS command:", x)
+                        #print("ALERT:\t Node is not defined, Creating a node:", str(k))
+                        minimum = 1
+                        clientServerList[str(k)] = minimum
+                        nsCommands += "set " + str(k) + "0" + " [$ns node]\n"
+
                 for k in sampleLanList:
                     for j in range(0,minimum):
                         counter+=1
@@ -259,4 +278,10 @@ class GeneralGenerator(object):
                         nsCommands += " " + "$" + "lan" + str(counter) + " " + ".02"
                         nsCommands += "\n"
                     break
-        self.outputNS()
+        opt = "set ns [new Simulator]\n"
+        opt += "source tb_compat.tcl\n"
+        opt += nsCommands
+        opt += "$ns rtproto Static\n"
+        opt += "$ns run\n"
+        return opt
+        #self.outputNS()
