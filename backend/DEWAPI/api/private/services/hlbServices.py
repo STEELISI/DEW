@@ -304,8 +304,6 @@ class HLBService():
                 for t in t_events[e]:
                     edges[e].append([s,t])
 
-        print("nodes:", nodes, "e_events: ", e_events, "t_events",  t_events)
-
         return nodes, edges
 
     #Handle generateNS
