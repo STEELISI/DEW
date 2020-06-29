@@ -103,7 +103,8 @@ class HandleGraphParse(Resource):
         globals.actions = dict()
         json_data = request.get_json(force=True)
         scenarios = json_data['scenario']
-        return hlb.HandleGraphParse(scenarios)
+        nodes, edges = hlb.HandleGraphParse(scenarios)
+        return {"status": "success", "nodes": nodes, "edges": edges }
 
 
 
