@@ -15,7 +15,7 @@ export class DependencyGraphComponent implements OnInit{
   public nodes: Node[] = [];
   public links: Edge[] = [];
   public layout: String | Layout = 'dagreCluster';
-  public clusters: ClusterNode[] = [];
+  public clusters = undefined;
 
   curveType: string = 'Bundle';
   curve: any = shape.curveLinear;
@@ -57,31 +57,45 @@ export class DependencyGraphComponent implements OnInit{
   public ngOnInit(): void {
     this.state.getBehavior().subscribe((behavior) => {
       this.http.put("v1/pr/hlb/dependency_graph/parse", {"scenario": behavior}, {withCredential: true}).subscribe((d) => {
-    })
+        console.table(d['nodes'])
+        var c2: ClusterNode[] = []
+        var actors = {}
+        for (const n of d['nodes']) {
+          var n2: Node = {
+            data: n,
+            id: n.id,
+            label: n.action
+          }
+          if(actors.hasOwnProperty(n.actors[0])){
+            actors[n.actors[0]].push(n.id)
+          }else{
+            actors[n.actors[0]] = [n.id]
+          }
+          this.nodes.push(n2)
+          this.nodes =  [...this.nodes]
+        }
+        console.log(actors)
 
-    const a1:Node = {
-      id: 'a1',
-      label: 'aa'
-    }
-    const a2:Node = {
-      id: 'a2',
-      label: 'aa'
-    }
-    const e1:Edge = {
-      id: '1',
-      source: 'a1',
-      target: 'a2'
-    }
-    const e2:Edge = {
-      id: '2',
-      source: 'a2',
-      target: 'a1'
-    }
-    this.nodes.push(a1)
-    this.nodes.push(a2)
-    this.links.push(e2)
-    this.links.push(e1)
-  })
+        for(const [actor, values] of Object.entries(actors)){
+          console.log(values)
+          var c1: ClusterNode = {
+            id: actor,
+            label: actor,
+            childNodeIds: actors[actor],
+          }
+          c2.push(c1)
+        }
+        console.table(d['edges'])
+
+        for(const e of d['edges']){
+          var e2: Edge = e
+          this.links.push(e2)
+          this.links = [...this.links]
+        }
+
+        this.clusters = c2
+      })
+    })
 
   }
 
@@ -116,19 +130,5 @@ export class DependencyGraphComponent implements OnInit{
     //       }
     //   }
     // }
-  }
-
-  public getNodes(): any {
-    return [{id: 'a1', label: 'aa'}, {id: 'a2', label: 'ab'}]
-  }
-
-  public getEdges(): any {
-    return [{id: 1, source: 'a1', target: 'a2'}]
-  }
-
-  public getStyles(node: Node): any {
-    return {
-      'backgroundColor': 'red'
-    };
   }
 }

@@ -274,7 +274,7 @@ class HLBService():
 
     def HandleGraphParse(self, sceanrios):
         nodes = []
-        edges = defaultdict(list)
+        edges = []
         t_events = defaultdict(list)
         e_events = defaultdict(list)
         parser = HLBParser([])
@@ -287,8 +287,6 @@ class HLBService():
                 v["t_events"] = []
             if v["e_events"] is None:
                 v["e_events"] = []
-            if v['wait_time'] == 'None':
-                v['wait_time'] = ''
             nodes.append(v)
 
         for n in nodes:
@@ -300,9 +298,11 @@ class HLBService():
                     t_events[e].append(n['id'])
 
         for e in e_events:
+            j = 0
             for s in e_events[e]:
                 for t in t_events[e]:
-                    edges[e].append([s,t])
+                    j += 1
+                    edges.append({ 'id': e + str(j), 'source': s, 'target': t, 'label': e })
 
         return nodes, edges
 
