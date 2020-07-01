@@ -60,6 +60,9 @@ export class DependencyGraphComponent implements OnInit{
   public ngOnInit(): void {
     this.state.getBehavior().subscribe((behavior) => {
       this.http.put("v1/pr/hlb/dependency_graph/parse", {"scenario": behavior}, {withCredential: true}).subscribe((d) => {
+        this.nodes = []
+        this.links = []
+        this.clusters = []
         console.table(d['nodes'])
         var c2: ClusterNode[] = []
         var actors = {}
@@ -67,7 +70,7 @@ export class DependencyGraphComponent implements OnInit{
           var n2: Node = {
             data: n,
             id: n.id,
-            label: n.action
+            label: n.actors[0]
           }
           if(actors.hasOwnProperty(n.actors[0])){
             actors[n.actors[0]].push(n.id)
@@ -96,7 +99,7 @@ export class DependencyGraphComponent implements OnInit{
           this.links = [...this.links]
         }
 
-        this.clusters = c2
+        // this.clusters = c2
       })
     })
 
