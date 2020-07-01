@@ -15,6 +15,9 @@ export class DependencyGraphComponent implements OnInit{
   public nodes: Node[] = [];
   public links: Edge[] = [];
   public layout: String | Layout = 'dagreCluster';
+  public layoutSettings = {
+    orientation: "TB"
+  }
   public clusters = undefined;
 
   curveType: string = 'Bundle';
