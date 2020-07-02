@@ -99,7 +99,7 @@ export class DependencyGraphComponent implements OnInit{
           this.links = [...this.links]
         }
 
-        // this.clusters = c2
+        this.clusters = c2
       })
     })
 

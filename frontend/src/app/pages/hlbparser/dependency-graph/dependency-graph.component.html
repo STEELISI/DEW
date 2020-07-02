@@ -28,8 +28,10 @@
 
     <ng-template #nodeTemplate let-node>
       <svg:g class="node">
+        
         <svg:rect [attr.width]="node.dimension.width" [attr.height]="node.dimension.height" [attr.fill]="node.data.color" />
-        <svg:text alignment-baseline="central" [attr.x]="10" [attr.y]="node.dimension.height / 2">{{node.data.action}} (Waits for {{node.data.wait_time}})</svg:text>
+        <svg:text alignment-baseline="central" [attr.x] = "10" [attr.y]="-10" [attr.fill] = "white" >(Waits : {{node.data.wait_time}})</svg:text>
+        <svg:text alignment-baseline="middle" font-size="large" [attr.x]="10" [attr.y]="node.dimension.height / 2">{{node.data.action}} </svg:text>
       </svg:g>
     </ng-template>
 
