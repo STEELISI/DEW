@@ -53,6 +53,10 @@ push_to_drive_data = api.model('Save request', {
   'token': fields.String(description='Token used to authorize google apis', required=True)
   })
 
+scenario_text = api.model('Graph parsing', {
+  'scenario': fields.List(fields.String, description="Scenario of the experiment",required=True)
+})
+
 experiment_detail = api.model('get experiment request', {
   'id':fields.String(description="Id of experiment", required=True)
   })

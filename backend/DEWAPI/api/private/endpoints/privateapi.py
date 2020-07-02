@@ -88,6 +88,25 @@ class HandleHLBSuggestions(Resource):
         else:
           pass
 
+@ns.route('/hlb/dependency_graph/parse')
+class HandleGraphParse(Resource):
+    @api.expect(scenario_text)
+    def put(self):
+        """
+          Parses scenario to help in building a graph
+        """
+        # TODO : Remove globals
+        globals.actors = dict()
+        globals.behaviors = dict()
+        globals.constraints = dict()
+        globals.events = dict()
+        globals.actions = dict()
+        json_data = request.get_json(force=True)
+        scenarios = json_data['scenario']
+        nodes, edges = hlb.HandleGraphParse(scenarios)
+        return {"status": "success", "nodes": nodes, "edges": edges }
+
+
 
 @ns.route('/nlp/behavior')
 class HandleNLPTranslator(Resource):
