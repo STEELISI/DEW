@@ -17,7 +17,9 @@ class GoogleLogin():
                 result['navigateTo'] = 'registration'
             else:
                 result = userInfo
-        return result
+            return result
+        else:
+            return {"error":"invalid token"}, 401
     def googleUserInfo(self,token):
         try:
             # Specify the CLIENT_ID of the app that accesses the backend:
@@ -34,7 +36,6 @@ class GoogleLogin():
             result['img'] = response['picture']
             result['fullName'] = response['name']
             result['userId'] = uid
-            print(result)
             return result
         except KeyError as e:
             # Invalid token
@@ -51,9 +52,9 @@ class GoogleLogin():
                 result['userHandle'] = r['username']
                 return result
             else:
-                return {'error':'Unknown user'}
+                return {'error':'Unknown user'}, 401
         else:
-            return {'error':'Invalid Token'}
+            return {'error':'Invalid Token'}, 401
         
     def getOrStoreUserInfo(self,uid,username,name,emailId,access_token):
         u = User.query.filter(User.uid == uid).first()

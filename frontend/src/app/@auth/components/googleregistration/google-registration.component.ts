@@ -80,7 +80,7 @@ return null;
 
       this.userService.registerUser(params).subscribe(flag=>{
         if(flag)
-          this.router.navigate(['pages/dashboard']);
+          this.router.navigate(['dashboard']);
           else{
             alert("Error: Please try again");
             this.router.navigate(['auth/login']);

@@ -1,0 +1,137 @@
+<mat-toolbar color="primary">
+  <div class="heading">
+    <div class="col-md-12">
+      <div
+      style="float: left;"
+        class="heading-value"
+        contenteditable="true"
+        (blur)="checkDefault()"
+        [textContent]="experiment.name"
+        onkeypress="return (this.innerText.length <= 100)"
+        (input)="experiment.name = $event.target.textContent"
+      ></div>
+      <div style="padding:5px;float: right;">{{101 - experiment.name.length + ' characters left'}}</div>
+    </div>
+  </div>
+</mat-toolbar>
+
+<mat-toolbar color="warn">
+  <nav class="navbar navbar-expand-lg navbar-light">
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav mr-auto">
+        <li class="nav-item dropdown">
+          <a
+            class="nav-link"
+            href="#"
+            id="navbarDropdown1"
+            role="button"
+            data-toggle="dropdown"
+            aria-haspopup="true"
+            aria-expanded="false"
+          >
+            File
+          </a>
+
+          <div class="dropdown-menu" aria-labelledby="navbarDropdown1">
+            <a
+              class="dropdown-item"
+              (click)="save()"
+              *ngIf="experimentControl > 2"
+              >Save</a
+            >
+            <a class="dropdown-item" aria-disabled="true">Save As...</a>
+            <a class="dropdown-item" (click)="saveDrive()"
+              >Save To Google Drive</a
+            >
+            <a
+              class="dropdown-item"
+              (click)="delete()"
+              *ngIf="experimentControl > 3"
+              >Delete</a
+            >
+            <div class="dropdown-divider"></div>
+            <a class="dropdown-item" *ngIf="experimentControl > 3" (click)="addUserPopUp()"
+              >Share to User</a
+            >
+            <a class="dropdown-item" *ngIf="experimentControl > 3" (click)="listUserPopUp()">List of Users
+            </a>
+            <a class="dropdown-item" *ngIf="experimentControl > 3"
+              >Share link
+            </a>
+            <a class="dropdown-item" (click)="closeExperiment()">Close</a>
+          </div>
+        </li>
+        <li class="nav-item dropdown">
+          <a
+            class="nav-link"
+            href="#"
+            id="navbarDropdown4"
+            role="button"
+            data-toggle="dropdown"
+            aria-haspopup="true"
+            aria-expanded="false"
+          >
+            View
+          </a>
+          <div class="dropdown-menu" aria-labelledby="navbarDropdown4">
+            <a class="dropdown-item" (click)="show(1)">Experiment</a>
+            <a class="dropdown-item" (click)="show(2)">Dependency Graph</a>
+          </div>
+        </li>
+        <li class="nav-item dropdown" *ngIf="experimentControl > 2">
+          <a
+            class="nav-link"
+            href="#"
+            id="navbarDropdown2"
+            role="button"
+            data-toggle="dropdown"
+            aria-haspopup="true"
+            aria-expanded="false"
+          >
+            Input
+          </a>
+          <div class="dropdown-menu" aria-labelledby="navbarDropdown2">
+            <a class="dropdown-item" (click)="uploadInput()">Upload</a>
+            <a class="dropdown-item" (click)="nlpInput()">NLP</a>
+          </div>
+        </li>
+
+        <li class="nav-item dropdown">
+          <a
+            class="nav-link"
+            href="#"
+            id="navbarDropdown3"
+            role="button"
+            data-toggle="dropdown"
+            aria-haspopup="true"
+            aria-expanded="false"
+          >
+            Export
+          </a>
+          <div class="dropdown-menu" aria-labelledby="navbarDropdown3">
+            <a class="dropdown-item" (click)="addBindings()">NS File</a>
+          </div>
+        </li>
+      </ul>
+    </div>
+  </nav>
+
+  <span class="bubble">
+    <strong
+      matTooltip="{{
+        experimentControl == 4
+          ? 'Full Access'
+          : experimentControl == 3
+          ? 'Write only'
+          : 'Read only'
+      }}"
+      >{{
+        experimentControl == 4
+          ? "Admin"
+          : experimentControl == 3
+          ? "Developer"
+          : "Spectator"
+      }}</strong
+    >
+  </span>
+</mat-toolbar>

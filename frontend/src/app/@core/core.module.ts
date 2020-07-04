@@ -5,10 +5,12 @@ import { CommonModule } from '@angular/common';
 import { LayoutComponent } from './layout/layout.component';
 import { FormsModule } from '@angular/forms';
 import { MatMenuModule, MatButtonModule } from '@angular/material';
+import { FixedLayoutComponent } from './fixedLayout/layout.component';
 
 const COMPONENTS = [
     HeaderComponent,
-    LayoutComponent
+    LayoutComponent,
+    FixedLayoutComponent
   ];
 
 @NgModule({
