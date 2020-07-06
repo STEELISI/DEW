@@ -73,7 +73,7 @@ export class ExperimentComponent implements OnInit{
   }
 
   create(){
-    this.router.navigate(["pages/hlbparser/create"]);
+    this.router.navigate(["p/e/c"]);
   }
 
   copy(item){
