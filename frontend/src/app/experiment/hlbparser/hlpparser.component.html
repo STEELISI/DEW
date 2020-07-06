@@ -1,0 +1,9 @@
+<div *ngIf="isViewEnable()">
+ 
+<experiment-info [id]="experimentId" (viewId)="show($event)"></experiment-info>
+
+  <div class="main">
+    <hlb *ngIf="viewID == 1"></hlb>
+    <dependency-graph *ngIf="viewID == 2"></dependency-graph>
+  </div>
+</div>

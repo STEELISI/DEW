@@ -35,7 +35,7 @@ class AuthFilter():
         elif path == '/api/':
             return False, True, None
         else:
-            return False, False, "Unauthorized ussage."
+            return False, False, "Unauthorized usage."
     def authorizeUser(self):
         cookies = request.cookies
         # print(cookies)

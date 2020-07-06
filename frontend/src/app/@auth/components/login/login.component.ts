@@ -33,7 +33,7 @@ export class LoginComponent implements OnInit {
 
   ngOnInit(): void {
       if(this.authService.checkAuthentication()){
-          this.router.navigate(['pages/dashboard']);
+          this.router.navigate(['dashboard']);
     }else{
       this.alive=false;
     }

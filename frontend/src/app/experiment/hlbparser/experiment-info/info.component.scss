@@ -1,0 +1,91 @@
+.heading {
+  padding-left: 1em;
+  font-size: 14px;
+  height: 45px;
+}
+
+
+.heading-value {
+  font-weight: bold !important;
+  font-size: 14px;
+  min-width: 1000px;
+  max-width: 100%;
+  height: 41px;
+  padding: 6px;
+}
+.action_menu ul {
+  list-style-type: none;
+  padding-left: 2rem;
+  margin: 0;
+  border-bottom: 1px solid #ccc;
+  overflow: hidden;
+}
+.action_menu ul li {
+  float: left;
+}
+
+.action_menu ul li i {
+  display: block;
+  color: black;
+  text-align: center;
+  padding: 0.31rem;
+  text-decoration: none;
+}
+
+.action_menu ul li i:hover {
+  background-color: #ccc;
+}
+
+.pointer {
+  cursor: pointer;
+}
+
+.dropdown-item {
+  cursor: pointer;
+}
+
+nav,
+.dropdown-menu {
+  font-size: 14px;
+}
+
+.bubble {
+  position: absolute;
+  right: 0;
+  color: black;
+  width: 77px;
+  cursor: default;
+  font-size: 14px;
+  text-align: center;
+}
+mat-toolbar {
+  --default-height: 46px;
+  z-index: 50;
+}
+
+mat-toolbar[color="primary"] {
+  position: fixed;
+  height: 45px;
+  color: black;
+  background-color: white;
+  top: var(--default-height);
+}
+
+mat-toolbar[color="warn"] {
+  position: fixed;
+  height: 30px;
+  top: 90px;
+  background-color: #eee;
+}
+
+div[contenteditable="true"].single-line {
+  white-space: nowrap;
+  overflow: hidden;
+}
+div[contenteditable="true"].single-line br {
+  display: none;
+}
+div[contenteditable="true"].single-line * {
+  display: inline;
+  white-space: nowrap;
+}

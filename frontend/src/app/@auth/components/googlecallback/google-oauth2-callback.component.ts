@@ -25,10 +25,12 @@ export class GoogleOAuth2CallbackComponent implements OnDestroy {
         console.log(authResult);
        if(authResult.navigateTo ==undefined ){
         this.authService.enableAuthentication();
-        this.router.navigate(['pages/dashboard']);
+        this.router.navigate(['dashboard']);
        }else
         this.router.navigate(['auth/registerwithgoogle',this.authService.getToken()])
-       // }
+      },(error) => {
+        alert("Invalid User. Please Try again");
+        this.router.navigate(['auth/login']);
       });
   }
 

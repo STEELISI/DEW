@@ -7,4 +7,4 @@ create_db:
 	touch database.db
 
 deploy: build create_db
-	docker run -m 950MB -p 4000:80 -v $(shell pwd)/db:/app/db --name dew-api-$(shell git log -1 --format=%h) -d dew:$(shell git log -1 --format=%h)
+	docker run -m 950MB -p 4000:80 --env-file ./secrets.env -v $(shell pwd)/db:/app/db --name dew-api-$(shell git log -1 --format=%h) -d dew:$(shell git log -1 --format=%h)

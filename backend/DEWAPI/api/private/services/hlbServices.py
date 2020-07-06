@@ -1,4 +1,6 @@
 import sys, os, uuid
+from collections import defaultdict
+
 sys.path.append('./DewFunctions/Generators/')
 sys.path.append('./DewFunctions/Generators/bash')
 sys.path.append('./DewFunctions/UI/HighLevelBehaviorLanguage/')
@@ -6,6 +8,7 @@ sys.path.append('./DewFunctions/UI/')
 sys.path.append('./DewFunctions/Translators/bash')
 sys.path.append('./DewFunctions/Translators/magi')
 import globals
+import json
 import hlb
 import re
 from parsebash import GeneralParseBash
@@ -269,6 +272,39 @@ class HLBService():
         #     response = {"_id":str(uuid.uuid4()),"errors":errors}
         # return jsonify(response)
 
+    def HandleGraphParse(self, sceanrios):
+        nodes = []
+        edges = []
+        t_events = defaultdict(list)
+        e_events = defaultdict(list)
+        parser = HLBParser([])
+        i = 0
+        for scenario in sceanrios:
+            i += 1
+            _t,v,_h = parser.extract_partial(scenario)
+            v["id"] = str(i)
+            if v["t_events"] is None:
+                v["t_events"] = []
+            if v["e_events"] is None:
+                v["e_events"] = []
+            nodes.append(v)
+
+        for n in nodes:
+            if n['e_events'] is not None:
+                for e in n['e_events']:
+                    e_events[e].append(n['id'])
+            if n['t_events'] is not None:
+                for e in n['t_events']:
+                    t_events[e].append(n['id'])
+
+        for e in e_events:
+            j = 0
+            for s in e_events[e]:
+                for t in t_events[e]:
+                    j += 1
+                    edges.append({ 'id': e + str(j), 'source': s, 'target': t, 'label': e })
+
+        return nodes, edges
 
     #Handle generateNS
     def HandleNS(self,json_data):
