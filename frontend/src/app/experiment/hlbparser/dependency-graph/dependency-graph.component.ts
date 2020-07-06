@@ -99,42 +99,9 @@ export class DependencyGraphComponent implements OnInit{
           this.links = [...this.links]
         }
 
-        this.clusters = c2
+        // this.clusters = c2
       })
     })
 
-  }
-
-  public updateGraph(response): void {
-    // var actors = {}
-    // for (var r of response) {
-    //   for (var a of r["actors"]) {
-    //         if(actors.hasOwnProperty(a)){
-    //       actors[a].push(r['action'])
-    //     } else {
-    //       actors[a] = [r['action']]
-    //     }
-    //   }
-    // }
-    // console.log(actors)
-    // var actorsList = Object.keys(actors)
-    // for (var a2 of actorsList) {
-    //   const n: Node = {id: a2, label: a2}
-    //   this.nodes.push(n)
-    //   this.links.push({id: a2, source: a2, target: a2, label: a2})
-    // }
-    
-    // var t_events = {}
-    // for (var r of response) {
-    //   if(r["t_events"] != null){
-    //     for (var a of r["t_events"]) {
-    //         if(t_events.hasOwnProperty(a)){
-    //           t_events[a].push(r['t_events'])
-    //         } else {
-    //           t_events[a] = [r]
-    //         }
-    //       }
-    //   }
-    // }
   }
 }

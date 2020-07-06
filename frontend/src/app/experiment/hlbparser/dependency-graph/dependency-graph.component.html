@@ -1,11 +1,12 @@
-<div class="row">
-  <div class="col-md-12" style="background-color: whitesmoke;"> 
+<div class="row full-ho">
+  <div class="col-md-12"> 
     <ngx-graph
     [links]="links"
     [nodes]="nodes"
     [clusters]="clusters"
     [layout]="layout"
     [layoutSettings]="layoutSettings"
+    [legend]="true"
     [curve]="curve"
     [draggingEnabled]="draggingEnabled"
     [panningEnabled]="panningEnabled"
@@ -54,65 +55,6 @@
         </svg:text>
       </svg:g>
     </ng-template>
-
-<!-- <ng-template #linkTemplate let-link>
-  <svg:g class="edge">
-    <svg:path class="line" stroke-width="2" marker-end="url(#arrow)">
-    </svg:path>
-    <svg:text class="edge-label" text-anchor="middle">
-      <textPath class="text-path" [attr.href]="'#' + link.id" [style.dominant-baseline]="link.dominantBaseline" startOffset="50%">
-        {{link.id}}
-      </textPath>
-    </svg:text>
-  </svg:g>
-</ng-template> -->
-<!-- <ng-template #nodeTemplate let-node>
-  <svg:g class="node"
-  ngx-tooltip
-  [tooltipPlacement]="'top'"
-  [tooltipType]="'tooltip'"
-  [tooltipTitle]="node.position"
-  >
-    <svg:rect [attr.width]="node.width" [attr.height]="node.height" [attr.fill]="node.options.color" />
-    <svg:text alignment-baseline="central" [attr.x]="10" [attr.y]="node.height / 2">{{node.label}}</svg:text>
-  </svg:g>
-</ng-template> -->
-
-
-<!-- <ng-template #nodeTemplate let-node>
-  <svg:g class="node" xmlns="http://www.w3.org/2000/xhtml" width="40px" height="40px">
-    <svg:foreignObject min-width="20px" min-height="40px">
-      <xhtml:div class="cardContainer" xmlns="http://www.w3.org/1999/xhtml" [ngStyle]=getStyles(node)>
-        <label class="name">{{node.label}}</label>
-      </xhtml:div>
-    </svg:foreignObject>
-  </svg:g>
-</ng-template> -->
-
-<!-- <ng-template #linkTemplate let-link>
-  <svg:g class="edge">
-    <svg:path
-      class="edge"
-      stroke-width="2"
-      marker-end="url(#arrow)" >
-    </svg:path>
-  </svg:g>
-</ng-template> -->
-
-<!-- <ng-template #linkTemplate let-link>
-  <svg:g class="edge">
-    <svg:path class="line" stroke-width="2" marker-end="url(#arrow)">
-    </svg:path>
-    <svg:text class="edge-label" text-anchor="middle">
-      <textPath class="text-path" [attr.href]="'#' + link.id" [style.dominant-baseline]="link.dominantBaseline" startOffset="50%">{{link.label}}</textPath>
-    </svg:text>
-  </svg:g>
-  <svg:g class="linkMidpoint" *ngIf="link.midPoint"
-         [attr.transform]="'translate(' + (link.midPoint.x) + ',' + (link.midPoint.y) + ')'">
-    <ellipse rx="30" ry="10" />
-    <svg:text alignment-baseline="central">{{ link.label }}</svg:text>
-</svg:g>
-</ng-template> -->
 </ngx-graph>
   </div>
 </div>
