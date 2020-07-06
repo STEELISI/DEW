@@ -8,15 +8,15 @@
           <h2>Bindings</h2></div> 
         
           <hr>
-          <div *ngIf="bindingList.length==0" style="font-size: .8em;text-align: center;">
+          <!-- <div *ngIf="bindingList.length==0" style="font-size: .8em;text-align: center;">
             <span ><i>No Bindings Needed</i></span>
           </div>
             <div *ngIf="bindingList.length!=0">
           <ul  class="behavior-list " >
-            <li class="binding-box" *ngFor="let item of bindingList;let index=index" ><div>
+            <li class="binding-box" *ngFor="let bindingItem of bindingList" ><div>
             
               <mat-form-field style="width:100%">
-                <input matInput [(ngModel)]="item">
+                <input matInput [(ngModel)]="bindingItem">
               </mat-form-field>
 
               <span>
@@ -25,7 +25,7 @@
             </div>
               </li>
         </ul>
-        </div>
+        </div> -->
 
         
 
