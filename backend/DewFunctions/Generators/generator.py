@@ -113,7 +113,7 @@ class GeneralGenerator(object):
     #    with open(filename, 'w') as f:
     #        f.write(opt)
 
-    def generateNS(self, constraintList):
+    def generateNS(self, constraintList, actors=None):
         #This function generates the corresponding NS commands based on the constraint List.
         #Currently, we are handling node, link, lan and os list.
         #Any new constraint list must be handled here.
@@ -278,6 +278,18 @@ class GeneralGenerator(object):
                         nsCommands += " " + "$" + "lan" + str(counter) + " " + ".02"
                         nsCommands += "\n"
                     break
+        if actors is not None:
+            for x in actors:
+                sampleString = "for { set i 0} {$i < "
+                if str(x) not in clientServerList:
+                    clientServerList[str(x)] = 1
+                    sampleString += 1
+                    sampleString += "} {incr i} {\n"
+                    sampleString += "\tset "
+                    sampleString += str(x)
+                    sampleString += "$i [$ns node]\n"
+                    sampleString += "}\n"
+                    nsCommands += sampleString
         opt = "set ns [new Simulator]\n"
         opt += "source tb_compat.tcl\n"
         opt += nsCommands
