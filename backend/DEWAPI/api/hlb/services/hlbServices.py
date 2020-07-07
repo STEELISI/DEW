@@ -283,6 +283,7 @@ class HLBService():
         tn = json_data['ParseType']
         scenario = json_data['Scenario']
         constraints = json_data['Constraints']
+        actors = json_data['actors']
 
         if tn == 'bash':
             generator = bashGenerator(scenario, constraints=constraints)
@@ -291,7 +292,7 @@ class HLBService():
 
 
         scenario_parsed, constraints_parsed = generator.generate()
-        ns_script = generator.generateNS(constraints_parsed)
+        ns_script = generator.generateNS(constraints_parsed, actors)
         return ns_script
         # Check for valid input fields
         # for name in json_data:
