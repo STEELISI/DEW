@@ -1,12 +1,12 @@
-<div class="row full-ho">
-  <div class="col-md-12"> 
+<div class="row">
+  <div class="col-md-10 taller"> 
     <ngx-graph
     [links]="links"
     [nodes]="nodes"
     [clusters]="clusters"
+    [view]="[1000,1000]"
     [layout]="layout"
     [layoutSettings]="layoutSettings"
-    [legend]="true"
     [curve]="curve"
     [draggingEnabled]="draggingEnabled"
     [panningEnabled]="panningEnabled"
@@ -28,14 +28,23 @@
     </ng-template>
 
     <ng-template #nodeTemplate let-node>
-      <svg:g class="node">
-        
-        <svg:rect [attr.width]="node.dimension.width" [attr.height]="node.dimension.height" [attr.fill]="node.data.color" />
-        <!-- <svg:text alignment-baseline="central" [attr.x] = "10" [attr.y]="-10" [attr.fill] = "white" >(Waits : {{node.data.wait_time}})</svg:text> -->
-        <svg:text alignment-baseline="central" [attr.x] = "10" [attr.y]="-10" >(Waits : {{node.data.wait_time}})</svg:text>
+      <svg:g class="node">        
+        <svg:rect [attr.width]="node.dimension.width" [attr.height]="node.dimension.height" [attr.fill]="getColor(node)" />
+        <svg:text *ngIf="node.data.wait_time !== 'None'"  alignment-baseline="central" [attr.x] = "10" [attr.y]="-10" >(Waits : {{node.data.wait_time}})</svg:text>
         <svg:text alignment-baseline="middle" font-size="large" [attr.x]="10" [attr.y]="node.dimension.height / 2">{{node.data.action}} </svg:text>
       </svg:g>
     </ng-template>
+
+    <ng-template #nodeWithoutWait let-node>
+        <svg:rect [attr.width]="node.dimension.width" [attr.height]="node.dimension.height" [attr.fill]="node.data.color" />
+        <svg:text alignment-baseline="middle" font-size="large" [attr.x]="10" [attr.y]="node.dimension.height / 2">{{node.data.action}} </svg:text>
+    </ng-template>
+
+    <ng-template #nodeWithWait let-node>
+      <svg:rect [attr.width]="node.dimension.width" [attr.height]="node.dimension.height" [attr.fill]="node.data.color" />
+      <svg:text alignment-baseline="central" [attr.x] = "10" [attr.y]="-10" >(Waits : {{node.data.wait_time}})</svg:text>
+      <svg:text alignment-baseline="middle" font-size="large" [attr.x]="10" [attr.y]="node.dimension.height / 2">{{node.data.action}} </svg:text>
+  </ng-template>
 
     <ng-template #clusterTemplate let-cluster>
       <svg:g class="node cluster">
@@ -56,5 +65,17 @@
       </svg:g>
     </ng-template>
 </ngx-graph>
+  </div>
+  <div class="col-md-2 padded">
+      <div *ngFor="let item of matching | keyvalue">
+        <div class="row bottom-border">
+          <div class="col-md-3" [ngStyle]="{'background-color': item.value}">
+
+          </div>
+          <div class="col-md-9">
+            {{item.key}}
+          </div>
+        </div>
+      </div>
   </div>
 </div>
