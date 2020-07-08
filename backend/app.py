@@ -23,15 +23,18 @@ def authenticate():
     if flag:
         privateFLag, unauthorizedFlag, message = auth.isUrlPathPrivate()
         if not unauthorizedFlag:
-            return {"message":message}
+            return {"message":message}, 401
         else:
             if privateFLag:
-                auth.authorizeUser()
-                pass
+                flag, message = auth.authorizeUser()
+                if flag:
+                    return {"message":message}, 401
+                else:
+                    pass
             else:
                 pass
     else: 
-        return {"message":message}
+        return {"message":message}, 401
 
 def register_extensions(app):
     blueprint = Blueprint('api', __name__, url_prefix='/api')
