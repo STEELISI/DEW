@@ -3,7 +3,8 @@ import { Edge, Node, Layout, ClusterNode } from '@swimlane/ngx-graph';
 import { Subject } from 'rxjs';
 import * as shape from 'd3-shape';
 import { HttpService } from "src/app/http-service.service";
-import { StateService } from "src/app/state-service.service"
+import { StateService } from "src/app/state-service.service";
+import { ColorHelper } from "@swimlane/ngx-charts";
 
 
 @Component({
@@ -38,6 +39,23 @@ export class DependencyGraphComponent implements OnInit{
   draggingEnabled: boolean = true;
   panningEnabled: boolean = true;
   zoomEnabled: boolean = true;
+  customColors = [
+    "#bf9d76",
+    "#f2dfa7",
+    "#a5d7c6",
+    "#afafaf",
+    "#ba9383",
+    "#d9d5c3",
+    "#55C22D",
+    "#C1F33D",
+    "#3CC099",
+    "#AFFFFF",
+    "#8CFC9D",
+    "#76CFFA",
+    "#FC9F32",
+  ]
+
+  matching: {[key: string]: string} = {}
 
   zoomSpeed: number = 0.1;
   minZoomLevel: number = 0.1;
@@ -45,7 +63,7 @@ export class DependencyGraphComponent implements OnInit{
   panOnZoom: boolean = true;
 
   autoZoom: boolean = false;
-  autoCenter: boolean = false; 
+  autoCenter: boolean = true; 
 
   update$: Subject<boolean> = new Subject();
   center$: Subject<boolean> = new Subject();
@@ -99,42 +117,36 @@ export class DependencyGraphComponent implements OnInit{
           this.links = [...this.links]
         }
 
-        this.clusters = c2
+        // this.clusters = c2
       })
     })
 
   }
 
-  public updateGraph(response): void {
-    // var actors = {}
-    // for (var r of response) {
-    //   for (var a of r["actors"]) {
-    //         if(actors.hasOwnProperty(a)){
-    //       actors[a].push(r['action'])
-    //     } else {
-    //       actors[a] = [r['action']]
-    //     }
-    //   }
-    // }
-    // console.log(actors)
-    // var actorsList = Object.keys(actors)
-    // for (var a2 of actorsList) {
-    //   const n: Node = {id: a2, label: a2}
-    //   this.nodes.push(n)
-    //   this.links.push({id: a2, source: a2, target: a2, label: a2})
-    // }
-    
-    // var t_events = {}
-    // for (var r of response) {
-    //   if(r["t_events"] != null){
-    //     for (var a of r["t_events"]) {
-    //         if(t_events.hasOwnProperty(a)){
-    //           t_events[a].push(r['t_events'])
-    //         } else {
-    //           t_events[a] = [r]
-    //         }
-    //       }
-    //   }
-    // }
+  /**
+   * getColor
+node   */
+  public getColor(node) {
+    console.log(this.matching)
+    const existingColors = Object.values(this.matching)
+    if(this.matching.hasOwnProperty(node.label)){
+      return this.matching[node.label]
+    }
+    else{
+      var c = this.customColors[Math.floor(Math.random() * this.customColors.length)]
+      while (existingColors.includes(c)) {
+        c = this.customColors[Math.floor(Math.random() * this.customColors.length)]
+      }
+      this.matching[node.label] = c
+      return c
+    }
+
+  }
+
+  /**
+   * getMatching
+   */
+  public getMatching() {
+    return this.matching
   }
 }
