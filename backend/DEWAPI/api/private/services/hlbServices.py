@@ -309,9 +309,10 @@ class HLBService():
     #Handle generateNS
     def HandleNS(self,json_data):
         errors = []
-        scenarios = json_data['scenario']
+        actors = json_data['actors']
+        scenario = json_data['behaviors']
         constraints = json_data['constraints']
-        generator = bashGenerator(scenarios, constraints=constraints)
-        scenarios_parsed, constraints_parsed = generator.generate()
-        ns_script = generator.generateNS(constraints_parsed, scenarios)
+        generator = bashGenerator(scenario, constraints=constraints)
+        scenario_parsed, constraints_parsed = generator.generate()
+        ns_script = generator.generateNS(constraints_parsed, None, actors)
         return ns_script

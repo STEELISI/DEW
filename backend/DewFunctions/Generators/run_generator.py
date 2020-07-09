@@ -34,7 +34,7 @@ if __name__ == "__main__":
     chosenGenerator = __import__(args.generatorType, fromlist=['Generator'])
     generator = chosenGenerator.Generator(scenarios, constraints=constraints)
     [t, y] = generator.generate()
-    nsScript = generator.generateNS(y, scenarios)
+    nsScript = generator.generateNS(y, scenarios, None)
     print(nsScript)
 
 

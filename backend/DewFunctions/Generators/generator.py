@@ -113,7 +113,7 @@ class GeneralGenerator(object):
     #    with open(filename, 'w') as f:
     #        f.write(opt)
 
-    def generateNS(self, constraintList, scenarios):
+    def generateNS(self, constraintList, scenarios=None, actors=None):
         #This function generates the corresponding NS commands based on the constraint List.
         #Currently, we are handling node, link, lan and os list.
         #Any new constraint list must be handled here.
@@ -124,17 +124,19 @@ class GeneralGenerator(object):
         locationList = []
         osList = []
         osSupported = ['ubuntu','fedora','freebsd','fbsd','centos','kali','metasploitable','linux','windows','winxp']
-        actors = []
         nodes = []
         parser = HLBParser([])
-        for scenario in scenarios:
-            _t,v,_h = parser.extract_partial(scenario)
-            nodes.append(v)
-        for a in nodes:
-            if a['actors'] is not None:
-                for b in a['actors']:
-                    if b not in actors:
-                        actors.append(b)
+        if actors is None:
+            actors = []
+        if scenarios is not None:
+            for scenario in scenarios:
+                _t,v,_h = parser.extract_partial(scenario)
+                nodes.append(v)
+            for a in nodes:
+                if a['actors'] is not None:
+                    for b in a['actors']:
+                        if b not in actors:
+                            actors.append(b)
         for i in constraintList:
             for x in i:
                 if x == "num":
