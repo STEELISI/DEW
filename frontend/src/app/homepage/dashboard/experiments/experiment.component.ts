@@ -68,12 +68,12 @@ export class ExperimentComponent implements OnInit{
   }
 
   edit(experiments){
-    console.log(experiments)
-    this.router.navigate(["p/e/c",experiments.experiment_id]);
+    // console.log(experiments)
+    window.location.href = "p/e/c/"+experiments.experiment_id;
   }
 
   create(){
-    this.router.navigate(["p/e/c"]);
+    window.location.href = "p/e/c";
   }
 
   copy(item){
