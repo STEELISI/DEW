@@ -76,13 +76,13 @@ export class DependencyGraphComponent implements OnInit{
   }
 
   public ngOnInit(): void {
+    this.state.getExperimentColors().subscribe((d) => {
+      this.matching = d
+    })
     this.state.getBehavior().subscribe((behavior) => {
       this.http.put("v1/pr/hlb/dependency_graph/parse", {"scenario": behavior}, {withCredential: true}).subscribe((d) => {
         this.nodes = []
         this.links = []
-        this.clusters = []
-        console.table(d['nodes'])
-        var c2: ClusterNode[] = []
         var actors = {}
         for (const n of d['nodes']) {
           var n2: Node = {
@@ -98,26 +98,12 @@ export class DependencyGraphComponent implements OnInit{
           this.nodes.push(n2)
           this.nodes =  [...this.nodes]
         }
-        console.log(actors)
-
-        for(const [actor, values] of Object.entries(actors)){
-          console.log(values)
-          var c1: ClusterNode = {
-            id: actor,
-            label: actor,
-            childNodeIds: actors[actor],
-          }
-          c2.push(c1)
-        }
-        console.table(d['edges'])
 
         for(const e of d['edges']){
           var e2: Edge = e
           this.links.push(e2)
           this.links = [...this.links]
         }
-
-        // this.clusters = c2
       })
     })
 
@@ -127,7 +113,6 @@ export class DependencyGraphComponent implements OnInit{
    * getColor
 node   */
   public getColor(node) {
-    console.log(this.matching)
     const existingColors = Object.values(this.matching)
     if(this.matching.hasOwnProperty(node.label)){
       return this.matching[node.label]
@@ -138,6 +123,7 @@ node   */
         c = this.customColors[Math.floor(Math.random() * this.customColors.length)]
       }
       this.matching[node.label] = c
+      this.state.setExperimentColors(this.matching)
       return c
     }
 

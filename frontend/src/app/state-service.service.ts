@@ -5,7 +5,7 @@ import { BehaviorSubject, Observable } from "rxjs";
 export class StateService {
  
   
-  
+  experimentColors: BehaviorSubject<any> = new BehaviorSubject({});
   loaderSwitch: BehaviorSubject<boolean> = new BehaviorSubject(false);
   actors: BehaviorSubject<any> = new BehaviorSubject(null);
   behavior: BehaviorSubject<any> = new BehaviorSubject(null);
@@ -46,6 +46,10 @@ export class StateService {
 
   getExperimentName(): Observable<any> {
     return this.experimentName.asObservable();
+  }
+
+  getExperimentColors(): Observable<any> {
+    return this.experimentColors.asObservable();
   }
 
   getDriveId(): Observable<any> {
@@ -102,6 +106,10 @@ export class StateService {
   }
   setDriveId(data: String) {
     this.driveId.next(data);
+  }
+
+  setExperimentColors(data: any){
+    this.experimentColors.next(data);
   }
 
   setExperimentDescription(data: String) {
