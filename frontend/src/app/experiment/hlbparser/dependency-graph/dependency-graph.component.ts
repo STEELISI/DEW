@@ -1,10 +1,9 @@
-import { Component, OnInit, Input } from '@angular/core';
-import { Edge, Node, Layout, ClusterNode } from '@swimlane/ngx-graph';
+import { Component, OnInit, Input, ViewChild, HostListener } from '@angular/core';
+import { Edge, Node, Layout, ClusterNode, NodePosition, GraphComponent } from '@swimlane/ngx-graph';
 import { Subject } from 'rxjs';
 import * as shape from 'd3-shape';
 import { HttpService } from "src/app/http-service.service";
 import { StateService } from "src/app/state-service.service";
-import { ColorHelper } from "@swimlane/ngx-charts";
 
 
 @Component({
@@ -22,7 +21,7 @@ export class DependencyGraphComponent implements OnInit{
   public clusters = undefined;
 
   curveType: string = 'Bundle';
-  curve: any = shape.curveLinear;
+  curve: any = shape.curveCardinal;
   interpolationTypes = [
     'Bundle',
     'Cardinal',
@@ -64,6 +63,16 @@ export class DependencyGraphComponent implements OnInit{
 
   autoZoom: boolean = false;
   autoCenter: boolean = true; 
+
+  isDragging: boolean = false;
+  draggingNode: Node = null;
+
+  public currentDragPosition: NodePosition = {x: 0, y: 0};
+  public startingDragPosition: NodePosition = {x: 0, y: 0};
+  mouseOverNode: Node = null;
+
+  @ViewChild('graph', { static: false }) graphEl: GraphComponent;
+
 
   update$: Subject<boolean> = new Subject();
   center$: Subject<boolean> = new Subject();
@@ -110,6 +119,14 @@ export class DependencyGraphComponent implements OnInit{
   }
 
   /**
+   * toggleDragging
+   */
+  public toggleDragging() {
+    this.draggingEnabled = !this.draggingEnabled
+    console.log(this.draggingEnabled)
+  }
+
+  /**
    * getColor
 node   */
   public getColor(node) {
@@ -127,6 +144,126 @@ node   */
       return c
     }
 
+  }
+
+/**
+   * On mouse up event
+   *
+   */
+  @HostListener('document:mousemove', ['$event'])
+  onMouseMove(event: MouseEvent): void {
+    if (!this.isDragging) {
+      return;
+    }
+    this.currentDragPosition.x += event.movementX / this.graphEl.zoomLevel;
+    this.currentDragPosition.y += event.movementY / this.graphEl.zoomLevel;
+  }
+
+
+  /**
+   * On node circle mouse down to kick off dragging
+   *
+   */
+  onNodeCircleMouseDown(event: any, node: Node): void {
+    if (this.draggingEnabled) {
+      return;
+    }
+    this.isDragging = true;
+
+    this.draggingNode = node;
+
+    
+    console.log("starting node....")
+
+    this.startingDragPosition = {
+      x: (event.layerX - this.graphEl.panOffsetX) / this.graphEl.zoomLevel,
+      y: (event.layerY - this.graphEl.panOffsetY) / this.graphEl.zoomLevel
+    };
+
+    this.currentDragPosition = {
+      x: node.position.x + node.dimension.width / 2,
+      y: node.position.y
+    };
+
+    setTimeout(() => {
+      this.mouseOverNode = undefined;
+    });
+  }
+
+  onNodeCircleMouseUp(event: any, node: Node): void {
+    if (this.draggingEnabled) {
+      return;
+    }
+    console.log("ending node....")
+    console.table(this.links)
+    console.table(this.nodes)
+    this.isDragging = false;
+    var src = this.draggingNode;
+    var dest = node;
+    console.log(src, dest, this.links)
+    
+
+    var edge: Edge = {
+      id: Math.random().toString(36).substring(7),
+      source: this.draggingNode.id,
+      target: dest.id,
+      label: this.draggingNode.label + "Run" + this.draggingNode.data.action + "Sig"
+    }
+
+    src.data['e_events'].push(edge.label)
+    dest.data['t_events'].push(edge.label)
+
+    var reconstructedString = ""
+    if(src.data['t_events'].length > 0){
+      reconstructedString += "when " + src.data['t_events'].join(", ") + " "
+    }
+    if(src.data['wait_time'] !== "None"){
+      reconstructedString += " wait " + JSON.parse(src.data['wait_time'].replaceAll("'", '"')).join(",") + " "
+    }
+    reconstructedString += src.data['actors'].join(", ") + " " + src.data["action"] + " "
+    if(src.data['e_events'].length > 0){
+      reconstructedString += "emit " +  src.data['e_events'].join(", ")
+    }
+
+
+    var reconstructedString2 = ""
+    if(dest.data['t_events'].length > 0){
+      reconstructedString2 += "when " + dest.data['t_events'].join(", ") + " "
+    }
+    if(dest.data['wait_time'] !== "None"){
+      reconstructedString2 += " wait " + JSON.parse(dest.data['wait_time'].replaceAll("'", '"')).join(",") + " "
+    }
+    reconstructedString2 += dest.data['actors'].join(", ") + " " + dest.data["action"] + " "
+    if(dest.data['e_events'].length > 0){
+      reconstructedString2 += "emit " +  dest.data['e_events'].join(", ")
+    }
+
+    var behaviors = null
+    this.state.behavior.subscribe((b) => {
+      behaviors = b
+    })
+    console.log("before : ", behaviors)
+    behaviors[parseInt(src.id)-1] = reconstructedString
+    behaviors[parseInt(dest.id)-1] = reconstructedString2
+    console.log("after : ", behaviors)
+    this.state.setBehavior(behaviors)
+
+    this.links.push(edge)
+    this.links = [...this.links]
+
+    this.startingDragPosition = {
+      x: (event.layerX - this.graphEl.panOffsetX) / this.graphEl.zoomLevel,
+      y: (event.layerY - this.graphEl.panOffsetY) / this.graphEl.zoomLevel
+    };
+
+    this.currentDragPosition = {
+      x: node.position.x + node.dimension.width / 2,
+      y: node.position.y
+    };
+
+    setTimeout(() => {
+      this.mouseOverNode = undefined;
+    });
   }
 
   /**

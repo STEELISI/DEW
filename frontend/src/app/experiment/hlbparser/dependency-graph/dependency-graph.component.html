@@ -29,22 +29,22 @@
 
     <ng-template #nodeTemplate let-node>
       <svg:g class="node">        
-        <svg:rect [attr.width]="node.dimension.width" [attr.height]="node.dimension.height" [attr.fill]="getColor(node)" />
-        <svg:text *ngIf="node.data.wait_time !== 'None'"  alignment-baseline="central" [attr.x] = "10" [attr.y]="-10" >(Waits : {{node.data.wait_time}})</svg:text>
-        <svg:text alignment-baseline="middle" font-size="large" [attr.x]="10" [attr.y]="node.dimension.height / 2">{{node.data.action}} </svg:text>
+        <svg:rect [attr.width]="node.dimension.width" [attr.height]="node.dimension.height" [attr.fill]="getColor(node)" (mousedown)="onNodeCircleMouseDown($event, node)"
+        (mouseup)="onNodeCircleMouseUp($event, node)"/>
+        <svg:text *ngIf="node.data.wait_time !== 'None'"  alignment-baseline="central" [attr.x] = "10" [attr.y]="-10">(Waits : {{node.data.wait_time}})</svg:text>
+        <svg:text alignment-baseline="middle" font-size="large" [attr.x]="10" [attr.y]="node.dimension.height / 2" (mousedown)="onNodeCircleMouseDown($event, node)" (mouseup)="onNodeCircleMouseUp($event, node)">{{node.data.action}} </svg:text>
       </svg:g>
     </ng-template>
 
-    <ng-template #nodeWithoutWait let-node>
-        <svg:rect [attr.width]="node.dimension.width" [attr.height]="node.dimension.height" [attr.fill]="node.data.color" />
-        <svg:text alignment-baseline="middle" font-size="large" [attr.x]="10" [attr.y]="node.dimension.height / 2">{{node.data.action}} </svg:text>
-    </ng-template>
-
-    <ng-template #nodeWithWait let-node>
-      <svg:rect [attr.width]="node.dimension.width" [attr.height]="node.dimension.height" [attr.fill]="node.data.color" />
-      <svg:text alignment-baseline="central" [attr.x] = "10" [attr.y]="-10" >(Waits : {{node.data.wait_time}})</svg:text>
-      <svg:text alignment-baseline="middle" font-size="large" [attr.x]="10" [attr.y]="node.dimension.height / 2">{{node.data.action}} </svg:text>
-  </ng-template>
+    <svg:line
+          class="line drag-line"
+          *ngIf="draggingNode"
+          [attr.x1]="startingDragPosition.x"
+          [attr.y1]="startingDragPosition.y"
+          [attr.x2]="currentDragPosition.x"
+          [attr.y2]="currentDragPosition.y"
+          marker-end="url(#arrow)"
+        />
 
     <ng-template #clusterTemplate let-cluster>
       <svg:g class="node cluster">
@@ -76,6 +76,11 @@
             {{item.key}}
           </div>
         </div>
+      </div>
+      <br/>
+      <div class="custom-control custom-switch">
+        <input type="checkbox" class="custom-control-input" id="editmode" (click)="toggleDragging()"/>
+        <label class="custom-control-label" for="editmode">Add more edges</label>
       </div>
   </div>
 </div>
