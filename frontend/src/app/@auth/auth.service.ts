@@ -1,8 +1,5 @@
 import { BehaviorSubject, Observable, of } from 'rxjs';
 import { Injectable } from '@angular/core';
-import { AuthResult } from './auth-result';
-import { tokenName } from '@angular/compiler';
-import { InitUserService } from './init-user.service';
 import { HttpService } from '../http-service.service';
 import { environment } from '../../environments/environment'
 

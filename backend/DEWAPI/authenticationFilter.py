@@ -1,9 +1,12 @@
 from flask import request
 import re
 from DEWAPI.user import userObj
+from DEWAPI.api.public.services.userinfoservice import GoogleLogin
 
 privateUrlpattern = "^/api/v1/pr/*"
 publicUrlpattern = "^/api/v1/p/*"
+
+login = GoogleLogin()
 class AuthFilter():
     
     def checkCors(self):
@@ -38,11 +41,16 @@ class AuthFilter():
             return False, False, "Unauthorized usage."
     def authorizeUser(self):
         cookies = request.cookies
-        # print(cookies)
-        userObj.setToken(cookies['token'])
-        userObj.setUserId(cookies['userId'])
-        userObj.setUserHandle(cookies['userHandle'])
-        userObj.setEmailId(cookies['emailId'])
+        if 'token' in cookies:
+            user = login.getLoginUserDetail(cookies['token'])
+            if user is not None:
+                userObj.setToken(cookies['token'])
+                userObj.setUserId(user['userId'])
+                userObj.setUserHandle(user['userHandle'])
+                userObj.setEmailId(user['emailId'])
+                return False, None
+         
+        return True, 'Unauthorize Access'
         
 
             

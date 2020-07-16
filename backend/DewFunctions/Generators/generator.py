@@ -113,7 +113,7 @@ class GeneralGenerator(object):
     #    with open(filename, 'w') as f:
     #        f.write(opt)
 
-    def generateNS(self, constraintList, actors=None):
+    def generateNS(self, constraintList, scenarios=None, actors=None):
         #This function generates the corresponding NS commands based on the constraint List.
         #Currently, we are handling node, link, lan and os list.
         #Any new constraint list must be handled here.
@@ -124,7 +124,19 @@ class GeneralGenerator(object):
         locationList = []
         osList = []
         osSupported = ['ubuntu','fedora','freebsd','fbsd','centos','kali','metasploitable','linux','windows','winxp']
-
+        nodes = []
+        parser = HLBParser([])
+        if actors is None:
+            actors = []
+        if scenarios is not None:
+            for scenario in scenarios:
+                _t,v,_h = parser.extract_partial(scenario)
+                nodes.append(v)
+            for a in nodes:
+                if a['actors'] is not None:
+                    for b in a['actors']:
+                        if b not in actors:
+                            actors.append(b)
         for i in constraintList:
             for x in i:
                 if x == "num":
@@ -172,6 +184,20 @@ class GeneralGenerator(object):
                 sampleString += "}\n"
                 nsCommands += sampleString
 
+        if actors is not None:
+            tmp = 1
+            for x in actors:
+                if str(x) not in clientServerList:
+                    sampleString = "for { set i 0} {$i < "
+                    clientServerList[str(x)] = 1
+                    sampleString += str(tmp)
+                    sampleString += "} {incr i} {\n"
+                    sampleString += "\tset "
+                    sampleString += str(x)
+                    sampleString += "$i [$ns node]\n"
+                    sampleString += "}\n"
+                    nsCommands += sampleString
+
         if len(linkList):
            counter = 0
            sampleList = []
@@ -197,7 +223,13 @@ class GeneralGenerator(object):
                         #print("ALERT:\t Node is not defined, Creating a node:", str(k))
                         minimum = 1
                         clientServerList[str(k)] = minimum
-                        nsCommands += "set " + str(k) + "0" + " [$ns node]\n"
+                        sampleString = "for { set i 0} {$i < "
+                        clientServerList[str(x)] = 1
+                        sampleString += str(minimum)
+                        sampleString += "} {incr i} {\n"
+                        sampleString += "\tset " + str(k) + "$i" + " [$ns node]\n"
+                        sampleString += "}\n"
+                        nsCommands += sampleString
                 for j in range(0,minimum):
                     counter+=1
                     nsCommands += "set link"+ str(counter) +" "
@@ -223,7 +255,12 @@ class GeneralGenerator(object):
                                 #print("ALERT:\t Node is not defined, Creating a node:", node)
                                 node = k
                                 clientServerList[str(node)] = 1
-                                nsCommands += "set " + str(node) + "0" + " [$ns node]\n"
+                                sampleString = "for { set i 0} {$i < "
+                                sampleString += "1"
+                                sampleString += "} {incr i} {\n"
+                                sampleString += "\tset " + str(k) + "$i" + " [$ns node]\n"
+                                sampleString += "}\n"
+                                nsCommands += sampleString
                         elif counter == 1:
                             os = k
                             if k not in osSupported:
@@ -278,18 +315,6 @@ class GeneralGenerator(object):
                         nsCommands += " " + "$" + "lan" + str(counter) + " " + ".02"
                         nsCommands += "\n"
                     break
-        if actors is not None:
-            for x in actors:
-                sampleString = "for { set i 0} {$i < "
-                if str(x) not in clientServerList:
-                    clientServerList[str(x)] = 1
-                    sampleString += 1
-                    sampleString += "} {incr i} {\n"
-                    sampleString += "\tset "
-                    sampleString += str(x)
-                    sampleString += "$i [$ns node]\n"
-                    sampleString += "}\n"
-                    nsCommands += sampleString
         opt = "set ns [new Simulator]\n"
         opt += "source tb_compat.tcl\n"
         opt += nsCommands

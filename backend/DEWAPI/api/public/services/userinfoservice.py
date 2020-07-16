@@ -44,18 +44,32 @@ class GoogleLogin():
         except ValueError as e:
             return None
     def getUserInfo(self,token):
-        result = self.googleUserInfo(token)
-        print(result)
-        if result is not None:
-            r = self.getOrStoreUserInfo(uid=result['userId'],emailId=result['emailId'],username=result['userId'],name=result['fullName'],access_token=token)
+        googleUserObject = self.googleUserInfo(token)
+        result = {}
+        if googleUserObject is not None:
+            r = self.getOrStoreUserInfo(uid=googleUserObject['userId'],emailId=googleUserObject['emailId'],username=googleUserObject['userId'],name=googleUserObject['fullName'],access_token=token)
             if r is not None:
+                result['emailId'] = r['email']
+                result['fullName'] = r['name']
+                result['givenName'] = googleUserObject['givenName']
+                result['img'] = googleUserObject['img']
+                result['lastName'] = googleUserObject['lastName']
                 result['userHandle'] = r['username']
                 return result
             else:
                 return {'error':'Unknown user'}, 401
         else:
             return {'error':'Invalid Token'}, 401
+    def getLoginUserDetail(self, token):
+        googleUserObject = self.googleUserInfo(token)
+        if googleUserObject is not None:
+            r = self.getOrStoreUserInfo(uid=googleUserObject['userId'],emailId=googleUserObject['emailId'],username=googleUserObject['userId'],name=googleUserObject['fullName'],access_token=token)
+            if r is not None:
+                googleUserObject['userHandle'] = r['username']
+                return googleUserObject
         
+        return None
+    
     def getOrStoreUserInfo(self,uid,username,name,emailId,access_token):
         u = User.query.filter(User.uid == uid).first()
         return u.to_dict()
@@ -63,9 +77,6 @@ class GoogleLogin():
         u = User.query.filter(User.username == handle.lower()).first()
         if u is None:
             return {'valid':True}
-            # u = User(username=username, email=emailId, uid=uid, name=name,access_token=access_token)
-            # db.session.add(u)
-            # db.session.commit()
         else:
             return {'valid':False}
     def registerUserHandle(self,handle,token):
