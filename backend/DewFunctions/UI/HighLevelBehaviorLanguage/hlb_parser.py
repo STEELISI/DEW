@@ -129,7 +129,27 @@ class HLBParser():
             return list(item)
         else:
             return None
-    
+
+    def parse_with_labels(self, statements):
+        """
+        :param statements:
+        :return: dictionary of parsed statements with label as key and parsed statements as values
+        """
+        labelled_data = {}
+        current_label_stmts = []
+        current_label = "default"
+        for stmt in statements:
+            if stmt.startswith('#'):
+                labelled_data[current_label] = current_label_stmts
+                current_label = stmt[1:]
+                current_label_stmts = []
+            else:
+                current_label_stmts.append(self.extract_partial(stmt))
+
+        labelled_data[current_label] = current_label_stmts
+        return labelled_data
+
+
     def parse_stmt(self, statement):
         """Parses an HLB statement and returns a tuple: (triggers, actors, action, e_events)
         Values are returned as "None" if they cannot be extracted.
