@@ -159,6 +159,20 @@ node   */
     this.currentDragPosition.y += event.movementY / this.graphEl.zoomLevel;
   }
 
+  /**
+   * On mouse up event
+   *
+   */
+  @HostListener('document:mouseup', ['$event'])
+  onMouseUp(event: MouseEvent): void {
+    if (this.isDragging && this.draggingNode) {
+      // logic if mouse is released over another node
+      console.log(event, this.draggingNode)
+    }
+
+    this.isDragging = false;
+    this.draggingNode = undefined;
+  }
 
   /**
    * On node circle mouse down to kick off dragging
@@ -172,17 +186,14 @@ node   */
 
     this.draggingNode = node;
 
-    
-    console.log("starting node....")
-
     this.startingDragPosition = {
       x: (event.layerX - this.graphEl.panOffsetX) / this.graphEl.zoomLevel,
       y: (event.layerY - this.graphEl.panOffsetY) / this.graphEl.zoomLevel
     };
 
     this.currentDragPosition = {
-      x: node.position.x + node.dimension.width / 2,
-      y: node.position.y
+      x: (event.layerX - this.graphEl.panOffsetX) / this.graphEl.zoomLevel,
+      y: (event.layerY - this.graphEl.panOffsetY) / this.graphEl.zoomLevel
     };
 
     setTimeout(() => {
@@ -194,14 +205,14 @@ node   */
     if (this.draggingEnabled) {
       return;
     }
-    console.log("ending node....")
-    console.table(this.links)
-    console.table(this.nodes)
     this.isDragging = false;
     var src = this.draggingNode;
     var dest = node;
-    console.log(src, dest, this.links)
     
+    if(src.id == dest.id){
+      return;
+    }
+
 
     var edge: Edge = {
       id: Math.random().toString(36).substring(7),
@@ -210,42 +221,25 @@ node   */
       label: this.draggingNode.label + "Run" + this.draggingNode.data.action + "Sig"
     }
 
-    src.data['e_events'].push(edge.label)
-    dest.data['t_events'].push(edge.label)
-
-    var reconstructedString = ""
-    if(src.data['t_events'].length > 0){
-      reconstructedString += "when " + src.data['t_events'].join(", ") + " "
+    if(src.data['e_events'].indexOf(edge.label) === -1){
+      src.data['e_events'].push(edge.label)
     }
-    if(src.data['wait_time'] !== "None"){
-      reconstructedString += " wait " + JSON.parse(src.data['wait_time'].replaceAll("'", '"')).join(",") + " "
-    }
-    reconstructedString += src.data['actors'].join(", ") + " " + src.data["action"] + " "
-    if(src.data['e_events'].length > 0){
-      reconstructedString += "emit " +  src.data['e_events'].join(", ")
+    if(dest.data['t_events'].indexOf(edge.label) === -1){
+      dest.data['t_events'].push(edge.label)
     }
 
+    var reconstructedString = this.reconstructDEW(src)
 
-    var reconstructedString2 = ""
-    if(dest.data['t_events'].length > 0){
-      reconstructedString2 += "when " + dest.data['t_events'].join(", ") + " "
-    }
-    if(dest.data['wait_time'] !== "None"){
-      reconstructedString2 += " wait " + JSON.parse(dest.data['wait_time'].replaceAll("'", '"')).join(",") + " "
-    }
-    reconstructedString2 += dest.data['actors'].join(", ") + " " + dest.data["action"] + " "
-    if(dest.data['e_events'].length > 0){
-      reconstructedString2 += "emit " +  dest.data['e_events'].join(", ")
-    }
+    var reconstructedString2 = this.reconstructDEW(dest)
 
     var behaviors = null
     this.state.behavior.subscribe((b) => {
       behaviors = b
     })
-    console.log("before : ", behaviors)
+
     behaviors[parseInt(src.id)-1] = reconstructedString
     behaviors[parseInt(dest.id)-1] = reconstructedString2
-    console.log("after : ", behaviors)
+
     this.state.setBehavior(behaviors)
 
     this.links.push(edge)
@@ -266,10 +260,64 @@ node   */
     });
   }
 
+
+  /**
+   * deleteEdge
+   */
+  public deleteEdge(event: any, edge: Edge): void {
+    if(this.draggingEnabled){
+      return;
+    }
+    this.links = this.links.filter((e) => {
+      return e.id != edge.id
+    })
+
+    console.log(edge)
+
+    var src: Node = this.nodes.find((n)=> { return n.id === edge.source })
+    var dest: Node = this.nodes.find((n)=> { return n.id === edge.target })
+
+    src.data.e_events.splice(src.data.e_events.indexOf(edge.label),1)
+    dest.data.t_events.splice(dest.data.t_events.indexOf(edge.label),1)
+
+
+    // TODO: Move into a method
+
+    var reconstructedString = this.reconstructDEW(src)
+
+    var reconstructedString2 = this.reconstructDEW(dest)
+
+    var behaviors = null
+    this.state.behavior.subscribe((b) => {
+      behaviors = b
+    })
+
+    behaviors[parseInt(src.id)-1] = reconstructedString
+    behaviors[parseInt(dest.id)-1] = reconstructedString2
+
+    this.state.setBehavior(behaviors)
+
+  }
+
   /**
    * getMatching
    */
   public getMatching() {
     return this.matching
+  }
+
+  private reconstructDEW(node: Node) {
+    var reconstructedString = ""
+    if(node.data['t_events'].length > 0){
+      reconstructedString += "when " + node.data['t_events'].join(", ") + " "
+    }
+    if(node.data['wait_time'] !== "None"){
+      reconstructedString += " wait " + JSON.parse(node.data['wait_time'].replace(/'/g, '"')).join(",") + " "
+    }
+    reconstructedString += node.data['actors'].join(", ") + " " + node.data["action"] + " "
+    if(node.data['e_events'].length > 0){
+      reconstructedString += "emit " +  node.data['e_events'].join(", ")
+    }
+    return reconstructedString
   }
 }

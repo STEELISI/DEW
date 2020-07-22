@@ -16,6 +16,7 @@ import {
   MatAutocompleteModule,
   MatSelectModule,
   MatTooltipModule,
+  MatIconModule,
 } from "@angular/material";
 import { NgxFileDropModule } from "ngx-file-drop";
 import { HLBParserComponent } from "./hlpparser.component";
@@ -89,6 +90,7 @@ import { BrowserModule } from '@angular/platform-browser';
     HLBParserRoutingModule,
     MatInputModule,
     NgxFileDropModule,
+    MatIconModule,
   ],
   entryComponents: [
     FilePreviewComponent,
