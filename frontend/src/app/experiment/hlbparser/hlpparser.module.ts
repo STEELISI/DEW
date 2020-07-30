@@ -42,6 +42,7 @@ import {
   UploadPopUp,
   NSFilePopUp,
   UserListPopUp,
+  HLBInforPopUp,
 } from "./experiment-info/info.component";
 import {MatToolbarModule} from '@angular/material/toolbar';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
@@ -57,6 +58,7 @@ import { BrowserModule } from '@angular/platform-browser';
     TextFilterPipe,
     UploadComponent,
     FilePreviewComponent,
+    HLBInforPopUp,
     BindingPopUp,
     InfoComponent,
     AddUserPopUp,
@@ -94,6 +96,7 @@ import { BrowserModule } from '@angular/platform-browser';
   ],
   entryComponents: [
     FilePreviewComponent,
+    HLBInforPopUp,
     BindingPopUp,
     AddUserPopUp,
     NLPPopUp,

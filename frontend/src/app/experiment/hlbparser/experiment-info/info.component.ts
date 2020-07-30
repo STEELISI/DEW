@@ -29,7 +29,7 @@ export class InfoComponent implements OnInit {
     driveId: "",
   };
   tokenList = [];
-
+  viewid = 1;
   options: string[] = ["One", "Two", "Three"];
 
   constructor(
@@ -46,6 +46,7 @@ export class InfoComponent implements OnInit {
   experimentControl = 4;
 
     show(id){
+      this.viewid = id;
       this.viewId.emit(id);
     }
   titleChanged(){
@@ -422,6 +423,15 @@ export class InfoComponent implements OnInit {
   }
 
 
+  showInfo(id:number) {
+    //console.log(this.bindingList);
+
+    var dialogRef = this.dialog.open(HLBInforPopUp, {
+      width: "70%",
+      data: id,
+    });
+  }
+
   addBindings() {
     //console.log(this.bindingList);
 
@@ -660,5 +670,22 @@ export class UserListPopUp implements OnInit {
         duration: 2000,
       });
     })
+  }
+}
+
+
+@Component({
+  selector: "hlb-info",
+  templateUrl: "hlb-info.component.html",
+  styleUrls: ["./info.component.scss"],
+})
+export class HLBInforPopUp {
+  constructor(
+    public dialogRef: MatDialogRef<HLBInforPopUp>,
+    @Inject(MAT_DIALOG_DATA) public showId: number
+  ) {}
+
+  onNoClick(): void {
+    this.dialogRef.close();
   }
 }

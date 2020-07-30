@@ -59,7 +59,7 @@ nav,
   text-align: center;
 }
 mat-toolbar {
-  --default-height: 46px;
+  --default-height: 0;
   z-index: 50;
 }
 
@@ -68,13 +68,15 @@ mat-toolbar[color="primary"] {
   height: 45px;
   color: black;
   background-color: white;
+  right: 0;
   top: var(--default-height);
 }
 
 mat-toolbar[color="warn"] {
   position: fixed;
   height: 30px;
-  top: 90px;
+  right: 0;
+  top: 45px;
   background-color: #eee;
 }
 
@@ -88,4 +90,12 @@ div[contenteditable="true"].single-line br {
 div[contenteditable="true"].single-line * {
   display: inline;
   white-space: nowrap;
+}
+
+.actor_example_color{
+  color: orange
+}
+
+.binding_example_color{
+  color: green
 }

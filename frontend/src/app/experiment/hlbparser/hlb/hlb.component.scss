@@ -16,17 +16,12 @@
     border-radius: 1em;
     padding: 0.4em;
     margin: 0.1em;
+    font-size: 12px;
     cursor: pointer;
  
 }
 
-.actor_example_color{
-    color: orange
-}
 
-.binding_example_color{
-    color: green
-}
 
 .binding-word-bubble{
     border: 1px solid black;
@@ -39,6 +34,7 @@
     border-radius: 1em;
     padding: 0.4em;
     margin: 0.1em;
+    font-size: 12px;
  
 }
 .float-left{
@@ -94,4 +90,12 @@
 
   .hide{
       display: none;
+  }
+
+  ul li {
+      word-wrap: break-word;
+  }
+
+  ul {
+      padding-left: 1em;
   }

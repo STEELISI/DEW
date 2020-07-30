@@ -2,7 +2,7 @@
   <div class="heading">
     <div class="col-md-12">
       <div
-      style="float: left;"
+        style="float: left;"
         class="heading-value"
         contenteditable="true"
         (blur)="checkDefault()"
@@ -10,7 +10,9 @@
         onkeypress="return (this.innerText.length <= 100)"
         (input)="experiment.name = $event.target.textContent"
       ></div>
-      <div style="padding:5px;float: right;">{{101 - experiment.name.length + ' characters left'}}</div>
+      <div style="padding: 5px; float: right;">
+        {{ 101 - experiment.name.length + " characters left" }}
+      </div>
     </div>
   </div>
 </mat-toolbar>
@@ -50,10 +52,17 @@
               >Delete</a
             >
             <div class="dropdown-divider"></div>
-            <a class="dropdown-item" *ngIf="experimentControl > 3" (click)="addUserPopUp()"
+            <a
+              class="dropdown-item"
+              *ngIf="experimentControl > 3"
+              (click)="addUserPopUp()"
               >Share to User</a
             >
-            <a class="dropdown-item" *ngIf="experimentControl > 3" (click)="listUserPopUp()">List of Users
+            <a
+              class="dropdown-item"
+              *ngIf="experimentControl > 3"
+              (click)="listUserPopUp()"
+              >List of Users
             </a>
             <a class="dropdown-item" *ngIf="experimentControl > 3"
               >Share link
@@ -61,23 +70,7 @@
             <a class="dropdown-item" (click)="closeExperiment()">Close</a>
           </div>
         </li>
-        <li class="nav-item dropdown">
-          <a
-            class="nav-link"
-            href="#"
-            id="navbarDropdown4"
-            role="button"
-            data-toggle="dropdown"
-            aria-haspopup="true"
-            aria-expanded="false"
-          >
-            View
-          </a>
-          <div class="dropdown-menu" aria-labelledby="navbarDropdown4">
-            <a class="dropdown-item" (click)="show(1)">Experiment</a>
-            <a class="dropdown-item" (click)="show(2)">Dependency Graph</a>
-          </div>
-        </li>
+
         <li class="nav-item dropdown" *ngIf="experimentControl > 2">
           <a
             class="nav-link"
@@ -111,6 +104,49 @@
           <div class="dropdown-menu" aria-labelledby="navbarDropdown3">
             <a class="dropdown-item" (click)="addBindings()">NS File</a>
           </div>
+        </li>
+        <li class="nav-item dropdown">
+          <a
+            class="nav-link"
+            href="#"
+            id="navbarDropdown2"
+            role="button"
+            data-toggle="dropdown"
+            aria-haspopup="true"
+            aria-expanded="false"
+          >
+            Help
+          </a>
+          <div class="dropdown-menu" aria-labelledby="navbarDropdown2">
+            <a class="dropdown-item" (click)="showInfo(1)">Behavior</a>
+            <a class="dropdown-item" (click)="showInfo(2)">Constraint</a>
+            <a class="dropdown-item" (click)="showInfo(3)">Binding</a>
+          </div>
+        </li>
+        <li class="nav-item dropdown">
+          <a
+            class="nav-link"
+            href="#"
+            id="navbarDropdown4"
+            role="button"
+            data-toggle="dropdown"
+            aria-haspopup="true"
+            aria-expanded="false"
+          (click)="show(2)" [hidden]="viewid ==2">Dependency Graph</a>
+         
+        </li>
+        <li class="nav-item dropdown">
+          <a
+            class="nav-link"
+            href="#"
+            id="navbarDropdown4"
+            role="button"
+            data-toggle="dropdown"
+            aria-haspopup="true"
+            aria-expanded="false"
+            (click)="show(1)" [hidden]="viewid ==1">Experiment</a>
+    
+          
         </li>
       </ul>
     </div>

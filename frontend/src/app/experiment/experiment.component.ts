@@ -5,10 +5,10 @@ import { StateService } from '../state-service.service';
   selector: "app-experiment",
   styleUrls: ['experiment.component.scss'],
   template: `
-  <fixed-layout>
+
   <router-outlet></router-outlet>
   
-  </fixed-layout>
+
   <div *ngIf="loaderSwitch" class="loading style-2"><div class="loading-wheel"></div></div>
   `
 })
