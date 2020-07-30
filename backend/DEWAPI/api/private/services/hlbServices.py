@@ -55,6 +55,10 @@ class HLBService():
         # Go through last behavior line to see what is the current state
         # start (waitd, wait) or (whene, when) or actor, actor, action, method, emit, done
         print("hello:::::::::",len(last_behavior),"::::")
+
+        if last_behavior.startswith("#"):
+            return self.addSuggestions(["enter label name"])
+
         type,vals,hints = parser.extract_partial(last_behavior)
 
         print(type)

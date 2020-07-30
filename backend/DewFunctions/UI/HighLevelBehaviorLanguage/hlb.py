@@ -347,7 +347,8 @@ def getSuggestionsForEvent(evtype):
             for e in globals.events:
                 eline="when "+e
                 suggestions.append(eline)
-        for s in ["wait t"]:
+        for s in ["wait t", "#"]:
+            print("adding: ", s)
             suggestions.append(s)
     elif evtype == "constraints_enter":
         suggestions = suggestions + ["num", "os","link","lan","interfaces","location","nodetype"]
