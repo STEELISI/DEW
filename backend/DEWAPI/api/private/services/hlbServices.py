@@ -119,7 +119,7 @@ class HLBService():
         items = re.split("[\s,]",last_constraint.strip())
         item = items.pop(0)
         if item in ["num", "os","nodetype", "interfaces", "location", "link","lan"] and len(items) == 0:
-            return actors
+            return self.addSuggestions(["actors_only"])
         elif len(items) >= 1:
             if (item == "num" or item == "interfaces") and items[-1] in actors:
                 return self.addSuggestions(["enter digit"])
