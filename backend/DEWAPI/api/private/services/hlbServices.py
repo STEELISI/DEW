@@ -285,6 +285,8 @@ class HLBService():
         i = 0
         for scenario in sceanrios:
             i += 1
+            if scenario.startswith("#"):
+                continue
             _t,v,_h = parser.extract_partial(scenario)
             v["id"] = str(i)
             if v["t_events"] is None:
