@@ -1,0 +1,144 @@
+#!/usr/bin/perl
+# Get eth or IP of the exp or ctrl interface
+# Arguments are positional ip|eth and exp|ctl
+# iface ip|eth exp|ctl [node]
+# If node is specified then node is either IP or
+# short node name
+# Default is eth and exp
+
+$mode = "eth";
+$intf = "exp";
+$node = "";
+for ($i=0; $i <= $#ARGV; $i++)
+{
+    if ($i == 0)
+    {
+	$mode = $ARGV[$i];
+    }
+    elsif ($i == 1)
+    {
+	$intf = $ARGV[$i];
+    }
+    else
+    {
+	$node = $ARGV[$i];
+    }
+}
+$eth = "";
+$ip = "";
+$fixeth = 0;
+if ($node ne "")
+{
+    # Is it IP address or name?
+    $nodeip = "";
+    # We got name, must find IP
+    if ($node !~ /\b(?:\d{1,3}\.){3}\d{1,3}\b/)
+    {
+	open(NS, "nslookup $node |");
+	while(<NS>)
+	{
+	    # Take the last address we got
+	    # unless we couldn't find it
+	    if ($_ !~ /Address:/)
+	    {
+		next;
+	    }
+	    @items = split /\s+/, $_;
+	    if ($#items < 1)
+	    {
+		next;
+	    }
+	    $nodeip = $items[1];
+	    # Couldn't find the answer, check /etc/hosts
+	    if ($nodeip =~ /\#53/)
+	    {
+		my $fh = new IO::File("/etc/hosts");
+		while(<$fh>)
+		{
+		    @items = split /\s+/, $_;
+		    if ($items[1] =~ /$node/)
+		    {
+			$nodeip = $items[0];
+			last;
+		    }
+		}
+	    }		
+	}
+    }
+    if ($nodeip ne "")
+    {
+	open(IP, "ip route get $nodeip |");
+	while(<IP>)
+	{
+	    @items = split /\s+/, $_;
+	    if ($#items == 0)
+	    {
+		next;
+	    }
+	    $eth = $items[2];
+	    if ($mode eq "eth")
+	    {
+		print $eth;
+		exit 0;
+	    }
+	    else
+	    {
+		# Find out ip of the interface
+		# from ifconfig
+		$fixeth = 1;
+		last;
+	    }
+	}
+    }
+}
+open(IP, "ifconfig |");
+$myeth = "";
+while(<IP>)
+{
+    @items = split /\s+/, $_;
+    if ($items[0] ne "")
+    {
+	$items[0] =~ s/\://;
+	if ($fixeth != 1)
+	{
+	    $eth = $items[0];
+	}
+	else
+	{
+	    $myeth = $items[0];
+	}
+    }
+    if ($items[1] eq "inet")
+    {
+	# Account for inet addr: and inet versions
+	if ($_ =~ /inet addr:/)
+	{
+	    $ip = $items[2];
+	    $ip =~ s/addr://;
+	}
+	else
+	{
+	    $ip = $items[2];
+	}
+	if ($intf eq "ctl" && $ip =~ /^192\.168\./)
+	{
+	    last;
+	}
+	if ($intf eq "exp" && $ip !~ /^192\.168\./ && $ip != /^127\./)
+	{
+	    if ($myeth eq $eth || $myeth == "")
+	    {
+		last;
+	    }
+	}	
+    }
+}
+if ($mode eq "ip")
+{
+    print $ip;
+}
+else
+{
+    print $eth;
+}
+
