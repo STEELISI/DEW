@@ -423,15 +423,6 @@ export class InfoComponent implements OnInit {
   }
 
 
-  showInfo(id:number) {
-    //console.log(this.bindingList);
-
-    var dialogRef = this.dialog.open(HLBInforPopUp, {
-      width: "70%",
-      data: id,
-    });
-  }
-
   addBindings() {
     //console.log(this.bindingList);
 
@@ -673,19 +664,3 @@ export class UserListPopUp implements OnInit {
   }
 }
 
-
-@Component({
-  selector: "hlb-info",
-  templateUrl: "hlb-info.component.html",
-  styleUrls: ["./info.component.scss"],
-})
-export class HLBInforPopUp {
-  constructor(
-    public dialogRef: MatDialogRef<HLBInforPopUp>,
-    @Inject(MAT_DIALOG_DATA) public showId: number
-  ) {}
-
-  onNoClick(): void {
-    this.dialogRef.close();
-  }
-}

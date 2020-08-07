@@ -464,6 +464,15 @@ export class HlbComponent implements OnInit {
     this.stateservice.setActors(alist);
   }
 
+  showInfo(id:number) {
+    //console.log(this.bindingList);
+
+    var dialogRef = this.dialog.open(HLBInforPopUp, {
+      width: "70%",
+      data: id,
+    });
+  }
+
   insertActor(actor: String) {
     var t = this.actorsList.find(function (element) {
       return element.text === actor;
@@ -584,6 +593,23 @@ export class BindingPopUp {
   constructor(
     public dialogRef: MatDialogRef<BindingPopUp>,
     @Inject(MAT_DIALOG_DATA) public bindingList: any
+  ) {}
+
+  onNoClick(): void {
+    this.dialogRef.close();
+  }
+}
+
+
+@Component({
+  selector: "hlb-info",
+  templateUrl: "hlb-info.component.html",
+  styleUrls: ["./hlb.component.scss"],
+})
+export class HLBInforPopUp {
+  constructor(
+    public dialogRef: MatDialogRef<HLBInforPopUp>,
+    @Inject(MAT_DIALOG_DATA) public showId: number
   ) {}
 
   onNoClick(): void {

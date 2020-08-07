@@ -24,7 +24,7 @@ import { NgxGraphModule } from "@swimlane/ngx-graph";
 import { CommonModule } from "@angular/common";
 import { HLBParserRoutingModule } from "./hlbparser-routing.module";
 import { RouterModule } from "@angular/router";
-import { HlbComponent, BindingPopUp } from "./hlb/hlb.component";
+import { HlbComponent, BindingPopUp, HLBInforPopUp } from "./hlb/hlb.component";
 import { NlpComponent } from "./nlp/nlp.component";
 import { TextFilterPipe } from "./common/text-filter.pipe";
 import {
@@ -42,7 +42,6 @@ import {
   UploadPopUp,
   NSFilePopUp,
   UserListPopUp,
-  HLBInforPopUp,
 } from "./experiment-info/info.component";
 import {MatToolbarModule} from '@angular/material/toolbar';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
