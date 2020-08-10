@@ -18,8 +18,7 @@ export class HLBParserComponent implements OnInit {
     private route: ActivatedRoute,
     private router:Router,
     protected http: HttpService,
-    private state: StateService,
-    private auth: AuthService
+    private state: StateService
   ) {}
   ngOnInit(): void {
     this.route.params.subscribe((params) => {
@@ -41,6 +40,13 @@ export class HLBParserComponent implements OnInit {
         this.http
           .post("api/v1/pr/persist/getExperimentById", input,{withCredential:true})
           .subscribe((data) => {
+            var serverData = {};
+            serverData['actors'] = data.actors;
+            serverData['name'] = data.name;
+            serverData['behaviors'] = data.behaviors;
+            serverData['bindings'] = data.bindings;
+            serverData['constraints'] = data.constraints;
+
             this.enableView();
             this.state.setActors(data.actors);
             this.state.setExperimentName(data.name);
@@ -49,6 +55,7 @@ export class HLBParserComponent implements OnInit {
             this.state.setBindings(data.bindings);
             this.state.setConstraints(data.constraints);
             this.state.setDriveId(data.driveId);
+            this.state.setLocalServerData(serverData);
            this.state.disableLoader();
           });
         }else{

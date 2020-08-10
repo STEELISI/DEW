@@ -58,6 +58,16 @@ nav,
   font-size: 14px;
   text-align: center;
 }
+
+.saved_bubble {
+  position: absolute;
+  right: 70px;
+  color: black;
+  width: 77px;
+  cursor: default;
+  font-size: 14px;
+  text-align: center;
+}
 mat-toolbar {
   --default-height: 0;
   z-index: 50;

@@ -27,7 +27,7 @@
            
             </div></div>
         </div>
-        <div class="row" style="text-align: center;">
+        <!-- <div class="row" style="text-align: center;">
           <mat-form-field class="col-md-12">
             <mat-label>Email</mat-label>
             <input matInput [(ngModel)]="emailId" name="email" />
@@ -38,14 +38,14 @@
               (click)="enablePassword()"
             ></mat-icon>
           </mat-form-field>
-        </div>
+        </div> -->
         <div
           class="row"
           style="text-align: center;"
           *ngIf="isAlternateLoginEnable()"
         >
           <div class="col-md-12">
-            <p>or</p>
+            <!-- <p>or</p> -->
             <button mat-stroked-button (click)="login()">
               Login using Google!
             </button>

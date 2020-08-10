@@ -3,6 +3,7 @@ import { BehaviorSubject, Observable } from "rxjs";
 
 @Injectable()
 export class StateService {
+  
  
   
   experimentColors: BehaviorSubject<any> = new BehaviorSubject({});
@@ -20,6 +21,14 @@ export class StateService {
   currentBehaviorWord: String;
   currentConstraintWord: String;
   tokenLevel: String;
+  serverData: BehaviorSubject<any> = new BehaviorSubject(null);
+
+  setLocalServerData(serverData: {}) {
+    this.serverData.next(serverData);
+  }
+  getLocalServerData(): Observable<any> {
+    return this.serverData.asObservable();
+   }
   setExperimentControl(code: number) {
     this.experimentControl.next(code);
   }
