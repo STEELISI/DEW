@@ -264,7 +264,11 @@ export class InfoComponent implements OnInit {
           }
         },
         (error) => {
-          alert("Error occured. Please try again later");
+          if(error.status === 401){
+            alert("You have been logged out. Please login (in another tab or window) and try again")
+          }else{
+            alert("Error occured. Please try again later");
+          }
         }
       );
     } else {
@@ -347,7 +351,11 @@ export class InfoComponent implements OnInit {
           }
         },
         (error) => {
-          alert("Error occured. Please try again later");
+          if(error.status === 401){
+            alert("You have been logged out. Please login (in another tab or window) and try again")
+          }else{
+            alert("Error occured. Please try again later");
+          }
         }
       );
     } else {
@@ -369,14 +377,21 @@ export class InfoComponent implements OnInit {
               }
             },
             (error) => {
-              alert("Error occured. Please try again later");
+              if(error.status === 401){
+                alert("You have been logged out. Please login (in another tab or window) and try again")
+              }else{
+                alert("Error occured. Please try again later");
+              }
             }
           );
         }
       },
       (error) => {
-        console.error(error)
-        alert("Error occured. Please try again later");
+        if(error.status === 401){
+          alert("You have been logged out. Please login (in another tab or window) and try again")
+        }else{
+          alert("Error occured. Please try again later");
+        }
       }
     );
   }
