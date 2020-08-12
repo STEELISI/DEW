@@ -1,10 +1,10 @@
-<div class="row">
+<div class="container-fluid">
+  <div class="row">
   <div class="col-md-10 taller"> 
     <ngx-graph #graph
     [links]="links"
     [nodes]="nodes"
     [clusters]="clusters"
-    [view]="[1000,1000]"
     [layout]="layout"
     [layoutSettings]="layoutSettings"
     [curve]="curve"
@@ -52,6 +52,7 @@
             {{link.label}}
           </textPath>
         </svg:text>
+        <svg:rect fill="red" stroke="none" width="20" height="20" [attr.x]="link.midPoint.x" [attr.y]="link.midPoint.y" [attr.visibility]="isEditable()"></svg:rect>
       </svg:g>
     </ng-template>
     <svg:line
@@ -67,6 +68,7 @@
 </ngx-graph>
   </div>
   <div class="col-md-2 padded">
+      <div class="row">Legend</div>
       <div *ngFor="let item of matching | keyvalue">
         <div class="row bottom-border">
           <div class="col-md-3" [ngStyle]="{'background-color': item.value}">
@@ -78,13 +80,34 @@
         </div>
       </div>
       <br/>
-      <div class="custom-control custom-switch">
+      <div class="row">
+        <div class="col-md-3">Zoom level</div>
+        <div class="col-md-9">
+        <button type="button" class="btn btn-info" (click)="zoomIn()">
+          <i class="fa fa-plus info"></i>
+        </button>
+        <button type="button" class="btn btn-danger" (click)="fitToView()">
+          Fit to view
+        </button>
+        <button type="button" class="btn btn-warning" (click)="zoomOut()">
+          <i class="fa fa-minus info"></i>
+        </button>
+      </div>
+      </div>
+      <br/>
+      <div class="custom-control custom-switch bottom-border">
         <input type="checkbox" class="custom-control-input" id="editmode" (click)="toggleDragging()"/>
         <label class="custom-control-label" for="editmode">Edit edges</label>
       </div>
       <br/>
       <div class="row bottom-border">
-        <p>To add an edge, toggle the switch, click on the source (hold the button and do not release) and drag the arrow till the destination.</p> <p>To delete an edge, click on the edge. Please note that the mouse icon changes when a node or edge is clickable.</p>
+        <ul>
+          <li>To add an edge, toggle the switch, click on the source (hold the button and do not release) and drag the arrow till the destination.</li>
+          <li>To delete an edge, click on the red box next to the edge. Please note that the mouse icon changes when a node or edge is clickable.</li>
+          <li>To zoom in or zoom out, use the (+) and (-) buttons to increase or decrease the zoom level</li>
+          <li>Please use the panning functionality instead of scrolling. (Click on the white area and drag in the desired direction)</li>
+        </ul>
       </div>
   </div>
+</div>
 </div>
