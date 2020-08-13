@@ -1,14 +1,22 @@
 #!/usr/bin/perl
 # Get eth or IP of the exp or ctrl interface
 # Arguments are positional ip|eth and exp|ctl
-# iface ip|eth exp|ctl [node]
+# inet ip|eth exp|ctl [node]
 # If node is specified then node is either IP or
 # short node name
 # Default is eth and exp
 
+$usage="$0 ip|eth exp|ctl [node]\n";
+
 $mode = "eth";
 $intf = "exp";
 $node = "";
+
+if ($#ARGV < 1)
+{
+    print $usage;
+    exit 0;
+}
 for ($i=0; $i <= $#ARGV; $i++)
 {
     if ($i == 0)
