@@ -130,6 +130,17 @@ export class DependencyGraphComponent implements OnInit{
   }
 
   /**
+   * showWaitTime
+   */
+  public showWaitTime(wait_time) {
+    if(wait_time === "None"){
+      return "hidden"
+    }else{
+      return "visible"
+    }
+  }
+
+  /**
    * isEditable
    */
   public isEditable() {

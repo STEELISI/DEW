@@ -31,8 +31,12 @@
       <svg:g class="node">        
         <svg:rect [attr.width]="node.dimension.width" [attr.height]="node.dimension.height" [attr.fill]="getColor(node)" (mousedown)="onNodeCircleMouseDown($event, node)"
         (mouseup)="onNodeCircleMouseUp($event, node)"/>
-        <svg:text *ngIf="node.data.wait_time !== 'None'"  alignment-baseline="central" [attr.x] = "10" [attr.y]="-10">(Waits : {{node.data.wait_time}})</svg:text>
-        <svg:text alignment-baseline="middle" font-size="large" [attr.x]="10" [attr.y]="node.dimension.height / 2" (mousedown)="onNodeCircleMouseDown($event, node)" (mouseup)="onNodeCircleMouseUp($event, node)">{{node.data.action}} </svg:text>
+        <!-- <svg:text *ngIf="node.data.wait_time !== 'None'"  alignment-baseline="central" [attr.x] = "10" [attr.y]="-10">(Waits : {{node.data.wait_time}})</svg:text> -->
+        <svg:text font-size="large" [attr.x]="10" [attr.y]="node.dimension.height / 16" (mousedown)="onNodeCircleMouseDown($event, node)" (mouseup)="onNodeCircleMouseUp($event, node)">
+        <svg:tspan x="10" dy="1em" class="wait_time_text" [attr.visibility]="showWaitTime(node.data.wait_time)">(Waits : {{node.data.wait_time}})</svg:tspan>
+        <svg:tspan dominant-baseline="middle" x="10" dy="1em">{{node.data.action}}</svg:tspan>
+        <svg:tspan x="10" dy="2em" visibility="hidden">action</svg:tspan>
+      </svg:text>
       </svg:g>
     </ng-template>
 
@@ -45,14 +49,14 @@
 
     <ng-template #linkTemplate let-link>
       <svg:g class="edge" (click)="deleteEdge($event, link)">
-        <svg:path class="line" stroke-width="2" marker-end="url(#arrow)">
-        </svg:path>
-        <svg:text class="edge-label" text-anchor="middle">
-          <textPath class="text-path" [attr.href]="'#' + link.id" [style.dominant-baseline]="link.dominantBaseline" startOffset="50%">
-            {{link.label}}
-          </textPath>
-        </svg:text>
         <svg:rect fill="red" stroke="none" width="20" height="20" [attr.x]="link.midPoint.x" [attr.y]="link.midPoint.y" [attr.visibility]="isEditable()"></svg:rect>
+        <svg:path [attr.id]="link.id" class="line" stroke-width="2" marker-end="url(#arrow)">
+        </svg:path>
+        <svg:text text-anchor="middle">
+          <svg:textPath class="text-path" [attr.href]="'#' + link.id" [style.dominant-baseline]="link.dominantBaseline" startOffset="50%">
+            {{link.label}}
+          </svg:textPath>
+        </svg:text>
       </svg:g>
     </ng-template>
     <svg:line
