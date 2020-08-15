@@ -131,6 +131,7 @@ class GeneralGenerator(object):
         if scenarios is not None:
             for scenario in scenarios:
                 _t,v,_h = parser.extract_partial(scenario)
+                print(v)
                 nodes.append(v)
             for a in nodes:
                 if a['actors'] is not None:
@@ -139,6 +140,8 @@ class GeneralGenerator(object):
                             actors.append(b)
         for i in constraintList:
             for x in i:
+                if x is None:
+                    break
                 if x == "num":
                     nodeList.append(i)
                     #print(nodeList)
@@ -147,7 +150,7 @@ class GeneralGenerator(object):
                     osList.append(i)
                     #print(osList)
                     break
-                elif x == "lan":
+                elif "lan" in x:
                     lanList.append(i)
                     #print(lanList)
                     break
@@ -155,9 +158,8 @@ class GeneralGenerator(object):
                     locationList.append(i)
                     #print(locationList)
                     break
-                elif x == "link":
+                elif "link" in x:
                     linkList.append(i)
-                    #print(linkList)
                     break
         clientServerList = {}
         if len(nodeList):
@@ -203,9 +205,18 @@ class GeneralGenerator(object):
            sampleList = []
            for x in linkList:
                 c = 0
+                allLink = 0
+                anyLink = 0
                 sampleList.clear()
                 for y in x:
-                    if y == "link" or y == None:
+                    if y is not None:
+                        if "link" in y:
+                            if "all" in y:
+                                allLink = 1
+                            elif "any" in y:
+                                anyLink = 1
+                            continue
+                    if y == None:
                         continue
                     for k in y:
                         c+=1
@@ -217,7 +228,10 @@ class GeneralGenerator(object):
                 for k in sampleList:
                     if str(k) in clientServerList:
                         if int(clientServerList[str(k)]) < minimum:
-                            minimum = clientServerList[k]
+                            if allLink == 1:
+                                minimum = clientServerList[k]
+                            elif anyLink == 1:
+                                minimum = 1
                     else:
                         #print("ERROR:\t Node is not defined, Cannot be converted to NS command:", x)
                         #print("ALERT:\t Node is not defined, Creating a node:", str(k))
@@ -230,6 +244,12 @@ class GeneralGenerator(object):
                         sampleString += "\tset " + str(k) + "$i" + " [$ns node]\n"
                         sampleString += "}\n"
                         nsCommands += sampleString
+                if int(clientServerList[str(sampleList[0])]) != 1 and int(clientServerList[str(sampleList[1])]) != 1:
+                    if allLink == 0 and anyLink == 0:
+                        print("ERROR:\t ALL or ANY keyword must be specified for node more than 1, Node:",str(sampleList[0]),",",str(sampleList[1]))
+                        minimum = 1
+                else:
+                    minimum = 1
                 for j in range(0,minimum):
                     counter+=1
                     nsCommands += "set link"+ str(counter) +" "
@@ -279,9 +299,18 @@ class GeneralGenerator(object):
            sampleLanList = []
            for x in lanList:
                 c = 0
+                allLan = 0
+                anyLan = 0
                 sampleLanList.clear()
                 for y in x:
-                    if y == "lan" or y == None:
+                    if y is not None:
+                        if "lan" in y:
+                            if "all" in y:
+                                allLan = 1
+                            elif "any" in y:
+                                anyLan = 1
+                            continue
+                    if y == None:
                         continue
                     for k in y:
                         c+=1
@@ -293,7 +322,10 @@ class GeneralGenerator(object):
                 for k in sampleLanList:
                     if str(k) in clientServerList:
                         if int(clientServerList[str(k)]) < minimum:
-                            minimum = int(clientServerList[str(k)])
+                            if allLan == 1:
+                                minimum = int(clientServerList[str(k)])
+                            elif anyLan == 1:
+                                minimum = 1
                     else:
                         #print("ERROR:\t Node is not defined, Cannot be converted to NS command:", x)
                         #print("ALERT:\t Node is not defined, Creating a node:", str(k))
@@ -301,6 +333,12 @@ class GeneralGenerator(object):
                         clientServerList[str(k)] = minimum
                         nsCommands += "set " + str(k) + "0" + " [$ns node]\n"
 
+                if int(clientServerList[str(sampleLanList[0])]) != 1 and int(clientServerList[str(sampleLanList[1])]) != 1:
+                    if allLan == 0 and anyLan == 0:
+                        print("ERROR:\t ALL or ANY keyword must be specified for node more than 1, Node:",str(sampleLanList[0]),",",str(sampleLanList[1]))
+                        minimum = 1
+                else:
+                    minimum = 1
                 for k in sampleLanList:
                     for j in range(0,minimum):
                         counter+=1

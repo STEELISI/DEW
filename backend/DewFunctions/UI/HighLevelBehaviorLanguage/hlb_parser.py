@@ -20,14 +20,20 @@ class HLBHintType(Enum):
 class ConstraintParser():
     wsp = White().suppress()
     comma = Literal(",").suppress()
+    all_keyword = CaselessKeyword("all")
+    any_keyword = CaselessKeyword("any")
     num_keyword  = CaselessKeyword("num")
     os_keyword   = CaselessKeyword("os")
     link_keyword = CaselessKeyword("link")
+    link_all_keyword = link_keyword + wsp + all_keyword
+    link_any_keyword = link_keyword + wsp + any_keyword
     lan_keyword  = CaselessKeyword("lan")
+    lan_all_keyword  = lan_keyword + wsp + all_keyword
+    lan_any_keyword  = lan_keyword + wsp + any_keyword
     interfaces_keyword = CaselessKeyword("interfaces")
     location_keyword = CaselessKeyword("location")
     nodetype_keyword = CaselessKeyword("nodetype")
-    not_akeyword = (NotAny(num_keyword) + NotAny(os_keyword) + NotAny(link_keyword) + NotAny(lan_keyword) + NotAny(interfaces_keyword) + NotAny(location_keyword) + NotAny(nodetype_keyword))
+    not_akeyword = (NotAny(all_keyword) + NotAny(any_keyword) + NotAny(num_keyword) + NotAny(os_keyword) + NotAny(link_keyword) + NotAny(lan_keyword) + NotAny(interfaces_keyword) + NotAny(location_keyword) + NotAny(nodetype_keyword))
     
     actor = (not_akeyword + Word(alphanums+'_'))
     actors = actor + ZeroOrMore(wsp + actor)
@@ -40,8 +46,8 @@ class ConstraintParser():
     
     single_entity_num_stmt = (single_entity_num_constraint("constraint") + wsp + actor("target") + wsp + numValue("value"))
     single_entity_str_stmt = (single_entity_constraint("constraint") + wsp + actor("target") + wsp + strValue("value"))
-    link_stmt = (link_keyword("constraint") + wsp + actor_pair("target"))
-    lan_stmt = (lan_keyword("constraint") + wsp + actors("target"))
+    link_stmt = (link_keyword("constraint") + wsp + actor_pair("target")) | (link_all_keyword("constraint") + wsp + actor_pair("target")) | (link_any_keyword("constraint") + wsp + actor_pair("target"))
+    lan_stmt = (lan_keyword("constraint") + wsp + actors("target")) | (lan_all_keyword("constraint") + wsp + actors("target")) | (lan_any_keyword("constraint") + wsp + actors("target"))
     
     constraint_statement = (single_entity_num_stmt | single_entity_str_stmt | link_stmt | lan_stmt) + LineEnd()
     
@@ -61,19 +67,23 @@ class ConstraintParser():
 
 class HLBParser():
     when_keyword = CaselessKeyword("when").suppress()
+    all_keyword = CaselessKeyword("all")
+    any_keyword = CaselessKeyword("any")
     wait_keyword = CaselessKeyword("wait").suppress() 
     emit_keyword = CaselessKeyword("emit").suppress()
-    not_akeyword = (NotAny(emit_keyword) + NotAny(wait_keyword) + NotAny(when_keyword))
+    not_akeyword = (NotAny(emit_keyword) + NotAny(wait_keyword) + NotAny(when_keyword) + NotAny(all_keyword) + NotAny(any_keyword))
     comma = Literal(",").suppress()
     newline = Literal("\n")
     wsp = White().suppress()
+    keyword_all = all_keyword
+    keyword_any = any_keyword
     actor = (not_akeyword + Word(alphanums+'_'))
     actors = actor + ZeroOrMore((comma + wsp + actor | comma + actor))
     #action = (Optional(CaselessKeyword("start") | CaselessKeyword("stop") | CaselessKeyword("restart") | CaselessKeyword("check")) + (not_akeyword + Word(alphanums)))	
     action = (not_akeyword + Word(alphanums+'_'))
     event = (not_akeyword + Word(alphanums+'_'))
     events = event + ZeroOrMore((comma + wsp + event | comma + event))
-    when_trigger = when_keyword + events("t_events")
+    when_trigger = (when_keyword + events("t_events")) | (when_keyword + wsp + keyword_all("all") + wsp + events("t_events")) | (when_keyword + wsp + keyword_any("any") + wsp + events("t_events"))
     wait_time = (not_akeyword + Word(alphanums+'_'))
     wait_trigger = (wait_keyword + wait_time("wait_time"))
     trigger = (when_trigger + wsp + wait_trigger | when_trigger | wait_trigger)
@@ -102,10 +112,12 @@ class HLBParser():
         self.actors = actors
     
     #hlb = hlb_statement + newline + hlb
-    def new_return_dict(self, t_events=None, actors=None, action=None, e_events=None, wait_time=None):
+    def new_return_dict(self,all_keyword=None, any_keyword=None,  t_events=None, actors=None, action=None, e_events=None, wait_time=None):
         # Initializes all the vars we may have to report.
         # parsed.t_events, parsed.actors, parsed.action, parsed.e_events, parsed.wait_time
         v = {}
+        v['all_keyword'] = all_keyword
+        v['any_keyword'] = any_keyword
         # Should be None or list
         v['t_events'] = self.if_not_none_return_list(t_events)
         # Should be None or list
@@ -163,7 +175,7 @@ class HLBParser():
             return(None, None, None, None, None)
         if parsed.e_events == None:
             parsed.e_events = []
-        return_tuple = (list(parsed.t_events), list(parsed.actors), list(parsed.action), list(parsed.e_events), str(parsed.wait_time))
+        return_tuple = (parsed.all, parsed.any, list(parsed.t_events), list(parsed.actors), list(parsed.action), list(parsed.e_events), str(parsed.wait_time))
         return(tuple(r if r != [] and r != "" else None for r in return_tuple))
 
     def transitionBstate2(self, ll):
@@ -195,7 +207,7 @@ class HLBParser():
         #print("Parsing \'%s\'" % partial)
         if len(partial.strip().split()) == 0:
             return(HLBHintType.BLANK,  self.new_return_dict(), ['WHEN', 'WAIT', '<ACTOR>'])
-        t_events, actors, action, e_events, wait_time = self.parse_stmt(partial)
+        all_keyword, any_keyword, t_events, actors, action, e_events, wait_time = self.parse_stmt(partial)
         # In case we have a 2 word action with a <keyword string> pattern:
         try:
             action = ''.join(action)
@@ -203,11 +215,11 @@ class HLBParser():
             action = str(action)
         if actors != None and e_events != None:
             #print("Complete statement with emit.")
-            return(HLBHintType.NO_HINT, self.new_return_dict(t_events=t_events, actors=actors, action=action, e_events=e_events, wait_time=wait_time), []) 
+            return(HLBHintType.NO_HINT, self.new_return_dict(all_keyword=all_keyword, any_keyword=any_keyword, t_events=t_events, actors=actors, action=action, e_events=e_events, wait_time=wait_time), [])
         elif actors != None and e_events == None:
             #print("Complete statement, with no emit.")
             hint_list = ['EMIT ' + action +'Signal', 'EMIT'] 
-            return(HLBHintType.OPT_EMIT_STMT, self.new_return_dict(t_events=t_events, actors=actors, action=action, wait_time=wait_time), hint_list) 
+            return(HLBHintType.OPT_EMIT_STMT, self.new_return_dict(all_keyword=all_keyword, any_keyword=any_keyword, t_events=t_events, actors=actors, action=action, wait_time=wait_time), hint_list)
         
         
         # Our statement isn't complete or correct:
