@@ -25,6 +25,13 @@
       <svg:marker id="arrow" viewBox="0 -5 10 10" refX="8" refY="0" markerWidth="4" markerHeight="4" orient="auto">
         <svg:path d="M0,-5L10,0L0,5" class="arrow-head" />
       </svg:marker>
+      <svg:marker id="all_keyword" viewBox="0 -20 30 30" refX="30" refY="-20" markerWidth="80" markerHeight="20" orient="0">
+        <svg:text>ALL</svg:text>
+      </svg:marker>
+      <svg:marker id="any_keyword" viewBox="0 -20 30 30" refX="30" refY="-20" markerWidth="80" markerHeight="20" orient="0">
+        <svg:text>ANY</svg:text>
+      </svg:marker>
+
     </ng-template>
 
     <ng-template #nodeTemplate let-node>
@@ -50,7 +57,7 @@
     <ng-template #linkTemplate let-link>
       <svg:g class="edge" (click)="deleteEdge($event, link)">
         <svg:rect fill="red" stroke="none" width="20" height="20" [attr.x]="link.midPoint.x" [attr.y]="link.midPoint.y" [attr.visibility]="isEditable()"></svg:rect>
-        <svg:path [attr.id]="link.id" class="line" stroke-width="2" marker-end="url(#arrow)">
+        <svg:path [attr.id]="link.id" class="line" stroke-width="2" marker-end="url(#arrow)" [attr.marker-mid]="getAllOrAnyKeyword(link)">
         </svg:path>
         <svg:text text-anchor="middle">
           <svg:textPath class="text-path" [attr.href]="'#' + link.id" [style.dominant-baseline]="link.dominantBaseline" startOffset="50%">

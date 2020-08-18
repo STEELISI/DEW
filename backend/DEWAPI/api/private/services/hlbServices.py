@@ -281,6 +281,7 @@ class HLBService():
         edges = []
         t_events = defaultdict(list)
         e_events = defaultdict(list)
+        all_any_flags = defaultdict(str)
         parser = HLBParser([])
         i = 0
         for scenario in sceanrios:
@@ -301,6 +302,10 @@ class HLBService():
                     e_events[e].append(n['id'])
             if n['t_events'] is not None:
                 for e in n['t_events']:
+                    if n['all_keyword'] is not None:
+                        all_any_flags[n['id']] = 'all'
+                    if n['any_keyword'] is not None:
+                        all_any_flags[n['id']] = 'any'
                     t_events[e].append(n['id'])
 
         for e in e_events:
@@ -308,8 +313,7 @@ class HLBService():
             for s in e_events[e]:
                 for t in t_events[e]:
                     j += 1
-                    edges.append({ 'id': e + str(j), 'source': s, 'target': t, 'label': e })
-
+                    edges.append({ 'id': e + str(j), 'source': s, 'target': t, 'label': e, 'data': {'all_or_any': all_any_flags[t] }})
         return nodes, edges
 
     #Handle generateNS

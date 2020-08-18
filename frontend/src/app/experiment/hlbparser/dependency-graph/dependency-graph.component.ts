@@ -130,6 +130,17 @@ export class DependencyGraphComponent implements OnInit{
   }
 
   /**
+   * getAllOrAnyKeyword
+   */
+  public getAllOrAnyKeyword(link) {
+    if(link.data.all_or_any !== ""){
+      return "url(#"+link.data.all_or_any+"_keyword)"
+    }else{
+      return ""
+    }
+  }
+
+  /**
    * showWaitTime
    */
   public showWaitTime(wait_time) {
@@ -283,7 +294,10 @@ node   */
       id: Math.random().toString(36).substring(7),
       source: this.draggingNode.id,
       target: dest.id,
-      label: this.draggingNode.label + "Run" + this.draggingNode.data.action + "Sig"
+      label: this.draggingNode.label + "Run" + this.draggingNode.data.action + "Sig",
+      data: {
+        all_or_any: ""
+      }
     }
 
     if(src.data['e_events'].indexOf(edge.label) === -1){
