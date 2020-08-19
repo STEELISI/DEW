@@ -88,6 +88,7 @@ export class UploadComponent {
               this.state.setActors(data.actors);
               this.state.setBehavior(data.behaviors);
               this.state.setBindings(data.bindings);
+              this.state.setConstraints(data.constraints);
               // this.state.setBindings(data.constraints);
               this._snackBar.open(
                 "File name " + fileEntry.name + " is uploaded!",
