@@ -62,6 +62,7 @@ class ExperimentManager(object):
     def dew_content(self, experiment_id):
         content = json.loads(Experiment.query.get(experiment_id).content)
         dew_file = configparser.ConfigParser(allow_no_value=True)
+        dew_file.optionxform = str
         dew_file.add_section('Scenario')
         for b in content['behaviors']:
             dew_file.set('Scenario',b)
