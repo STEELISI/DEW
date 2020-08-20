@@ -76,6 +76,23 @@ class ExperimentManager(object):
         dew_file.write(x)
         return x.getvalue()
 
+    def get_content_in_dew_format(self, content_string):
+        content = json.loads(content_string)
+        dew_file = configparser.ConfigParser(allow_no_value=True)
+        dew_file.optionxform = str
+        dew_file.add_section('Scenario')
+        for b in content['behaviors']:
+            dew_file.set('Scenario', b)
+        dew_file.add_section('Bindings')
+        for b in content['bindings']:
+            dew_file.set('Bindings', b)
+        dew_file.add_section('Constraints')
+        for c in content['constraints']:
+            dew_file.set('Constraints', c)
+        x = io.StringIO()
+        dew_file.write(x)
+        return x.getvalue()
+
 
     def create_new_drive_file(self, experiment_id, current_user_id, token):
         e = self.get_experiment(experiment_id,current_user_id)
@@ -94,7 +111,7 @@ class ExperimentManager(object):
             if e is None:
                 raise ValueError("Forbidden")
             else:
-                return [{'content': v.content, 'name': v.name, 'updated_at': v.updated_at, 'description': v.description} for v in list(e.versions)]
+                return [{'content': json.loads(v.content), 'dew_content': self.get_content_in_dew_format(v.content), 'name': v.name, 'updated_at': v.updated_at, 'description': v.description} for v in list(e.versions)[::-1]]
 
 
     def update_experiment(self, experiment_id, current_user_id, name, content, description, driveId=None):

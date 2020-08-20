@@ -54,6 +54,14 @@
             <div class="dropdown-divider"></div>
             <a
               class="dropdown-item"
+              (click)="showVersionsPopup()"
+              *ngIf="experimentControl > 3"
+              >View version history</a
+            >
+
+            <div class="dropdown-divider"></div>
+            <a
+              class="dropdown-item"
               *ngIf="experimentControl > 3"
               (click)="addUserPopUp()"
               >Share to User</a

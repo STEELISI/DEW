@@ -303,9 +303,10 @@ class HandleExperimentVersions(Resource):
         content = request.get_json(force=True)
         userId = userObj.getUserId()
         experiment_id = content['id']
+        versions = em.get_experiment_versions(experiment_id, userId)
 
         try:
-            return em.get_experiment_versions(experiment_id, userId)
+            return { "status": "success", "versions": versions}
         except ValueError as e:
             if str(e) == "Forbidden":
                 return {}, 403
