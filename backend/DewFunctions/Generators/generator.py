@@ -12,13 +12,14 @@ sys.path.append('../UI/HighLevelBehaviorLanguage/')
 sys.path.append('../UI/')
 
 import globals
+import ast
 
-from hlb_parser import HLBParser, ConstraintParser
+from hlb_parser import HLBParser, ConstraintParser, BindingParser
 
 
 class GeneralGenerator(object):
     # scenario and constraints given as a list.
-    def __init__(self, scenario, constraints=None, name='Generic Class'):
+    def __init__(self, scenario, constraints=None, bindings=None, name='Generic Class'):
         # For debugging. Subclass should set this to something meaningful. e.g. "bash"
         self.name = name
 
@@ -29,13 +30,18 @@ class GeneralGenerator(object):
         # The order of the list is not meaningful.
         self.scenario = scenario
 
+        # A list of bindings statements. E.g. ['Bindings statement 1', 'Bindings statement 2']
+        self.bindings = bindings
+
         # Imported from hlb_parser.
         self.HLBparser = HLBParser(globals.actors)
         self.ConstParser = ConstraintParser()
+        self.BindParser = BindingParser()
 
         # After we parse statements, we store them as a list of tuples (one tuple per statement).
         self.scenario_parsed = []
         self.constraints_parsed = []
+        self.bindings_parsed = {}
 
 
     def parse(self):
@@ -358,5 +364,100 @@ class GeneralGenerator(object):
         opt += nsCommands
         opt += "$ns rtproto Static\n"
         opt += "$ns run\n"
-        return opt
+        return opt, clientServerList
         #self.outputNS()
+
+    def generateBASH(self, scenarios, bindings, clientServerList):
+        if not self.bindings:
+            self.bindings = bindings
+
+        for s in self.bindings:
+            try:
+                key,value = self.BindParser.parse_stmt(s)
+            except:
+                print("ERROR:\tCannot parse the following Scenario statement: %s\n" % s)
+                return False
+            # See above comment - we return all Nones if statement is un-parsable.
+            if key == None or value == None:
+                print("ERROR:\tUnparsable Bindings statement: %s\n" % s)
+                return False
+            self.bindings_parsed[key] = value
+        bindings = self.bindings_parsed.copy()
+        nodes = []
+        exp = "$exp"
+        proj = "$proj"
+        removeResultFile = "\'rm ~/res1;"
+        writeResultFile = "echo $? > ~/res1\'"
+        writeResult = "\'cat ~/res1\' > lastCmdResult"
+        bashScript = ""
+        tab = ""
+        commandSupported = ["tcpdump","ping","iperf","nmap","curl","scp","dig","Install_and_run_apache","Install_and_run_bind"]
+        events = {}
+        parser = HLBParser([])
+        if scenarios is not None:
+            bashScript += "exp=$1\n"
+            bashScript += "proj=$2\n"
+            for scenario in scenarios:
+                sampleString = ""
+                _t,v,_h = parser.extract_partial(scenario)
+                print(v)
+                if v['actors'] is not None:
+                    if v['t_events'] is not None:
+                        sampleString += "if [ -z " + "\"$"
+                        temp = ""
+                        sampleEvents = ""
+                        for i in v['t_events']:
+                            if i in bindings.keys():
+                                sampleString += temp
+                                sampleString += i
+                                temp = " || -z \"$"
+                                sampleEvents += i + " "
+                        sampleString += "\" ]\n"
+                        sampleString += "then\n"
+                        sampleString += "\t echo \"Events:" + sampleEvents + " is not set\"\n"
+                        sampleString += "else\n"
+                        tab = "\t"
+                    if v['wait_time'] != "None":
+                        res = ast.literal_eval(v['wait_time'])
+                        for i in res:
+                            if i in bindings.keys():
+                                sampleString += tab + "sleep " + bindings[i] + "\n"
+                    if v['action'] is not None and v['action'] in bindings.keys():
+                        temp = bindings[v['action']]
+                        sampleList = temp.split()
+                        if temp:
+                            #if sampleList[0] in commandSupported:
+                            if sampleList[0]:
+                                for val in sampleList:
+                                    if val in clientServerList:
+                                        if val == sampleList[-1]:
+                                            bindings[v['action']] = bindings[v['action']].replace(" "+val," "+val+"0")
+                                        else:
+                                            bindings[v['action']] = bindings[v['action']].replace(" "+val+" "," "+val+"0"+" ")
+                                sampleString += tab + "ssh "+ v['actors'][0] + str(min(0, clientServerList[v['actors'][0]])) + "." + exp + "." + proj + ".isi.deterlab.net "
+                                sampleString += removeResultFile
+                                sampleString += bindings[v['action']]
+                                sampleString += ";"
+                                sampleString += writeResultFile
+                                sampleString += "\n"
+                                sampleString += tab + "lastCmdResult" + "=" + "`ssh "+ v['actors'][0] + str(min(0, clientServerList[v['actors'][0]])) + "." + exp + "." + proj + ".isi.deterlab.net "
+                                sampleString += "\'cat ~/res1\'`"
+                                sampleString += "\n"
+                                if v['t_events'] is not None:
+                                    sampleString += "fi\n"
+                                tab = ""
+                    if v['e_events'] is not None:
+                        for i in v['e_events']:
+                            if i in bindings.keys():
+                                events[i] = bindings[i]
+                                sampleString += "if [ $lastCmdResult -eq 0 ]\n"
+                                sampleString += "then\n"
+                                sampleString += "\t"
+                                sampleString += bindings[i]
+                                sampleString += "\n\t"
+                                sampleString +=  i + "=`echo $?`"
+                                sampleString += "\n"
+                                sampleString += "fi\n"
+                bashScript += sampleString
+        #print(events)
+        return bashScript

@@ -574,6 +574,79 @@ export class InfoComponent implements OnInit {
       downloadLink.click();
     }
   }
+
+  bashGen() {
+    //console.log(this.bindingList);
+    var dialogRef = this.dialog.open(BASHFilePopUp, {
+      width: "70%",
+      data: this.experiment.bindings,
+    });
+
+    dialogRef.afterClosed().subscribe((result) => {
+      //console.log('The dialog was closed');
+      this.generateBash();
+    });
+  }
+  generateBash() {
+    var data = {
+      actors: this.experiment.actors,
+      behaviors: this.experiment.behaviors,
+      constraints: this.experiment.constraints,
+      bindings: this.experiment.bindings,
+    };
+    var flag = false;
+    this.experiment.behaviors.forEach((element) => {
+      if (element == null || element.trim() == "") {
+        flag = true;
+        return;
+      }
+    });
+
+    if (flag) return;
+    this.http.put("v1/pr/hlb/generateBash", data, {withCredential:true}).subscribe(
+      (data) => {
+
+        this.downLoadBashFile(data.script);
+        this._snackBar.open("Successfully Downloaded.", "close", {
+          duration: 2000,
+        });
+        // this.stateservice.setBindings(data.Bindings);
+      },
+      (error) => {
+        this._snackBar.open(error, "close", {
+          duration: 2000,
+        });
+      }
+    );
+  }
+
+  downLoadBashFile(data: any) {
+    var blob = new Blob([data], { type: "text/plain" });
+    //console.log(blob);
+    // var url = (window.URL || window.webkitURL).createObjectURL(blob);
+    var fileName = "bashFile.txt";
+    if ("msSaveOrOpenBlob" in navigator) {
+      navigator.msSaveOrOpenBlob(blob, fileName);
+    } else {
+      var downloadLink = document.createElement("a");
+      downloadLink.download = fileName;
+      downloadLink.innerHTML = "Download File";
+      // if ('webkitURL' in window) {
+      // Chrome allows the link to be clicked
+      // without actually adding it to the DOM.
+      //  downloadLink.href = window.webkitURL.createObjectURL(blob);
+      // } else {
+      // Firefox requires the link to be added to the DOM
+      // before it can be clicked.
+      downloadLink.href = window.URL.createObjectURL(blob);
+      //downloadLink.onclick = destroyClickedElement;
+      downloadLink.style.display = "none";
+      document.body.appendChild(downloadLink);
+      //  }
+
+      downloadLink.click();
+    }
+  }
 }
 
 
@@ -749,6 +822,22 @@ export class VersionsPopUp implements OnInit {
 export class NSFilePopUp {
   constructor(
     public dialogRef: MatDialogRef<NSFilePopUp>,
+    @Inject(MAT_DIALOG_DATA) public bindingList: any
+  ) {}
+
+  onNoClick(): void {
+    this.dialogRef.close();
+  }
+}
+
+@Component({
+  selector: "hlb2-binding",
+  templateUrl: "hlb-binding.component.html",
+  styleUrls: ["./info.component.scss"],
+})
+export class BASHFilePopUp {
+  constructor(
+    public dialogRef: MatDialogRef<BASHFilePopUp>,
     @Inject(MAT_DIALOG_DATA) public bindingList: any
   ) {}
 

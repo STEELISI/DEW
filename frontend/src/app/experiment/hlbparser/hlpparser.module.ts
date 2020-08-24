@@ -41,6 +41,7 @@ import {
   NLPPopUp,
   UploadPopUp,
   NSFilePopUp,
+  BASHFilePopUp,
   UserListPopUp,
   VersionsPopUp,
 } from "./experiment-info/info.component";
@@ -65,6 +66,7 @@ import { BrowserModule } from '@angular/platform-browser';
     NLPPopUp,
     UploadPopUp,
     NSFilePopUp,
+    BASHFilePopUp,
     UserListPopUp,
     VersionsPopUp,
   ],
@@ -103,6 +105,7 @@ import { BrowserModule } from '@angular/platform-browser';
     NLPPopUp,
     UploadPopUp,
     NSFilePopUp,
+    BASHFilePopUp,
     UserListPopUp,
     VersionsPopUp,
   ],

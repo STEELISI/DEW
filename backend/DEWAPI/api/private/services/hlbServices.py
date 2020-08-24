@@ -28,7 +28,7 @@ class HLBService():
         i=0
         # parse out events, globals.actors, actions and methods
         # from every line but the last
-        
+
         parser = HLBParser(given_actors)
         # TODO : Remove globals
         for b in behaviors:
@@ -115,7 +115,7 @@ class HLBService():
 
     def HandleConstraintSuggestions(self, constraints, actors, last_constraint):
         suggestions = []
-      
+
         items = re.split("[\s,]",last_constraint.strip())
         item = items.pop(0)
         if item in ["num", "os","nodetype", "interfaces", "location", "link","lan"] and len(items) == 0:
@@ -322,7 +322,21 @@ class HLBService():
         actors = json_data['actors']
         scenario = json_data['behaviors']
         constraints = json_data['constraints']
+        bindings = json_data['bindings']
         generator = bashGenerator(scenario, constraints=constraints)
         scenario_parsed, constraints_parsed = generator.generate()
         ns_script = generator.generateNS(constraints_parsed, None, actors)
         return ns_script
+
+    #Handle generateBASH
+    def HandleBASH(self,json_data):
+        errors = []
+        actors = json_data['actors']
+        scenario = json_data['behaviors']
+        constraints = json_data['constraints']
+        bindings = json_data['bindings']
+        generator = bashGenerator(scenario, constraints=constraints)
+        scenario_parsed, constraints_parsed = generator.generate()
+        ns_script, clientServerList = generator.generateNS(constraints_parsed, None, actors)
+        bash_script = generator.generateBASH(scenario, bindings, clientServerList)
+        return bash_script

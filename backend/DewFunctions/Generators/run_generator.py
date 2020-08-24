@@ -19,6 +19,7 @@ if __name__ == "__main__":
     hlbFullParser.read_file(args.inputFileName)
     constraints = [x[0] for x in hlbFullParser.items('Constraints')]
     scenarios = [x[0] for x in hlbFullParser.items('Scenario')]
+    bindings = [x[0] for x in hlbFullParser.items('Bindings')]
 
     cwd = os.path.dirname(os.path.realpath(__file__))
     parentDirectory = os.path.abspath(os.path.join(cwd, os.pardir))
@@ -34,11 +35,7 @@ if __name__ == "__main__":
     chosenGenerator = __import__(args.generatorType, fromlist=['Generator'])
     generator = chosenGenerator.Generator(scenarios, constraints=constraints)
     [t, y] = generator.generate()
-    nsScript = generator.generateNS(y, scenarios, None)
+    nsScript, clientServerList = generator.generateNS(y, scenarios, None)
     print(nsScript)
-
-
-
-
-
-
+    bashScript = generator.generateBASH(scenarios, bindings, clientServerList)
+    print(bashScript)
