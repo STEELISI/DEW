@@ -30,6 +30,7 @@ export class GoogleRegistrationComponent implements OnInit {
   emailId: string = "";
   fullName:string="";
   userHandle:string="";
+  institution:string="";
   active:boolean=false;
   userHandleExist:boolean=false;
   token:string;
@@ -116,6 +117,6 @@ return null;
   }
 
   isEnable():boolean{
-    return this.active;
+    return this.active && this.institution.trim() !='';
   }
 }

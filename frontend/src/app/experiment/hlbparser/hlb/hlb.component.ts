@@ -150,7 +150,7 @@ export class HlbComponent implements OnInit {
 
         this.behaviorService.isTabPressed().subscribe((flag) => {
           if (flag) {
-            //console.log("inside istab");
+           //console.log("inside istab");
             if (this.stateservice.getCurrentBehaviorWord().trim() != "")
               this.insertValue(
                 this.stateservice.getCurrentBehaviorWord(),

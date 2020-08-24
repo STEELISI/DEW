@@ -90,6 +90,15 @@ mat-toolbar[color="warn"] {
   background-color: #eee;
 }
 
+.green_saved{
+  background-color:lightgreen !important;
+}
+
+.grey_saved{
+  background-color:#eee !important;
+}
+
+
 div[contenteditable="true"].single-line {
   white-space: nowrap;
   overflow: hidden;

@@ -45,7 +45,7 @@ export class InfoComponent implements OnInit {
   // gdrive = new GoogleDriveService(this.http, this.auth);
   nameControl = new FormControl();
   experimentControl = 4;
-
+  
     show(id){
       this.viewid = id;
       this.viewId.emit(id);
@@ -124,23 +124,20 @@ export class InfoComponent implements OnInit {
   }
  
   isSaved():boolean {
-    if(this.experiment.name != this.localServerData['name']){
+    if(this.localServerData == undefined || this.experiment.name != this.localServerData['name']){
       // console.log(this.experiment.name)
       // console.log(this.localServerData['name'])
       // console.log("name not match")
         return false;
     }
     
-    if(!(this.experiment.actors.length === this.localServerData['actors'].length 
+    if(this.localServerData == undefined || !(this.experiment.actors.length === this.localServerData['actors'].length 
     && this.localServerData['actors'].every((value, index) => value === this.experiment.actors[index])))
         {
-          // console.log(this.experiment.actors)
-          // console.log(this.localServerData['actors'])
-          // console.log("actors not match")
         return false;
         }
 
-        if(!(this.experiment.behaviors.length === this.localServerData['behaviors'].length 
+        if(this.localServerData == undefined || !(this.experiment.behaviors.length === this.localServerData['behaviors'].length 
     && this.localServerData['behaviors'].every((value, index) => value === this.experiment.behaviors[index])))
         {
          
@@ -148,7 +145,7 @@ export class InfoComponent implements OnInit {
         return false;
         }
 
-        if(!(this.experiment.bindings.length === this.localServerData['bindings'].length 
+        if(this.localServerData == undefined || !(this.experiment.bindings.length === this.localServerData['bindings'].length 
     && this.localServerData['bindings'].every((value, index) => value === this.experiment.bindings[index])))
         {
           //console.log("bindings not match")
@@ -156,7 +153,7 @@ export class InfoComponent implements OnInit {
         return false;
         }
 
-        if(!(this.experiment.constraints.length === this.localServerData['constraints'].length 
+        if(this.localServerData == undefined || !(this.experiment.constraints.length === this.localServerData['constraints'].length 
     && this.localServerData['constraints'].every((value, index) => value === this.experiment.constraints[index])))
         {
 
@@ -249,6 +246,9 @@ export class InfoComponent implements OnInit {
       this.http.put("v1/pr/persist/save", this.experiment,{withCredential:true}).subscribe(
         (data) => {
           if (data.saved) {
+              if(this.experiment['id'] == undefined){
+                location.href = "/dashboard";
+              }
             var savedData = {
               name: this.experiment.name,
               actors: this.experiment.actors,

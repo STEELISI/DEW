@@ -17,10 +17,21 @@
   </div>
 </mat-toolbar>
 
-<mat-toolbar color="warn">
+<mat-toolbar color="warn" [ngClass]="{'green_saved':isSaved(),'grey_saved':!isSaved()}">
   <nav class="navbar navbar-expand-lg navbar-light">
     <div class="collapse navbar-collapse" id="navbarSupportedContent">
       <ul class="navbar-nav mr-auto">
+        <li class="nav-item dropdown">
+          <a
+            class="nav-link"
+            href="dashboard"
+            id="navbarDropdown0"
+            role="button"
+            
+          >
+            Back
+          </a>
+        </li>
         <li class="nav-item dropdown">
           <a
             class="nav-link"
@@ -39,32 +50,32 @@
               class="dropdown-item"
               (click)="save()"
               *ngIf="experimentControl > 2"
-              >Save</a
+              >{{(id != -1)?'Save':'Create'}}</a
             >
-            <a class="dropdown-item" aria-disabled="true">Save As...</a>
-            <a class="dropdown-item" (click)="saveDrive()"
+            <a class="dropdown-item" aria-disabled="true" *ngIf="id != -1">Save As...</a>
+            <a class="dropdown-item" (click)="saveDrive()" *ngIf="id != -1"
               >Save To Google Drive</a
             >
             <a
               class="dropdown-item"
               (click)="delete()"
-              *ngIf="experimentControl > 3"
+              *ngIf="experimentControl > 3 && id!=-1"
               >Delete</a
             >
             <div class="dropdown-divider"></div>
             <a
               class="dropdown-item"
-              *ngIf="experimentControl > 3"
+              *ngIf="experimentControl > 3 && id!=-1"
               (click)="addUserPopUp()"
               >Share to User</a
             >
             <a
               class="dropdown-item"
-              *ngIf="experimentControl > 3"
+              *ngIf="experimentControl > 3 && id!=-1"
               (click)="listUserPopUp()"
               >List of Users
             </a>
-            <a class="dropdown-item" *ngIf="experimentControl > 3"
+            <a class="dropdown-item" *ngIf="experimentControl > 3 && id!=-1"
               >Share link
             </a>
             <a class="dropdown-item" (click)="closeExperiment()">Close</a>
