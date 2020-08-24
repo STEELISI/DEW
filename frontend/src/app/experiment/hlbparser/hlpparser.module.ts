@@ -42,6 +42,7 @@ import {
   UploadPopUp,
   NSFilePopUp,
   UserListPopUp,
+  VersionsPopUp,
 } from "./experiment-info/info.component";
 import {MatToolbarModule} from '@angular/material/toolbar';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
@@ -64,7 +65,8 @@ import { BrowserModule } from '@angular/platform-browser';
     NLPPopUp,
     UploadPopUp,
     NSFilePopUp,
-    UserListPopUp
+    UserListPopUp,
+    VersionsPopUp,
   ],
   imports: [
     CommonModule,
@@ -101,7 +103,8 @@ import { BrowserModule } from '@angular/platform-browser';
     NLPPopUp,
     UploadPopUp,
     NSFilePopUp,
-    UserListPopUp
+    UserListPopUp,
+    VersionsPopUp,
   ],
   providers: [StateService],
   bootstrap: [HLBParserComponent],

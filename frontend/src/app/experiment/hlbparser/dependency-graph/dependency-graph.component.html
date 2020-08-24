@@ -1,10 +1,10 @@
-<div class="row">
+<div class="container-fluid">
+  <div class="row">
   <div class="col-md-10 taller"> 
     <ngx-graph #graph
     [links]="links"
     [nodes]="nodes"
     [clusters]="clusters"
-    [view]="[1000,1000]"
     [layout]="layout"
     [layoutSettings]="layoutSettings"
     [curve]="curve"
@@ -25,14 +25,25 @@
       <svg:marker id="arrow" viewBox="0 -5 10 10" refX="8" refY="0" markerWidth="4" markerHeight="4" orient="auto">
         <svg:path d="M0,-5L10,0L0,5" class="arrow-head" />
       </svg:marker>
+      <svg:marker id="all_keyword" viewBox="0 -20 30 30" refX="30" refY="-20" markerWidth="80" markerHeight="20" orient="0">
+        <svg:text>ALL</svg:text>
+      </svg:marker>
+      <svg:marker id="any_keyword" viewBox="0 -20 30 30" refX="30" refY="-20" markerWidth="80" markerHeight="20" orient="0">
+        <svg:text>ANY</svg:text>
+      </svg:marker>
+
     </ng-template>
 
     <ng-template #nodeTemplate let-node>
       <svg:g class="node">        
         <svg:rect [attr.width]="node.dimension.width" [attr.height]="node.dimension.height" [attr.fill]="getColor(node)" (mousedown)="onNodeCircleMouseDown($event, node)"
         (mouseup)="onNodeCircleMouseUp($event, node)"/>
-        <svg:text *ngIf="node.data.wait_time !== 'None'"  alignment-baseline="central" [attr.x] = "10" [attr.y]="-10">(Waits : {{node.data.wait_time}})</svg:text>
-        <svg:text alignment-baseline="middle" font-size="large" [attr.x]="10" [attr.y]="node.dimension.height / 2" (mousedown)="onNodeCircleMouseDown($event, node)" (mouseup)="onNodeCircleMouseUp($event, node)">{{node.data.action}} </svg:text>
+        <!-- <svg:text *ngIf="node.data.wait_time !== 'None'"  alignment-baseline="central" [attr.x] = "10" [attr.y]="-10">(Waits : {{node.data.wait_time}})</svg:text> -->
+        <svg:text font-size="large" [attr.x]="10" [attr.y]="node.dimension.height / 16" (mousedown)="onNodeCircleMouseDown($event, node)" (mouseup)="onNodeCircleMouseUp($event, node)">
+        <svg:tspan x="10" dy="1em" class="wait_time_text" [attr.visibility]="showWaitTime(node.data.wait_time)">(Waits : {{node.data.wait_time}})</svg:tspan>
+        <svg:tspan dominant-baseline="middle" x="10" dy="1em">{{node.data.action}}</svg:tspan>
+        <svg:tspan x="10" dy="2em" visibility="hidden">action</svg:tspan>
+      </svg:text>
       </svg:g>
     </ng-template>
 
@@ -45,12 +56,13 @@
 
     <ng-template #linkTemplate let-link>
       <svg:g class="edge" (click)="deleteEdge($event, link)">
-        <svg:path class="line" stroke-width="2" marker-end="url(#arrow)">
+        <svg:rect fill="red" stroke="none" width="20" height="20" [attr.x]="link.midPoint.x" [attr.y]="link.midPoint.y" [attr.visibility]="isEditable()"></svg:rect>
+        <svg:path [attr.id]="link.id" class="line" stroke-width="2" marker-end="url(#arrow)" [attr.marker-mid]="getAllOrAnyKeyword(link)">
         </svg:path>
-        <svg:text class="edge-label" text-anchor="middle">
-          <textPath class="text-path" [attr.href]="'#' + link.id" [style.dominant-baseline]="link.dominantBaseline" startOffset="50%">
+        <svg:text text-anchor="middle">
+          <svg:textPath class="text-path" [attr.href]="'#' + link.id" [style.dominant-baseline]="link.dominantBaseline" startOffset="50%">
             {{link.label}}
-          </textPath>
+          </svg:textPath>
         </svg:text>
       </svg:g>
     </ng-template>
@@ -67,6 +79,7 @@
 </ngx-graph>
   </div>
   <div class="col-md-2 padded">
+      <div class="row">Legend</div>
       <div *ngFor="let item of matching | keyvalue">
         <div class="row bottom-border">
           <div class="col-md-3" [ngStyle]="{'background-color': item.value}">
@@ -78,13 +91,34 @@
         </div>
       </div>
       <br/>
-      <div class="custom-control custom-switch">
+      <div class="row">
+        <div class="col-md-3">Zoom level</div>
+        <div class="col-md-9">
+        <button type="button" class="btn btn-info" (click)="zoomIn()">
+          <i class="fa fa-plus info"></i>
+        </button>
+        <button type="button" class="btn btn-danger" (click)="fitToView()">
+          Fit to view
+        </button>
+        <button type="button" class="btn btn-warning" (click)="zoomOut()">
+          <i class="fa fa-minus info"></i>
+        </button>
+      </div>
+      </div>
+      <br/>
+      <div class="custom-control custom-switch bottom-border">
         <input type="checkbox" class="custom-control-input" id="editmode" (click)="toggleDragging()"/>
         <label class="custom-control-label" for="editmode">Edit edges</label>
       </div>
       <br/>
       <div class="row bottom-border">
-        <p>To add an edge, toggle the switch, click on the source (hold the button and do not release) and drag the arrow till the destination.</p> <p>To delete an edge, click on the edge. Please note that the mouse icon changes when a node or edge is clickable.</p>
+        <ul>
+          <li>To add an edge, toggle the switch, click on the source (hold the button and do not release) and drag the arrow till the destination.</li>
+          <li>To delete an edge, click on the red box next to the edge. Please note that the mouse icon changes when a node or edge is clickable.</li>
+          <li>To zoom in or zoom out, use the (+) and (-) buttons to increase or decrease the zoom level</li>
+          <li>Please use the panning functionality instead of scrolling. (Click on the white area and drag in the desired direction)</li>
+        </ul>
       </div>
   </div>
+</div>
 </div>

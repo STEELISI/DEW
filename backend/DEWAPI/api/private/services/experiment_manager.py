@@ -8,7 +8,8 @@ from datetime import datetime
 from dateutil.relativedelta import relativedelta
 import requests
 import json
-from sqlite3 import Error
+import configparser
+import io
 
 
 class ExperimentManager(object):
@@ -36,6 +37,7 @@ class ExperimentManager(object):
     def push_to_drive(self, experiment_id, current_user_id, token, create_new_file=False):
         driveId = DriveTable.query.filter(DriveTable.experiment_id == experiment_id, DriveTable.uid == current_user_id).first()
         if self.user_can(experiment_id,current_user_id,AccessControlEnum.write):
+            data = self.dew_content(experiment_id)
             if driveId is None:
                 if create_new_file:
                     driveId = self.create_new_drive_file(experiment_id, current_user_id, token)
@@ -47,7 +49,7 @@ class ExperimentManager(object):
 
             response = requests.patch(
                 "https://www.googleapis.com/upload/drive/v3/files/"+driveId.driveFileId+"?uploadType=media",
-                 data=self.dew_content(experiment_id),
+                 data=data,
                  headers={'Content-Type': 'text/plain', 'Authorization': 'Bearer '+ token},
                  timeout=2.0
             )
@@ -58,9 +60,38 @@ class ExperimentManager(object):
 
 
     def dew_content(self, experiment_id):
-        x = json.dumps(Experiment.query.get(experiment_id).content)
-        print(x)
-        return x
+        content = json.loads(Experiment.query.get(experiment_id).content)
+        dew_file = configparser.ConfigParser(allow_no_value=True)
+        dew_file.optionxform = str
+        dew_file.add_section('Scenario')
+        for b in content['behaviors']:
+            dew_file.set('Scenario',b)
+        dew_file.add_section('Bindings')
+        for b in content['bindings']:
+            dew_file.set('Bindings', b)
+        dew_file.add_section('Constraints')
+        for c in content['constraints']:
+            dew_file.set('Constraints', c)
+        x = io.StringIO()
+        dew_file.write(x)
+        return x.getvalue()
+
+    def get_content_in_dew_format(self, content_string):
+        content = json.loads(content_string)
+        dew_file = configparser.ConfigParser(allow_no_value=True)
+        dew_file.optionxform = str
+        dew_file.add_section('Scenario')
+        for b in content['behaviors']:
+            dew_file.set('Scenario', b)
+        dew_file.add_section('Bindings')
+        for b in content['bindings']:
+            dew_file.set('Bindings', b)
+        dew_file.add_section('Constraints')
+        for c in content['constraints']:
+            dew_file.set('Constraints', c)
+        x = io.StringIO()
+        dew_file.write(x)
+        return x.getvalue()
 
 
     def create_new_drive_file(self, experiment_id, current_user_id, token):
@@ -80,7 +111,7 @@ class ExperimentManager(object):
             if e is None:
                 raise ValueError("Forbidden")
             else:
-                return [{'content': v.content, 'name': v.name, 'updated_at': v.updated_at, 'description': v.description} for v in list(e.versions)]
+                return [{'content': json.loads(v.content), 'dew_content': self.get_content_in_dew_format(v.content), 'name': v.name, 'updated_at': v.updated_at, 'description': v.description} for v in list(e.versions)[::-1]]
 
 
     def update_experiment(self, experiment_id, current_user_id, name, content, description, driveId=None):

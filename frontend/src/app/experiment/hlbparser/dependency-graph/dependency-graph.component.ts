@@ -37,7 +37,7 @@ export class DependencyGraphComponent implements OnInit{
 
   draggingEnabled: boolean = true;
   panningEnabled: boolean = true;
-  zoomEnabled: boolean = true;
+  zoomEnabled: boolean = false;
   customColors = [
     "#bf9d76",
     "#f2dfa7",
@@ -56,6 +56,7 @@ export class DependencyGraphComponent implements OnInit{
 
   matching: {[key: string]: string} = {}
 
+  zoomLevel: number = 1.0;
   zoomSpeed: number = 0.1;
   minZoomLevel: number = 0.1;
   maxZoomLevel: number = 4.0;
@@ -113,6 +114,7 @@ export class DependencyGraphComponent implements OnInit{
           this.links.push(e2)
           this.links = [...this.links]
         }
+        this.update$.next(true);
       })
     })
 
@@ -123,7 +125,41 @@ export class DependencyGraphComponent implements OnInit{
    */
   public toggleDragging() {
     this.draggingEnabled = !this.draggingEnabled
-    console.log(this.draggingEnabled)
+    console.log(this.nodes)
+    this.update$.next(true)
+  }
+
+  /**
+   * getAllOrAnyKeyword
+   */
+  public getAllOrAnyKeyword(link) {
+    if(link.data.all_or_any !== ""){
+      return "url(#"+link.data.all_or_any+"_keyword)"
+    }else{
+      return ""
+    }
+  }
+
+  /**
+   * showWaitTime
+   */
+  public showWaitTime(wait_time) {
+    if(wait_time === "None"){
+      return "hidden"
+    }else{
+      return "visible"
+    }
+  }
+
+  /**
+   * isEditable
+   */
+  public isEditable() {
+    if(this.draggingEnabled){
+      return "hidden"
+    }else{
+      return "visible"
+    }
   }
 
   /**
@@ -144,6 +180,46 @@ node   */
       return c
     }
 
+  }
+
+  /**
+   * zoomIn
+   */
+  public zoomIn() {
+    this.graphEl.zoom(1.1)
+  }
+
+  /**
+   * zoomOut
+   */
+  public zoomOut() {
+    this.graphEl.zoom(0.9)
+  }
+
+  public fitToView() {
+    this.zoomToFit$.next(true)
+  }
+
+  /**
+   * getCloseBoxHeight
+   */
+  public getCloseBoxHeight() {
+    if(this.draggingEnabled){
+      return 0;
+    }else{
+      return 20;
+    }
+  }
+
+  /**
+   * getCloseBoxWidth
+   */
+  public getCloseBoxWidth() {
+    if(this.draggingEnabled){
+      return 0;
+    }else{
+      return 20;
+    }
   }
 
 /**
@@ -218,7 +294,10 @@ node   */
       id: Math.random().toString(36).substring(7),
       source: this.draggingNode.id,
       target: dest.id,
-      label: this.draggingNode.label + "Run" + this.draggingNode.data.action + "Sig"
+      label: this.draggingNode.label + "Run" + this.draggingNode.data.action + "Sig",
+      data: {
+        all_or_any: ""
+      }
     }
 
     if(src.data['e_events'].indexOf(edge.label) === -1){

@@ -264,7 +264,11 @@ export class InfoComponent implements OnInit {
           }
         },
         (error) => {
-          alert("Error occured. Please try again later");
+          if(error.status === 401){
+            alert("You have been logged out. Please login (in another tab or window) and try again")
+          }else{
+            alert("Error occured. Please try again later");
+          }
         }
       );
     } else {
@@ -347,7 +351,11 @@ export class InfoComponent implements OnInit {
           }
         },
         (error) => {
-          alert("Error occured. Please try again later");
+          if(error.status === 401){
+            alert("You have been logged out. Please login (in another tab or window) and try again")
+          }else{
+            alert("Error occured. Please try again later");
+          }
         }
       );
     } else {
@@ -369,14 +377,21 @@ export class InfoComponent implements OnInit {
               }
             },
             (error) => {
-              alert("Error occured. Please try again later");
+              if(error.status === 401){
+                alert("You have been logged out. Please login (in another tab or window) and try again")
+              }else{
+                alert("Error occured. Please try again later");
+              }
             }
           );
         }
       },
       (error) => {
-        console.error(error)
-        alert("Error occured. Please try again later");
+        if(error.status === 401){
+          alert("You have been logged out. Please login (in another tab or window) and try again")
+        }else{
+          alert("Error occured. Please try again later");
+        }
       }
     );
   }
@@ -467,6 +482,15 @@ export class InfoComponent implements OnInit {
       width: "40%"
     });
 }
+
+  showVersionsPopup(){
+    console.log("this.experiment: ", this.experiment)
+    var dialogRef = this.dialog.open(VersionsPopUp, {
+      width: "80%",
+      data: this.experiment['id']
+    });
+    //console.log(dialogRef)
+  }
 
   closeExperiment(){
     this.route.navigate(['dashboard'])
@@ -647,6 +671,74 @@ export class UploadPopUp implements OnInit {
   ngOnInit(): void {
     throw new Error("Method not implemented.");
   } 
+}
+
+@Component({
+  selector: "versions-popup",
+  templateUrl: "versions-popup.component.html",
+  styleUrls: ["./info.component.scss"],
+})
+export class VersionsPopUp implements OnInit {
+  experimentVersions:[];
+  constructor(
+    public dialogRef: MatDialogRef<VersionsPopUp>,
+    protected http: HttpService,
+    protected state: StateService,
+    private _snackBar: MatSnackBar,
+    @Inject(MAT_DIALOG_DATA) public experimentID: any
+  ) {}
+  ngOnInit(): void {
+    this.getExperimentVersions();
+  }
+
+  onNoClick(): void {
+    this.dialogRef.close();
+  }
+
+  getExperimentVersions(){
+    var params = {
+      id: this.experimentID
+    }
+    this.http.post("api/v1/pr/persist/experiment/versions",params,{withCredential:true}).subscribe(data=>{
+      if(data.versions!=undefined && data.versions !=null)
+      {
+        this.experimentVersions = data.versions
+      }
+      else
+      {this.experimentVersions = []}
+    })
+  }
+
+  restoreVersion(versionContent){
+      if (versionContent.behaviors != undefined) {
+        this.state.disableLoader();
+        this.state.setActors(versionContent.actors);
+        this.state.setBehavior(versionContent.behaviors);
+        this.state.setBindings(versionContent.bindings);
+        this.state.setConstraints(versionContent.constraints);
+        this._snackBar.open(
+          "Revert is successful",
+          "Close",
+          {
+            duration: 2000,
+          }
+        );
+      } else {
+        this._snackBar.open(
+          "Error in reverting to a specific version",
+          "Close",
+          {
+            duration: 2000,
+          }
+        );
+      }
+      this.state.disableLoader();
+  }
+
+
+  localTime(timestamp){
+    return new Date(timestamp * 1000).toLocaleString()
+  }
 }
 
 @Component({

@@ -5,6 +5,7 @@ from hlb_parser import HLBParser
 class DEWParser(object):
     def get_behaviors_and_constraints(self, dew_text):
         config = configparser.ConfigParser(allow_no_value=True)
+        config.optionxform = str
         config.read_string(dew_text)
         behaviors = [key for key in config['Scenario']]
         constraints = [key for key in config['Constraints']]
