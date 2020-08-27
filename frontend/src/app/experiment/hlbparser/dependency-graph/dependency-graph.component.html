@@ -56,7 +56,7 @@
 
     <ng-template #linkTemplate let-link>
       <svg:g class="edge" (click)="deleteEdge($event, link)">
-        <svg:rect fill="red" stroke="none" width="20" height="20" [attr.x]="link.midPoint.x" [attr.y]="link.midPoint.y" [attr.visibility]="isEditable()"></svg:rect>
+        <svg:rect fill="red" stroke="none" width="20" height="20" [attr.x]="link.midPoint.x-20" [attr.y]="link.midPoint.y" [attr.visibility]="isEditable()"></svg:rect>
         <svg:path [attr.id]="link.id" class="line" stroke-width="2" marker-end="url(#arrow)" [attr.marker-mid]="getAllOrAnyKeyword(link)">
         </svg:path>
         <svg:text text-anchor="middle">
