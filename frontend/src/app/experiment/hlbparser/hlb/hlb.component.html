@@ -138,15 +138,21 @@
           <div>
             <mat-form-field style="width: 100%;" appearance="outline">
               <mat-label>{{ item.key + " represents: " }}</mat-label>
-              <input
-                matInput
-                [disabled]="isExperimentDisabled()"
+              <input type="text"
+              [disabled]="isExperimentDisabled()"
                 [(ngModel)]="item.value"
-                (change)="storeBinding()"
-              />
+                
+                     aria-label="string"
+                     matInput
+                     (focus)="searchFilter(item.value)"
+                     (keyup) = "searchFilter(item.value)"
+                     [matAutocomplete]="UserInfo">
+              <mat-autocomplete #UserInfo="matAutocomplete" (optionSelected)="storeBinding()">
+                <mat-option *ngFor="let option of filteredBindingHandle | async" [value]="option">
+                 {{option}}
+                </mat-option>
+              </mat-autocomplete>
             </mat-form-field>
-
-            <span> </span>
           </div>
         </li>
       </ul>
