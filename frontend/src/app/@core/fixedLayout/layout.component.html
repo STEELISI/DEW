@@ -14,11 +14,11 @@
           <div class="username"><span *ngIf="!loggedIn">Login / Sign Up!</span><span *ngIf="loggedIn">{{fullName}}<br><i>{{'@'+userHandle}}</i></span></div>
         </div>
         
-        <mat-menu #menu="matMenu">
+        <!-- <mat-menu #menu="matMenu">
           <button mat-menu-item (click)="loginWithGoogle()" *ngIf="!loggedIn">Login with Google</button>
           <button mat-menu-item *ngIf="!loggedIn">Sign Up</button>
           <button mat-menu-item *ngIf="loggedIn" (click)="logout()">Logout</button>
-        </mat-menu>
+        </mat-menu> -->
       </div>
     </div>
 
@@ -38,8 +38,11 @@
             </ul>
         </li> -->
         <li>
-            <a href="/dashboard">Dashboard</a>
-        </li>
+          <a href="/dashboard">Dashboard</a>
+      </li>
+      <li>
+        <a href="/logout">logout</a>
+    </li>
        
     </ul>
 </nav>

@@ -80,4 +80,36 @@ export class HLBParserComponent implements OnInit {
       this.viewID = viewId;
   }
   isViewEnable():boolean{return this.viewFlag;}
+
+  onKeyDown($event): void {
+    // Detect platform
+    console.log("inside keydown")
+    if(navigator.platform.match('Mac')){
+        this.handleMacKeyEvents($event);
+    }
+    else {
+        this.handleWindowsKeyEvents($event); 
+    }
+  }
+
+  handleMacKeyEvents($event) {
+    // MetaKey documentation
+    // https://developer.mozilla.org/en-US/docs/Web/API/KeyboardEvent/metaKey
+    let charCode = String.fromCharCode($event.which).toLowerCase();
+    if ($event.metaKey && charCode === 's') {
+        // Action on Cmd + S
+        
+        $event.preventDefault();
+        this.state.triggerSaveEvent();
+    } 
+  }
+
+  handleWindowsKeyEvents($event) {
+    let charCode = String.fromCharCode($event.which).toLowerCase();
+    if ($event.ctrlKey && charCode === 's') {
+        // Action on Ctrl + S
+        $event.preventDefault();
+        this.state.triggerSaveEvent();
+    } 
+  }
 }

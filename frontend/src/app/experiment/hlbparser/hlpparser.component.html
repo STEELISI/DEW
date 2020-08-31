@@ -1,4 +1,4 @@
-<div *ngIf="isViewEnable()">
+<div *ngIf="isViewEnable()" (keydown)="onKeyDown($event)" tabindex="-1">
  
 <experiment-info [id]="experimentId" (viewId)="show($event)"></experiment-info>
 

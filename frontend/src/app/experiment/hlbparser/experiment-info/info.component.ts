@@ -106,6 +106,11 @@ export class InfoComponent implements OnInit {
       this.localServerData = data
     });
 
+    this.state.monitorSaveEvent().subscribe((flag:boolean) =>{
+        if(flag)
+          this.save();
+    });
+
     if(this.experimentControl>3){
     this.loadTokenList();
     this.state.getTokenList().subscribe((data) => {
