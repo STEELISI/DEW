@@ -65,6 +65,27 @@ class ConstraintParser():
         return_tuple = (str(parsed.constraint), list(parsed.target), list(parsed.value))
         return(tuple(r if r != [] and r != "" else None for r in return_tuple))
 
+class BindingParser():
+
+    def parse_stmt(self, statement):
+        """Parses an HLB statement and returns a tuple: (triggers, actors, action, e_events)
+        Values are returned as "None" if they cannot be extracted.
+        """
+        try:
+            p=statement.split(' ', 1)
+            if p:
+                key = p.pop(0)
+            else:
+                return(None, None)
+            if p:
+                value = p.pop(0)
+            else:
+                return(None, None)
+        except ParseException as pe:
+            #print("WARNING: Could not parse HLB statement:\n\t%s" % (statement))
+            return(None, None)
+        return(key, value)
+
 class HLBParser():
     when_keyword = CaselessKeyword("when").suppress()
     all_keyword = CaselessKeyword("all")
@@ -172,7 +193,7 @@ class HLBParser():
         except ParseException as pe:
             print("WARNING: Could not parse HLB statement:\n\t%s" % (statement))
             print(pe)
-            return(None, None, None, None, None)
+            return(None, None, None, None, None, None, None)
         if parsed.e_events == None:
             parsed.e_events = []
         return_tuple = (parsed.all, parsed.any, list(parsed.t_events), list(parsed.actors), list(parsed.action), list(parsed.e_events), str(parsed.wait_time))
