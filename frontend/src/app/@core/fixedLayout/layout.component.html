@@ -8,7 +8,7 @@
     <div class="sidebar-header">
       <i style="float:right"  class="fas fa-times menu_pointer"(click)=" toggle()"></i>
      
-      <div class="navbar-nav pointer" [matMenuTriggerFor]="menu">
+      <div class="navbar-nav pointer" >
         <div class="profile" *ngIf="!loggedIn"></div>
         <div class="profile_img" *ngIf="loggedIn"><img src="{{img}}" width="80px" height="80px">
           <div class="username"><span *ngIf="!loggedIn">Login / Sign Up!</span><span *ngIf="loggedIn">{{fullName}}<br><i>{{'@'+userHandle}}</i></span></div>
