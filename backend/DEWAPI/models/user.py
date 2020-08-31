@@ -12,6 +12,7 @@ class User(db.Model):
     access_token = db.Column(db.String, nullable=True)
     created_at = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
     updated_at = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
+    drive_folder_id = db.Column(db.String,nullable=True)
     # last_login_time = db.Column(db.DateTime)
     # last_login_ip = db.Column(db.String)
     # salt = db.Column(db.String)
