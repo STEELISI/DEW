@@ -154,8 +154,13 @@
       </ul>
     </div>
   </nav>
-  <span class="saved_bubble">
+  <span class="saved_bubble" [hidden]="savingFlag">
     {{isSaved()? 'saved' :'unsaved'}}
+  </span>
+  <span class="saved_bubble loader" [hidden]="!savingFlag">
+  </span>
+  <span class="saved_bubble" [hidden]="!savingFlag">
+    saving...
   </span>
   <span class="bubble">
     <strong
