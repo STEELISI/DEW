@@ -1,0 +1,10 @@
+site_name: Distributed Experiment Workflows
+site_url: http://dew.isi.edu/docs
+nav:
+- Home: 'index.md'
+- First time setup: 'first_time.md'
+- Dashboard: 'dashboard.md'
+- Experiment page: 'experiment_page.md'
+- Examples: 'examples.md'
+- Go back to DEW: 'redirect-to-dew.html'
+theme: 'readthedocs'
