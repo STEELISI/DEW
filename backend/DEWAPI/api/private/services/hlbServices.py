@@ -325,7 +325,7 @@ class HLBService():
         bindings = json_data['bindings']
         generator = bashGenerator(scenario, constraints=constraints)
         scenario_parsed, constraints_parsed = generator.generate()
-        ns_script = generator.generateNS(constraints_parsed, None, actors)
+        ns_script, clientServerList = generator.generateNS(constraints_parsed, None, actors)
         return ns_script
 
     #Handle generateBASH
