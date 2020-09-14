@@ -41,7 +41,7 @@ export class HlbComponent implements OnInit {
   ];
 
   objectFormat = []
-  defaultTextColor = {"when":"blue","emit":"blue"}
+  defaultTextColor = {} //{"when":"blue","emit":"blue"}
   editorService: EditorService;
   constraintService: EditorService;
   service: any;
