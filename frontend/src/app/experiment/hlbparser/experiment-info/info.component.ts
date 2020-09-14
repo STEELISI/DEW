@@ -511,15 +511,15 @@ export class InfoComponent implements OnInit {
   addBindings() {
     //console.log(this.bindingList);
 
-    var dialogRef = this.dialog.open(NSFilePopUp, {
-      width: "70%",
-      data: this.experiment.bindings,
-    });
+    // var dialogRef = this.dialog.open(NSFilePopUp, {
+    //   width: "70%",
+    //   data: this.experiment.bindings,
+    // });
 
-    dialogRef.afterClosed().subscribe((result) => {
+    // dialogRef.afterClosed().subscribe((result) => {
       //console.log('The dialog was closed');
       this.generateNs();
-    });
+    // });
   }
   generateNs() {
     var data = {
@@ -584,15 +584,15 @@ export class InfoComponent implements OnInit {
 
   bashGen() {
     //console.log(this.bindingList);
-    var dialogRef = this.dialog.open(BASHFilePopUp, {
-      width: "70%",
-      data: this.experiment.bindings,
-    });
+    // var dialogRef = this.dialog.open(BASHFilePopUp, {
+    //   width: "70%",
+    //   data: this.experiment.bindings,
+    // });
 
-    dialogRef.afterClosed().subscribe((result) => {
-      //console.log('The dialog was closed');
+    // dialogRef.afterClosed().subscribe((result) => {
+    //   //console.log('The dialog was closed');
       this.generateBash();
-    });
+    // });
   }
   generateBash() {
     var data = {
