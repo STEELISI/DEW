@@ -170,7 +170,6 @@ class GeneralGenerator(object):
         clientServerList = {}
         if len(nodeList):
             for x in nodeList:
-                sampleString = "for { set i 0} {$i < "
                 count = 0
                 for y in x:
                     if y == "num" or y == None:
@@ -184,26 +183,26 @@ class GeneralGenerator(object):
                 if int(count) == 0:
                     print("ERROR:\t Invalid statement, Cannot be converted to NS command:", x)
                     continue;
-                sampleString += count
-                sampleString += "} {incr i} {\n"
-                sampleString += "\tset "
-                sampleString += str(temp)
-                sampleString += "$i [$ns node]\n"
-                sampleString += "}\n"
+                if clientServerList[str(temp)] == 1:
+                    sampleString = "set " + str(temp) + " [$ns node]\n"
+                else:
+                    sampleString = "for { set i 0} {$i < "
+                    sampleString += count
+                    sampleString += "} {incr i} {\n"
+                    sampleString += "\tset "
+                    sampleString += str(temp)
+                    sampleString += "$i [$ns node]\n"
+                    sampleString += "}\n"
                 nsCommands += sampleString
 
         if actors is not None:
             tmp = 1
             for x in actors:
                 if str(x) not in clientServerList:
-                    sampleString = "for { set i 0} {$i < "
                     clientServerList[str(x)] = 1
-                    sampleString += str(tmp)
-                    sampleString += "} {incr i} {\n"
-                    sampleString += "\tset "
+                    sampleString = "set "
                     sampleString += str(x)
-                    sampleString += "$i [$ns node]\n"
-                    sampleString += "}\n"
+                    sampleString += " [$ns node]\n"
                     nsCommands += sampleString
 
         if len(linkList):
@@ -243,12 +242,8 @@ class GeneralGenerator(object):
                         #print("ALERT:\t Node is not defined, Creating a node:", str(k))
                         minimum = 1
                         clientServerList[str(k)] = minimum
-                        sampleString = "for { set i 0} {$i < "
                         clientServerList[str(x)] = 1
-                        sampleString += str(minimum)
-                        sampleString += "} {incr i} {\n"
-                        sampleString += "\tset " + str(k) + "$i" + " [$ns node]\n"
-                        sampleString += "}\n"
+                        sampleString = "set " + str(k) + " [$ns node]\n"
                         nsCommands += sampleString
                 if int(clientServerList[str(sampleList[0])]) != 1 and int(clientServerList[str(sampleList[1])]) != 1:
                     if allLink == 0 and anyLink == 0:
@@ -256,13 +251,28 @@ class GeneralGenerator(object):
                         minimum = 1
                 else:
                     minimum = 1
-                for j in range(0,minimum):
+                if minimum == 1:
                     counter+=1
                     nsCommands += "set link"+ str(counter) +" "
                     nsCommands += "[$ns duplex-link "
-                    nsCommands += "$"+ str(sampleList[0]) + str(j) +" "
-                    nsCommands += "$"+ str(sampleList[1]) + str(j) +" "
+                    if clientServerList[str(sampleList[0])] == 1:
+                        nsCommands += "$"+ str(sampleList[0]) +" "
+                    else:
+                        nsCommands += "$"+ str(sampleList[0]) +"0" + " "
+
+                    if clientServerList[str(sampleList[1])] == 1:
+                        nsCommands += "$"+ str(sampleList[1]) +" "
+                    else:
+                        nsCommands += "$"+ str(sampleList[1]) +"0" + " "
                     nsCommands += "1Gb 0ms DropTail]\n"
+                else:
+                    for j in range(0,minimum):
+                        counter+=1
+                        nsCommands += "set link"+ str(counter) +" "
+                        nsCommands += "[$ns duplex-link "
+                        nsCommands += "$"+ str(sampleList[0]) + str(j) +" "
+                        nsCommands += "$"+ str(sampleList[1]) + str(j) +" "
+                        nsCommands += "1Gb 0ms DropTail]\n"
 
         if len(osList):
            for x in osList:
@@ -281,11 +291,7 @@ class GeneralGenerator(object):
                                 #print("ALERT:\t Node is not defined, Creating a node:", node)
                                 node = k
                                 clientServerList[str(node)] = 1
-                                sampleString = "for { set i 0} {$i < "
-                                sampleString += "1"
-                                sampleString += "} {incr i} {\n"
-                                sampleString += "\tset " + str(k) + "$i" + " [$ns node]\n"
-                                sampleString += "}\n"
+                                sampleString = "set " + str(k) + " [$ns node]\n"
                                 nsCommands += sampleString
                         elif counter == 1:
                             os = k
@@ -294,11 +300,17 @@ class GeneralGenerator(object):
                     counter+=1
 
                 if node != "":
-                    for j in range(0,clientServerList[str(node)]):
+                    if clientServerList[str(node)] == 1:
                         nsCommands += "tb-set-node-os"
-                        nsCommands += " " + "$" + str(node) + str(j)
+                        nsCommands += " " + "$" + str(node)
                         nsCommands += " " + str(os)
                         nsCommands += "\n"
+                    else:
+                        for j in range(0,clientServerList[str(node)]):
+                            nsCommands += "tb-set-node-os"
+                            nsCommands += " " + "$" + str(node) + str(j)
+                            nsCommands += " " + str(os)
+                            nsCommands += "\n"
 
         if len(lanList):
            counter = 0
@@ -337,7 +349,7 @@ class GeneralGenerator(object):
                         #print("ALERT:\t Node is not defined, Creating a node:", str(k))
                         minimum = 1
                         clientServerList[str(k)] = minimum
-                        nsCommands += "set " + str(k) + "0" + " [$ns node]\n"
+                        nsCommands += "set " + str(k) + " [$ns node]\n"
 
                 if int(clientServerList[str(sampleLanList[0])]) != 1 and int(clientServerList[str(sampleLanList[1])]) != 1:
                     if allLan == 0 and anyLan == 0:
@@ -346,18 +358,39 @@ class GeneralGenerator(object):
                 else:
                     minimum = 1
                 for k in sampleLanList:
-                    for j in range(0,minimum):
+                    if minimum == 1:
                         counter+=1
                         nsCommands += "set lan"+ str(counter) +" "
                         nsCommands += "[$ns make-lan"
                         nsCommands += " \""
-                        nsCommands += "$"+ str(sampleLanList[0]) + str(j) +" "
-                        nsCommands += "$"+ str(sampleLanList[1]) + str(j)
+                        if clientServerList[str(sampleLanList[0])] == 1:
+                            nsCommands += "$"+ str(sampleLanList[0]) +" "
+                        else:
+                            nsCommands += "$"+ str(sampleLanList[0]) +"0" + " "
+
+                        if clientServerList[str(sampleLanList[1])] == 1:
+                            nsCommands += "$"+ str(sampleLanList[1]) +" "
+                        else:
+                            nsCommands += "$"+ str(sampleLanList[1]) +"0" + " "
+
                         nsCommands += "\""
                         nsCommands += " " + "100Mb 0ms" + "]\n"
                         nsCommands += "tb-set-lan-loss"
                         nsCommands += " " + "$" + "lan" + str(counter) + " " + ".02"
                         nsCommands += "\n"
+                    else:
+                        for j in range(0,minimum):
+                            counter+=1
+                            nsCommands += "set lan"+ str(counter) +" "
+                            nsCommands += "[$ns make-lan"
+                            nsCommands += " \""
+                            nsCommands += "$"+ str(sampleLanList[0]) + str(j) +" "
+                            nsCommands += "$"+ str(sampleLanList[1]) + str(j)
+                            nsCommands += "\""
+                            nsCommands += " " + "100Mb 0ms" + "]\n"
+                            nsCommands += "tb-set-lan-loss"
+                            nsCommands += " " + "$" + "lan" + str(counter) + " " + ".02"
+                            nsCommands += "\n"
                     break
         opt = "set ns [new Simulator]\n"
         opt += "source tb_compat.tcl\n"

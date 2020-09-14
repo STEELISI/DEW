@@ -558,7 +558,7 @@ export class InfoComponent implements OnInit {
     var blob = new Blob([data], { type: "text/plain" });
     //console.log(blob);
     // var url = (window.URL || window.webkitURL).createObjectURL(blob);
-    var fileName = "nsFile.txt";
+    var fileName = "nsFile.ns";
     if ("msSaveOrOpenBlob" in navigator) {
       navigator.msSaveOrOpenBlob(blob, fileName);
     } else {
@@ -631,7 +631,7 @@ export class InfoComponent implements OnInit {
     var blob = new Blob([data], { type: "text/plain" });
     //console.log(blob);
     // var url = (window.URL || window.webkitURL).createObjectURL(blob);
-    var fileName = "bashFile.txt";
+    var fileName = "bashFile.sh";
     if ("msSaveOrOpenBlob" in navigator) {
       navigator.msSaveOrOpenBlob(blob, fileName);
     } else {
