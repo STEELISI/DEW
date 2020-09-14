@@ -39,6 +39,9 @@ export class HlbComponent implements OnInit {
     "start_apache sudo service apache2 start",
     "start_bind sudo service bind9 start"
   ];
+
+  objectFormat = []
+  defaultTextColor = {"when":"blue","emit":"blue"}
   editorService: EditorService;
   constraintService: EditorService;
   service: any;
@@ -85,6 +88,72 @@ export class HlbComponent implements OnInit {
       this._filter(value, this.filterBindingOptions)
     );
   }
+
+  convertStringToJsonObject(text:String){
+    console.log(text)
+    let wordArray = text.trim().split(" ")
+    let result = []
+    wordArray.forEach((element) =>{
+      if(this.defaultTextColor[element]!=undefined && this.defaultTextColor[element]!=null && this.defaultTextColor[element].trim()!='')
+        result.push({insert:element+" ","attributes": { "color": this.defaultTextColor[element], "bold": true }})
+        else
+        result.push({insert:element+" "})
+    })
+    //console.log(result)
+    return result
+  }
+
+  
+
+  convertTextToMap(textJson) {
+    let map : Map<String, {}> = new Map<String, {}>();
+    console.log(textJson)
+    textJson.forEach(element => {
+      map.set(element['text']+"_row_"+element['row'],element)
+    });
+
+    return map
+  }
+
+  addColor(stringArray,row,map) {
+
+    let occurenceMap : Map<String, number> = new Map<String, number>();
+    stringArray.forEach(element => {
+      if(occurenceMap.has(element.insert.trim())){
+        occurenceMap.set(element.insert.trim(),occurenceMap.get(element.insert.trim())+1)
+      }else{
+        occurenceMap.set(element.insert.trim(),1)
+      }
+
+      if(map.has(element.insert.trim()+"_row_"+row)) {
+        let detail = map.get(element.insert.trim()+"_row_"+row)
+        if(detail['occurence'] == -1){
+          element["attributes"]= { "color": detail['color'], "bold": true }
+        }else {
+          if(occurenceMap.get(element.insert.trim()) == detail['occurence']){
+            element["attributes"]= { "color": detail['color'], "bold": true }
+          }
+        }
+
+      }
+    });
+
+    return stringArray
+  }
+
+  colorText(data, textJson) {
+    let map = this.convertTextToMap(textJson)
+    var textArray = []
+    let row =1
+    data.forEach((element) => {
+      let stringArray = this.convertStringToJsonObject(element)
+      
+      textArray = [...textArray,...this.addColor(stringArray,row,map),{ insert: '\n' }]
+      row ++
+    });
+
+    return textArray
+  }
   ngOnInit(): void {
     this.resetFilterList();
     this.bindingMap = new Map<String, any>();
@@ -93,9 +162,34 @@ export class HlbComponent implements OnInit {
     this.stateservice.getBehavior().subscribe((data) => {
       if (data != null) {
         var text = "";
+        var textArray = []
         data.forEach((element) => {
+          textArray = [...textArray,...this.convertStringToJsonObject(element),{ insert: '\n' }]
           text += element + "<br>";
         });
+
+        // let test = [{
+        //   text:"trigger",
+        //   row:"1",
+        //   occurence:1,
+        //   color:"pink"
+        // },{
+        //   text:"trigger",
+        //   row:"2",
+        //   occurence:-1,
+        //   color:"red"
+        // },{
+        //   text:"trigg",
+        //   row:"1",
+        //   occurence:1,
+        //   color:"red"
+        // },{
+        //   text:"actor2",
+        //   row:"2",
+        //   occurence:1,
+        //   color:"red"
+        // }]
+        this.objectFormat = textArray
         instance.behaviorText = text;
       }
     });

@@ -57,7 +57,8 @@
               toolbar: false
             }"
             placeholder="Enter Steps to be executed during the experiment. For example: Actor0 start_log"
-            [(ngModel)]="behaviorText"
+            format="object"
+            [(ngModel)]="objectFormat"
             [disabled]="isExperimentDisabled()"
             (onContentChanged)="logChangeBehavior($event)"
             (onEditorCreated)="created($event, 2)"
@@ -141,7 +142,7 @@
               <input type="text"
               [disabled]="isExperimentDisabled()"
                 [(ngModel)]="item.value"
-                
+                (change)="storeBinding()"
                      aria-label="string"
                      matInput
                      (focus)="searchFilter(item.value)"
