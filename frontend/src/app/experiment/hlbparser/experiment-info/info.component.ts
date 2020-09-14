@@ -32,6 +32,7 @@ export class InfoComponent implements OnInit {
   viewid = 1;
   options: string[] = ["One", "Two", "Three"];
   localServerData:{};
+  savingFlag:boolean = false;
 
   constructor(
     protected state: StateService,
@@ -104,6 +105,11 @@ export class InfoComponent implements OnInit {
     this.state.getLocalServerData().subscribe(data =>{
       if(data!=null)
       this.localServerData = data
+    });
+
+    this.state.monitorSaveEvent().subscribe((flag:boolean) =>{
+        if(flag)
+          this.save();
     });
 
     if(this.experimentControl>3){
@@ -186,9 +192,6 @@ export class InfoComponent implements OnInit {
   }
 
   save() {
-    
-  
-
     if (
       this.experiment.name != undefined &&
       this.experiment.name != null &&
@@ -242,9 +245,11 @@ export class InfoComponent implements OnInit {
         var continueFlag = confirm("Few bindings are missing, Do you still want to continue?")
         else
         continueFlag = !bindingFLag
-        if(continueFlag)
+        if(continueFlag) {
+            this.savingFlag = true
       this.http.put("v1/pr/persist/save", this.experiment,{withCredential:true}).subscribe(
         (data) => {
+          this.savingFlag = false
           if (data.saved) {
               if(this.experiment['id'] == undefined){
                 location.href = "/dashboard";
@@ -264,6 +269,7 @@ export class InfoComponent implements OnInit {
           }
         },
         (error) => {
+          this.savingFlag = false
           if(error.status === 401){
             alert("You have been logged out. Please login (in another tab or window) and try again")
           }else{
@@ -271,6 +277,7 @@ export class InfoComponent implements OnInit {
           }
         }
       );
+      }
     } else {
       alert("Please Enter Name to save the experiment.");
       this.nameControl.markAsTouched();
@@ -504,15 +511,15 @@ export class InfoComponent implements OnInit {
   addBindings() {
     //console.log(this.bindingList);
 
-    var dialogRef = this.dialog.open(NSFilePopUp, {
-      width: "70%",
-      data: this.experiment.bindings,
-    });
+    // var dialogRef = this.dialog.open(NSFilePopUp, {
+    //   width: "70%",
+    //   data: this.experiment.bindings,
+    // });
 
-    dialogRef.afterClosed().subscribe((result) => {
+    // dialogRef.afterClosed().subscribe((result) => {
       //console.log('The dialog was closed');
       this.generateNs();
-    });
+    // });
   }
   generateNs() {
     var data = {
@@ -551,7 +558,7 @@ export class InfoComponent implements OnInit {
     var blob = new Blob([data], { type: "text/plain" });
     //console.log(blob);
     // var url = (window.URL || window.webkitURL).createObjectURL(blob);
-    var fileName = "experiment.txt";
+    var fileName = "nsFile.ns";
     if ("msSaveOrOpenBlob" in navigator) {
       navigator.msSaveOrOpenBlob(blob, fileName);
     } else {
@@ -577,15 +584,15 @@ export class InfoComponent implements OnInit {
 
   bashGen() {
     //console.log(this.bindingList);
-    var dialogRef = this.dialog.open(BASHFilePopUp, {
-      width: "70%",
-      data: this.experiment.bindings,
-    });
+    // var dialogRef = this.dialog.open(BASHFilePopUp, {
+    //   width: "70%",
+    //   data: this.experiment.bindings,
+    // });
 
-    dialogRef.afterClosed().subscribe((result) => {
-      //console.log('The dialog was closed');
+    // dialogRef.afterClosed().subscribe((result) => {
+    //   //console.log('The dialog was closed');
       this.generateBash();
-    });
+    // });
   }
   generateBash() {
     var data = {
@@ -624,7 +631,7 @@ export class InfoComponent implements OnInit {
     var blob = new Blob([data], { type: "text/plain" });
     //console.log(blob);
     // var url = (window.URL || window.webkitURL).createObjectURL(blob);
-    var fileName = "bashFile.txt";
+    var fileName = "bashFile.sh";
     if ("msSaveOrOpenBlob" in navigator) {
       navigator.msSaveOrOpenBlob(blob, fileName);
     } else {

@@ -196,7 +196,7 @@ class HLBParser():
             return(None, None, None, None, None, None, None)
         if parsed.e_events == None:
             parsed.e_events = []
-        return_tuple = (parsed.all, parsed.any, list(parsed.t_events), list(parsed.actors), list(parsed.action), list(parsed.e_events), str(parsed.wait_time))
+        return_tuple = (list(parsed.t_events), list(parsed.actors), list(parsed.action), list(parsed.e_events), str(parsed.wait_time), parsed.all, parsed.any)
         return(tuple(r if r != [] and r != "" else None for r in return_tuple))
 
     def transitionBstate2(self, ll):
@@ -228,7 +228,7 @@ class HLBParser():
         #print("Parsing \'%s\'" % partial)
         if len(partial.strip().split()) == 0:
             return(HLBHintType.BLANK,  self.new_return_dict(), ['WHEN', 'WAIT', '<ACTOR>'])
-        all_keyword, any_keyword, t_events, actors, action, e_events, wait_time = self.parse_stmt(partial)
+        t_events, actors, action, e_events, wait_time, all_keyword, any_keyword = self.parse_stmt(partial)
         # In case we have a 2 word action with a <keyword string> pattern:
         try:
             action = ''.join(action)
@@ -236,11 +236,11 @@ class HLBParser():
             action = str(action)
         if actors != None and e_events != None:
             #print("Complete statement with emit.")
-            return(HLBHintType.NO_HINT, self.new_return_dict(all_keyword=all_keyword, any_keyword=any_keyword, t_events=t_events, actors=actors, action=action, e_events=e_events, wait_time=wait_time), [])
+            return(HLBHintType.NO_HINT, self.new_return_dict(t_events=t_events, actors=actors, action=action, e_events=e_events, wait_time=wait_time, all_keyword=all_keyword, any_keyword=any_keyword), [])
         elif actors != None and e_events == None:
             #print("Complete statement, with no emit.")
             hint_list = ['EMIT ' + action +'Signal', 'EMIT'] 
-            return(HLBHintType.OPT_EMIT_STMT, self.new_return_dict(all_keyword=all_keyword, any_keyword=any_keyword, t_events=t_events, actors=actors, action=action, wait_time=wait_time), hint_list)
+            return(HLBHintType.OPT_EMIT_STMT, self.new_return_dict(t_events=t_events, actors=actors, action=action, wait_time=wait_time, all_keyword=all_keyword, any_keyword=any_keyword), hint_list)
         
         
         # Our statement isn't complete or correct:

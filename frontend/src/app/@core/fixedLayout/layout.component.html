@@ -8,17 +8,17 @@
     <div class="sidebar-header">
       <i style="float:right"  class="fas fa-times menu_pointer"(click)=" toggle()"></i>
      
-      <div class="navbar-nav pointer" [matMenuTriggerFor]="menu">
+      <div class="navbar-nav pointer" >
         <div class="profile" *ngIf="!loggedIn"></div>
         <div class="profile_img" *ngIf="loggedIn"><img src="{{img}}" width="80px" height="80px">
           <div class="username"><span *ngIf="!loggedIn">Login / Sign Up!</span><span *ngIf="loggedIn">{{fullName}}<br><i>{{'@'+userHandle}}</i></span></div>
         </div>
         
-        <mat-menu #menu="matMenu">
+        <!-- <mat-menu #menu="matMenu">
           <button mat-menu-item (click)="loginWithGoogle()" *ngIf="!loggedIn">Login with Google</button>
           <button mat-menu-item *ngIf="!loggedIn">Sign Up</button>
           <button mat-menu-item *ngIf="loggedIn" (click)="logout()">Logout</button>
-        </mat-menu>
+        </mat-menu> -->
       </div>
     </div>
 
@@ -38,9 +38,17 @@
             </ul>
         </li> -->
         <li>
-            <a href="/dashboard">Dashboard</a>
-        </li>
-       
+          <a href="/dashboard">Dashboard</a>
+      </li>
+      <li>
+        <a href="/docs">Documentation</a>
+      </li>
+      <li>
+        <a href="mailto:dew@mailman.isi.edu">Contact us</a>
+      </li>
+      <li>
+        <a href="/auth/logout">Logout</a>
+    </li>
     </ul>
 </nav>
 </div>
@@ -66,7 +74,14 @@
            
             </div>
   
-        
+        <ul class="navbar-nav ml-auto">
+              <li class="nav-item">
+                <a class="nav-link" href="/docs">Help</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="mailto:dew@mailman.isi.edu">Contact us</a>
+              </li>
+            </ul>
             
   
       

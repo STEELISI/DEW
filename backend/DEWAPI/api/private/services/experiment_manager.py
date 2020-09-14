@@ -35,13 +35,16 @@ class ExperimentManager(object):
         return e
 
     def push_to_drive(self, experiment_id, current_user_id, token, create_new_file=False):
-        driveId = DriveTable.query.filter(DriveTable.experiment_id == experiment_id, DriveTable.uid == current_user_id).first()
         if self.user_can(experiment_id,current_user_id,AccessControlEnum.write):
+            userFolderId = self.get_or_create_user_folder_id(current_user_id, token)
+            driveId = DriveTable.query.filter(DriveTable.experiment_id == experiment_id,
+                                              DriveTable.uid == current_user_id, DriveTable.file_type == "dew").first()
+            experimentFolderId = self.get_or_create_experiment_folder_id(current_user_id, experiment_id, userFolderId, token)
             data = self.dew_content(experiment_id)
             if driveId is None:
                 if create_new_file:
-                    driveId = self.create_new_drive_file(experiment_id, current_user_id, token)
-                    d = DriveTable(drive_file_id=driveId.driveFileId,experiment_id=experiment_id,uid=current_user_id)
+                    driveId = self.create_new_drive_file(experiment_id, current_user_id, [experimentFolderId], "dew", token)
+                    d = DriveTable(drive_file_id=driveId.driveFileId,experiment_id=experiment_id,uid=current_user_id,file_type=driveId.file_type)
                     db.session.add(d)
                     db.session.commit()
                 else:
@@ -60,21 +63,7 @@ class ExperimentManager(object):
 
 
     def dew_content(self, experiment_id):
-        content = json.loads(Experiment.query.get(experiment_id).content)
-        dew_file = configparser.ConfigParser(allow_no_value=True)
-        dew_file.optionxform = str
-        dew_file.add_section('Scenario')
-        for b in content['behaviors']:
-            dew_file.set('Scenario',b)
-        dew_file.add_section('Bindings')
-        for b in content['bindings']:
-            dew_file.set('Bindings', b)
-        dew_file.add_section('Constraints')
-        for c in content['constraints']:
-            dew_file.set('Constraints', c)
-        x = io.StringIO()
-        dew_file.write(x)
-        return x.getvalue()
+        return self.get_content_in_dew_format(Experiment.query.get(experiment_id).content)
 
     def get_content_in_dew_format(self, content_string):
         content = json.loads(content_string)
@@ -94,15 +83,14 @@ class ExperimentManager(object):
         return x.getvalue()
 
 
-    def create_new_drive_file(self, experiment_id, current_user_id, token):
+    def create_new_drive_file(self, experiment_id, current_user_id, parents, file_type, token):
         e = self.get_experiment(experiment_id,current_user_id)
         response = requests.post(
             "https://www.googleapis.com/drive/v3/files",
-            data=json.dumps({'name': e.name}),
+            data=json.dumps({'name': e.name, 'parents': parents}),
             headers={'Content-Type': 'application/json', 'Authorization': 'Bearer '+ token}
         )
-        print(json.loads(response.content))
-        return DriveTable(drive_file_id=json.loads(response.content)['id'],experiment_id=experiment_id, uid=current_user_id)
+        return DriveTable(drive_file_id=json.loads(response.content)['id'],experiment_id=experiment_id, uid=current_user_id, file_type=file_type)
 
 
     def get_experiment_versions(self, experiment_id, current_user_id):
@@ -153,7 +141,7 @@ class ExperimentManager(object):
 
         result = []
         for e in experiments:
-            obj = {'experiment_id': e['id'], 
+            obj = {'experiment_id': e['id'],
                     'name': e['name'],
                      'description': e['description'],
                    'created_date': e['created_at'].date().strftime('%m-%d-%Y'),
@@ -181,7 +169,7 @@ class ExperimentManager(object):
             db.session.add(ac)
             db.session.add(e)
             db.session.commit()
-            return True, "Successfull"
+            return True, "Successful"
         else:
             raise ValueError("Forbidden")
     def soft_delete_access(self,current_user_id, experiment_id,userHandle):
@@ -199,7 +187,7 @@ class ExperimentManager(object):
             # print(ac)
             db.session.add(ac1)
             db.session.commit()
-            return True, "Successfull"
+            return True, "Successful"
         else:
             raise ValueError("Forbidden")
     def copy_experiment(self, original_experiment, user_id):
@@ -279,3 +267,34 @@ class ExperimentManager(object):
         else:
             result = {'error':'Un Authorized user','location':'logout'}
         return result
+
+    def get_or_create_user_folder_id(self, current_user_id, token):
+        user = User.query.get(current_user_id)
+        if user.drive_folder_id is None:
+            user.drive_folder_id = self.create_folder_id("Distributed Experiment Workflows",tuple(),token)
+            db.session.commit()
+
+        return user.drive_folder_id
+
+    def create_folder_id(self, title, parents, token):
+        response = requests.post(
+            "https://www.googleapis.com/drive/v3/files",
+            data=json.dumps({'name': title, 'mimeType': 'application/vnd.google-apps.folder', 'parents': parents}),
+            headers={'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token}
+        )
+        return json.loads(response.content)['id']
+
+    def get_or_create_experiment_folder_id(self, current_user_id, experiment_id, user_folder_id, token):
+        driveTableId = DriveTable.query.filter(DriveTable.experiment_id == experiment_id,
+                                              DriveTable.uid == current_user_id, DriveTable.file_type == "folder").first()
+        if driveTableId is None:
+            experiment = Experiment.query.get(experiment_id)
+            driveFileId = self.create_folder_id(experiment.name + " created on " + str(experiment.created_at), (user_folder_id,),token)
+            driveTableId = DriveTable(drive_file_id=driveFileId,experiment_id=experiment_id,uid=current_user_id,file_type="folder")
+            db.session.add(driveTableId)
+            db.session.commit()
+
+        return driveTableId.driveFileId
+
+
+

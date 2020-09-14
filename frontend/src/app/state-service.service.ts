@@ -3,9 +3,6 @@ import { BehaviorSubject, Observable } from "rxjs";
 
 @Injectable()
 export class StateService {
-  
- 
-  
   experimentColors: BehaviorSubject<any> = new BehaviorSubject({});
   loaderSwitch: BehaviorSubject<boolean> = new BehaviorSubject(false);
   actors: BehaviorSubject<any> = new BehaviorSubject(null);
@@ -17,12 +14,21 @@ export class StateService {
   driveId: BehaviorSubject<String> = new BehaviorSubject("");
   tokenList: BehaviorSubject<any> = new BehaviorSubject("");
   experimentControl: BehaviorSubject<number> = new BehaviorSubject(4);
+  saveEvent: BehaviorSubject<boolean> = new BehaviorSubject(false);
   userDetails: any;
   currentBehaviorWord: String;
   currentConstraintWord: String;
   tokenLevel: String;
   serverData: BehaviorSubject<any> = new BehaviorSubject(null);
 
+  triggerSaveEvent() {
+    this.saveEvent.next(true);
+  }
+
+  monitorSaveEvent() : Observable<boolean> {
+    return this.saveEvent.asObservable();
+  }
+  
   setLocalServerData(serverData: {}) {
     this.serverData.next(serverData);
   }

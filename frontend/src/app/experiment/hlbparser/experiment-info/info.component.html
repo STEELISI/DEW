@@ -52,7 +52,7 @@
               *ngIf="experimentControl > 2"
               >{{(id != -1)?'Save':'Create'}}</a
             >
-            <a class="dropdown-item" aria-disabled="true" *ngIf="id != -1">Save As...</a>
+            <!-- <a class="dropdown-item" aria-disabled="true" *ngIf="id != -1">Save As...</a> -->
             <a class="dropdown-item" (click)="saveDrive()" *ngIf="id != -1"
               >Save To Google Drive</a
             >
@@ -83,9 +83,9 @@
               (click)="listUserPopUp()"
               >List of Users
             </a>
-            <a class="dropdown-item" *ngIf="experimentControl > 3 && id!=-1"
+            <!-- <a class="dropdown-item" *ngIf="experimentControl > 3 && id!=-1"
               >Share link
-            </a>
+            </a> -->
             <a class="dropdown-item" (click)="closeExperiment()">Close</a>
           </div>
         </li>
@@ -151,11 +151,18 @@
     
           
         </li>
+        <li class="nav-item"><a class="nav-link" href="/docs">Help</a></li>
+        <li class="nav-item"><a class="nav-link" href="mailto:dew@mailman.isi.edu">Contact us</a></li>
       </ul>
     </div>
   </nav>
-  <span class="saved_bubble">
+  <span class="saved_bubble" [hidden]="savingFlag">
     {{isSaved()? 'saved' :'unsaved'}}
+  </span>
+  <span class="saved_bubble loader" [hidden]="!savingFlag">
+  </span>
+  <span class="saved_bubble" [hidden]="!savingFlag">
+    saving...
   </span>
   <span class="bubble">
     <strong

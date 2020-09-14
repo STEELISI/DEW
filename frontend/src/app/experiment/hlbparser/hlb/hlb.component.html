@@ -3,7 +3,7 @@
   style="font-size: 12px; font-family: Arial, Helvetica, sans-serif;"
 >
 <div class="col-md-12">
-  In DEW, an experiment consists of a scenario (who does what and when), constraints (how experiment should be materialized on a testbed) and bindings (specific commands to run on nodes for each action). Click on &#60;question mark image> to learn more about each component or explore our &#60;link to documentation> and &#60;link to examples>.
+  In DEW, an experiment consists of a scenario (who does what and when), constraints (how experiment should be materialized on a testbed) and bindings (specific commands to run on nodes for each action). Click on <span class="fa fa-question-circle" matTooltip="Information"></span>  to learn more about each component or explore our <a href="/docs/experiment_page">documentation</a> and <a href="/docs/examples/">examples</a>.
 </div>
 </div>
 <div
@@ -16,7 +16,7 @@
       <h2>Behavior</h2> 
     </div>
     <hr />
-    <p style="text-align: center;">[when &#60;event>][wait &#60;time>] actor action [emit &#60;event>]</p>
+    <pre class="code-snippet">[when &#60;event>][wait &#60;time>] actor action [emit &#60;event>]</pre>
     <hr />
     
     <div class="row">
@@ -57,7 +57,8 @@
               toolbar: false
             }"
             placeholder="Enter Steps to be executed during the experiment. For example: Actor0 start_log"
-            [(ngModel)]="behaviorText"
+            format="object"
+            [(ngModel)]="objectFormat"
             [disabled]="isExperimentDisabled()"
             (onContentChanged)="logChangeBehavior($event)"
             (onEditorCreated)="created($event, 2)"
@@ -72,7 +73,7 @@
     </div>
   
     <hr />
-    <p style="text-align: center;">actor constraint_type value</p>
+    <pre class="code-snippet">actor constraint_type value</pre>
     <hr />
     <div class="row">
       <div class="col-md-12" (click)="selectTextBox(3)">
@@ -124,7 +125,7 @@
     </div>
     
     <hr />
-    <p style="text-align: center;">Choose an option from drop-down boxes or input your own commands. Variables are preceded by $ to indicate that their values should be replaced by constants in the design stage, or specified by user at run-time on the command line.</p>
+    <p class="code-snippet">Choose an option from drop-down boxes or input your own commands. Variables are preceded by $ to indicate that their values should be replaced by constants in the design stage, or specified by user at run-time on the command line.</p>
     <hr />
     <div
       *ngIf="bindingList.length == 0"
@@ -138,15 +139,21 @@
           <div>
             <mat-form-field style="width: 100%;" appearance="outline">
               <mat-label>{{ item.key + " represents: " }}</mat-label>
-              <input
-                matInput
-                [disabled]="isExperimentDisabled()"
+              <input type="text"
+              [disabled]="isExperimentDisabled()"
                 [(ngModel)]="item.value"
                 (change)="storeBinding()"
-              />
+                     aria-label="string"
+                     matInput
+                     (focus)="searchFilter(item.value)"
+                     (keyup) = "searchFilter(item.value)"
+                     [matAutocomplete]="UserInfo">
+              <mat-autocomplete #UserInfo="matAutocomplete" (optionSelected)="storeBinding()">
+                <mat-option *ngFor="let option of filteredBindingHandle | async" [value]="option">
+                 {{option}}
+                </mat-option>
+              </mat-autocomplete>
             </mat-form-field>
-
-            <span> </span>
           </div>
         </li>
       </ul>

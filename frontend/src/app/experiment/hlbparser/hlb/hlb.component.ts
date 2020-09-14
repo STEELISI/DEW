@@ -1,4 +1,9 @@
-import { Component, OnInit, Inject, ChangeDetectorRef } from "@angular/core";
+import {
+  Component,
+  OnInit,
+  Inject,
+  ChangeDetectorRef
+} from "@angular/core";
 import { CdkDragDrop, moveItemInArray } from "@angular/cdk/drag-drop";
 import * as Quill from "quill";
 import EditorService from "../common/editor-service";
@@ -10,6 +15,7 @@ import {
   MAT_DIALOG_DATA,
 } from "@angular/material/dialog";
 import { HttpService } from "src/app/http-service.service";
+import { Observable, of } from "rxjs";
 
 Quill.register("modules/counter", EditorService);
 
@@ -21,6 +27,21 @@ Quill.register("modules/counter", EditorService);
 export class HlbComponent implements OnInit {
   actorService: EditorService;
   behaviorService: EditorService;
+  filteredBindingHandle: Observable<string[]>;
+  filterBindingOptions= [
+    "tcpdump -i expeth($node) -w $file",
+    "ping $node",
+    "iperf -s",
+    "iperf -c $node",
+    "nmap $node",
+    "wget $node",
+    "dig $name",
+    "start_apache sudo service apache2 start",
+    "start_bind sudo service bind9 start"
+  ];
+
+  objectFormat = []
+  defaultTextColor = {} //{"when":"blue","emit":"blue"}
   editorService: EditorService;
   constraintService: EditorService;
   service: any;
@@ -50,7 +71,7 @@ export class HlbComponent implements OnInit {
   inputText: string = "";
   actors: String = "";
   selectedIndex: number = 0;
-  experimentAccess:number = 4;
+  experimentAccess: number = 4;
   constructor(
     private http: HttpService,
     public dialog: MatDialog,
@@ -58,16 +79,117 @@ export class HlbComponent implements OnInit {
     private _snackBar: MatSnackBar,
     private changeDetection: ChangeDetectorRef
   ) {}
+
+  resetFilterList() {
+    this.filteredBindingHandle = of(this.filterBindingOptions);
+  }
+  searchFilter(value: any) {
+    this.filteredBindingHandle = of(
+      this._filter(value, this.filterBindingOptions)
+    );
+  }
+
+  convertStringToJsonObject(text:String){
+    console.log(text)
+    let wordArray = text.trim().split(" ")
+    let result = []
+    wordArray.forEach((element) =>{
+      if(this.defaultTextColor[element]!=undefined && this.defaultTextColor[element]!=null && this.defaultTextColor[element].trim()!='')
+        result.push({insert:element+" ","attributes": { "color": this.defaultTextColor[element], "bold": true }})
+        else
+        result.push({insert:element+" "})
+    })
+    //console.log(result)
+    return result
+  }
+
+  
+
+  convertTextToMap(textJson) {
+    let map : Map<String, {}> = new Map<String, {}>();
+    console.log(textJson)
+    textJson.forEach(element => {
+      map.set(element['text']+"_row_"+element['row'],element)
+    });
+
+    return map
+  }
+
+  addColor(stringArray,row,map) {
+
+    let occurenceMap : Map<String, number> = new Map<String, number>();
+    stringArray.forEach(element => {
+      if(occurenceMap.has(element.insert.trim())){
+        occurenceMap.set(element.insert.trim(),occurenceMap.get(element.insert.trim())+1)
+      }else{
+        occurenceMap.set(element.insert.trim(),1)
+      }
+
+      if(map.has(element.insert.trim()+"_row_"+row)) {
+        let detail = map.get(element.insert.trim()+"_row_"+row)
+        if(detail['occurence'] == -1){
+          element["attributes"]= { "color": detail['color'], "bold": true }
+        }else {
+          if(occurenceMap.get(element.insert.trim()) == detail['occurence']){
+            element["attributes"]= { "color": detail['color'], "bold": true }
+          }
+        }
+
+      }
+    });
+
+    return stringArray
+  }
+
+  colorText(data, textJson) {
+    let map = this.convertTextToMap(textJson)
+    var textArray = []
+    let row =1
+    data.forEach((element) => {
+      let stringArray = this.convertStringToJsonObject(element)
+      
+      textArray = [...textArray,...this.addColor(stringArray,row,map),{ insert: '\n' }]
+      row ++
+    });
+
+    return textArray
+  }
   ngOnInit(): void {
+    this.resetFilterList();
     this.bindingMap = new Map<String, any>();
     this.behaviorList = [];
     const instance = this;
     this.stateservice.getBehavior().subscribe((data) => {
       if (data != null) {
         var text = "";
+        var textArray = []
         data.forEach((element) => {
+          textArray = [...textArray,...this.convertStringToJsonObject(element),{ insert: '\n' }]
           text += element + "<br>";
         });
+
+        // let test = [{
+        //   text:"trigger",
+        //   row:"1",
+        //   occurence:1,
+        //   color:"pink"
+        // },{
+        //   text:"trigger",
+        //   row:"2",
+        //   occurence:-1,
+        //   color:"red"
+        // },{
+        //   text:"trigg",
+        //   row:"1",
+        //   occurence:1,
+        //   color:"red"
+        // },{
+        //   text:"actor2",
+        //   row:"2",
+        //   occurence:1,
+        //   color:"red"
+        // }]
+        this.objectFormat = textArray
         instance.behaviorText = text;
       }
     });
@@ -113,14 +235,23 @@ export class HlbComponent implements OnInit {
         instance.constraintText = text;
       }
     });
-    this.stateservice.getExperimentControl().subscribe(flag=>{
-      this.experimentAccess = flag
-    })
+    this.stateservice.getExperimentControl().subscribe((flag) => {
+      this.experimentAccess = flag;
+    });
   }
 
-  isExperimentDisabled():boolean{return this.experimentAccess == 2}
+  isExperimentDisabled(): boolean {
+    return this.experimentAccess == 2;
+  }
   drop(event: CdkDragDrop<string[]>, list: Array<any>) {
     moveItemInArray(list, event.previousIndex, event.currentIndex);
+  }
+  private _filter(value: string, options): string[] {
+    const filterValue = value.toLowerCase();
+    console.log(options)
+    return options.filter((option) =>
+      option.toLowerCase().includes(filterValue)
+    );
   }
   created(editor, id: number) {
     // //console.log(id);
@@ -150,7 +281,7 @@ export class HlbComponent implements OnInit {
 
         this.behaviorService.isTabPressed().subscribe((flag) => {
           if (flag) {
-           //console.log("inside istab");
+            //console.log("inside istab");
             if (this.stateservice.getCurrentBehaviorWord().trim() != "")
               this.insertValue(
                 this.stateservice.getCurrentBehaviorWord(),
@@ -175,17 +306,19 @@ export class HlbComponent implements OnInit {
               params.constraints = constraintsList;
             }
             this.behaviorTextFilter.text = "";
-            this.http.put("v1/pr/hlb/suggestions", params,{withCredential:true}).subscribe((data) => {
-              var list = [];
-              data.suggestions.forEach((element) => {
-                list.push({ value: element, flag: false });
+            this.http
+              .put("v1/pr/hlb/suggestions", params, { withCredential: true })
+              .subscribe((data) => {
+                var list = [];
+                data.suggestions.forEach((element) => {
+                  list.push({ value: element, flag: false });
+                });
+                if (data.suggestion_text.trim() != "")
+                  this.suggestionbehaviorMessage = data.suggestion_text;
+                else this.suggestionbehaviorMessage = null;
+                this.behaviorWordList = list;
+                this.changeDetection.detectChanges();
               });
-              if (data.suggestion_text.trim() != "")
-                this.suggestionbehaviorMessage = data.suggestion_text;
-              else this.suggestionbehaviorMessage = null;
-              this.behaviorWordList = list;
-              this.changeDetection.detectChanges();
-            });
           }
         });
 
@@ -239,17 +372,19 @@ export class HlbComponent implements OnInit {
               params.behaviors = behaviorsList;
             }
             this.constraintTextFilter.text = "";
-            this.http.put("v1/pr/hlb/suggestions", params,{withCredential:true}).subscribe((data) => {
-              var list = [];
-              data.suggestions.forEach((element) => {
-                list.push({ value: element, flag: false });
+            this.http
+              .put("v1/pr/hlb/suggestions", params, { withCredential: true })
+              .subscribe((data) => {
+                var list = [];
+                data.suggestions.forEach((element) => {
+                  list.push({ value: element, flag: false });
+                });
+                if (data.suggestion_text.trim() != "")
+                  this.suggestionConstraintMessage = data.suggestion_text;
+                else this.suggestionConstraintMessage = null;
+                this.constraintWordList = list;
+                this.changeDetection.detectChanges();
               });
-              if (data.suggestion_text.trim() != "")
-                this.suggestionConstraintMessage = data.suggestion_text;
-              else this.suggestionConstraintMessage = null;
-              this.constraintWordList = list;
-              this.changeDetection.detectChanges();
-            });
           }
         });
 
@@ -285,9 +420,11 @@ export class HlbComponent implements OnInit {
     });
     this.stateservice.setBehavior(this.behaviorList);
 
-    this.http.put("v1/pr/hlb/parse", data,{withCredential:true}).subscribe((data: ParseApiBean) => {
-      this.extractInfo(data);
-    });
+    this.http
+      .put("v1/pr/hlb/parse", data, { withCredential: true })
+      .subscribe((data: ParseApiBean) => {
+        this.extractInfo(data);
+      });
   }
 
   updateActorsConstraint() {
@@ -312,16 +449,17 @@ export class HlbComponent implements OnInit {
     });
 
     this.stateservice.setConstraints(this.contraintList);
-    this.http.put("v1/pr/hlb/parse", data,{withCredential:true}).subscribe((data: ParseApiBean) => {
-      //console.log(data);
-      //   this.extractInfo(data);
-    });
+    this.http
+      .put("v1/pr/hlb/parse", data, { withCredential: true })
+      .subscribe((data: ParseApiBean) => {
+        //console.log(data);
+        //   this.extractInfo(data);
+      });
   }
   extractInfo(data: ParseApiBean) {
     this.extractScenario(data.parsedScenario);
-    this.storeBinding()
+    this.storeBinding();
   }
-
 
   extractScenario(scenario) {
     //console.log(scenario);
@@ -373,7 +511,7 @@ export class HlbComponent implements OnInit {
     triggers //,actions,emitters
   ) {
     //console.log(this.bindingMap);
-    if (triggers != null){
+    if (triggers != null) {
       triggers.forEach((element) => {
         //console.log(element);
         if (!this.bindingMap.has(element)) {
@@ -415,14 +553,13 @@ export class HlbComponent implements OnInit {
     // //console.log(this.bindingMap);
   }
   logChangeBehavior(event) {
-   // if (this.behaviorService.getText().trim() === "") return;
-
+    // if (this.behaviorService.getText().trim() === "") return;
     // var index = this.behaviorService.getText().length-2;
     // if (this.behaviorService.getText().charAt(index) == '\n')
     //     this.updateActors();
   }
   logChangeConstraints(event) {
-   // if (this.constraintService.getText().trim() === "") return;
+    // if (this.constraintService.getText().trim() === "") return;
     // //console.log(this.constraintService.getText().charAt(this.constraintService.getText().length-1))
   }
   insertValue(text: any, flag: boolean = false) {
@@ -464,7 +601,7 @@ export class HlbComponent implements OnInit {
     this.stateservice.setActors(alist);
   }
 
-  showInfo(id:number) {
+  showInfo(id: number) {
     //console.log(this.bindingList);
 
     var dialogRef = this.dialog.open(HLBInforPopUp, {
@@ -535,23 +672,25 @@ export class HlbComponent implements OnInit {
 
     if (flag) return;
     this.stateservice.enableLoader();
-    this.http.put("v1/pr/hlb/generateNs", data, {withCredential:true}).subscribe(
-      (data) => {
-        //console.log(data);
-        this.stateservice.disableLoader();
-        this.downLoadFile(data.script);
-        this._snackBar.open("Successfully Downloaded.", "close", {
-          duration: 2000,
-        });
-        // this.stateservice.setBindings(data.Bindings);
-      },
-      (error) => {
-        this.stateservice.disableLoader();
-        this._snackBar.open(error, "close", {
-          duration: 2000,
-        });
-      }
-    );
+    this.http
+      .put("v1/pr/hlb/generateNs", data, { withCredential: true })
+      .subscribe(
+        (data) => {
+          //console.log(data);
+          this.stateservice.disableLoader();
+          this.downLoadFile(data.script);
+          this._snackBar.open("Successfully Downloaded.", "close", {
+            duration: 2000,
+          });
+          // this.stateservice.setBindings(data.Bindings);
+        },
+        (error) => {
+          this.stateservice.disableLoader();
+          this._snackBar.open(error, "close", {
+            duration: 2000,
+          });
+        }
+      );
   }
   storeBinding() {
     // console.log(this.bindingList);
@@ -599,7 +738,6 @@ export class BindingPopUp {
     this.dialogRef.close();
   }
 }
-
 
 @Component({
   selector: "hlb-info",
