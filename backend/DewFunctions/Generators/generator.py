@@ -422,7 +422,7 @@ class GeneralGenerator(object):
         removeResultFile = "\'rm ~/res1;"
         writeResultFile = "echo $? > ~/res1\'"
         writeResult = "\'cat ~/res1\' > lastCmdResult"
-        bashScript = ""
+        bashScript = "#!/usr/bin/bash\n"
         tab = ""
         commandSupported = ["tcpdump","ping","iperf","nmap","curl","scp","dig","Install_and_run_apache","Install_and_run_bind"]
         events = {}
