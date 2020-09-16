@@ -35,32 +35,55 @@ class ExperimentManager(object):
         db.session.commit()
         return e
 
+    def get_or_create_file_id(self, experiment_id, current_user_id, experimentFolderId, file_name, file_type, token, create_new_file=False):
+        fileId = DriveTable.query.filter(DriveTable.experiment_id == experiment_id,
+                                          DriveTable.uid == current_user_id, DriveTable.file_type == file_type).first()
+        if fileId is None:
+            if create_new_file:
+                fileId = self.create_new_drive_file(experiment_id, current_user_id, [experimentFolderId], file_type, token, file_name)
+                d = DriveTable(drive_file_id=fileId.driveFileId, experiment_id=experiment_id, uid=current_user_id,
+                               file_type=fileId.file_type)
+                db.session.add(d)
+                db.session.commit()
+            else:
+                raise ValueError("Forbidden")
+        return fileId
+
+    def update_file_in_drive(self,data, fileId, token):
+        response = requests.patch(
+            "https://www.googleapis.com/upload/drive/v3/files/" + fileId.driveFileId + "?uploadType=media",
+            data=data,
+            headers={'Content-Type': 'text/plain', 'Authorization': 'Bearer ' + token},
+            timeout=2.0
+        )
+        if (response.status_code != 200):
+            raise ValueError("Error occurred while updating file type " + fileId.file_type)
+        else:
+            return True
+
     def push_to_drive(self, experiment_id, current_user_id, token, create_new_file=False):
         if self.user_can(experiment_id,current_user_id,AccessControlEnum.write):
             userFolderId = self.get_or_create_user_folder_id(current_user_id, token)
-            driveId = DriveTable.query.filter(DriveTable.experiment_id == experiment_id,
-                                              DriveTable.uid == current_user_id, DriveTable.file_type == "dew").first()
-            experimentFolderId = self.get_or_create_experiment_folder_id(current_user_id, experiment_id, userFolderId, token)
-            data = self.dew_content(experiment_id)
-            if driveId is None:
-                if create_new_file:
-                    driveId = self.create_new_drive_file(experiment_id, current_user_id, [experimentFolderId], "dew", token)
-                    d = DriveTable(drive_file_id=driveId.driveFileId,experiment_id=experiment_id,uid=current_user_id,file_type=driveId.file_type)
-                    db.session.add(d)
-                    db.session.commit()
-                else:
-                    raise ValueError("Forbidden")
 
-            response = requests.patch(
-                "https://www.googleapis.com/upload/drive/v3/files/"+driveId.driveFileId+"?uploadType=media",
-                 data=data,
-                 headers={'Content-Type': 'text/plain', 'Authorization': 'Bearer '+ token},
-                 timeout=2.0
-            )
-            if(response.status_code != 200):
-                raise ValueError("Error occured")
-            else:
-                return True
+            experimentFolderId = self.get_or_create_experiment_folder_id(current_user_id, experiment_id, userFolderId, token)
+
+            experiment = Experiment.query.get(experiment_id)
+
+            dew_data = self.get_content_in_dew_format(experiment.content)
+            dew_file_id = self.get_or_create_file_id(experiment_id,current_user_id,experimentFolderId, "dew_file.txt", "dew",token,create_new_file)
+            self.update_file_in_drive(dew_data,dew_file_id,token)
+
+            hlbService = HLBService()
+            ns_data = hlbService.HandleNS(json.loads(experiment.content))
+            ns_file_id = self.get_or_create_file_id(experiment_id,current_user_id,experimentFolderId,"ns_file.ns", "ns",token,create_new_file)
+            self.update_file_in_drive(ns_data, ns_file_id, token)
+
+            bash_data = hlbService.HandleBASH(json.loads(experiment.content))
+            bash_file_id = self.get_or_create_file_id(experiment_id, current_user_id, experimentFolderId, "bash_script.sh",
+                                                    "bash", token, create_new_file)
+            self.update_file_in_drive(bash_data, bash_file_id, token)
+
+
 
 
     def dew_content(self, experiment_id, current_user_id):
@@ -87,11 +110,10 @@ class ExperimentManager(object):
         return x.getvalue()
 
 
-    def create_new_drive_file(self, experiment_id, current_user_id, parents, file_type, token):
-        e = self.get_experiment(experiment_id,current_user_id)
+    def create_new_drive_file(self, experiment_id, current_user_id, parents, file_type, token,filename):
         response = requests.post(
             "https://www.googleapis.com/drive/v3/files",
-            data=json.dumps({'name': e.name, 'parents': parents}),
+            data=json.dumps({'name': filename, 'parents': parents}),
             headers={'Content-Type': 'application/json', 'Authorization': 'Bearer '+ token}
         )
         return DriveTable(drive_file_id=json.loads(response.content)['id'],experiment_id=experiment_id, uid=current_user_id, file_type=file_type)
