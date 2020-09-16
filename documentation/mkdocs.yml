@@ -2,9 +2,16 @@ site_name: Distributed Experiment Workflows
 site_url: http://dew.isi.edu/docs
 nav:
 - Home: 'index.md'
-- First time setup: 'first_time.md'
-- Dashboard: 'dashboard.md'
-- Experiment page: 'experiment_page.md'
+- UI:
+  - First time setup: 'first_time.md'
+  - Dashboard: 'dashboard.md'
+  - Experiment page: 'experiment_page.md'
+- DEW concepts:
+  - Quickstart: 'quickstart.md'
+  - Anatomy of a dew file: 'create_new_experiment.md'
+  - Share an experiment: 'share_an_experiment.md'
+  - Backup and recovery: 'backup_and_recovery.md'
+  - Running on Deter: 'running_on_deter.md'
 - Examples: 'examples.md'
 - Go back to DEW: 'redirect-to-dew.html'
 theme: 'readthedocs'

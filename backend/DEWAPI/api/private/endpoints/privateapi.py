@@ -323,6 +323,24 @@ class HandleExperimentVersions(Resource):
             if str(e) == "Forbidden":
                 return {}, 403
 
+@ns.route("/export/dew")
+class HandleExportToDEW(Resource):
+    @api.expect(experiment_detail)
+    def put(self):
+        """
+        Get experiment in DEW format
+        """
+        content = request.get_json(force=True)
+        userId = userObj.getUserId()
+        try:
+            dew_content = em.dew_content(content['id'], userId)
+            result = {}
+            result['status'] = True
+            result['dew_content'] = dew_content
+            return result, 200
+        except ValueError as e:
+            if str(e) == "Forbidden":
+                return {}, 403
 
 @ns.route("/persist/experiment/copy")
 class HandleExperimentCopy(Resource):

@@ -6,6 +6,7 @@ from DEWAPI.models.access_control import AccessControl
 from utilities.access_control_enum import AccessControlEnum
 from datetime import datetime
 from dateutil.relativedelta import relativedelta
+from .hlbServices import HLBService
 import requests
 import json
 import configparser
@@ -62,8 +63,11 @@ class ExperimentManager(object):
                 return True
 
 
-    def dew_content(self, experiment_id):
-        return self.get_content_in_dew_format(Experiment.query.get(experiment_id).content)
+    def dew_content(self, experiment_id, current_user_id):
+        if self.user_can(experiment_id,current_user_id,AccessControlEnum.read.value) is not None:
+            return self.get_content_in_dew_format(Experiment.query.get(experiment_id).content)
+        else:
+            raise ValueError("Forbidden")
 
     def get_content_in_dew_format(self, content_string):
         content = json.loads(content_string)
