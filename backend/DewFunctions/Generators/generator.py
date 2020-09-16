@@ -130,7 +130,9 @@ class GeneralGenerator(object):
         lanList = []
         locationList = []
         osList = []
+        nodesInOsList = set([])
         osSupported = ['ubuntu','fedora','freebsd','fbsd','centos','kali','metasploitable','linux','windows','winxp']
+        defaultOS = "Ubuntu-EDU"
         nodes = []
         parser = HLBParser([])
         if actors is None:
@@ -294,10 +296,15 @@ class GeneralGenerator(object):
                                 clientServerList[str(node)] = 1
                                 sampleString = "set " + str(k) + " [$ns node]\n"
                                 nsCommands += sampleString
+                            if k not in nodesInOsList:
+                                nodesInOsList.add(k)
                         elif counter == 1:
-                            os = k
-                            if k not in osSupported:
-                                print("ALERT:\t Invalid Operating System")
+                            res = [i for i in osSupported if re.search(k, i, re.IGNORECASE)]
+                            if res:
+                                os = k
+                            else:
+                                print("ALERT:\t Invalid Operating System, Assigning the default OS Ubuntu-EDU")
+                                os = "Ubuntu-EDU"
                     counter+=1
 
                 if node != "":
@@ -393,6 +400,21 @@ class GeneralGenerator(object):
                             nsCommands += " " + "$" + "lan" + str(counter) + " " + ".02"
                             nsCommands += "\n"
                     break
+
+        for node in clientServerList:
+            if node not in nodesInOsList:
+                if clientServerList[str(node)] == 1:
+                    nsCommands += "tb-set-node-os"
+                    nsCommands += " " + "$" + str(node)
+                    nsCommands += " " + defaultOS
+                    nsCommands += "\n"
+                else:
+                    for j in range(0,clientServerList[str(node)]):
+                        nsCommands += "tb-set-node-os"
+                        nsCommands += " " + "$" + str(node) + str(j)
+                        nsCommands += " " + defaultOS
+                        nsCommands += "\n"
+
         opt = "set ns [new Simulator]\n"
         opt += "source tb_compat.tcl\n"
         opt += nsCommands
