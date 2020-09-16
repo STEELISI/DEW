@@ -13,6 +13,7 @@ sys.path.append('../UI/')
 
 import globals
 import ast
+import re
 
 from hlb_parser import HLBParser, ConstraintParser, BindingParser
 
@@ -463,17 +464,24 @@ class GeneralGenerator(object):
                             if sampleList[0]:
                                 for val in sampleList:
                                     if val in clientServerList:
-                                        if val == sampleList[-1]:
-                                            bindings[v['action']] = bindings[v['action']].replace(" "+val," "+val+"0")
-                                        else:
-                                            bindings[v['action']] = bindings[v['action']].replace(" "+val+" "," "+val+"0"+" ")
-                                sampleString += tab + "ssh "+ v['actors'][0] + str(min(0, clientServerList[v['actors'][0]])) + "." + exp + "." + proj + ".isi.deterlab.net "
+                                        if clientServerList[val] != 1:
+                                            if val == sampleList[-1]:
+                                                bindings[v['action']] = bindings[v['action']].replace(" "+val," "+val+"0")
+                                            else:
+                                                bindings[v['action']] = bindings[v['action']].replace(" "+val+" "," "+val+"0"+" ")
+                                if clientServerList[v['actors'][0]] == 1:
+                                    sampleString += tab + "ssh "+ v['actors'][0] + "." + exp + "." + proj + ".isi.deterlab.net "
+                                else:
+                                    sampleString += tab + "ssh "+ v['actors'][0] + str(min(0, clientServerList[v['actors'][0]])) + "." + exp + "." + proj + ".isi.deterlab.net "
                                 sampleString += removeResultFile
                                 sampleString += bindings[v['action']]
                                 sampleString += ";"
                                 sampleString += writeResultFile
                                 sampleString += "\n"
-                                sampleString += tab + "lastCmdResult" + "=" + "`ssh "+ v['actors'][0] + str(min(0, clientServerList[v['actors'][0]])) + "." + exp + "." + proj + ".isi.deterlab.net "
+                                if clientServerList[v['actors'][0]] == 1:
+                                    sampleString += tab + "lastCmdResult" + "=" + "`ssh "+ v['actors'][0] + "." + exp + "." + proj + ".isi.deterlab.net "
+                                else:
+                                    sampleString += tab + "lastCmdResult" + "=" + "`ssh "+ v['actors'][0] + str(min(0, clientServerList[v['actors'][0]])) + "." + exp + "." + proj + ".isi.deterlab.net "
                                 sampleString += "\'cat ~/res1\'`"
                                 sampleString += "\n"
                                 if v['t_events'] is not None:
@@ -486,9 +494,14 @@ class GeneralGenerator(object):
                                 sampleString += "if [ $lastCmdResult -eq 0 ]\n"
                                 sampleString += "then\n"
                                 sampleString += "\t"
-                                sampleString += bindings[i]
-                                sampleString += "\n\t"
-                                sampleString +=  i + "=`echo $?`"
+                                #if bindings[i].find("SUCCESS") == -1 or bindings[i].find("Success") == -1 or bindings[i].find("success") == -1:
+                                if re.search('success', bindings[i], re.IGNORECASE):
+                                    sampleString +=  i + "=`echo $?`"
+                                else:
+                                    sampleString += bindings[i]
+                                    sampleString += "\n\t"
+                                    sampleString +=  i + "=`echo $?`"
+
                                 sampleString += "\n"
                                 sampleString += "fi\n"
                 bashScript += sampleString
