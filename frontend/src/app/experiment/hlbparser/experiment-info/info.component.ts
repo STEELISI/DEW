@@ -540,7 +540,7 @@ export class InfoComponent implements OnInit {
     this.http.put("v1/pr/hlb/generateNs", data, {withCredential:true}).subscribe(
       (data) => {
 
-        this.downLoadFile(data.script);
+        this.downLoadFile(data.script, "nsFile.ns");
         this._snackBar.open("Successfully Downloaded.", "close", {
           duration: 2000,
         });
@@ -554,11 +554,10 @@ export class InfoComponent implements OnInit {
     );
   }
 
-  downLoadFile(data: any) {
+  downLoadFile(data: any, fileName: string) {
     var blob = new Blob([data], { type: "text/plain" });
     //console.log(blob);
     // var url = (window.URL || window.webkitURL).createObjectURL(blob);
-    var fileName = "nsFile.ns";
     if ("msSaveOrOpenBlob" in navigator) {
       navigator.msSaveOrOpenBlob(blob, fileName);
     } else {
@@ -580,6 +579,23 @@ export class InfoComponent implements OnInit {
 
       downloadLink.click();
     }
+  }
+
+  exportToDEW(){
+    this.http.put("v1/pr/export/dew", { id: this.experiment['id']}, {withCredential: true}).subscribe(
+      (data) => {
+        this.downLoadFile(data['dew_content'], "dew.txt")
+        this._snackBar.open("Successfully Downloaded.", "close", {
+          duration: 2000,
+        });
+        // this.stateservice.setBindings(data.Bindings);
+      },
+      (error) => {
+        this._snackBar.open(error, "close", {
+          duration: 2000,
+        });
+      }
+    )
   }
 
   bashGen() {
