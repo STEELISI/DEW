@@ -31,7 +31,7 @@ class HandleRetireve(Resource):
             s, t = obj.HandleBehaviorSuggestions(experiment["behaviors"], experiment['actors'], json_data['suggestion_for'])
             return { 'suggestions': s, 'suggestion_text': t}
         elif json_data["type"] == "constraint":
-            s, t = obj.HandleConstraintSuggestions(experiment["constraints"], experiment["actors"], json_data["suggestion_for"])
+            s, t = obj.HandleConstraintSuggestions(experiment["constraints"], experiment["actors"], json_data["suggestion_for"], experiment["behaviors"])
             return { 'suggestions': s, 'suggestion_text': t}
         else:
             pass

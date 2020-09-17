@@ -95,7 +95,7 @@ class HandleHLBSuggestions(Resource):
           s, t = hlb.HandleBehaviorSuggestions(json_data["behaviors"], json_data['actors'], json_data['suggestion_for'])
           return { 'suggestions': s, 'suggestion_text': t}
         elif json_data["type"] == "constraint":
-          s, t = hlb.HandleConstraintSuggestions(json_data["constraints"], json_data["actors"], json_data["suggestion_for"])
+          s, t = hlb.HandleConstraintSuggestions(json_data["constraints"], json_data["actors"], json_data["suggestion_for"], json_data["behaviors"])
           return { 'suggestions': s, 'suggestion_text': t}
         else:
           pass
