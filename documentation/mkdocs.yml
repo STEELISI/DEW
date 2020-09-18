@@ -1,5 +1,5 @@
 site_name: Distributed Experiment Workflows
-site_url: http://dew.isi.edu/docs
+site_url: https://dew.isi.edu/docs
 nav:
 - Home: 'index.md'
 - UI:
