@@ -7,9 +7,8 @@ nav:
   - Dashboard: 'dashboard.md'
   - Experiment page: 'experiment_page.md'
 - DEW concepts:
-  - Quickstart: 'quickstart.md'
-  - Anatomy of a dew file: 'create_new_experiment.md'
-  - Share an experiment: 'share_an_experiment.md'
+  - Basics: 'basics.md'
+  - Sharing and Collaboration: 'sharing_and_collaboration.md'
   - Backup and recovery: 'backup_and_recovery.md'
   - Running on Deter: 'running_on_deter.md'
 - Examples: 'examples.md'
