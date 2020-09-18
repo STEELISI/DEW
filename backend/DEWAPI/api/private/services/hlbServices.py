@@ -107,36 +107,52 @@ class HLBService():
 
     def addSuggestions(self, events):
         suggestions, suggestion_text = [], ''
+        #scenario = json_data["behaviors"]
         for event in events:
             s,t = hlb.getSuggestionsForEvent(event)
             suggestions = suggestions + s
             suggestion_text = suggestion_text + t
         return suggestions, suggestion_text
 
-    def HandleConstraintSuggestions(self, constraints, actors, last_constraint):
+    def HandleConstraintSuggestions(self, constraints, actors, last_constraint, scenarios):
         suggestions = []
+        parser = HLBParser([])
+        globals.actors = {}
+        globals.actions = {}
+        globals.events = {}
+        globals.actors = {}
 
+        for scenario in scenarios:
+            _t,v,_h = parser.extract_partial(scenario)
+            if v['actors'] is not None:
+                for actor in v['actors']:
+                    globals.actors[actor] = 1
+            if v['e_events'] is not None:
+                for events in v['e_events']:
+                    globals.events[events] = 1
+            if v['action'] is not None:
+                globals.actions[v['action']] = 1
         items = re.split("[\s,]",last_constraint.strip())
         item = items.pop(0)
         if item in ["num", "os","nodetype", "interfaces", "location", "link","lan"] and len(items) == 0:
             return self.addSuggestions(["actors_only"])
         elif len(items) >= 1:
-            if (item == "num" or item == "interfaces") and items[-1] in actors:
+            if (item == "num" or item == "interfaces") and items[-1] in globals.actors:
                 return self.addSuggestions(["enter digit"])
-            elif item == "os" and (items[-1] in actors):
+            elif item == "os" and (items[-1] in globals.actors):
                 # for os in globals.deploy_handler.getSuggestions(type='os'):
                     #addSuggestions(os, Centry)
                     # globals.app.addButton(os,Centry)
                     # globals.sbuttons[os]=1
                 return self.addSuggestions(["enter OS"])
-            elif item == "nodetype" and (items[-1] in actors):
+            elif item == "nodetype" and (items[-1] in globals.actors):
                 # for nodetype in globals.deploy_handler.getSuggestions(type='nodetype'):
                 #     globals.app.addButton(nodetype,Centry)
                 #     globals.sbuttons[nodetype]=1
                 return self.addSuggestions(["enter node type"])
-            elif item == "link" and (items[-1] in actors):
+            elif item == "link" and (items[-1] in globals.actors):
                 return self.addSuggestions(["actors_only"])
-            elif item == "lan" and (items[-1] in actors):
+            elif item == "lan" and (items[-1] in globals.actors):
                 return self.addSuggestions(["actors_only"])
             elif item == "location" and (items[-1] in globals.actors):
                 return self.addSuggestions(["enter testbed"])

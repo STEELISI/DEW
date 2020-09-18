@@ -106,7 +106,7 @@ class HLBService():
             suggestion_text = suggestion_text + t
         return suggestions, suggestion_text
 
-    def HandleConstraintSuggestions(self, constraints, actors, last_constraint):
+    def HandleConstraintSuggestions(self, constraints, actors, last_constraint, scenarios):
         suggestions = []
       
         items = re.split("[\s,]",last_constraint.strip())
