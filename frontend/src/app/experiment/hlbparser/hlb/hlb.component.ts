@@ -299,12 +299,9 @@ export class HlbComponent implements OnInit {
               constraints: [],
               actors: [],
             };
-
-            var constraints = this.constraintService.getText().trim();
-            if (constraints != "") {
-              var constraintsList = constraints.split("\n");
-              params.constraints = constraintsList;
-            }
+            this.stateservice.getConstraints().subscribe((constraints) => {
+              params.constraints = constraints
+            })
             this.behaviorTextFilter.text = "";
             this.http
               .put("v1/pr/hlb/suggestions", params, { withCredential: true })
