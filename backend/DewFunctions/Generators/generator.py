@@ -440,6 +440,7 @@ class GeneralGenerator(object):
             self.bindings_parsed[key] = value
         bindings = self.bindings_parsed.copy()
         nodes = []
+        helpDict = {}
         exp = "$exp"
         proj = "$proj"
         removeResultFile = "\'rm ~/res1;"
@@ -484,6 +485,8 @@ class GeneralGenerator(object):
                         if temp:
                             #if sampleList[0] in commandSupported:
                             if sampleList[0]:
+                                tempStr = ""
+                                helpList=[]
                                 for val in sampleList:
                                     if val in clientServerList:
                                         if clientServerList[val] != 1:
@@ -491,6 +494,28 @@ class GeneralGenerator(object):
                                                 bindings[v['action']] = bindings[v['action']].replace(" "+val," "+val+"0")
                                             else:
                                                 bindings[v['action']] = bindings[v['action']].replace(" "+val+" "," "+val+"0"+" ")
+                                    else:
+                                        if len(val) > 1:
+                                            if val.find("$") == 0:
+                                                helpList.append(val[1:])
+                                                tempStr += val[1:] + " "
+                                            else:
+                                                result = re.search(r"\(([$A-Za-z0-9_]+)\)", val)
+                                                if result is not None:
+                                                    if result.group(1):
+                                                        t = result.group(1)
+                                                        helpList.append(t[1:])
+                                                        tempStr += t[1:] + " "
+                                if helpList:
+                                    if helpList[0] not in helpDict:
+                                        sampleString += "if [[ -z ${" + helpList[0] +"} ]]"
+                                        helpDict[helpList[0]] = 1
+                                        for var in helpList[1:]:
+                                            sampleString += " || [[ -z ${" + var +"} ]]"
+                                        sampleString += "\nthen\n"
+                                        sampleString += "echo \"Variables having name " + tempStr + " is not set. Please set it before using\"\n"
+                                        sampleString += "fi\n"
+
                                 if clientServerList[v['actors'][0]] == 1:
                                     sampleString += tab + "ssh "+ v['actors'][0] + "." + exp + "." + proj + ".isi.deterlab.net "
                                 else:
