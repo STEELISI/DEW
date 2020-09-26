@@ -34,6 +34,17 @@ class Experiment(db.Model):
             'driveId': self.driveId,
             }
 
+    def response_dict(self):
+        return {
+            'name': self.name,
+            'id': self.experiment_id,
+            'description': self.description,
+            # 'nlp_content': self.nlp_content,
+            'content': self.content,
+            'created_at': self.created_at,
+            'updated_at': self.updated_at,
+        }
+
 
     def __init__(self, content, uid, description='', name=''):
         super().__init__()

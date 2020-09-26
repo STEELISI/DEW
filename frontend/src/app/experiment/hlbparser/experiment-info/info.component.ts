@@ -251,9 +251,9 @@ export class InfoComponent implements OnInit {
         (data) => {
           this.savingFlag = false
           if (data.saved) {
-              if(this.experiment['id'] == undefined){
-                location.href = "/dashboard";
-              }
+            if(this.experiment['id'] == undefined){
+              location.href = "/p/e/c/"+data.experiment.id
+            }
             var savedData = {
               name: this.experiment.name,
               actors: this.experiment.actors,
@@ -354,7 +354,7 @@ export class InfoComponent implements OnInit {
         (data) => {
           if (data.saved) {
             alert("Successfully saved!");
-            this.route.navigate(["dashboard"]);
+            // this.route.navigate(["dashboard"]);
           }
         },
         (error) => {
@@ -380,7 +380,7 @@ export class InfoComponent implements OnInit {
             (data) => {
               if (data.saved) {
                 alert("Successfully saved!");
-                this.route.navigate(["dashboard"]);
+                // this.route.navigate(["dashboard"]);
               }
             },
             (error) => {

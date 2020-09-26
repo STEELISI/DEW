@@ -50,8 +50,10 @@
               class="dropdown-item"
               (click)="save()"
               *ngIf="experimentControl > 2"
-              >{{(id != -1)?'Save':'Create'}}</a
-            >
+              >Save</a>
+            <div class="dropdown-divider" *ngIf="id == -1" ></div>
+            <a class="dropdown-item disabled" aria-disabled="true" *ngIf="id == -1">You need to save the experiment to perform more file related operations</a>
+            <div class="dropdown-divider" *ngIf="id == -1" ></div>
             <!-- <a class="dropdown-item" aria-disabled="true" *ngIf="id != -1">Save As...</a> -->
             <a class="dropdown-item" (click)="saveDrive()" *ngIf="id != -1"
               >Save To Google Drive</a
@@ -62,7 +64,7 @@
               *ngIf="experimentControl > 3 && id!=-1"
               >Delete</a
             >
-            <div class="dropdown-divider"></div>
+            <div class="dropdown-divider" *ngIf="id != -1"></div>
             <a
               class="dropdown-item"
               (click)="showVersionsPopup()"
@@ -70,7 +72,7 @@
               >View version history</a
             >
 
-            <div class="dropdown-divider"></div>
+            <div class="dropdown-divider" *ngIf="id != -1"></div>
             <a
               class="dropdown-item"
               *ngIf="experimentControl > 3 && id!=-1"
@@ -104,7 +106,7 @@
           </a>
           <div class="dropdown-menu" aria-labelledby="navbarDropdown2">
             <a class="dropdown-item" (click)="uploadInput()">Upload</a>
-            <a class="dropdown-item" (click)="nlpInput()">NLP</a>
+            <!-- <a class="dropdown-item" (click)="nlpInput()">NLP</a> -->
           </div>
         </li>
 

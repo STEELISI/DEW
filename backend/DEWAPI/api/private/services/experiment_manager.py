@@ -144,7 +144,7 @@ class ExperimentManager(object):
                 e.driveId = driveId
 
             db.session.commit()
-            return True, "Successfull"
+            return True, "Successful", e
         else:
             raise ValueError("Forbidden")
 

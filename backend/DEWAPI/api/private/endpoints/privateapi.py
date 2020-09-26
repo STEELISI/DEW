@@ -173,7 +173,7 @@ class HandleExperimentPushToDrive(Resource):
 
         else:
             try:
-                flag, message = em.update_experiment(experimentId, userId, name=name, description=description,
+                flag, message, experiment = em.update_experiment(experimentId, userId, name=name, description=description,
                                                      content=experiment_content)
                 em.push_to_drive(experiment_id=experimentId, current_user_id=userId, token=token,
                                  create_new_file=create_new_file)
@@ -210,12 +210,12 @@ class HandleExperimentSave(Resource):
         if experimentId is None or experimentId.strip() == '':
           experiment = em.create_experiment(userId, experiment_content,experimentId,name,description)
           if experiment is not None:
-              return {'saved': True,'message':"Successful" }
+              return {'saved': True,'message':"Successful", "experiment": experiment.response_dict() }
             
         else: 
           try:
-            flag , message = em.update_experiment(experimentId,userId,name=name, description=description,content=experiment_content,driveId=driveId)
-            return {'saved': flag,'message':message }
+            flag , message, experiment = em.update_experiment(experimentId,userId,name=name, description=description,content=experiment_content,driveId=driveId)
+            return {'saved': flag,'message':message, 'experiment': experiment.response_dict() }
           except ValueError as e:
             msg = {'saved': False, 'message': str(e)}
             return msg, 403

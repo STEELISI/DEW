@@ -300,7 +300,9 @@ export class HlbComponent implements OnInit {
               actors: [],
             };
             this.stateservice.getConstraints().subscribe((constraints) => {
-              params.constraints = constraints
+              if(constraints != null || constraints != undefined){
+                params.constraints = constraints
+              }
             })
             this.behaviorTextFilter.text = "";
             this.http
