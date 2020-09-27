@@ -101,7 +101,7 @@ class ExperimentManager(object):
             dew_file.set('Scenario', b)
         dew_file.add_section('Bindings')
         for b in content['bindings']:
-            dew_file.set('Bindings', b)
+            dew_file.set('Bindings', b['value'])
         dew_file.add_section('Constraints')
         for c in content['constraints']:
             dew_file.set('Constraints', c)

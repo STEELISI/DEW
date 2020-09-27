@@ -421,6 +421,44 @@ class HandleUploadParser(Resource):
         uploaded_file = upload_parser.parse_args()['file']
         content = uploaded_file.read()
         x = dew_parser.get_behaviors_and_constraints(content.decode("utf-8"))
+
+        # This section is being done to extract the bindings key and category as
+        # only the values are stored in dew file
+
+        # Creating data dictionary to send to the parser api
+        data = {
+            'ParseType': 'bash',
+            'Scenario': x['behaviors'],
+            'Constraints': [],
+        }
+        parsed_data = hlb.HandleParse(data)
+        bindings_copy = x['bindings']
+        formatted_bindings = []
+
+        # We extract the keys and types from the parsed data for the bindings
+        for val in parsed_data['parsedScenario']:
+            if val[0]:
+                for v0 in val[0]:
+                    formatted_bindings.append({
+                        'category': 'unknown',
+                        'key': v0,
+                        'value': bindings_copy.pop(0)
+                    })
+            if val[2]:
+                for v2 in val[2]:
+                    formatted_bindings.append({
+                        'category': 'action',
+                        'key': v2,
+                        'value': bindings_copy.pop(0)
+                    })
+            if val[3]:
+                for v3 in val[3]:
+                    formatted_bindings.append({
+                        'category': 'event',
+                        'key': v3,
+                        'value': bindings_copy.pop(0)
+                    })
+        x['bindings'] = formatted_bindings
         return x
 
 @ns.route('/token-based-auth/create')
