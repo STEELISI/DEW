@@ -422,8 +422,8 @@ class HandleUploadParser(Resource):
         content = uploaded_file.read()
         x = dew_parser.get_behaviors_and_constraints(content.decode("utf-8"))
 
-        # This section is being done to extract the bindings key and category as
-        # only the values are stored in dew file
+        # This section is being done to extract the bindings category as
+        # only the key and values are stored in dew file
 
         # Creating data dictionary to send to the parser api
         data = {
@@ -432,32 +432,45 @@ class HandleUploadParser(Resource):
             'Constraints': [],
         }
         parsed_data = hlb.HandleParse(data)
-        bindings_copy = x['bindings']
-        formatted_bindings = []
+        bindings_copy = []
 
-        # We extract the keys and types from the parsed data for the bindings
-        for val in parsed_data['parsedScenario']:
-            if val[0]:
-                for v0 in val[0]:
-                    formatted_bindings.append({
-                        'category': 'unknown',
-                        'key': v0,
-                        'value': bindings_copy.pop(0)
-                    })
-            if val[2]:
-                for v2 in val[2]:
-                    formatted_bindings.append({
-                        'category': 'action',
-                        'key': v2,
-                        'value': bindings_copy.pop(0)
-                    })
-            if val[3]:
-                for v3 in val[3]:
-                    formatted_bindings.append({
-                        'category': 'event',
-                        'key': v3,
-                        'value': bindings_copy.pop(0)
-                    })
+        # split into key value format and also check for empty bindings
+        for val in x['bindings']:
+            splits = val.split(' ', 1)
+            if len(splits) == 2:
+                bindings_copy.append((splits[0], splits[1]))
+            else:
+                bindings_copy.append((splits[0], ''))
+
+        # define function to flatten lists
+        def flatten(lst):
+            lst = [a for a in lst if a is not None]
+            return [item for sublist in lst for item in sublist]
+
+        # Get all actions, events and unknowns
+        all_actions = flatten([x[2] for x in parsed_data['parsedScenario']])
+        all_events = flatten([x[3] for x in parsed_data['parsedScenario']])
+
+        formatted_bindings = []
+        for val in bindings_copy:
+            if val[0] in all_actions:
+                formatted_bindings.append({
+                    'category': 'action',
+                    'key': val[0],
+                    'value': val[1]
+                })
+            elif val[0] in all_events:
+                formatted_bindings.append({
+                    'category': 'event',
+                    'key': val[0],
+                    'value': val[1]
+                })
+            else:
+                formatted_bindings.append({
+                    'category': 'unknown',
+                    'key': val[0],
+                    'value': val[1]
+                })
         x['bindings'] = formatted_bindings
         return x
 
