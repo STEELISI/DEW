@@ -234,7 +234,7 @@ export class InfoComponent implements OnInit {
           this.experiment.bindings.length!=0
         ){
           this.experiment.bindings.forEach(element=>{
-            var list = element.trim().split(" ");
+            var list = element.value.trim().split(" ");
 
               var value = list.splice(1).join(" ");
               if (value.trim() == '')
@@ -765,7 +765,7 @@ export class UploadPopUp implements OnInit {
     public dialogRef: MatDialogRef<UploadPopUp>
   ) {}
   ngOnInit(): void {
-    throw new Error("Method not implemented.");
+    // throw new Error("Method not implemented.");
   } 
 }
 

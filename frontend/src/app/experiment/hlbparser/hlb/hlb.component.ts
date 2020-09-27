@@ -28,7 +28,8 @@ export class HlbComponent implements OnInit {
   actorService: EditorService;
   behaviorService: EditorService;
   filteredBindingHandle: Observable<string[]>;
-  filterBindingOptions= [
+  filteredBindingHandleForEvent: Observable<string[]>;
+  filterBindingOptions = [
     "tcpdump -i expeth($node) -w $file",
     "ping $node",
     "iperf -s",
@@ -38,6 +39,12 @@ export class HlbComponent implements OnInit {
     "dig $name",
     "start_apache sudo service apache2 start",
     "start_bind sudo service bind9 start"
+  ];
+  filterBindingOptionsForEvent = [
+    'fexists($file) - file exists',
+    'fmod($file) - file was modified',
+    'pexists($action) - process exists that performs action in the binding',
+    'psuccess($action) - process completed w success for the given action'
   ];
 
   objectFormat = []
@@ -82,11 +89,18 @@ export class HlbComponent implements OnInit {
 
   resetFilterList() {
     this.filteredBindingHandle = of(this.filterBindingOptions);
+    this.filteredBindingHandleForEvent = of (this.filterBindingOptionsForEvent);
   }
-  searchFilter(value: any) {
-    this.filteredBindingHandle = of(
-      this._filter(value, this.filterBindingOptions)
-    );
+  searchFilter(value: any, category: any) {
+    if (category === 'event') {
+      this.filteredBindingHandleForEvent = of(
+        this._filter(value, this.filterBindingOptionsForEvent)
+      );
+    } else {
+      this.filteredBindingHandle = of(
+        this._filter(value, this.filterBindingOptions)
+      );
+    }
   }
 
   convertStringToJsonObject(text:String){
@@ -200,17 +214,17 @@ export class HlbComponent implements OnInit {
         this.bindingMap = new Map<String, any>();
 
         data.forEach((element) => {
-          var list = element.trim().split(" ");
-
-          var key = list[0];
-
-          var value = list.splice(1);
-
-          value = value.join(" ");
-
-          var t = { key: key, value: value };
-          this.bindingMap.set(key, t);
-          this.bindingList.push(t);
+          // var list = element.trim().split(" ");
+          //
+          // var key = list[0];
+          //
+          // var value = list.splice(1);
+          //
+          // value = value.join(" ");
+          //
+          // var t = { key: key, value: value };
+          this.bindingMap.set(element.key, element);
+          this.bindingList.push(element);
         });
         //this.storeBinding()
         //console.log(this.bindingMap);
@@ -461,7 +475,7 @@ export class HlbComponent implements OnInit {
   }
 
   extractScenario(scenario) {
-    //console.log(scenario);
+    // console.log(scenario);
     // this.bindingMap = new Map<String,any>();
     this.actorsList = [];
     this.bindingList = [];
@@ -472,25 +486,27 @@ export class HlbComponent implements OnInit {
       if (element[0] != null) {
         element[0].map((x) => {
           if (!trigger.includes(x)) {
-            trigger.push(x);
+            trigger.push({key: x, category: 'unknown', value: ''});
           }
         });
       }
 
-      if (element[2] != null)
+      if (element[2] != null) {
         element[2].map((x) => {
           if (!trigger.includes(x)) {
-            trigger.push(x);
+            trigger.push({key: x, category: 'action', value: ''});
           }
         });
-      if (element[3] != null)
+      }
+
+      if (element[3] != null) {
         element[3].map((x) => {
           if (!trigger.includes(x)) {
-            trigger.push(x);
+            trigger.push({key: x, category: 'event', value: ''});
           }
         });
+      }
     });
-
     this.extractEvents(trigger);
 
     // this.loadBindings();
@@ -512,13 +528,13 @@ export class HlbComponent implements OnInit {
     //console.log(this.bindingMap);
     if (triggers != null) {
       triggers.forEach((element) => {
-        //console.log(element);
-        if (!this.bindingMap.has(element)) {
-          var t = { key: element, value: "" };
-          this.bindingMap.set(element, t);
-          this.bindingList.push(t);
+        console.log(element);
+        if (!this.bindingMap.has(element.key)) {
+          //var t = { key: element, value: "" };
+          this.bindingMap.set(element.key, element);
+          this.bindingList.push(element);
         } else {
-          this.bindingList.push(this.bindingMap.get(element));
+          this.bindingList.push(this.bindingMap.get(element.key));
         }
       });
     }
@@ -693,12 +709,12 @@ export class HlbComponent implements OnInit {
   }
   storeBinding() {
     // console.log(this.bindingList);
-    var binding = [];
-    this.bindingList.forEach((element) => {
-      binding.push(element.key.trim() + " " + element.value.trim());
-    });
+    // var binding = [];
+    // this.bindingList.forEach((element) => {
+    //   binding.push(element.key.trim() + " " + element.value.trim());
+    // });
 
-    this.stateservice.setBindings(binding);
+    this.stateservice.setBindings(this.bindingList);
   }
   downLoadFile(data: any) {
     var blob = new Blob([data], { type: "text/plain" });

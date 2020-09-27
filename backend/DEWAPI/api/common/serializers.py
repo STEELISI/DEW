@@ -5,11 +5,17 @@ nlp_text = api.model('NLP input', {
   'text': fields.String(description='The text to be parsed by the NLP')
 })
 
+binding_val = api.model('binding', {
+  'category': fields.String(required=True),
+  'key': fields.String(required=True),
+  'value': fields.String(required=True)
+})
+
 ns_object = api.model('NS object', {
   'actors': fields.List(fields.String, description="Actors involved"),
   'behaviors': fields.List(fields.String, description="Behaviors"),
   'constraints': fields.List(fields.String, description="Constraints"),
-  'bindings': fields.List(fields.String, description="Bindings")
+  'bindings': fields.Nested(binding_val, as_list=True)
 })
 
 parse_request = api.model('Parser object', {
@@ -37,18 +43,18 @@ persist_data = api.model('Save request', {
   'behaviors': fields.List(fields.String, description="List of behaviors", required=True),
   'constraints': fields.List(fields.String, description="List of constraints", required=True),
   'actors': fields.List(fields.String, description="List of actors", required=True),
-  'bindings': fields.List(fields.String, description="List of bindings", required=True),
-  'driveId': fields.String(description="File id of gogole drive", required=False),
+  'bindings': fields.Nested(binding_val, as_list=True),
+  'driveId': fields.String(description="File id of Google drive", required=False),
   })
 
-push_to_drive_data = api.model('Save request', {
-  'name':fields.String(description="Name of experiment", required=True),
-  'id':fields.String(description="Id of experiment", required=False),
+push_to_drive_data = api.model('Save to drive', {
+  'name': fields.String(description="Name of experiment", required=True),
+  'id': fields.String(description="Id of experiment", required=False),
   'description':fields.String(description="Description of experiment", required=True),
   'behaviors': fields.List(fields.String, description="List of behaviors", required=True),
   'constraints': fields.List(fields.String, description="List of constraints", required=True),
   'actors': fields.List(fields.String, description="List of actors", required=True),
-  'bindings': fields.List(fields.String, description="List of bindings", required=True),
+  'bindings': fields.Nested(binding_val, as_list=True),
   'create_new_file': fields.Boolean(description="Create a new file in drive", default=False),
   'token': fields.String(description='Token used to authorize google apis', required=True)
   })
@@ -60,6 +66,7 @@ scenario_text = api.model('Graph parsing', {
 experiment_detail = api.model('get experiment request', {
   'id':fields.String(description="Id of experiment", required=True)
   })
+
 grantaccess = api.model('Grant experiment access', {
   'userHandle': fields.String(description="user id", required=True),
   'id':fields.String(description="Id of experiment", required=True),

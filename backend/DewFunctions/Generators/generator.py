@@ -425,7 +425,7 @@ class GeneralGenerator(object):
 
     def generateBASH(self, scenarios, bindings, clientServerList):
         if not self.bindings:
-            self.bindings = bindings
+            self.bindings = [d['value'] for d in bindings]
 
         for s in self.bindings:
             try:
