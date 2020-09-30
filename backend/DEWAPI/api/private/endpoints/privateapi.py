@@ -432,15 +432,9 @@ class HandleUploadParser(Resource):
             'Constraints': [],
         }
         parsed_data = hlb.HandleParse(data)
-        bindings_copy = []
 
-        # split into key value format and also check for empty bindings
-        for val in x['bindings']:
-            splits = val.split(' ', 1)
-            if len(splits) == 2:
-                bindings_copy.append((splits[0], splits[1]))
-            else:
-                bindings_copy.append((splits[0], ''))
+        # copy into another variable
+        bindings_copy = x['bindings']
 
         # define function to flatten lists
         def flatten(lst):

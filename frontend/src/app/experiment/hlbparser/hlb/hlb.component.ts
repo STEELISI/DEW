@@ -92,7 +92,7 @@ export class HlbComponent implements OnInit {
     this.filteredBindingHandleForEvent = of (this.filterBindingOptionsForEvent);
   }
   searchFilter(value: any, category: any) {
-    if (category === 'event') {
+    if (category === 'event' || category === 't_event') {
       this.filteredBindingHandleForEvent = of(
         this._filter(value, this.filterBindingOptionsForEvent)
       );
@@ -262,7 +262,6 @@ export class HlbComponent implements OnInit {
   }
   private _filter(value: string, options): string[] {
     const filterValue = value.toLowerCase();
-    console.log(options)
     return options.filter((option) =>
       option.toLowerCase().includes(filterValue)
     );
@@ -479,14 +478,14 @@ export class HlbComponent implements OnInit {
     // this.bindingMap = new Map<String,any>();
     this.actorsList = [];
     this.bindingList = [];
-    var trigger = [];
+    const trigger = [];
     scenario.forEach((element) => {
       this.extractActors(element[1] != null ? element[1] : []);
 
       if (element[0] != null) {
         element[0].map((x) => {
           if (!trigger.includes(x)) {
-            trigger.push({key: x, category: 'unknown', value: ''});
+            trigger.push({key: x, category: 't_event', value: ''});
           }
         });
       }
@@ -525,16 +524,15 @@ export class HlbComponent implements OnInit {
   extractEvents(
     triggers //,actions,emitters
   ) {
-    //console.log(this.bindingMap);
     if (triggers != null) {
       triggers.forEach((element) => {
-        console.log(element);
         if (!this.bindingMap.has(element.key)) {
-          //var t = { key: element, value: "" };
           this.bindingMap.set(element.key, element);
           this.bindingList.push(element);
         } else {
-          this.bindingList.push(this.bindingMap.get(element.key));
+          if (!this.bindingList.some(e => e.key === element.key)) {
+              this.bindingList.push(this.bindingMap.get(element.key));
+          }
         }
       });
     }
