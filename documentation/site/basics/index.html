@@ -15,6 +15,7 @@
   <link rel="stylesheet" href="../css/theme.css" />
   <link rel="stylesheet" href="../css/theme_extra.css" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css" />
+  <link href="../css/style.css" rel="stylesheet" />
   
   <script>
     // Current page data
@@ -66,9 +67,7 @@
     <ul class="current">
     <li class="toctree-l2"><a class="reference internal" href="#what-is-dew">What is DEW?</a>
     </li>
-    <li class="toctree-l2"><a class="reference internal" href="#actors">Actors</a>
-    </li>
-    <li class="toctree-l2"><a class="reference internal" href="#scenariobehavior">Scenario/Behavior</a>
+    <li class="toctree-l2"><a class="reference internal" href="#scenario">Scenario</a>
     </li>
     <li class="toctree-l2"><a class="reference internal" href="#constraints">Constraints</a>
         <ul>
@@ -79,12 +78,6 @@
     <li class="toctree-l3"><a class="reference internal" href="#link">link</a>
     </li>
     <li class="toctree-l3"><a class="reference internal" href="#lan">lan</a>
-    </li>
-    <li class="toctree-l3"><a class="reference internal" href="#interfaces">interfaces</a>
-    </li>
-    <li class="toctree-l3"><a class="reference internal" href="#location">location</a>
-    </li>
-    <li class="toctree-l3"><a class="reference internal" href="#nodetype">nodetype</a>
     </li>
         </ul>
     </li>
@@ -102,9 +95,15 @@
                     </li>
                     <li class="toctree-l1"><a class="reference internal" href="../running_on_deter/">Running on Deter</a>
                     </li>
+                    <li class="toctree-l1"><a class="reference internal" href="../binding_suggestions/">Suggestions for Bindings</a>
+                    </li>
                 </ul>
                 <ul>
                     <li class="toctree-l1"><a class="reference internal" href="../examples/">Examples</a>
+                    </li>
+                </ul>
+                <ul>
+                    <li class="toctree-l1"><a class="reference internal" href="../contact_us/">Contact us</a>
                     </li>
                 </ul>
                 <ul>
@@ -151,22 +150,21 @@
 <p>This guide provides a quick introduction to Distributed Experiment Workflows (DEW).</p>
 <h2 id="what-is-dew">What is DEW?</h2>
 <p>DEW is an attempt to encode behavior and toplogical constraints which help with realization on testbeds. DEW consists of 3 major components. They are Actors, Scenario/Behavior, Constraints, and Bindings.</p>
-<h2 id="actors">Actors</h2>
-<p>Actors are the different types of machines where the experiment is run.</p>
-<h2 id="scenariobehavior">Scenario/Behavior</h2>
-<p>Scenario defines the behavior of the components of the experiment. They consist of the action(command or script being executed) and the actor(the machine or component executing the action).</p>
-<p>To ensure the order of execution of actions, we use events. An actor emits one or more events when an action is completed. We use the <code>emit</code> keyword for this. Similarly, an actor waits for one for more events to perform an action. The <code>when</code> keyword is used for this.</p>
-<p>Sometimes, we may have multiple instances of an actor and we need to define whether to wait for events from all instances or any instance. Hence, we add <code>ALL</code> or <code>ANY</code> keyword before the events.</p>
-<p>We may also sometimes need to wait for a certain amount of time before executing an action. For this purpose, the <code>wait</code> keyword is used. It accepts either a number or a variable which can be filled later.</p>
-<p>Hence, a statement in scenario will look like </p>
+<p>DEW helps users encode behavior of an experiment, and uses that encoding to generate topology and runnable scripts. DEW representation has three major components: scenario, constraints and bindings.</p>
+<h2 id="scenario">Scenario</h2>
+<p>Scenario defines the behavior of the the experiment. Each statement consists of the action (command or script being executed) and the actor (the machine or identical group of machines executing the action).</p>
+<p>To enforce the order of execution of actions, we use events. An actor can emit one or more events (e.g., when an action is completed). We use the emit keyword for this. Similarly, an actor can wait for one for more events to perform an action. The when keyword is used for this.</p>
+<p>A user may also want to wait for a certain amount of time before executing an action. For this purpose, the wait keyword is used. It accepts either a number or a variable, which can be filled later.</p>
+<p>Sometimes, we may have multiple instances of an actor and we need to define whether to wait for events from all instances or just any instance. Hence, we add ALL or ANY keyword before the events.
+The syntax of a DEW statement looks like:</p>
 <pre><code>[when [ALL/ANY] &lt;events&gt;][wait &lt;time&gt;] actor action [emit &lt;events&gt;]
 </code></pre>
 
 <p>(The parts enclosed in square brackets are optional.)</p>
 <h2 id="constraints">Constraints</h2>
-<p>Constraints define the constraints for a single or a group of actors. There are seven different types of constraints allowed. They are</p>
+<p>Constraints section defines how actors should be realized on a testbed, i.e., it describes topological constraints for actors. If no constraints are specified all actors will be materialized in a disconnected topology, with a default OS.</p>
 <h3 id="os">os</h3>
-<p>OS helps us define the operating system of the actor. The format of the constraint is </p>
+<p>OS Constraint defines the operating system of the actor. The format of the constraint is </p>
 <pre><code>os actor os_name
 </code></pre>
 
@@ -176,27 +174,20 @@
 </code></pre>
 
 <h3 id="link">link</h3>
-<p>link adds a link between two actors. If there are multiple number of instances, you need to define the keyword <code>ALL</code> or <code>ANY</code> to indicate whether all instances need to be linked or any instance needs to be linked.
+<p>Link constraint denotes that there is a link between two actors. If there are multiple number of instances, you need to define the keyword <code>ALL</code> or <code>ANY</code> to indicate whether all instances need to be linked or any instance needs to be linked.
  The format of the constraint is</p>
 <pre><code>link [ALL/ANY] actor1 [ALL/ANY] actor2
 </code></pre>
 
 <h3 id="lan">lan</h3>
-<p>Add a particular actor to a LAN network.</p>
-<pre><code>lan actor lan_name
+<p>LAN constraint creates a LAN between specified actors. The format of the statement is</p>
+<pre><code>lan actor [actor] ...
 </code></pre>
 
-<p><strong>Check this</strong>.</p>
-<h3 id="interfaces">interfaces</h3>
-<p><strong>Yet to add</strong></p>
-<h3 id="location">location</h3>
-<p><strong>Yet to add</strong></p>
-<h3 id="nodetype">nodetype</h3>
-<p><strong>Yet to add</strong></p>
 <h2 id="bindings">Bindings</h2>
-<p>Bindings provide a mapping for actions or events and the scripts or commands. In the DEW file, the key and value of mappings are separated by space.</p>
+<p>Bindings provide the actual commands to be run on the nodes in the experiment to achieve actions and to detect events. </p>
 <h2 id="dew-file-format">DEW file format</h2>
-<p>The DEW file format consists of each section defined inside square brackets. The format is </p>
+<p>The DEW file format consists of text statements, with each component (scenario, bindings, constraints) starting with its label within square brackets. The format is:</p>
 <pre><code>[Scenario]
 &lt;scenario_statements&gt;
 
@@ -207,17 +198,21 @@
 &lt;constraint_statements&gt;
 </code></pre>
 
+<p>We also support inner labels in the scenario section. These labels will correspond to separate BASH scripts if you export your DEW specification as BASH scripts. The inner labels start with # character.</p>
+<pre><code>[Scenario]
+#setup
+&lt;setup_scenario_statements&gt;
+#execute
+&lt;execute_scenario_statements&gt;
+#cleanup
+&lt;cleanup_scenario_statements&gt;
+</code></pre>
+
 <h2 id="benefits">Benefits</h2>
 <ul>
-<li>
-<p>Robust design - DEW helps the researcher to think about dependencies and ordering and having a more robust design</p>
-</li>
-<li>
-<p>History - DEW keeps a history of all changes in the experiment which helps in restoring to a particular version when things go wrong</p>
-</li>
-<li>
-<p>Sharing and reuse - Since experiments can be shared, multiple researchers can collaborate on a single experiment.</p>
-</li>
+<li>Robust design - DEW format helps testbed users design an experiment at a high level, and in a flexible manner. It is easy to replace some pieces (e.g., which traffic generator to use) with others, and to scale the experiment up. </li>
+<li>History - DEW portal keeps a history of all changes in the experiment, which helps restore to a particular version when things go wrong</li>
+<li>Sharing and reuse - Since experiments can be shared, multiple researchers can collaborate on a single experiment. DEW experiments can also be published for anyone to use (by choosing the link sharing option).</li>
 </ul>
               
             </div>

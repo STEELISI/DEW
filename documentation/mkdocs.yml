@@ -11,6 +11,10 @@ nav:
   - Sharing and Collaboration: 'sharing_and_collaboration.md'
   - Backup and recovery: 'backup_and_recovery.md'
   - Running on Deter: 'running_on_deter.md'
+  - Suggestions for Bindings: 'binding_suggestions.md'
 - Examples: 'examples.md'
+- Contact us: 'contact_us.md'
 - Go back to DEW: 'redirect-to-dew.html'
 theme: 'readthedocs'
+extra_css:
+  - css/style.css

@@ -1,6 +1,6 @@
 # Sharing and Collaboration
 
-One of the benefits of DEW is the ability to share and collaborate with multiple people. It is possible to [share directly on the UI](../experiment_page#share-to-user) or to use Google drive.
+One of the benefits of DEW is the ability to share and collaborate with multiple people. It is possible to [share directly on the UI](../experiment_page#share-to-user) or to use Google Drive.
 
 ## Sharing in DEW
 
@@ -16,5 +16,5 @@ There are 3 levels
 
 ## Sharing in Google Drive
 
-Another way to share with others is to save the experiment to google drive. After saving to google drive, the user can share the files to anyone just like any other folder or file on google drive. To know more about how to save to google drive, [click here](../experiment_page#save-to-google-drive).
+Another way to share with others is to save the experiment to Google Drive. After saving to Google Drive, the user can share the files to anyone just like any other folder or file on Google Drive. To know more about how to save to Google Drive, [click here](../experiment_page#save-to-Google-drive).
 
