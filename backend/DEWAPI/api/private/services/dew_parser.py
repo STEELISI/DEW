@@ -9,7 +9,7 @@ class DEWParser(object):
         config.read_string(dew_text)
         behaviors = [key for key in config['Scenario']]
         constraints = [key for key in config['Constraints']]
-        bindings = [key for key in config['Bindings']]
+        bindings = [(key, config.get('Bindings', key)) for key in config['Bindings']]
         actors = self.extract_actors(behaviors)
         return {'behaviors': behaviors, 'constraints': constraints, 'bindings': bindings, 'actors': actors}
     
