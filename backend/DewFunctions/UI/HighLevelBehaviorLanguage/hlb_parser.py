@@ -172,7 +172,7 @@ class HLBParser():
         current_label_stmts = []
         current_label = "default"
         for stmt in statements:
-            if stmt.startswith('#'):
+            if stmt.startswith('@'):
                 labelled_data[current_label] = current_label_stmts
                 current_label = stmt[1:]
                 current_label_stmts = []

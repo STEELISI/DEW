@@ -56,7 +56,7 @@ class HLBService():
         # start (waitd, wait) or (whene, when) or actor, actor, action, method, emit, done
         print("hello:::::::::",len(last_behavior),"::::")
 
-        if last_behavior.startswith("#"):
+        if last_behavior.startswith("@"):
             return self.addSuggestions(["enter label name"])
 
         type,vals,hints = parser.extract_partial(last_behavior)
@@ -302,7 +302,7 @@ class HLBService():
         i = 0
         for scenario in sceanrios:
             i += 1
-            if scenario.startswith("#"):
+            if scenario.startswith("@"):
                 continue
             _t,v,_h = parser.extract_partial(scenario)
             v["id"] = str(i)
