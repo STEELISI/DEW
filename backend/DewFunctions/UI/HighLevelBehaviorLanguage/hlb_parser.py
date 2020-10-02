@@ -1,4 +1,4 @@
-from pyparsing import ParseException, NotAny, Empty, Group, Word, CaselessKeyword, Literal, alphas, alphanums, nums, White, ZeroOrMore, OneOrMore, Optional, LineEnd
+from pyparsing import ParseException, NotAny, Empty, Group, Word, CaselessKeyword, Literal, alphas, alphanums, nums, White, ZeroOrMore, OneOrMore, Optional, LineEnd, cppStyleComment
 from enum import Enum
 import sys
 sys.path.append('../')
@@ -115,6 +115,8 @@ class HLBParser():
                     | actors("actors") + wsp + action("action") + emit_keyword + events("e_events")
                     | actors("actors") + wsp + action("action")) + LineEnd()
     
+    hlb_statement.ignore(cppStyleComment)
+
     parts_of_when = (CaselessKeyword("w").suppress() | CaselessKeyword("wh").suppress() | CaselessKeyword("whe").suppress()) + LineEnd()
     parts_of_wait = (CaselessKeyword("w").suppress() | CaselessKeyword("wa").suppress() | CaselessKeyword("wai").suppress()) + LineEnd()
     
@@ -172,7 +174,7 @@ class HLBParser():
         current_label_stmts = []
         current_label = "default"
         for stmt in statements:
-            if stmt.startswith('#'):
+            if stmt.startswith('@'):
                 labelled_data[current_label] = current_label_stmts
                 current_label = stmt[1:]
                 current_label_stmts = []
