@@ -25,8 +25,8 @@ This is the main page used to create new or edit existing experiments.
 * This menu contains a number of file related operations. They are -
 #### Save
 * Clicking on save will save the current experiment to the database.
-#### Save to Google drive
-* This button allows you to save the experiment to Google drive. The experiment is saved in DEW format.
+#### Save to Google Drive
+* This button allows you to save the experiment to Google Drive. The experiment is saved in DEW format.
 * The user will have a top level directory called “Distributed Experiment Workflows”. 
 * Inside the top level directory, we have folders created for each experiment.
 * Files related to the experiment will be contained in the experiment’s folder
@@ -63,7 +63,7 @@ This menu allows the user to upload an experiment using  DEW format or from a Ba
 ![Input menu](./img/experiment_page_input_menu.png)
 
 #### Upload
-Upload DEW files to load the experiment. For example, the DEW file saved in Google drive can be used for upload.
+Upload DEW files to load the experiment. For example, the DEW file saved in Google Drive can be used for upload.
 
 ![Upload dialog](./img/experiment_page_upload_dialog.png)
 

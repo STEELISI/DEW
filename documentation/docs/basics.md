@@ -24,6 +24,8 @@ The syntax of a DEW statement looks like:
 ```
 (The parts enclosed in square brackets are optional.)
 
+It is also possible to provide labels by starting the line with `@`. With multiple labels, each label will have its own script when exported. We also support C++ style line comments `//` as well.
+
 ## Constraints
 
 Constraints section defines how actors should be realized on a testbed, i.e., it describes topological constraints for actors. If no constraints are specified all actors will be materialized in a disconnected topology, with a default OS.
