@@ -547,9 +547,15 @@ export class InfoComponent implements OnInit {
         // this.stateservice.setBindings(data.Bindings);
       },
       (error) => {
-        this._snackBar.open(error, "close", {
-          duration: 2000,
-        });
+        if(error.status == 401){
+          this._snackBar.open("You have been logged out. Please login in another tab or window and try again.", "close", {
+            duration: 2000,
+          });  
+        } else {
+          this._snackBar.open(error.message, "close", {
+            duration: 2000,
+          });
+        }
       }
     );
   }
@@ -591,9 +597,16 @@ export class InfoComponent implements OnInit {
         // this.stateservice.setBindings(data.Bindings);
       },
       (error) => {
-        this._snackBar.open(error, "close", {
-          duration: 2000,
-        });
+        if(error.status == 401){
+          this._snackBar.open("You have been logged out. Please login in another tab or window and try again.", "close", {
+            duration: 2000,
+          });  
+        } else {
+          this._snackBar.open(error.message, "close", {
+            duration: 2000,
+          });
+        }
+        
       }
     )
   }
@@ -636,9 +649,15 @@ export class InfoComponent implements OnInit {
         // this.stateservice.setBindings(data.Bindings);
       },
       (error) => {
-        this._snackBar.open(error, "close", {
-          duration: 2000,
-        });
+        if(error.status == 401){
+          this._snackBar.open("You have been logged out. Please login in another tab or window and try again.", "close", {
+            duration: 2000,
+          });  
+        } else {
+          this._snackBar.open(error.message, "close", {
+            duration: 2000,
+          });
+        }
       }
     );
   }
