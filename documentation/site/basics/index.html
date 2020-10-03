@@ -161,6 +161,7 @@ The syntax of a DEW statement looks like:</p>
 </code></pre>
 
 <p>(The parts enclosed in square brackets are optional.)</p>
+<p>It is also possible to provide labels by starting the line with <code>@</code>. With multiple labels, each label will have its own script when exported. We also support C++ style line comments <code>//</code> as well.</p>
 <h2 id="constraints">Constraints</h2>
 <p>Constraints section defines how actors should be realized on a testbed, i.e., it describes topological constraints for actors. If no constraints are specified all actors will be materialized in a disconnected topology, with a default OS.</p>
 <h3 id="os">os</h3>
