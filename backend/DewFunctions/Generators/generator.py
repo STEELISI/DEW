@@ -446,11 +446,48 @@ class GeneralGenerator(object):
         removeResultFile = "\'rm ~/res1;"
         writeResultFile = "echo $? > ~/res1\'"
         writeResult = "\'cat ~/res1\' > lastCmdResult"
-        bashScript = "#!/usr/bin/bash\n"
+        bashScript = ""
+        bashTag = "#!/usr/bin/bash\n"
         tab = ""
         commandSupported = ["tcpdump","ping","iperf","nmap","curl","scp","dig","Install_and_run_apache","Install_and_run_bind"]
         events = {}
         parser = HLBParser([])
+        print("scenario:")
+        print(scenarios)
+        print("bindings:")
+        print(bindings)
+        dewString = ""
+        dewString += "######################################################################\n"
+        tempString = "#\t"
+        tempString += "[Scenario]"
+        while (len(tempString) < 67):
+            tempString += " "
+        dewString += tempString
+        dewString += "#\n"
+        for line in scenarios:
+            tempString = "#\t"
+            tempString += line
+            while (len(tempString) < 67):
+                tempString += " "
+            dewString += tempString
+            dewString += "#\n"
+
+        tempString = "#\t"
+        tempString += "[Bindings]"
+        while (len(tempString) < 67):
+            tempString += " "
+        dewString += tempString
+        dewString += "#\n"
+        for key in bindings:
+            tempString = "#\t"
+            tempString += key + " = " + bindings[key]
+            while (len(tempString) < 67):
+                tempString += " "
+            dewString += tempString
+            dewString += "#\n"
+        dewString += "######################################################################\n"
+        bashScript += dewString
+        bashScript += bashTag
         if scenarios is not None:
             bashScript += "exp=$1\n"
             bashScript += "proj=$2\n"
