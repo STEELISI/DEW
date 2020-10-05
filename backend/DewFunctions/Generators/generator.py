@@ -446,15 +446,61 @@ class GeneralGenerator(object):
         removeResultFile = "\'rm ~/res1;"
         writeResultFile = "echo $? > ~/res1\'"
         writeResult = "\'cat ~/res1\' > lastCmdResult"
-        bashScript = "#!/usr/bin/bash\n"
+        bashScript = ""
+        labelSet = False
+        labelName = "bashFile.sh"
+        idx = 0
+        bashScriptList = [[labelName,""]]
+        bashTag = "#!/usr/bin/bash\n"
         tab = ""
         commandSupported = ["tcpdump","ping","iperf","nmap","curl","scp","dig","Install_and_run_apache","Install_and_run_bind"]
         events = {}
         parser = HLBParser([])
+        print("scenario:")
+        print(scenarios)
+        print("bindings:")
+        print(bindings)
+        dewString = ""
+        dewString += "################################################################################\n"
+        tempString = "#\t"
+        tempString += "[Scenario]"
+        while (len(tempString) < 77):
+            tempString += " "
+        dewString += tempString
+        dewString += "#\n"
+        for line in scenarios:
+            tempString = "#\t"
+            tempString += line
+            while (len(tempString) < 77):
+                tempString += " "
+            dewString += tempString
+            dewString += "#\n"
+
+        tempString = "#\t"
+        tempString += "[Bindings]"
+        while (len(tempString) < 77):
+            tempString += " "
+        dewString += tempString
+        dewString += "#\n"
+        for key in bindings:
+            tempString = "#\t"
+            tempString += key + " = " + bindings[key]
+            while (len(tempString) < 77):
+                tempString += " "
+            dewString += tempString
+            dewString += "#\n"
+        dewString += "################################################################################\n"
+        bashScript += dewString
+        bashScript += bashTag
         if scenarios is not None:
             bashScript += "exp=$1\n"
             bashScript += "proj=$2\n"
             for scenario in scenarios:
+                scenario = scenario.strip()
+                if len(scenario) > 1 and scenario[0] == "#":
+                    labelSet = True
+                    labelName = scenario[1:].strip() + ".sh"
+                    idx += 1
                 sampleString = ""
                 _t,v,_h = parser.extract_partial(scenario)
                 print(v)
@@ -498,14 +544,14 @@ class GeneralGenerator(object):
                                         if len(val) > 1:
                                             if val.find("$") == 0:
                                                 helpList.append(val[1:])
-                                                tempStr += val[1:] + " "
+                                                tempStr += "'" + val[1:] + "'" + " "
                                             else:
                                                 result = re.search(r"\(([$A-Za-z0-9_]+)\)", val)
                                                 if result is not None:
                                                     if result.group(1):
                                                         t = result.group(1)
                                                         helpList.append(t[1:])
-                                                        tempStr += t[1:] + " "
+                                                        tempStr += "'" + t[1:] + "'" + " "
                                 if helpList:
                                     if helpList[0] not in helpDict:
                                         sampleString += "if [[ -z ${" + helpList[0] +"} ]]"
@@ -551,6 +597,12 @@ class GeneralGenerator(object):
 
                                 sampleString += "\n"
                                 sampleString += "fi\n"
-                bashScript += sampleString
+                if idx < len(bashScriptList):
+                    if not bashScriptList[idx][1]:
+                        bashScriptList[idx][1] += bashScript
+                    bashScriptList[idx][1] += sampleString
+                else:
+                    bashScriptList.append([labelName, bashScript + sampleString])
         #print(events)
-        return bashScript
+        #print(bashScriptList)
+        return bashScriptList

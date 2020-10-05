@@ -354,5 +354,5 @@ class HLBService():
         generator = bashGenerator(scenario, constraints=constraints)
         scenario_parsed, constraints_parsed = generator.generate()
         ns_script, clientServerList = generator.generateNS(constraints_parsed, None, actors)
-        bash_script = generator.generateBASH(scenario, bindings, clientServerList)
-        return bash_script
+        bash_script_list = generator.generateBASH(scenario, bindings, clientServerList)
+        return bash_script_list

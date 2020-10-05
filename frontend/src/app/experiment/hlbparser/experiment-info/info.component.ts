@@ -46,7 +46,7 @@ export class InfoComponent implements OnInit {
   // gdrive = new GoogleDriveService(this.http, this.auth);
   nameControl = new FormControl();
   experimentControl = 4;
-  
+
     show(id){
       this.viewid = id;
       this.viewId.emit(id);
@@ -59,20 +59,20 @@ export class InfoComponent implements OnInit {
       });
       return false;
     }
-    
+
   }
 
   checkDefault(){
 
     if(this.experiment.name.trim() == ''){
- 
+
       this.experiment.name ="Untitled";
-     } 
+     }
   }
 
   ngOnInit(): void {
-    
-    
+
+
     if (this.id != undefined && this.id != null && this.id != -1)
       this.experiment["id"] = this.id;
     this.state.getExperimentName().subscribe((name) => {
@@ -118,17 +118,17 @@ export class InfoComponent implements OnInit {
       if (data != null) {
         this.tokenList = data;
       }
-    }); 
-    
+    });
+
   }
 
-   
+
   }
 
   isExperimentDisabled():boolean {
       return this.experimentControl == 2
   }
- 
+
   isSaved():boolean {
     if(this.localServerData == undefined || this.experiment.name != this.localServerData['name']){
       // console.log(this.experiment.name)
@@ -136,22 +136,22 @@ export class InfoComponent implements OnInit {
       // console.log("name not match")
         return false;
     }
-    
-    if(this.localServerData == undefined || !(this.experiment.actors.length === this.localServerData['actors'].length 
+
+    if(this.localServerData == undefined || !(this.experiment.actors.length === this.localServerData['actors'].length
     && this.localServerData['actors'].every((value, index) => value === this.experiment.actors[index])))
         {
         return false;
         }
 
-        if(this.localServerData == undefined || !(this.experiment.behaviors.length === this.localServerData['behaviors'].length 
+        if(this.localServerData == undefined || !(this.experiment.behaviors.length === this.localServerData['behaviors'].length
     && this.localServerData['behaviors'].every((value, index) => value === this.experiment.behaviors[index])))
         {
-         
+
 
         return false;
         }
 
-        if(this.localServerData == undefined || !(this.experiment.bindings.length === this.localServerData['bindings'].length 
+        if(this.localServerData == undefined || !(this.experiment.bindings.length === this.localServerData['bindings'].length
     && this.localServerData['bindings'].every((value, index) => value === this.experiment.bindings[index])))
         {
           //console.log("bindings not match")
@@ -159,7 +159,7 @@ export class InfoComponent implements OnInit {
         return false;
         }
 
-        if(this.localServerData == undefined || !(this.experiment.constraints.length === this.localServerData['constraints'].length 
+        if(this.localServerData == undefined || !(this.experiment.constraints.length === this.localServerData['constraints'].length
     && this.localServerData['constraints'].every((value, index) => value === this.experiment.constraints[index])))
         {
 
@@ -202,7 +202,7 @@ export class InfoComponent implements OnInit {
         this.experiment.description == null
       )
         this.experiment.description = "";
-      
+
       if (
         this.experiment.driveId == undefined ||
         this.experiment.driveId == null
@@ -261,7 +261,7 @@ export class InfoComponent implements OnInit {
               constraints: this.experiment.constraints,
               bindings: this.experiment.bindings
             }
-            
+
             this.state.setLocalServerData(savedData);
             this._snackBar.open("Successfully saved.", "close", {
               duration: 2000,
@@ -299,7 +299,7 @@ export class InfoComponent implements OnInit {
         this.experiment.description == null
       )
         this.experiment.description = "";
-      
+
       if (
         this.experiment.driveId == undefined ||
         this.experiment.driveId == null
@@ -422,13 +422,13 @@ export class InfoComponent implements OnInit {
         width: "40%",
         data: t
       });
-  
+
       dialogRef.afterClosed().subscribe((result) => {
         console.log(result);
         if (result!=undefined)
           this.addUser(result)
       });
-    
+
   }
 
 
@@ -438,7 +438,7 @@ export class InfoComponent implements OnInit {
         width: "60%",
         data: this.experiment['id']
       });
-    
+
   }
 
   addUser(userobj){
@@ -458,7 +458,7 @@ export class InfoComponent implements OnInit {
     })
   }
 
-  
+
   delete(){
     var header = {
       headers: new HttpHeaders({ 'Content-Type': 'application/json' }),
@@ -475,16 +475,16 @@ export class InfoComponent implements OnInit {
 
   nlpInput(){
 
-   
+
       var dialogRef = this.dialog.open(NLPPopUp, {
         width: "40%"
       });
-  
+
   }
 
   uploadInput(){
 
-   
+
     var dialogRef = this.dialog.open(UploadPopUp, {
       width: "40%"
     });
@@ -550,7 +550,7 @@ export class InfoComponent implements OnInit {
         if(error.status == 401){
           this._snackBar.open("You have been logged out. Please login in another tab or window and try again.", "close", {
             duration: 2000,
-          });  
+          });
         } else {
           this._snackBar.open(error.message, "close", {
             duration: 2000,
@@ -600,13 +600,13 @@ export class InfoComponent implements OnInit {
         if(error.status == 401){
           this._snackBar.open("You have been logged out. Please login in another tab or window and try again.", "close", {
             duration: 2000,
-          });  
+          });
         } else {
           this._snackBar.open(error.message, "close", {
             duration: 2000,
           });
         }
-        
+
       }
     )
   }
@@ -641,8 +641,13 @@ export class InfoComponent implements OnInit {
     if (flag) return;
     this.http.put("v1/pr/hlb/generateBash", data, {withCredential:true}).subscribe(
       (data) => {
-
-        this.downLoadBashFile(data.script);
+      console.log(data)
+      var keys = Object.keys(data)
+      console.log(keys)
+      keys.forEach((key)=> {
+        console.log(key,data[key])
+        this.downLoadBashFile(data[key], key);
+      })
         this._snackBar.open("Successfully Downloaded.", "close", {
           duration: 2000,
         });
@@ -652,7 +657,7 @@ export class InfoComponent implements OnInit {
         if(error.status == 401){
           this._snackBar.open("You have been logged out. Please login in another tab or window and try again.", "close", {
             duration: 2000,
-          });  
+          });
         } else {
           this._snackBar.open(error.message, "close", {
             duration: 2000,
@@ -662,11 +667,10 @@ export class InfoComponent implements OnInit {
     );
   }
 
-  downLoadBashFile(data: any) {
+  downLoadBashFile(data: any, fileName: string) {
     var blob = new Blob([data], { type: "text/plain" });
     //console.log(blob);
     // var url = (window.URL || window.webkitURL).createObjectURL(blob);
-    var fileName = "bashFile.sh";
     if ("msSaveOrOpenBlob" in navigator) {
       navigator.msSaveOrOpenBlob(blob, fileName);
     } else {
@@ -761,7 +765,7 @@ export class AddUserPopUp implements OnInit {
   styleUrls: ["./info.component.scss"],
 })
 export class NLPPopUp implements OnInit {
-  
+
   constructor(
     public dialogRef: MatDialogRef<NLPPopUp>
   ) {}
@@ -769,7 +773,7 @@ export class NLPPopUp implements OnInit {
     throw new Error("Method not implemented.");
   }
 
-  
+
 }
 
 
@@ -779,13 +783,13 @@ export class NLPPopUp implements OnInit {
   styleUrls: ["./info.component.scss"],
 })
 export class UploadPopUp implements OnInit {
-  
+
   constructor(
     public dialogRef: MatDialogRef<UploadPopUp>
   ) {}
   ngOnInit(): void {
     // throw new Error("Method not implemented.");
-  } 
+  }
 }
 
 @Component({
@@ -928,7 +932,7 @@ export class UserListPopUp implements OnInit {
       userHandle:user.handle
     }}
     this.http.delete("v1/pr/persist/experiment/removeaccess",header).subscribe(data=>{
-    
+
       this._snackBar.open("User is removed.", "close", {
         duration: 2000,
       });
@@ -940,4 +944,3 @@ export class UserListPopUp implements OnInit {
     })
   }
 }
-
