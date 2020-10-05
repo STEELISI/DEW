@@ -37,5 +37,5 @@ if __name__ == "__main__":
     [t, y] = generator.generate()
     nsScript, clientServerList = generator.generateNS(y, scenarios, None)
     print(nsScript)
-    bashScript = generator.generateBASH(scenarios, bindings, clientServerList)
-    print(bashScript)
+    bashScriptList = generator.generateBASH(scenarios, bindings, clientServerList)
+    print(bashScriptList)

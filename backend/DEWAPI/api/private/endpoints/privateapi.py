@@ -70,8 +70,17 @@ class HandleHLBGeneratorBash(Resource):
           Generates BASH file for given behaviors, actors, and constraints
         """
         json_data = request.get_json(force=True)
-        script = hlb.HandleBASH(json_data)
-        return {'script': script}
+        scriptList = hlb.HandleBASH(json_data)
+        bashScriptDict = {}
+        for i in range(len(scriptList)):
+            if scriptList[i][0] not in bashScriptDict:
+                if scriptList[i][1]:
+                    bashScriptDict[scriptList[i][0]] = scriptList[i][1]
+            else:
+                if scriptList[i][1]:
+                    bashScriptDict[scriptList[i][0]] += scriptList[i][1]
+
+        return bashScriptDict
 
 @ns.route('/hlb/suggestions')
 class HandleHLBSuggestions(Resource):
