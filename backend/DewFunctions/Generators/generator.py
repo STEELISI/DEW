@@ -492,14 +492,14 @@ class GeneralGenerator(object):
         dewString += "################################################################################\n"
         bashScript += dewString
         bashScript += bashTag
-        print("Darsh scenarios",scenarios)
         if scenarios is not None:
             bashScript += "exp=$1\n"
             bashScript += "proj=$2\n"
             for scenario in scenarios:
+                scenario = scenario.strip()
                 if len(scenario) > 1 and scenario[0] == "#":
                     labelSet = True
-                    labelName = scenario[1:] + ".sh"
+                    labelName = scenario[1:].strip() + ".sh"
                     idx += 1
                 sampleString = ""
                 _t,v,_h = parser.extract_partial(scenario)
@@ -544,14 +544,14 @@ class GeneralGenerator(object):
                                         if len(val) > 1:
                                             if val.find("$") == 0:
                                                 helpList.append(val[1:])
-                                                tempStr += val[1:] + " "
+                                                tempStr += "'" + val[1:] + "'" + " "
                                             else:
                                                 result = re.search(r"\(([$A-Za-z0-9_]+)\)", val)
                                                 if result is not None:
                                                     if result.group(1):
                                                         t = result.group(1)
                                                         helpList.append(t[1:])
-                                                        tempStr += t[1:] + " "
+                                                        tempStr += "'" + t[1:] + "'" + " "
                                 if helpList:
                                     if helpList[0] not in helpDict:
                                         sampleString += "if [[ -z ${" + helpList[0] +"} ]]"
