@@ -536,6 +536,34 @@ class GeneralGenerator(object):
                             if i in bindings.keys():
                                 sampleString += tab + "sleep " + bindings[i] + "\n"
                     if v['action'] is not None and v['action'] in bindings.keys():
+                        try:
+                            if re.search('expIP\(([^)]+)', bindings[v['action']]):
+                               tempNode = re.search('\(([^)]+)', bindings[v['action']]).group(1)
+                               bindings[v['action']] = re.sub(r'expIP(.*)', r'`inet ip exp ' + tempNode + '`', bindings[v['action']])
+                            elif re.search('expIP', bindings[v['action']]):
+                               bindings[v['action']] = re.sub(r'expIP', r'`inet ip exp` ', bindings[v['action']])
+
+                            if re.search('ctlIP', bindings[v['action']]):
+                                 bindings[v['action']] = re.sub(r'ctlIP', r'`inet ip ctl` ', bindings[v['action']])
+
+                            if re.search('expeth\(([^)]+)', bindings[v['action']]):
+                               tempNode = re.search('\(([^)]+)', bindings[v['action']]).group(1)
+                               bindings[v['action']] = re.sub(r'expeth(.*)', r'`inet eth exp ' + tempNode + '`', bindings[v['action']])
+                            elif re.search('expeth', bindings[v['action']]):
+                               bindings[v['action']] = re.sub(r'expeth', r'`inet eth exp` ', bindings[v['action']])
+
+                            if re.search('proj ', bindings[v['action']]):
+                                 bindings[v['action']] = re.sub(r'proj', r'`pexp -p` ', bindings[v['action']])
+
+                            if re.search('node ', bindings[v['action']]):
+                                 bindings[v['action']] = re.sub(r'node', r'`pexp -n` ', bindings[v['action']])
+
+                            if re.search('epoch', bindings[v['action']]):
+                                 bindings[v['action']] = re.sub(r'epoch', r'`epoch`', bindings[v['action']])
+
+                        except AttributeError:
+                            print("Attribute Error")
+
                         temp = bindings[v['action']]
                         sampleList = temp.split()
                         if temp:
@@ -593,6 +621,33 @@ class GeneralGenerator(object):
                     if v['e_events'] is not None:
                         for i in v['e_events']:
                             if i in bindings.keys():
+                                try:
+                                    if re.search('expIP\(([^)]+)', bindings[i]):
+                                        tempNode = re.search('\(([^)]+)', bindings[v['action']]).group(1)
+                                        bindings[i] = re.sub(r'expIP(.*)', r'`inet ip exp ' + tempNode + '`', bindings[i])
+                                    elif re.search('expIP', bindings[i]):
+                                        bindings[i] = re.sub(r'expIP', r'`inet ip exp` ', bindings[i])
+
+                                    if re.search('ctlIP', bindings[i]):
+                                         bindings[i] = re.sub(r'ctlIP', r'`inet ip ctl` ', bindings[i])
+
+                                    if re.search('expeth\(([^)]+)', bindings[i]):
+                                        tempNode = re.search('\(([^)]+)', bindings[v['action']]).group(1)
+                                        bindings[i] = re.sub(r'expeth(.*)', r'`inet eth exp ' + tempNode + '`', bindings[i])
+                                    elif re.search('expeth', bindings[i]):
+                                        bindings[i] = re.sub(r'expeth', r'`inet eth exp` ', bindings[i])
+
+                                    if re.search('proj ', bindings[i]):
+                                         bindings[i] = re.sub(r'proj', r'`pexp -p` ', bindings[i])
+
+                                    if re.search('node ', bindings[i]):
+                                        bindings[i] = re.sub(r'node', r'`pexp -n` ', bindings[i])
+
+                                    if re.search('epoch', bindings[i]):
+                                        bindings[i] = re.sub(r'epoch', r'`epoch`', bindings[i])
+                                except AttributeError:
+                                    print("Attribute Error")
+
                                 events[i] = bindings[i]
                                 sampleString += "if [ $lastCmdResult -eq 0 ]\n"
                                 sampleString += "then\n"
