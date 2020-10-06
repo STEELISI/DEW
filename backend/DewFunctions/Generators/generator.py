@@ -493,11 +493,21 @@ class GeneralGenerator(object):
         bashScript += dewString
         bashScript += bashTag
         if scenarios is not None:
+            bashScript += "if [ -z \"$1\" ]\n"
+            bashScript += "then\n"
+            bashScript += "\techo \"Experiment Name must be passed as argument 1\"\n"
+            bashScript += "\texit 0\n"
+            bashScript += "fi\n"
+            bashScript += "if [ -z \"$2\" ]\n"
+            bashScript += "then\n"
+            bashScript += "\techo \"Project Name must be passed as argument 2\"\n"
+            bashScript += "\texit 0\n"
+            bashScript += "fi\n"
             bashScript += "exp=$1\n"
             bashScript += "proj=$2\n"
             for scenario in scenarios:
                 scenario = scenario.strip()
-                if len(scenario) > 1 and scenario[0] == "#":
+                if len(scenario) > 1 and scenario[0] == "@":
                     labelSet = True
                     labelName = scenario[1:].strip() + ".sh"
                     idx += 1
