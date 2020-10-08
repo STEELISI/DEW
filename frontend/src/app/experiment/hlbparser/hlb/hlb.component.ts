@@ -37,8 +37,8 @@ export class HlbComponent implements OnInit {
     "nmap $node",
     "wget $node",
     "dig $name",
-    "start_apache sudo service apache2 start",
-    "start_bind sudo service bind9 start"
+    "sudo service apache2 start",
+    "sudo service bind9 start"
   ];
   filterBindingOptionsForEvent = [
     'fexists($file) - file exists',
