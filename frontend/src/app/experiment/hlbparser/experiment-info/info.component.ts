@@ -70,6 +70,13 @@ export class InfoComponent implements OnInit {
      }
   }
 
+  updateExperimentName(element){
+    const expName = element.value
+    this.experiment.name = expName.substring(0,101);
+    element.value = this.experiment.name
+
+  }
+
   ngOnInit(): void {
 
 
