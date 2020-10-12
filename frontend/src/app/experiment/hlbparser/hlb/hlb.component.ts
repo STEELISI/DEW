@@ -16,6 +16,7 @@ import {
 } from "@angular/material/dialog";
 import { HttpService } from "src/app/http-service.service";
 import { Observable, of } from "rxjs";
+import * as _ from 'lodash';
 
 Quill.register("modules/counter", EditorService);
 
@@ -209,25 +210,13 @@ export class HlbComponent implements OnInit {
     });
     this.stateservice.getBindings().subscribe((data) => {
       if (data != null) {
-        //console.log(data);
         this.bindingList = [];
         this.bindingMap = new Map<String, any>();
 
         data.forEach((element) => {
-          // var list = element.trim().split(" ");
-          //
-          // var key = list[0];
-          //
-          // var value = list.splice(1);
-          //
-          // value = value.join(" ");
-          //
-          // var t = { key: key, value: value };
           this.bindingMap.set(element.key, element);
           this.bindingList.push(element);
         });
-        //this.storeBinding()
-        //console.log(this.bindingMap);
       }
     });
     this.stateservice.getActors().subscribe((data) => {
@@ -425,7 +414,7 @@ export class HlbComponent implements OnInit {
     var blist = this.behaviorService.getText().trim().split("\n");
     blist.forEach((element) => {
       var text = element.trim();
-      if (text != "") {
+      if (text !== "") {
         data.Scenario.push(text);
         this.behaviorList.push(text);
       }
@@ -444,17 +433,19 @@ export class HlbComponent implements OnInit {
       this.actorsList = [];
       return;
     }
-
-    var data = {
-      ParseType: "bash",
+    const data = {
+      ParseType: 'bash',
       Scenario: [],
       Constraints: [],
     };
     this.contraintList = [];
-    var blist = this.constraintService.getText().trim().split("\n");
+    this.behaviorService.getText().trim().split('\n').forEach((sce) => {
+      if (sce) {data.Scenario.push(sce); }
+    });
+    const blist = this.constraintService.getText().trim().split('\n');
     blist.forEach((element) => {
-      var text = element.trim();
-      if (text != "") {
+      const text = element.trim();
+      if (text !== '') {
         data.Constraints.push(text);
         this.contraintList.push(text);
       }
@@ -462,15 +453,46 @@ export class HlbComponent implements OnInit {
 
     this.stateservice.setConstraints(this.contraintList);
     this.http
-      .put("v1/pr/hlb/parse", data, { withCredential: true })
-      .subscribe((data: ParseApiBean) => {
-        //console.log(data);
-        //   this.extractInfo(data);
+      .put('v1/pr/hlb/parse', data, { withCredential: true })
+      .subscribe((parsedConstraintData: ParseApiBean) => {
+        this.suggestAllAny(parsedConstraintData);
       });
   }
   extractInfo(data: ParseApiBean) {
     this.extractScenario(data.parsedScenario);
     this.storeBinding();
+  }
+
+  checkIfEmittedEventIsATriggerEvent(emittedEvents, scenario) {
+    emittedEvents.forEach(evt => {
+      scenario.forEach(sce => {
+        if (sce[0].includes(evt)) {
+          return true;
+        }
+      });
+    });
+    return false;
+  }
+
+  suggestAllAny(parsedConstraintData: ParseApiBean) {
+    parsedConstraintData.parsedConstraints.forEach((val) => {
+      if (val[2] && val[0] === 'num') {
+        // Check if its in any link attribute
+        const foundInLink = _.find(parsedConstraintData.parsedConstraints, (vl) => {
+          return vl[0] === 'link' && vl[1].includes(val[1][0]);
+        });
+
+        // get if the Actor emits an event and get the emitted events
+        const foundScenario = _.find(parsedConstraintData.parsedScenario, (vl) => {
+          return vl[1].includes(val[1][0]);
+        });
+        const emittedEvents = foundScenario[3];
+
+        if (foundInLink || this.checkIfEmittedEventIsATriggerEvent(emittedEvents, parsedConstraintData.parsedScenario)) {
+          alert(val[1][0] + ' should associated with an all or any keyword');
+        }
+      }
+    });
   }
 
   extractScenario(scenario) {
