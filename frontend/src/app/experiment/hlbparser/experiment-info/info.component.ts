@@ -467,17 +467,20 @@ export class InfoComponent implements OnInit {
 
 
   delete(){
-    var header = {
-      headers: new HttpHeaders({ 'Content-Type': 'application/json' }),
-      body:{
-      id:this.experiment['id']
-    }}
-    this.http.delete("v1/pr/persist/experiment/delete",header).subscribe(data=>{
-      alert("experiment is delete.");
-      this.route.navigate(["/dashboard"])
-    },error=>{
-      alert('There is some error while deleting the experiment. Please try again after sometime.');
-    })
+    var confirmation = confirm("Are you sure you want to delete the experiment? Please note that it is an irreversible action.")
+    if(confirmation){
+      var header = {
+        headers: new HttpHeaders({ 'Content-Type': 'application/json' }),
+        body:{
+          id:this.experiment['id']
+        }}
+        this.http.delete("v1/pr/persist/experiment/delete",header).subscribe(data=>{
+          alert("The experiment has been deleted");
+          this.route.navigate(["/dashboard"])
+        },error=>{
+          alert('There was an error when trying to delete the experiment. Please try again after sometime.');
+        })
+    }
   }
 
   nlpInput(){
