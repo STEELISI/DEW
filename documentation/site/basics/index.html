@@ -68,6 +68,10 @@
     <li class="toctree-l2"><a class="reference internal" href="#what-is-dew">What is DEW?</a>
     </li>
     <li class="toctree-l2"><a class="reference internal" href="#scenario">Scenario</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#labels">Labels</a>
+    </li>
+        </ul>
     </li>
     <li class="toctree-l2"><a class="reference internal" href="#constraints">Constraints</a>
         <ul>
@@ -162,6 +166,19 @@ The syntax of a DEW statement looks like:</p>
 
 <p>(The parts enclosed in square brackets are optional.)</p>
 <p>It is also possible to provide labels by starting the line with <code>@</code>. With multiple labels, each label will have its own script when exported. We also support C++ style line comments <code>//</code> as well.</p>
+<h3 id="labels">Labels</h3>
+<p>Labels are <strong>user defined keywords</strong> which help in splitting the scenario into multiple phases. Labels help in generating multiple scripts for the scenario with each file name being the label provided. This helps the user in making multiple iterations quickly without running everything from scratch.</p>
+<p>For example, say you have to install <code>wget</code> and then run a script which uses <code>wget</code>. By using labels, we can create two scripts - an installation script and a test script (which you obtain on exporting to bash). The DEW scenario can look something like </p>
+<pre><code>@ install
+server install_wget_dependencies
+server install_wget
+
+@ test
+server run_wget_script
+</code></pre>
+
+<p>Upon exporting to bash, you get two scripts - <code>install.sh</code> and <code>test.sh</code> 
+Now, the user can run <code>install.sh</code> once and focus on the execution of <code>test.sh</code>. If it was a single script, the user must wait till the installation is finished everytime it is run.</p>
 <h2 id="constraints">Constraints</h2>
 <p>Constraints section defines how actors should be realized on a testbed, i.e., it describes topological constraints for actors. If no constraints are specified all actors will be materialized in a disconnected topology, with a default OS.</p>
 <h3 id="os">os</h3>
@@ -199,13 +216,13 @@ The syntax of a DEW statement looks like:</p>
 &lt;constraint_statements&gt;
 </code></pre>
 
-<p>We also support inner labels in the scenario section. These labels will correspond to separate BASH scripts if you export your DEW specification as BASH scripts. The inner labels start with # character.</p>
+<p>We also support inner labels in the scenario section. These labels will correspond to separate BASH scripts if you export your DEW specification as BASH scripts. The inner labels start with <code>@</code> character.</p>
 <pre><code>[Scenario]
-#setup
+@setup
 &lt;setup_scenario_statements&gt;
-#execute
+@execute
 &lt;execute_scenario_statements&gt;
-#cleanup
+@cleanup
 &lt;cleanup_scenario_statements&gt;
 </code></pre>
 
