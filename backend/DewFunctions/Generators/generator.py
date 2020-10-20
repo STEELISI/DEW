@@ -604,16 +604,27 @@ class GeneralGenerator(object):
                                     sampleString += tab + "ssh "+ v['actors'][0] + "." + exp + "." + proj + ".isi.deterlab.net "
                                 else:
                                     sampleString += tab + "ssh "+ v['actors'][0] + str(min(0, clientServerList[v['actors'][0]])) + "." + exp + "." + proj + ".isi.deterlab.net "
-                                sampleString += removeResultFile
-                                sampleString += bindings[v['action']]
-                                sampleString += ";"
-                                sampleString += writeResultFile
+                                if v['e_events'] is not None:
+                                    sampleString += "\'rm " + "~/" + v['e_events'][0] + ";"
+                                    sampleString += bindings[v['action']]
+                                    sampleString += ";"
+                                    sampleString += "echo $? > " + "~/" + v['e_events'][0] + "\' &"
+                                    tempResult = v['e_events'][0]
+                                else:
+                                    sampleString += removeResultFile
+                                    sampleString += bindings[v['action']]
+                                    sampleString += ";"
+                                    sampleString += writeResultFile
+                                    tempResult = "res1"
                                 sampleString += "\n"
+                                sampleString += tab + "while [!-e ~/" + tempResult +" ] ; do\n"
+                                sampleString += tab + "\tsleep 1\n"
+                                sampleString += tab + "done\n"
                                 if clientServerList[v['actors'][0]] == 1:
                                     sampleString += tab + "lastCmdResult" + "=" + "`ssh "+ v['actors'][0] + "." + exp + "." + proj + ".isi.deterlab.net "
                                 else:
                                     sampleString += tab + "lastCmdResult" + "=" + "`ssh "+ v['actors'][0] + str(min(0, clientServerList[v['actors'][0]])) + "." + exp + "." + proj + ".isi.deterlab.net "
-                                sampleString += "\'cat ~/res1\'`"
+                                sampleString += "\'cat ~/" + tempResult + "\'`"
                                 sampleString += "\n"
                                 if v['t_events'] is not None:
                                     sampleString += "fi\n"
