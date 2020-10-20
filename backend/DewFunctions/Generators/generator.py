@@ -444,7 +444,7 @@ class GeneralGenerator(object):
         exp = "$exp"
         proj = "$proj"
         removeResultFile = "\'rm ~/res1;"
-        writeResultFile = "echo $? > ~/res1\'"
+        writeResultFile = "echo $? > ~/res1\' &"
         writeResult = "\'cat ~/res1\' > lastCmdResult"
         bashScript = ""
         labelSet = False
