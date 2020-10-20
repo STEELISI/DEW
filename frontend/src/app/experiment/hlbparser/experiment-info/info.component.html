@@ -1,15 +1,15 @@
 <mat-toolbar color="primary">
   <div class="heading">
     <div class="col-md-12">
-      <div
-        style="float: left;"
-        class="heading-value"
-        contenteditable="true"
-        (blur)="checkDefault()"
-        [textContent]="experiment.name"
-        onkeypress="return (this.innerText.length <= 100)"
-        (input)="experiment.name = $event.target.textContent"
-      ></div>
+      <input 
+      type="text" 
+      name="title" 
+      style="float: left; border: none;" 
+      class="heading-value" 
+      [value]="experiment.name"
+      (keydown)="updateExperimentName($event.target)"
+      (blur)="checkDefault()"
+      />
       <div style="padding: 5px; float: right;">
         {{ 101 - experiment.name.length + " characters left" }}
       </div>

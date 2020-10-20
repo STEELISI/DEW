@@ -26,6 +26,23 @@ The syntax of a DEW statement looks like:
 
 It is also possible to provide labels by starting the line with `@`. With multiple labels, each label will have its own script when exported. We also support C++ style line comments `//` as well.
 
+### Labels
+Labels are **user defined keywords** which help in splitting the scenario into multiple phases. Labels help in generating multiple scripts for the scenario with each file name being the label provided. This helps the user in making multiple iterations quickly without running everything from scratch.
+
+For example, say you have to install `wget` and then run a script which uses `wget`. By using labels, we can create two scripts - an installation script and a test script (which you obtain on exporting to bash). The DEW scenario can look something like 
+```
+@ install
+server install_wget_dependencies
+server install_wget
+
+@ test
+server run_wget_script
+```
+
+Upon exporting to bash, you get two scripts - `install.sh` and `test.sh` 
+Now, the user can run `install.sh` once and focus on the execution of `test.sh`. If it was a single script, the user must wait till the installation is finished everytime it is run.
+
+
 ## Constraints
 
 Constraints section defines how actors should be realized on a testbed, i.e., it describes topological constraints for actors. If no constraints are specified all actors will be materialized in a disconnected topology, with a default OS.
@@ -75,15 +92,15 @@ The DEW file format consists of text statements, with each component (scenario, 
 [Constraints]
 <constraint_statements>
 ```
-We also support inner labels in the scenario section. These labels will correspond to separate BASH scripts if you export your DEW specification as BASH scripts. The inner labels start with # character.
+We also support inner labels in the scenario section. These labels will correspond to separate BASH scripts if you export your DEW specification as BASH scripts. The inner labels start with `@` character.
 
 ```
 [Scenario]
-#setup
+@setup
 <setup_scenario_statements>
-#execute
+@execute
 <execute_scenario_statements>
-#cleanup
+@cleanup
 <cleanup_scenario_statements>
 ```
 
