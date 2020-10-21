@@ -443,12 +443,13 @@ class GeneralGenerator(object):
         helpDict = {}
         exp = "$exp"
         proj = "$proj"
-        removeResultFile = "\'rm ~/res1;"
-        writeResultFile = "echo $? > ~/res1\' &"
+        removeResultFile = "\'rm ~/"
+        writeResultFile = "echo $? > ~/"
         writeResult = "\'cat ~/res1\' > lastCmdResult"
         bashScript = ""
         labelSet = False
         labelName = "bashFile.sh"
+        resultIter = 1
         idx = 0
         bashScriptList = [[labelName,""]]
         bashTag = "#!/usr/bin/bash\n"
@@ -523,7 +524,7 @@ class GeneralGenerator(object):
                             if i in bindings.keys():
                                 sampleString += temp
                                 sampleString += i
-                                temp = " || -z \"$"
+                                temp = "\"" + " ]" + " || " + "[ -z \"$"
                                 sampleEvents += i + " "
                         sampleString += "\" ]\n"
                         sampleString += "then\n"
@@ -611,13 +612,18 @@ class GeneralGenerator(object):
                                     sampleString += "echo $? > " + "~/" + v['e_events'][0] + "\' &"
                                     tempResult = v['e_events'][0]
                                 else:
+                                    tempResult = "res" + str(resultIter)
                                     sampleString += removeResultFile
+                                    sampleString += tempResult
+                                    sampleString += ";"
                                     sampleString += bindings[v['action']]
                                     sampleString += ";"
                                     sampleString += writeResultFile
-                                    tempResult = "res1"
+                                    sampleString += tempResult
+                                    sampleString += "\' &"
+                                    resultIter += 1
                                 sampleString += "\n"
-                                sampleString += tab + "while [!-e ~/" + tempResult +" ] ; do\n"
+                                sampleString += tab + "while [ ! -e ~/" + tempResult +" ] ; do\n"
                                 sampleString += tab + "\tsleep 1\n"
                                 sampleString += tab + "done\n"
                                 if clientServerList[v['actors'][0]] == 1:
