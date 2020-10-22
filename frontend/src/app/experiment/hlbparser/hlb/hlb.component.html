@@ -87,10 +87,11 @@
             class="btn btn-outline-primary word-bubble-button"
             *ngFor="
               let word of constraintWordList
-                | slice: 0:3
+                | slice: 0:4
                 | textfilter: constraintTextFilter
             "
             (click)="insertValueInConstraint(word.value)"
+            [disabled]="word.flag"
           >
             {{ word.value }}
           </button>

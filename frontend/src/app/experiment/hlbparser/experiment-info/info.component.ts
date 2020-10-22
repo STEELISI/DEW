@@ -9,6 +9,7 @@ import { Observable } from "rxjs";
 import { startWith, map } from "rxjs/operators";
 import { MatDialogRef, MAT_DIALOG_DATA, MatDialog, MatSnackBar } from '@angular/material';
 import { HttpHeaders } from '@angular/common/http';
+import { UserIdleService } from 'angular-user-idle';
 
 @Component({
   selector: "experiment-info",
@@ -41,7 +42,8 @@ export class InfoComponent implements OnInit {
     protected http: HttpService,
     protected route: Router,
     protected gdrive: GoogleDriveService,
-    private _snackBar: MatSnackBar
+    private _snackBar: MatSnackBar,
+    private userIdle: UserIdleService
   ) {}
   // gdrive = new GoogleDriveService(this.http, this.auth);
   nameControl = new FormControl();
@@ -130,6 +132,11 @@ export class InfoComponent implements OnInit {
     });
 
   }
+
+  this.userIdle.setConfigValues({idle: 15, timeout: 120, ping: 150});
+  this.userIdle.startWatching();
+  this.userIdle.onTimerStart().subscribe(() => console.log("starting..."))
+  this.userIdle.onTimeout().subscribe(() => this.save());
 
 
   }
