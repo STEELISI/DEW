@@ -453,6 +453,7 @@ export class HlbComponent implements OnInit {
       this.showAlertMsg = true;
       return;
     } else {
+      this.showAlertMsg = false;
       this.stateservice.setAllAnyPresentFlag(false);
     }
     data.Constraints = constraints;
@@ -486,6 +487,7 @@ export class HlbComponent implements OnInit {
       this.showAlertMsg = true;
       return;
     } else {
+      this.showAlertMsg = false;
       this.stateservice.setAllAnyPresentFlag(false);
     }
 
@@ -505,6 +507,9 @@ export class HlbComponent implements OnInit {
   }
 
   checkIfEmittedEventIsATriggerEvent(emittedEvents, scenario) {
+    if (!emittedEvents) {
+      return false;
+    }
     for (const evt of emittedEvents) {
       for (const sce of scenario) {
         if (sce[0] && sce[0].includes(evt)) {
@@ -562,8 +567,14 @@ export class HlbComponent implements OnInit {
     const tempObjFmtArray = _.cloneDeep(this.constraintsObjFormat);
 
     allIdxs.forEach(idx => {
-        if (idx > 0) {
+        if (idx === 1) {
           if (this.constraintsObjFormat[idx - 1].insert.toLowerCase() === 'link ') {
+            tempObjFmtArray.splice(idx, 0, {insert: 'ALL|ANY ', attributes: {bold: true, color: 'red'}});
+          }
+        }
+        if (idx > 1) {
+          if (this.constraintsObjFormat[idx - 1].insert.toLowerCase() === 'link ' ||
+              this.constraintsObjFormat[idx - 2].insert.toLowerCase() === 'link ') {
             tempObjFmtArray.splice(idx, 0, {insert: 'ALL|ANY ', attributes: {bold: true, color: 'red'}});
           }
         }
