@@ -531,6 +531,9 @@ export class HlbComponent implements OnInit {
   }
 
   addAllAnyInScenarioEditor(emittedEvents) {
+    if (!emittedEvents) {
+      return;
+    }
     emittedEvents.forEach(val => {
       // Get all indexes where the emitted event value is present
       const allIdxs = _.map(_.keys(_.pickBy(this.scenariosObjFormat, {insert: val + ' '})), Number);
@@ -549,6 +552,9 @@ export class HlbComponent implements OnInit {
   }
 
   addAllAnyToConstraints(actor) {
+    if (!actor) {
+      return;
+    }
     // Get all indexes where the actor is present
     const allIdxs = _.map(_.keys(_.pickBy(this.constraintsObjFormat, {insert: actor + ' '})), Number);
 
@@ -581,10 +587,14 @@ export class HlbComponent implements OnInit {
 
         // if it has a link attribute or its emitted event is waited for my some node
         if (foundInLink || (this.checkIfEmittedEventIsATriggerEvent(emittedEvents, parsedConstraintData.parsedScenario)
-                            && !this.checkIfAllOrAnyAlreadyEntered(emittedEvents))) {
+            && !this.checkIfAllOrAnyAlreadyEntered(emittedEvents))) {
           this.alertMessage = 'You should have an ALL or ANY preceding ' + val[1][0] + '. Please see the documentation';
           this.showAlertMsg = true;
+
+          // add all any in the scenarios
           this.addAllAnyInScenarioEditor(emittedEvents);
+
+          // add all any in the constraints
           this.addAllAnyToConstraints(val[1][0]);
           this.stateservice.setAllAnyPresentFlag(true);
         }
