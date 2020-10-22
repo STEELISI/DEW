@@ -6,8 +6,7 @@
       name="title" 
       style="float: left; border: none;" 
       class="heading-value" 
-      [value]="experiment.name"
-      (keydown)="updateExperimentName($event.target)"
+      [(ngModel)]="experiment.name"
       (blur)="checkDefault()"
       />
       <div style="padding: 5px; float: right;">
