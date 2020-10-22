@@ -66,19 +66,10 @@ export class InfoComponent implements OnInit {
 
   }
 
-  checkDefault(){
-
-    if(this.experiment.name.trim() == ''){
-
-      this.experiment.name ="Untitled";
+  checkDefault() {
+    if (this.experiment.name.trim() === '') {
+      this.experiment.name = 'Untitled';
      }
-  }
-
-  updateExperimentName(element){
-    const expName = element.value
-    this.experiment.name = expName.substring(0,101);
-    element.value = this.experiment.name
-
   }
 
   ngOnInit(): void {
