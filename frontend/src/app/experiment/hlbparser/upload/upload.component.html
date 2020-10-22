@@ -3,7 +3,7 @@
     <div class="row">
       <div class="col-md-12" >
   <ngx-file-drop dropZoneLabel="Drop files here" (onFileDrop)="dropped($event)" 
-  (onFileOver)="fileOver($event)" (onFileLeave)="fileLeave($event)">
+  (onFileOver)="fileOver($event)" (onFileLeave)="fileLeave($event)" accept=".dew">
       <ng-template accept="ns" multiple="false" ngx-file-drop-content-tmp let-openFileSelector="openFileSelector">
         <div > Drag & drop a file. or Click on 
         <span (click)="openFileSelector()" style="cursor: pointer;"><u>Browse Files</u></span> to upload.

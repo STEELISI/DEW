@@ -186,3 +186,10 @@
     >
   </span>
 </mat-toolbar>
+
+<div class="alert alert-danger alert-dismissible fade show" role="alert" *ngIf="showAlertMsg">
+  {{this.alertMessage}}
+  <button type="button" class="close" data-dismiss="alert" aria-label="Close" (click)="unsetShowAlertMessage()">
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>
