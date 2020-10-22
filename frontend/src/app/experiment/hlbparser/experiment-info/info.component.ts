@@ -46,6 +46,8 @@ export class InfoComponent implements OnInit {
   // gdrive = new GoogleDriveService(this.http, this.auth);
   nameControl = new FormControl();
   experimentControl = 4;
+  showAlertMsg = false;
+  alertMessage: string;
 
     show(id){
       this.viewid = id;
@@ -198,7 +200,7 @@ export class InfoComponent implements OnInit {
       });
   }
 
-  save() {
+  oldsave() {
     if (
       this.experiment.name != undefined &&
       this.experiment.name != null &&
@@ -292,6 +294,86 @@ export class InfoComponent implements OnInit {
     console.log(this.experiment);
   }
 
+  unsetShowAlertMessage() {
+    this.showAlertMsg = false;
+  }
+
+  save() {
+    if (this.experiment.name !== undefined && this.experiment.name !== null && this.experiment.name.trim() !== '') {
+      if (this.experiment.description === undefined || this.experiment.description == null) {
+        this.experiment.description = '';
+      }
+      if (this.experiment.driveId === undefined || this.experiment.driveId === null) {
+        this.experiment.driveId = '';
+      }
+      if (this.experiment.behaviors === undefined || this.experiment.behaviors === null) {
+        this.experiment.behaviors = [];
+      }
+      if (this.experiment.actors === undefined || this.experiment.actors === null) {
+        this.experiment.actors = [];
+      }
+      if (this.experiment.bindings === undefined || this.experiment.bindings === null) {
+        this.experiment.bindings = [];
+      }
+      if (this.experiment.constraints === undefined || this.experiment.constraints === null) {
+        this.experiment.constraints = [];
+      }
+      let bindingFLag = false;
+      if (this.experiment.bindings.length !== 0) {
+        this.experiment.bindings.forEach(element => {
+          if (element.value.trim() === '') {
+            bindingFLag = true;
+          }
+        });
+      }
+      if (this.state.getAllAnyPresentFlag()) {
+        this.alertMessage = 'You have an unresolved ALL|ANY keyword. Please choose one of them and then click on save.';
+        this.showAlertMsg = true;
+        return;
+      }
+
+      let continueFlag;
+      if (bindingFLag) {
+        continueFlag = confirm('Few bindings are missing, Do you still want to continue?');
+      } else {
+        continueFlag = !bindingFLag;
+      }
+      if (continueFlag) {
+        this.savingFlag = true;
+        this.http.put('v1/pr/persist/save', this.experiment, {withCredential: true}).subscribe(
+            (data) => {
+              this.savingFlag = false;
+              if (data.saved) {
+                if ((this.experiment as any).id === undefined) {
+                  location.href = '/p/e/c/' + data.experiment.id;
+                }
+                const savedData = {
+                  name: this.experiment.name,
+                  actors: this.experiment.actors,
+                  behaviors: this.experiment.behaviors,
+                  constraints: this.experiment.constraints,
+                  bindings: this.experiment.bindings
+                };
+
+                this.state.setLocalServerData(savedData);
+                this._snackBar.open('Successfully saved.', 'close', {
+                  duration: 2000,
+                });
+              }
+            },
+            (error) => {
+              this.savingFlag = false;
+              if (error.status === 401) {
+                alert('You have been logged out. Please login (in another tab or window) and try again');
+              } else {
+                alert('An error has occurred. Please try again later');
+              }
+            }
+        );
+      }
+    }
+  }
+
   saveDrive(){
     this.state.enableLoader()
     this.auth.authorizeGoogleDrive(this.id).then(() => {
@@ -338,14 +420,16 @@ export class InfoComponent implements OnInit {
           this.experiment.bindings.length!=0
         ){
           this.experiment.bindings.forEach(element=>{
-            var list = element.trim().split(" ");
-
-            var key = list[0];
-
-              var value = list.splice(1).join(" ");
-              if (value.trim() == '')
-                bindingFLag = true
+            if (element.value.trim() === '') {
+            bindingFLag = true;
+          }
           })
+        }
+
+      if (this.state.getAllAnyPresentFlag()) {
+          this.alertMessage = 'You have an unresolved ALL|ANY keyword. Please choose one of them and then click on save.';
+          this.showAlertMsg = true;
+          return;
         }
 
         var data = {...this.experiment}

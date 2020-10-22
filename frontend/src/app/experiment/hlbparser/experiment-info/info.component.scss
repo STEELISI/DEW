@@ -136,3 +136,11 @@ div[contenteditable="true"].single-line * {
   0% { transform: rotate(0deg); }
   100% { transform: rotate(360deg); }
 }
+
+.alert {
+  position: absolute;
+  top: 15%;
+  right: 2%;
+  width: 20%;
+  z-index: 100;
+}

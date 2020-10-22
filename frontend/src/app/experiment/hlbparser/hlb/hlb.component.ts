@@ -16,6 +16,7 @@ import {
 } from "@angular/material/dialog";
 import { HttpService } from "src/app/http-service.service";
 import { Observable, of } from "rxjs";
+import * as _ from 'lodash';
 
 Quill.register("modules/counter", EditorService);
 
@@ -47,8 +48,9 @@ export class HlbComponent implements OnInit {
     'psuccess($action) - process completed w success for the given action'
   ];
 
-  objectFormat = []
-  defaultTextColor = {} //{"when":"blue","emit":"blue"}
+  scenariosObjFormat = [];
+  constraintsObjFormat = [];
+  defaultTextColor = {};
   editorService: EditorService;
   constraintService: EditorService;
   service: any;
@@ -77,8 +79,10 @@ export class HlbComponent implements OnInit {
   behaviorWordList: any = [];
   inputText: string = "";
   actors: String = "";
-  selectedIndex: number = 0;
-  experimentAccess: number = 4;
+  selectedIndex = 0;
+  experimentAccess = 4;
+  showAlertMsg = false;
+  alertMessage: string;
   constructor(
     private http: HttpService,
     public dialog: MatDialog,
@@ -103,34 +107,32 @@ export class HlbComponent implements OnInit {
     }
   }
 
-  convertStringToJsonObject(text:String){
-    console.log(text)
-    let wordArray = text.trim().split(" ")
-    let result = []
-    wordArray.forEach((element) =>{
-      if(this.defaultTextColor[element]!=undefined && this.defaultTextColor[element]!=null && this.defaultTextColor[element].trim()!='')
-        result.push({insert:element+" ","attributes": { "color": this.defaultTextColor[element], "bold": true }})
-        else
-        result.push({insert:element+" "})
-    })
-    //console.log(result)
-    return result
+  convertStringToJsonObject(text: string) {
+    const wordArray = text.trim().split(' ');
+    const result = [];
+    wordArray.forEach((element) => {
+      if (this.defaultTextColor[element] !== undefined && this.defaultTextColor[element] !== null &&
+          this.defaultTextColor[element].trim() !== '') {
+        result.push({insert: element + ' ', attributes: { color: this.defaultTextColor[element], bold: true }});
+      } else {
+        result.push({insert: element + ' '});
+      }
+    });
+    return result;
   }
 
-  
 
   convertTextToMap(textJson) {
-    let map : Map<String, {}> = new Map<String, {}>();
+    const map: Map<string, {}> = new Map<string, {}>();
     console.log(textJson)
     textJson.forEach(element => {
       map.set(element['text']+"_row_"+element['row'],element)
     });
 
-    return map
+    return map;
   }
 
-  addColor(stringArray,row,map) {
-
+  addColor(stringArray, row, map) {
     let occurenceMap : Map<String, number> = new Map<String, number>();
     stringArray.forEach(element => {
       if(occurenceMap.has(element.insert.trim())){
@@ -161,7 +163,6 @@ export class HlbComponent implements OnInit {
     let row =1
     data.forEach((element) => {
       let stringArray = this.convertStringToJsonObject(element)
-      
       textArray = [...textArray,...this.addColor(stringArray,row,map),{ insert: '\n' }]
       row ++
     });
@@ -203,31 +204,19 @@ export class HlbComponent implements OnInit {
         //   occurence:1,
         //   color:"red"
         // }]
-        this.objectFormat = textArray
+        this.scenariosObjFormat = textArray
         instance.behaviorText = text;
       }
     });
     this.stateservice.getBindings().subscribe((data) => {
       if (data != null) {
-        //console.log(data);
         this.bindingList = [];
         this.bindingMap = new Map<String, any>();
 
         data.forEach((element) => {
-          // var list = element.trim().split(" ");
-          //
-          // var key = list[0];
-          //
-          // var value = list.splice(1);
-          //
-          // value = value.join(" ");
-          //
-          // var t = { key: key, value: value };
           this.bindingMap.set(element.key, element);
           this.bindingList.push(element);
         });
-        //this.storeBinding()
-        //console.log(this.bindingMap);
       }
     });
     this.stateservice.getActors().subscribe((data) => {
@@ -242,11 +231,14 @@ export class HlbComponent implements OnInit {
     this.stateservice.getConstraints().subscribe((data) => {
       // //console.log(data);
       if (data != null) {
-        var text = "";
+        let text = '';
+        let textArray = [];
         data.forEach((element) => {
-          text += element + "<br>";
+          textArray = [...textArray, ...this.convertStringToJsonObject(element), { insert: '\n' }];
+          text += element + '<br>';
         });
         instance.constraintText = text;
+        this.constraintsObjFormat = textArray;
       }
     });
     this.stateservice.getExperimentControl().subscribe((flag) => {
@@ -266,6 +258,7 @@ export class HlbComponent implements OnInit {
       option.toLowerCase().includes(filterValue)
     );
   }
+
   created(editor, id: number) {
     // //console.log(id);
     var instance = this;
@@ -401,7 +394,6 @@ export class HlbComponent implements OnInit {
         });
 
         this.constraintService.getCurrentWord().subscribe((data) => {
-          ////console.log(data);
           if (data != null && data.trim()) {
             this.constraintTextFilter.text = data;
           }
@@ -409,68 +401,199 @@ export class HlbComponent implements OnInit {
         break;
     }
   }
+
+  getScenariosFromEditor() {
+    const bList = [];
+    this.behaviorService.getText().trim().split('\n').forEach((element) => {
+      const text = element.trim();
+      if (text !== '') {
+        bList.push(text);
+      }
+    });
+    return bList;
+  }
+
+  getConstraintsFromEditor() {
+    const cList = [];
+    this.constraintService.getText().trim().split('\n').forEach((element) => {
+      const text = element.trim();
+      if (text !== '') {
+        cList.push(text);
+      }
+    });
+    return cList;
+  }
+
+  checkIfAllAnyPresentInStrings(values) {
+    for (const value of values) {
+      if (value.includes('ALL|ANY')) {
+        return true;
+      }
+    }
+    return false;
+  }
+
   updateActors() {
-    //console.log('inside update Actors');
-    if (this.behaviorService.getText().trim() === "") {
+    if (this.behaviorService.getText().trim() === '') {
       this.actorsList = [];
       return;
     }
-
-    var data = {
-      ParseType: "bash",
+    const data = {
+      ParseType: 'bash',
       Scenario: [],
       Constraints: [],
     };
-    this.behaviorList = [];
-    var blist = this.behaviorService.getText().trim().split("\n");
-    blist.forEach((element) => {
-      var text = element.trim();
-      if (text != "") {
-        data.Scenario.push(text);
-        this.behaviorList.push(text);
-      }
-    });
-    this.stateservice.setBehavior(this.behaviorList);
+    const scenarios = this.getScenariosFromEditor();
+    const constraints = this.getConstraintsFromEditor();
 
+    // exit if all/any Keyword is still present and user has not removed them
+    if (this.checkIfAllAnyPresentInStrings(scenarios) || this.checkIfAllAnyPresentInStrings(constraints)) {
+      this.alertMessage = 'You have an unresolved choice between ALL or ANY for either a link or an event.' +
+                          ' Please resolved it to process the bindings.';
+      this.showAlertMsg = true;
+      return;
+    } else {
+      this.stateservice.setAllAnyPresentFlag(false);
+    }
+    data.Constraints = constraints;
+    data.Scenario = this.behaviorList = scenarios;
+    this.stateservice.setBehavior(this.behaviorList);
     this.http
-      .put("v1/pr/hlb/parse", data, { withCredential: true })
-      .subscribe((data: ParseApiBean) => {
-        this.extractInfo(data);
+      .put('v1/pr/hlb/parse', data, { withCredential: true })
+      .subscribe((receivedData: ParseApiBean) => {
+        this.extractInfo(receivedData);
+        this.suggestAllAny(receivedData);
       });
   }
 
   updateActorsConstraint() {
-    if (this.constraintService.getText().trim() === "") {
+    if (this.constraintService.getText().trim() === '') {
       this.actorsList = [];
       return;
     }
-
-    var data = {
-      ParseType: "bash",
+    const data = {
+      ParseType: 'bash',
       Scenario: [],
       Constraints: [],
     };
-    this.contraintList = [];
-    var blist = this.constraintService.getText().trim().split("\n");
-    blist.forEach((element) => {
-      var text = element.trim();
-      if (text != "") {
-        data.Constraints.push(text);
-        this.contraintList.push(text);
-      }
-    });
+    const scenarios = this.getScenariosFromEditor();
+    const constraints = this.getConstraintsFromEditor();
 
+    // exit if all/any Keyword is still present and user has not removed them
+    if (this.checkIfAllAnyPresentInStrings(scenarios) || this.checkIfAllAnyPresentInStrings(constraints)) {
+      this.alertMessage = 'You have an unresolved choice between ALL or ANY for either a link or an event.' +
+                          ' Please resolved it to process the bindings.';
+      this.showAlertMsg = true;
+      return;
+    } else {
+      this.stateservice.setAllAnyPresentFlag(false);
+    }
+
+    data.Scenario = scenarios;
+    data.Constraints = this.contraintList = constraints;
     this.stateservice.setConstraints(this.contraintList);
     this.http
-      .put("v1/pr/hlb/parse", data, { withCredential: true })
-      .subscribe((data: ParseApiBean) => {
-        //console.log(data);
-        //   this.extractInfo(data);
+      .put('v1/pr/hlb/parse', data, { withCredential: true })
+      .subscribe((receivedData: ParseApiBean) => {
+        this.suggestAllAny(receivedData);
       });
   }
+
   extractInfo(data: ParseApiBean) {
     this.extractScenario(data.parsedScenario);
     this.storeBinding();
+  }
+
+  checkIfEmittedEventIsATriggerEvent(emittedEvents, scenario) {
+    for (const evt of emittedEvents) {
+      for (const sce of scenario) {
+        if (sce[0] && sce[0].includes(evt)) {
+          return true;
+        }
+      }
+    }
+    return false;
+  }
+
+  checkIfAllOrAnyAlreadyEntered(emittedEvents) {
+    for (const evt of emittedEvents) {
+      const allIdxs = _.map(_.keys(_.pickBy(this.scenariosObjFormat, {insert: evt + ' '})), Number);
+      for (const idx of allIdxs) {
+        if (idx > 0) {
+          if (this.scenariosObjFormat[idx - 1].insert.toLowerCase() === 'all ' ||
+              this.scenariosObjFormat[idx - 1].insert.toLowerCase() === 'any ') {
+            return true;
+          }
+        }
+      }
+    }
+    return false;
+  }
+
+  addAllAnyInScenarioEditor(emittedEvents) {
+    emittedEvents.forEach(val => {
+      // Get all indexes where the emitted event value is present
+      const allIdxs = _.map(_.keys(_.pickBy(this.scenariosObjFormat, {insert: val + ' '})), Number);
+
+      // Add the all/any keyword at the location of the when keyword and assign new array to the scenario object array
+      const tempObjFmtArray = _.cloneDeep(this.scenariosObjFormat);
+      allIdxs.forEach(idx => {
+        if (idx > 0) {
+          if (this.scenariosObjFormat[idx - 1].insert.toLowerCase() === 'when ') {
+            tempObjFmtArray.splice(idx, 0, {insert: 'ALL|ANY ', attributes: {bold: true, color: 'red'}});
+          }
+        }
+      });
+      this.scenariosObjFormat = tempObjFmtArray;
+    });
+  }
+
+  addAllAnyToConstraints(actor) {
+    // Get all indexes where the actor is present
+    const allIdxs = _.map(_.keys(_.pickBy(this.constraintsObjFormat, {insert: actor + ' '})), Number);
+
+    // Add the all/any keyword at the location of the when keyword and assign new array to the scenario object array
+    const tempObjFmtArray = _.cloneDeep(this.constraintsObjFormat);
+
+    allIdxs.forEach(idx => {
+        if (idx > 0) {
+          if (this.constraintsObjFormat[idx - 1].insert.toLowerCase() === 'link ') {
+            tempObjFmtArray.splice(idx, 0, {insert: 'ALL|ANY ', attributes: {bold: true, color: 'red'}});
+          }
+        }
+      });
+    this.constraintsObjFormat = tempObjFmtArray;
+  }
+
+  suggestAllAny(parsedConstraintData: ParseApiBean) {
+    parsedConstraintData.parsedConstraints.forEach((val) => {
+      if (val[2] && val[0] === 'num') {
+        // Check if its in any link attribute
+        const foundInLink = _.find(parsedConstraintData.parsedConstraints, (vl) => {
+          return vl[0] === 'link' && vl[1].includes(val[1][0]);
+        });
+
+        // get if the Actor emits an event and get the emitted events
+        const foundScenario = _.find(parsedConstraintData.parsedScenario, (vl) => {
+          return vl[1].includes(val[1][0]);
+        });
+        const emittedEvents = foundScenario ? foundScenario[3] : [];
+
+        // if it has a link attribute or its emitted event is waited for my some node
+        if (foundInLink || (this.checkIfEmittedEventIsATriggerEvent(emittedEvents, parsedConstraintData.parsedScenario)
+                            && !this.checkIfAllOrAnyAlreadyEntered(emittedEvents))) {
+          this.alertMessage = 'You should have an ALL or ANY preceding ' + val[1][0] + '. Please see the documentation';
+          this.showAlertMsg = true;
+          this.addAllAnyInScenarioEditor(emittedEvents);
+          this.addAllAnyToConstraints(val[1][0]);
+          this.stateservice.setAllAnyPresentFlag(true);
+        }
+      }
+    });
+  }
+
+  unsetShowAlertMessage() {
+    this.showAlertMsg = false;
   }
 
   extractScenario(scenario) {
@@ -576,7 +699,7 @@ export class HlbComponent implements OnInit {
     // //console.log(this.constraintService.getText().charAt(this.constraintService.getText().length-1))
   }
   insertValue(text: any, flag: boolean = false) {
-    //console.log("word:"+text);
+    // console.log("word:"+text);
     this.service.insertVaue(text, flag, this.behaviorTextFilter.text);
   }
   insertValueInConstraint(text: any, flag: boolean = false) {
