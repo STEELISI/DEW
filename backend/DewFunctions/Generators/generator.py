@@ -499,12 +499,12 @@ class GeneralGenerator(object):
         if scenarios is not None:
             bashScript += "if [ -z \"$1\" ]\n"
             bashScript += "then\n"
-            bashScript += "\techo \"Experiment Name must be passed as argument 1\"\n"
+            bashScript += "\techo \"Usage: ./bashFile.sh experimentName projectName [arguments]\"\n"
             bashScript += "\texit 0\n"
             bashScript += "fi\n"
             bashScript += "if [ -z \"$2\" ]\n"
             bashScript += "then\n"
-            bashScript += "\techo \"Project Name must be passed as argument 2\"\n"
+            bashScript += "\techo \"Usage: ./bashFile.sh experimentName projectName [arguments]\"\n"
             bashScript += "\texit 0\n"
             bashScript += "fi\n"
             bashScript += "exp=$1\n"
@@ -601,20 +601,21 @@ class GeneralGenerator(object):
                                                         tempStr += "'" + t[1:] + "'" + " "
                                 if helpList:
                                     if helpList[0] not in helpDict:
-                                        sampleString += "if [[ -z ${" + helpList[0] +"} ]]"
+                                        bashScript += "if [[ -z ${" + helpList[0] +"} ]]"
                                         helpDict[helpList[0]] = 1
                                         for var in helpList[1:]:
-                                            sampleString += " || [[ -z ${" + var +"} ]]"
-                                        sampleString += "\nthen\n"
-                                        sampleString += "echo \"Variables having name " + tempStr + " is not set. Please set it before using\"\n"
-                                        sampleString += "fi\n"
+                                            bashScript += " || [[ -z ${" + var +"} ]]"
+                                        bashScript += "\nthen\n"
+                                        bashScript += "\techo \"Usage: ./bashFile.sh experimentName projectName [arguments:" + "tempStr" + "]\"\n"
+                                        bashScript += "\texit 0\n"
+                                        bashScript += "fi\n"
 
                                 if v['e_events'] is not None:
                                     tempResult = v['e_events'][0]
-                                    sampleString = tab + "rm " + "~/" + v['e_events'][0] + "\n"
+                                    sampleString = tab + "rm -f " + "~/" + v['e_events'][0] + "\n"
                                 else:
                                     tempResult = "res" + str(resultIter)
-                                    sampleString += tab + "rm " + "~/"
+                                    sampleString += tab + "rm -f " + "~/"
                                     sampleString += tempResult
                                     sampleString += "\n"
                                 if clientServerList[v['actors'][0]] == 1:
