@@ -48,6 +48,7 @@ import {
 import {MatToolbarModule} from '@angular/material/toolbar';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import { BrowserModule } from '@angular/platform-browser';
+import { UserIdleModule } from 'angular-user-idle';
 
 @NgModule({
   exports: [HLBParserComponent],
@@ -92,6 +93,7 @@ import { BrowserModule } from '@angular/platform-browser';
     MatExpansionModule,
     MatCardModule,
     QuillModule.forRoot(),
+    UserIdleModule.forRoot({}),
     HLBParserRoutingModule,
     MatInputModule,
     NgxFileDropModule,

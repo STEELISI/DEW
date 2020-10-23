@@ -20,6 +20,15 @@ export class StateService {
   currentConstraintWord: String;
   tokenLevel: String;
   serverData: BehaviorSubject<any> = new BehaviorSubject(null);
+  allAnyPresent = false;
+
+  setAllAnyPresentFlag(val) {
+    this.allAnyPresent = val;
+  }
+
+  getAllAnyPresentFlag() {
+    return this.allAnyPresent;
+  }
 
   triggerSaveEvent() {
     this.saveEvent.next(true);
