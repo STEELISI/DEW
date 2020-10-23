@@ -609,21 +609,25 @@ class GeneralGenerator(object):
                                         sampleString += "echo \"Variables having name " + tempStr + " is not set. Please set it before using\"\n"
                                         sampleString += "fi\n"
 
+                                if v['e_events'] is not None:
+                                    tempResult = v['e_events'][0]
+                                    sampleString = tab + "rm " + "~/" + v['e_events'][0] + "\n"
+                                else:
+                                    tempResult = "res" + str(resultIter)
+                                    sampleString += tab + "rm " + "~/"
+                                    sampleString += tempResult
+                                    sampleString += "\n"
                                 if clientServerList[v['actors'][0]] == 1:
                                     sampleString += tab + "ssh "+ v['actors'][0] + "." + exp + "." + proj + ".isi.deterlab.net "
                                 else:
                                     sampleString += tab + "ssh "+ v['actors'][0] + str(min(0, clientServerList[v['actors'][0]])) + "." + exp + "." + proj + ".isi.deterlab.net "
                                 if v['e_events'] is not None:
-                                    sampleString += "\'rm " + "~/" + v['e_events'][0] + ";"
+                                    sampleString += "\'"
                                     sampleString += bindings[v['action']]
                                     sampleString += ";"
                                     sampleString += "echo $? > " + "~/" + v['e_events'][0] + "\' &"
-                                    tempResult = v['e_events'][0]
                                 else:
-                                    tempResult = "res" + str(resultIter)
-                                    sampleString += removeResultFile
-                                    sampleString += tempResult
-                                    sampleString += ";"
+                                    sampleString += "\'"
                                     sampleString += bindings[v['action']]
                                     sampleString += ";"
                                     sampleString += writeResultFile
