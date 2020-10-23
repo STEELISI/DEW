@@ -456,6 +456,9 @@ class GeneralGenerator(object):
         tab = ""
         commandSupported = ["tcpdump","ping","iperf","nmap","curl","scp","dig","Install_and_run_apache","Install_and_run_bind"]
         events = {}
+        eventsValidDict = {}
+        lastCmdResultList = {}
+        lastCmdResultIter = 1
         parser = HLBParser([])
         print("scenario:")
         print(scenarios)
@@ -517,6 +520,11 @@ class GeneralGenerator(object):
                 print(v)
                 if v['actors'] is not None:
                     if v['t_events'] is not None:
+                        for i in v['t_events']:
+                            if i  in eventsValidDict:
+                                for string in eventsValidDict[i]:
+                                    sampleString += tab + string
+                                del eventsValidDict[i]
                         sampleString += "if [ -z " + "\"$"
                         temp = ""
                         sampleEvents = ""
@@ -623,16 +631,38 @@ class GeneralGenerator(object):
                                     sampleString += "\' &"
                                     resultIter += 1
                                 sampleString += "\n"
-                                sampleString += tab + "while [ ! -e ~/" + tempResult +" ] ; do\n"
-                                sampleString += tab + "\tsleep 1\n"
-                                sampleString += tab + "done\n"
+                                if tempResult not in eventsValidDict:
+                                    eventsValidDict[tempResult] = []
+                                eventsValidDict[tempResult].append("while [ ! -e ~/" + tempResult +" ] ; do\n")
+                                eventsValidDict[tempResult].append("\tsleep 1\n")
+                                eventsValidDict[tempResult].append("done\n")
                                 if clientServerList[v['actors'][0]] == 1:
-                                    sampleString += tab + "lastCmdResult" + "=" + "`ssh "+ v['actors'][0] + "." + exp + "." + proj + ".isi.deterlab.net "
+                                    if v['e_events'] is not None:
+                                        eventsValidDict[tempResult].append("lastCmdResult" + str(lastCmdResultIter) + "=" + "`ssh "+ v['actors'][0] + "." + exp + "." + proj + ".isi.deterlab.net \'cat ~/" + tempResult + "\'`\n")
+                                        lastCmdResultList[v['e_events'][0]] = "lastCmdResult" + str(lastCmdResultIter)
+                                        lastCmdResultIter += 1
+                                    else:
+                                        eventsValidDict[tempResult].append("lastCmdResult" + "=" + "`ssh "+ v['actors'][0] + "." + exp + "." + proj + ".isi.deterlab.net \'cat ~/" + tempResult + "\'`\n")
                                 else:
-                                    sampleString += tab + "lastCmdResult" + "=" + "`ssh "+ v['actors'][0] + str(min(0, clientServerList[v['actors'][0]])) + "." + exp + "." + proj + ".isi.deterlab.net "
-                                sampleString += "\'cat ~/" + tempResult + "\'`"
-                                sampleString += "\n"
+                                    if v['e_events'] is not None:
+                                        eventsValidDict[tempResult].append("lastCmdResult" + str(lastCmdResultIter) + "=" + "`ssh "+ v['actors'][0] + str(min(0, clientServerList[v['actors'][0]])) + "." + exp + "." + proj + ".isi.deterlab.net \'cat ~/" + tempResult + "\'`\n")
+                                        lastCmdResultList[v['e_events'][0]] = "lastCmdResult" + str(lastCmdResultIter)
+                                        lastCmdResultIter += 1
+                                    else:
+                                        eventsValidDict[tempResult].append("lastCmdResult" + "=" + "`ssh "+ v['actors'][0] + str(min(0, clientServerList[v['actors'][0]])) + "." + exp + "." + proj + ".isi.deterlab.net \'cat ~/" + tempResult + "\'`\n")
                                 if v['t_events'] is not None:
+                                    tempString = ""
+                                    for i in v['t_events']:
+                                        if i in eventsValidDict:
+                                            for string in eventsValidDict[i]:
+                                                tempString += tab + string
+                                            del eventsValidDict[i]
+                                    tempString = ""
+                                    if tempResult in eventsValidDict.keys():
+                                        for string in eventsValidDict[tempResult]:
+                                            tempString += tab + string
+                                    del eventsValidDict[tempResult]
+                                    sampleString += tempString
                                     sampleString += "fi\n"
                                 tab = ""
                     if v['e_events'] is not None:
@@ -666,25 +696,39 @@ class GeneralGenerator(object):
                                     print("Attribute Error")
 
                                 events[i] = bindings[i]
-                                sampleString += "if [ $lastCmdResult -eq 0 ]\n"
-                                sampleString += "then\n"
-                                sampleString += "\t"
-                                #if bindings[i].find("SUCCESS") == -1 or bindings[i].find("Success") == -1 or bindings[i].find("success") == -1:
-                                if re.search('success', bindings[i], re.IGNORECASE):
-                                    sampleString +=  i + "=`echo $?`"
+                                if i not in eventsValidDict:
+                                    eventsValidDict[i] = []
+                                eventsValidDict[i].append(i + "=\"\"\n")
+                                if i in lastCmdResultList:
+                                    eventsValidDict[i].append("if [ " + "$" + lastCmdResultList[i] + " -eq 0 ]\n")
                                 else:
-                                    sampleString += bindings[i]
-                                    sampleString += "\n\t"
-                                    sampleString +=  i + "=`echo $?`"
-
-                                sampleString += "\n"
-                                sampleString += "fi\n"
+                                    eventsValidDict[i].append("if [ " + "$lastCmdResult" + " -eq 0 ]\n")
+                                eventsValidDict[i].append("then\n")
+                                if re.search('success', bindings[i], re.IGNORECASE):
+                                    eventsValidDict[i].append("\t" + i +  "=`echo $?`\n")
+                                else:
+                                    eventsValidDict[i].append("\t" + bindings[i] + "\n")
+                                    eventsValidDict[i].append("\t" + i + "=`echo $?`\n")
+                                eventsValidDict[i].append("fi\n") 
+                                #if bindings[i].find("SUCCESS") == -1 or bindings[i].find("Success") == -1 or bindings[i].find("success") == -1:
                 if idx < len(bashScriptList):
                     if not bashScriptList[idx][1]:
                         bashScriptList[idx][1] += bashScript
                     bashScriptList[idx][1] += sampleString
                 else:
-                    bashScriptList.append([labelName, bashScript + sampleString])
+                    tempString = ""
+                    for i in eventsValidDict.keys():
+                        for string in eventsValidDict[i]:
+                            tempString += tab + string
+                    eventsValidDict = {}
+                    bashScriptList.append([labelName, bashScript + sampleString + tempString])
         #print(events)
         #print(bashScriptList)
+        if idx == 0:
+            tempString = ""
+            for i in eventsValidDict.keys():
+                for string in eventsValidDict[i]:
+                    tempString += tab + string
+            eventsValidDict = {}
+            bashScriptList[idx][1] += tempString
         return bashScriptList
