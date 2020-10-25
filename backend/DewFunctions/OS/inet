@@ -1,12 +1,22 @@
 #!/usr/bin/perl
 # Get eth or IP of the exp or ctrl interface
 # Arguments are positional ip|eth and exp|ctl
-# inet ip|eth exp|ctl [node]
+# inet ip|eth|fip exp|ctl [node]
 # If node is specified then node is either IP or
 # short node name
 # Default is eth and exp
 
-$usage="$0 ip|eth exp|ctl [node]\n";
+$usage="$0 ip|eth|fip exp|ctl [node]\n
+Get eth or IP of the exp or ctrl interface\n
+Arguments are positional ip|eth|fip and exp|ctl\n
+If node is specified then node is either IP or\n
+short node name, and query is about the IP/eth \n
+leading to that node (otherwise query is about \n
+any IP/eth on the node that is running the query).\n
+The fip option assumes exp and will give the \n
+IP of the node that is the third argument.\n
+Default is eth and exp.
+";
 
 $mode = "eth";
 $intf = "exp";
@@ -75,6 +85,11 @@ if ($node ne "")
     }
     if ($nodeip ne "")
     {
+	if ($mode eq "fip")
+	{
+	    print $nodeip;
+	    exit 0;
+	}
 	open(IP, "ip route get $nodeip |");
 	while(<IP>)
 	{
