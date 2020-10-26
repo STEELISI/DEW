@@ -47,6 +47,18 @@ export class HlbComponent implements OnInit {
     'pexists($action) - process exists that performs action in the binding',
     'psuccess($action) - process completed w success for the given action'
   ];
+  specialFunctions = [
+    {name: 'expIP', value: 'experimental IP on the node'},
+    {name: 'ctlIP', value: 'control IP on the node'},
+    {name: 'expeth', value: 'experimental interface on the node'},
+    {name: 'expIP(A)', value: 'experimental IP on this node leading to A'},
+    {name: 'expeth(A)', value: 'experimental interface on this node leading to A'},
+    {name: 'IP(A)', value: 'IP address of node A'},
+    {name: 'proj', value: 'project name'},
+    {name: 'exp', value: 'experiment name'},
+    {name: 'node', value: 'node name'},
+    {name: 'epoch', value: 'epoch time'}
+  ];
 
   scenariosObjFormat = [];
   constraintsObjFormat = [];
