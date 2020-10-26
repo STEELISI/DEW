@@ -79,48 +79,54 @@
     margin-left: 16px;
   }
 
-  .padding-left-right{
-      padding-left: 5px;
-      padding-right: 5px;
-  }
+.padding-left-right{
+    padding-left: 5px;
+    padding-right: 5px;
+}
 
- 
-  .button-padding{
-      margin-left: .1em;
-  }
 
-  .expand{
-      float: right;
-      cursor: pointer;
-  }
+.button-padding{
+    margin-left: .1em;
+}
 
-  .hide{
-      display: none;
-  }
+.expand{
+    float: right;
+    cursor: pointer;
+}
 
-  ul li {
-      word-wrap: break-word;
-  }
+.hide{
+    display: none;
+}
 
-  ul {
-      padding-left: 1em;
-  }
+ul li {
+    word-wrap: break-word;
+}
 
-  .info{
-      float:right;
-      cursor: pointer;
-  }
-  .actor_example_color{
-    color: orange
-  }
-  
-  .binding_example_color{
-    color: green
-  }
+ul {
+    padding-left: 1em;
+}
 
-  .alert {
-    position: absolute;
-    top: 15%;
-    right: 2%;
-    width: 20%;
+.info{
+    float:right;
+    cursor: pointer;
+}
+.actor_example_color{
+  color: orange
+}
+
+.binding_example_color{
+  color: green
+}
+
+.alert {
+  position: absolute;
+  top: 15%;
+  right: 2%;
+  width: 20%;
+}
+.build-fn-row {
+  padding-top: 2%;
+  .table {
+    outline: 0.3px solid lightgrey;
   }
+}
