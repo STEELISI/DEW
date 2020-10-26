@@ -1,4 +1,6 @@
+
 #!/bin/bash
+
 curl_check ()
 {
   echo "Checking for curl..."
@@ -29,8 +31,7 @@ edit_global_section ()
 {
   echo "pip.conf found, making a backup copy, and appending"
   cp $HOME/.pip/pip.conf $HOME/.pip/pip.conf.bak
-  awk -v regex="$(escaped_pip_extra_url)" '{ gsub(/^\[global\]$/, regex); print }'
-  $HOME/.pip/pip.conf.bak > $HOME/.pip/pip.conf
+  awk -v regex="$(escaped_pip_extra_url)" '{ gsub(/^\[global\]$/, regex); print }' $HOME/.pip/pip.conf.bak > $HOME/.pip/pip.conf
   echo "pip.conf appended, backup copy: $HOME/.pip/pip.conf.bak"
 }
 
@@ -73,7 +74,7 @@ make_server_file()
 {
 default_user=$(logname 2>/dev/null || echo ${SUDO_USER:-${USER}})
 HOME="/home/${default_user}"
-destdir=$HOME/dew
+destdir=$HOME/dew/actual
 bash -c "mkdir -p $destdir"
 echo "directory created"
 
@@ -131,7 +132,7 @@ make_client_file()
 {
 default_user=$(logname 2>/dev/null || echo ${SUDO_USER:-${USER}})
 HOME="/home/${default_user}"
-destdir=$HOME/dew
+destdir=$HOME/dew/actual
 bash -c "mkdir -p $destdir"
 echo "directory created"
 
@@ -221,21 +222,23 @@ main ()
 HOME="/home/${default_user}"
 cd "$(dirname "$0")"
 bash -c 'apt-get update -y'
-bash -c 'apt-get install python-pip'
-bash -c 'apt install python3-pip'
-bash -c 'pip3 install python3-pika'
+bash -c 'apt install python3-pip  '
+bash -c 'pip3 install pika '
 bash -c 'apt-get install rabbitmq-server -y --fix-missing'
 bash -c 'apt install monit '
-bash -c 'service rabbitmq-server start'
+bash -c 'service rabbitmq-server start '
 bash -c 'monit reload'
 
 bash -c 'cat /dev/null > /etc/monit/monitrc'
   make_server_file
   make_client_file
   #abort_already_configured
-  #curl_check
-  #virtualenv_check
-  #edit_pip_config
+  curl_check
+  virtualenv_check
+
+
+
+  edit_pip_config
 
 var='set httpd port 2812 and
      use address localhost  # only accept connection from localhost
@@ -243,24 +246,29 @@ var='set httpd port 2812 and
      allow admin:monit      # require user "admin" with password "monit"
      allow @monit           # allow users of group "monit" to connect (rw)
      allow @users readonly  # allow users of group "users" to connect readonly
-check program client with path "/usr/bin/python3 /home/kishu/dew/client.py"  with timeout 50 seconds  \
-if status = 0 then exec  "/usr/bin/python3 /home/kishu/dew/tp1.py"  \
-if status = 3 then exec  "/usr/bin/python3 /home/kishu/dew//tp2.py"  \
-check file if_exist_client   path "/home/kishu/dew/client.py"            \
-#if size > 0 then exec  "/usr/bin/python3 //home/kishu/dew/tp1.py"      \
-#if size = 0 then exec  "/usr/bin/python3 /home/kishu/dew/tp2.py"     \
-#if changed checksum then exec "/usr/bin/python3 /home/kishu/dew/tp3.py"  \
-check file if_file_modified   path "/home/kishu/dew/client.py"  \
-if changed checksum then exec "/usr/bin/python3 /home/kishu/dew/tp3.py" \
-check file if_contains with path "/home/kishu/dew/client.py"      \
-if content = "print" then exec "/usr/bin/python3/home/kishu/dew/tp3.py && $0" \';
+check program client with path "/usr/bin/python3 /home/dew/actual/client.py"  with timeout 50 seconds  \
+if status = 0 then exec  "/usr/bin/python3/home/dew/actual/tp1.py"  \
+if status = 3 then exec  "/usr/bin/python3 /home/dew/actual/tp2.py"  \
+check file if_exist_client   path "/home/dew/actual/client.py"            \
+#if size > 0 then exec  "/usr/bin/python3 /home/dew/actual/tp1.py"      \
+#if size = 0 then exec  "/usr/bin/python3/home/dew/actual/tp2.py"     \
+#if changed checksum then exec "/usr/bin/python3 /home/dew/actual/tp3.py"  \
+check file if_file_modified   path "/home/dew/actual/client.py"  \
+if changed checksum then exec "/usr/bin/python3 /home/dew/actual/tp3.py" \
+check file if_contains with path "/home/dew/actual/client.py"      \
+if content = "print" then exec "/usr/bin/python3 /home/dew/actual/tp3.py && $0" \';
 destdir=/etc/monit/monitrc
 
 if [ -f "$destdir" ]
 then
     echo "$var" > "$destdir"
 fi
+destdir=/etc/monit/monitrc
 
+if [ -f "$destdir" ]
+then
+    echo "$var" > "$destdir"
+fi
 
 bash -c "chmod 0700 /etc/monit/monitrc"
 
