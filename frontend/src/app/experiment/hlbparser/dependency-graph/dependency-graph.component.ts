@@ -316,10 +316,17 @@ node   */
       behaviors = b
     })
 
+    var bindings = null
+    this.state.bindings.subscribe((b) => {
+      bindings = b
+    })
+    bindings.push({key: edge.label, category: "event", value: ""})
+
     behaviors[parseInt(src.id)-1] = reconstructedString
     behaviors[parseInt(dest.id)-1] = reconstructedString2
 
     this.state.setBehavior(behaviors)
+    this.state.setBindings(bindings)
 
     this.links.push(edge)
     this.links = [...this.links]
@@ -351,7 +358,6 @@ node   */
       return e.id != edge.id
     })
 
-    console.log(edge)
 
     var src: Node = this.nodes.find((n)=> { return n.id === edge.source })
     var dest: Node = this.nodes.find((n)=> { return n.id === edge.target })
@@ -375,6 +381,14 @@ node   */
     behaviors[parseInt(dest.id)-1] = reconstructedString2
 
     this.state.setBehavior(behaviors)
+
+    var bindings = null
+    this.state.getBindings().subscribe((b) => {
+      bindings = b
+    })
+
+    bindings = bindings.filter((e) => {return e.key !== edge.label})
+    this.state.setBindings(bindings)
 
   }
 

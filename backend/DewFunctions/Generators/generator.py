@@ -443,18 +443,22 @@ class GeneralGenerator(object):
         helpDict = {}
         exp = "$exp"
         proj = "$proj"
-        removeResultFile = "\'rm ~/res1;"
-        writeResultFile = "echo $? > ~/res1\'"
+        removeResultFile = "\'rm ~/"
+        writeResultFile = "echo $? > ~/"
         writeResult = "\'cat ~/res1\' > lastCmdResult"
         bashScript = ""
         labelSet = False
         labelName = "bashFile.sh"
+        resultIter = 1
         idx = 0
         bashScriptList = [[labelName,""]]
         bashTag = "#!/usr/bin/bash\n"
         tab = ""
         commandSupported = ["tcpdump","ping","iperf","nmap","curl","scp","dig","Install_and_run_apache","Install_and_run_bind"]
         events = {}
+        eventsValidDict = {}
+        lastCmdResultList = {}
+        lastCmdResultIter = 1
         parser = HLBParser([])
         print("scenario:")
         print(scenarios)
@@ -495,12 +499,12 @@ class GeneralGenerator(object):
         if scenarios is not None:
             bashScript += "if [ -z \"$1\" ]\n"
             bashScript += "then\n"
-            bashScript += "\techo \"Experiment Name must be passed as argument 1\"\n"
+            bashScript += "\techo \"Usage: ./bashFile.sh experimentName projectName [arguments]\"\n"
             bashScript += "\texit 0\n"
             bashScript += "fi\n"
             bashScript += "if [ -z \"$2\" ]\n"
             bashScript += "then\n"
-            bashScript += "\techo \"Project Name must be passed as argument 2\"\n"
+            bashScript += "\techo \"Usage: ./bashFile.sh experimentName projectName [arguments]\"\n"
             bashScript += "\texit 0\n"
             bashScript += "fi\n"
             bashScript += "exp=$1\n"
@@ -516,6 +520,11 @@ class GeneralGenerator(object):
                 print(v)
                 if v['actors'] is not None:
                     if v['t_events'] is not None:
+                        for i in v['t_events']:
+                            if i  in eventsValidDict:
+                                for string in eventsValidDict[i]:
+                                    sampleString += tab + string
+                                del eventsValidDict[i]
                         sampleString += "if [ -z " + "\"$"
                         temp = ""
                         sampleEvents = ""
@@ -523,7 +532,7 @@ class GeneralGenerator(object):
                             if i in bindings.keys():
                                 sampleString += temp
                                 sampleString += i
-                                temp = " || -z \"$"
+                                temp = "\"" + " ]" + " || " + "[ -z \"$"
                                 sampleEvents += i + " "
                         sampleString += "\" ]\n"
                         sampleString += "then\n"
@@ -592,30 +601,73 @@ class GeneralGenerator(object):
                                                         tempStr += "'" + t[1:] + "'" + " "
                                 if helpList:
                                     if helpList[0] not in helpDict:
-                                        sampleString += "if [[ -z ${" + helpList[0] +"} ]]"
+                                        bashScript += "if [[ -z ${" + helpList[0] +"} ]]"
                                         helpDict[helpList[0]] = 1
                                         for var in helpList[1:]:
-                                            sampleString += " || [[ -z ${" + var +"} ]]"
-                                        sampleString += "\nthen\n"
-                                        sampleString += "echo \"Variables having name " + tempStr + " is not set. Please set it before using\"\n"
-                                        sampleString += "fi\n"
+                                            bashScript += " || [[ -z ${" + var +"} ]]"
+                                        bashScript += "\nthen\n"
+                                        bashScript += "\techo \"Usage: ./bashFile.sh experimentName projectName [arguments:" + "tempStr" + "]\"\n"
+                                        bashScript += "\texit 0\n"
+                                        bashScript += "fi\n"
 
+                                if v['e_events'] is not None:
+                                    tempResult = v['e_events'][0]
+                                    sampleString = tab + "rm -f " + "~/" + v['e_events'][0] + "\n"
+                                else:
+                                    tempResult = "res" + str(resultIter)
+                                    sampleString += tab + "rm -f " + "~/"
+                                    sampleString += tempResult
+                                    sampleString += "\n"
                                 if clientServerList[v['actors'][0]] == 1:
                                     sampleString += tab + "ssh "+ v['actors'][0] + "." + exp + "." + proj + ".isi.deterlab.net "
                                 else:
                                     sampleString += tab + "ssh "+ v['actors'][0] + str(min(0, clientServerList[v['actors'][0]])) + "." + exp + "." + proj + ".isi.deterlab.net "
-                                sampleString += removeResultFile
-                                sampleString += bindings[v['action']]
-                                sampleString += ";"
-                                sampleString += writeResultFile
-                                sampleString += "\n"
-                                if clientServerList[v['actors'][0]] == 1:
-                                    sampleString += tab + "lastCmdResult" + "=" + "`ssh "+ v['actors'][0] + "." + exp + "." + proj + ".isi.deterlab.net "
+                                if v['e_events'] is not None:
+                                    sampleString += "\'"
+                                    sampleString += bindings[v['action']]
+                                    sampleString += ";"
+                                    sampleString += "echo $? > " + "~/" + v['e_events'][0] + "\' &"
                                 else:
-                                    sampleString += tab + "lastCmdResult" + "=" + "`ssh "+ v['actors'][0] + str(min(0, clientServerList[v['actors'][0]])) + "." + exp + "." + proj + ".isi.deterlab.net "
-                                sampleString += "\'cat ~/res1\'`"
+                                    sampleString += "\'"
+                                    sampleString += bindings[v['action']]
+                                    sampleString += ";"
+                                    sampleString += writeResultFile
+                                    sampleString += tempResult
+                                    sampleString += "\' &"
+                                    resultIter += 1
                                 sampleString += "\n"
+                                if tempResult not in eventsValidDict:
+                                    eventsValidDict[tempResult] = []
+                                eventsValidDict[tempResult].append("while [ ! -e ~/" + tempResult +" ] ; do\n")
+                                eventsValidDict[tempResult].append("\tsleep 1\n")
+                                eventsValidDict[tempResult].append("done\n")
+                                if clientServerList[v['actors'][0]] == 1:
+                                    if v['e_events'] is not None:
+                                        eventsValidDict[tempResult].append("lastCmdResult" + str(lastCmdResultIter) + "=" + "`ssh "+ v['actors'][0] + "." + exp + "." + proj + ".isi.deterlab.net \'cat ~/" + tempResult + "\'`\n")
+                                        lastCmdResultList[v['e_events'][0]] = "lastCmdResult" + str(lastCmdResultIter)
+                                        lastCmdResultIter += 1
+                                    else:
+                                        eventsValidDict[tempResult].append("lastCmdResult" + "=" + "`ssh "+ v['actors'][0] + "." + exp + "." + proj + ".isi.deterlab.net \'cat ~/" + tempResult + "\'`\n")
+                                else:
+                                    if v['e_events'] is not None:
+                                        eventsValidDict[tempResult].append("lastCmdResult" + str(lastCmdResultIter) + "=" + "`ssh "+ v['actors'][0] + str(min(0, clientServerList[v['actors'][0]])) + "." + exp + "." + proj + ".isi.deterlab.net \'cat ~/" + tempResult + "\'`\n")
+                                        lastCmdResultList[v['e_events'][0]] = "lastCmdResult" + str(lastCmdResultIter)
+                                        lastCmdResultIter += 1
+                                    else:
+                                        eventsValidDict[tempResult].append("lastCmdResult" + "=" + "`ssh "+ v['actors'][0] + str(min(0, clientServerList[v['actors'][0]])) + "." + exp + "." + proj + ".isi.deterlab.net \'cat ~/" + tempResult + "\'`\n")
                                 if v['t_events'] is not None:
+                                    tempString = ""
+                                    for i in v['t_events']:
+                                        if i in eventsValidDict:
+                                            for string in eventsValidDict[i]:
+                                                tempString += tab + string
+                                            del eventsValidDict[i]
+                                    tempString = ""
+                                    if tempResult in eventsValidDict.keys():
+                                        for string in eventsValidDict[tempResult]:
+                                            tempString += tab + string
+                                    del eventsValidDict[tempResult]
+                                    sampleString += tempString
                                     sampleString += "fi\n"
                                 tab = ""
                     if v['e_events'] is not None:
@@ -649,25 +701,39 @@ class GeneralGenerator(object):
                                     print("Attribute Error")
 
                                 events[i] = bindings[i]
-                                sampleString += "if [ $lastCmdResult -eq 0 ]\n"
-                                sampleString += "then\n"
-                                sampleString += "\t"
-                                #if bindings[i].find("SUCCESS") == -1 or bindings[i].find("Success") == -1 or bindings[i].find("success") == -1:
-                                if re.search('success', bindings[i], re.IGNORECASE):
-                                    sampleString +=  i + "=`echo $?`"
+                                if i not in eventsValidDict:
+                                    eventsValidDict[i] = []
+                                eventsValidDict[i].append(i + "=\"\"\n")
+                                if i in lastCmdResultList:
+                                    eventsValidDict[i].append("if [ " + "$" + lastCmdResultList[i] + " -eq 0 ]\n")
                                 else:
-                                    sampleString += bindings[i]
-                                    sampleString += "\n\t"
-                                    sampleString +=  i + "=`echo $?`"
-
-                                sampleString += "\n"
-                                sampleString += "fi\n"
+                                    eventsValidDict[i].append("if [ " + "$lastCmdResult" + " -eq 0 ]\n")
+                                eventsValidDict[i].append("then\n")
+                                if re.search('success', bindings[i], re.IGNORECASE):
+                                    eventsValidDict[i].append("\t" + i +  "=`echo $?`\n")
+                                else:
+                                    eventsValidDict[i].append("\t" + bindings[i] + "\n")
+                                    eventsValidDict[i].append("\t" + i + "=`echo $?`\n")
+                                eventsValidDict[i].append("fi\n") 
+                                #if bindings[i].find("SUCCESS") == -1 or bindings[i].find("Success") == -1 or bindings[i].find("success") == -1:
                 if idx < len(bashScriptList):
                     if not bashScriptList[idx][1]:
                         bashScriptList[idx][1] += bashScript
                     bashScriptList[idx][1] += sampleString
                 else:
-                    bashScriptList.append([labelName, bashScript + sampleString])
+                    tempString = ""
+                    for i in eventsValidDict.keys():
+                        for string in eventsValidDict[i]:
+                            tempString += tab + string
+                    eventsValidDict = {}
+                    bashScriptList.append([labelName, bashScript + sampleString + tempString])
         #print(events)
         #print(bashScriptList)
+        if idx == 0:
+            tempString = ""
+            for i in eventsValidDict.keys():
+                for string in eventsValidDict[i]:
+                    tempString += tab + string
+            eventsValidDict = {}
+            bashScriptList[idx][1] += tempString
         return bashScriptList

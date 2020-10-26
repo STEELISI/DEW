@@ -1,15 +1,14 @@
 <mat-toolbar color="primary">
   <div class="heading">
     <div class="col-md-12">
-      <div
-        style="float: left;"
-        class="heading-value"
-        contenteditable="true"
-        (blur)="checkDefault()"
-        [textContent]="experiment.name"
-        onkeypress="return (this.innerText.length <= 100)"
-        (input)="experiment.name = $event.target.textContent"
-      ></div>
+      <input 
+      type="text" 
+      name="title" 
+      style="float: left; border: none;" 
+      class="heading-value" 
+      [(ngModel)]="experiment.name"
+      (blur)="checkDefault()"
+      />
       <div style="padding: 5px; float: right;">
         {{ 101 - experiment.name.length + " characters left" }}
       </div>
@@ -186,3 +185,10 @@
     >
   </span>
 </mat-toolbar>
+
+<div class="alert alert-danger alert-dismissible fade show" role="alert" *ngIf="showAlertMsg">
+  {{this.alertMessage}}
+  <button type="button" class="close" data-dismiss="alert" aria-label="Close" (click)="unsetShowAlertMessage()">
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>

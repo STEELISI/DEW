@@ -58,7 +58,7 @@
             }"
             placeholder="Enter Steps to be executed during the experiment. For example: Actor0 start_log"
             format="object"
-            [(ngModel)]="objectFormat"
+            [(ngModel)]="scenariosObjFormat"
             [disabled]="isExperimentDisabled()"
             (onContentChanged)="logChangeBehavior($event)"
             (onEditorCreated)="created($event, 2)"
@@ -73,7 +73,7 @@
     </div>
   
     <hr />
-    <pre class="code-snippet">actor constraint_type value</pre>
+    <pre class="code-snippet">constraint node1 [value | node2]</pre>
     <hr />
     <div class="row">
       <div class="col-md-12" (click)="selectTextBox(3)">
@@ -87,10 +87,11 @@
             class="btn btn-outline-primary word-bubble-button"
             *ngFor="
               let word of constraintWordList
-                | slice: 0:3
+                | slice: 0:4
                 | textfilter: constraintTextFilter
             "
             (click)="insertValueInConstraint(word.value)"
+            [disabled]="word.flag"
           >
             {{ word.value }}
           </button>
@@ -110,8 +111,9 @@
               counter: { container: '#editor1' },
               toolbar: false
             }"
+            format="object"
             [disabled]="isExperimentDisabled()"
-            [(ngModel)]="constraintText"
+            [(ngModel)]="constraintsObjFormat"
             (onContentChanged)="logChangeConstraints($event)"
             (onEditorCreated)="created($event, 3)"
           ></quill-editor>
@@ -163,5 +165,35 @@
       </ul>
     </div>
   </div>
+</div>
+<div class="row build-fn-row">
+  <div class="col-4  offset-8">
+    <div class="row">
+      <div class="col-8 offset-4">
+        <table class="table table-bordered">
+          <thead>
+          <tr>
+            <th scope="col">Special Functions</th>
+            <th scope="col">What they do</th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr *ngFor="let func of specialFunctions">
+            <th scope="row">{{func.name}}</th>
+            <td>{{func.value}}</td>
+          </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<div class="alert alert-danger alert-dismissible fade show" role="alert" *ngIf="showAlertMsg">
+  {{this.alertMessage}}
+  <button type="button" class="close" data-dismiss="alert" aria-label="Close" (click)="unsetShowAlertMessage()">
+    <span aria-hidden="true">&times;</span>
+  </button>
 </div>
 
