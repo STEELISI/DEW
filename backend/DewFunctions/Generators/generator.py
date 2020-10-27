@@ -612,7 +612,7 @@ class GeneralGenerator(object):
 
                                 if v['e_events'] is not None:
                                     tempResult = v['e_events'][0]
-                                    sampleString = tab + "rm -f " + "~/" + v['e_events'][0] + "\n"
+                                    sampleString += tab + "rm -f " + "~/" + v['e_events'][0] + "\n"
                                 else:
                                     tempResult = "res" + str(resultIter)
                                     sampleString += tab + "rm -f " + "~/"
