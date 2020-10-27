@@ -711,6 +711,18 @@ class GeneralGenerator(object):
                                 eventsValidDict[i].append("then\n")
                                 if re.search('success', bindings[i], re.IGNORECASE):
                                     eventsValidDict[i].append("\t" + i +  "=`echo $?`\n")
+                                elif re.search('pexists', bindings[i], re.IGNORECASE):
+                                        try:
+                                            tempNode = re.search('\(([^)]+)', bindings[i]).group(1)
+                                            tempSplit = bindings[tempNode].split()
+                                            eventsValidDict[i].append("\t" + i + "=" + "`ssh "+ v['actors'][0] + str(min(0, clientServerList[v['actors'][0]])) + "." + exp + "." + proj + ".isi.deterlab.net \'pidof " + tempSplit[0] + "\'`\n")
+                                            eventsValidDict[i].append("\twhile [ ! -e ~/" + i +" ] ; do\n")
+                                            eventsValidDict[i].append("\t\tsleep 1\n")
+                                            eventsValidDict[i].append("\t\t" + i + "=" + "`ssh "+ v['actors'][0] + str(min(0, clientServerList[v['actors'][0]])) + "." + exp + "." + proj + ".isi.deterlab.net \'pidof " + tempSplit[0] + "\'`\n")
+                                            eventsValidDict[tempResult].append("\tdone\n")
+                                        except AttributeError:
+                                            eventsValidDict[i].append("\t" + bindings[i] + "\n")
+                                            eventsValidDict[i].append("\t" + i + "=`echo $?`\n")
                                 else:
                                     eventsValidDict[i].append("\t" + bindings[i] + "\n")
                                     eventsValidDict[i].append("\t" + i + "=`echo $?`\n")
