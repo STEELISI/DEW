@@ -52,7 +52,7 @@
 
     <ng-template #clusterTemplate let-cluster>
       <svg:g class="node cluster">
-        <svg:rect rx="5" ry="5" [attr.width]="cluster.dimension.width" [attr.height]="cluster.dimension.height" [attr.fill]="cluster.data.color" />
+        <svg:rect rx="5" ry="5" [attr.width]="cluster.dimension.width" [attr.height]="cluster.dimension.height" [attr.fill]="getColor(cluster)" />
         <svg:text alignment-baseline="central" [attr.x]="10" [attr.y]="30">(Actor: {{cluster.label}})</svg:text>
       </svg:g>
     </ng-template>
@@ -112,6 +112,11 @@
       <div class="custom-control custom-switch bottom-border">
         <input type="checkbox" class="custom-control-input" id="editmode" (click)="toggleDragging()"/>
         <label class="custom-control-label" for="editmode">Edit edges</label>
+      </div>
+      <br/>
+      <div class="custom-control custom-switch bottom-border">
+        <input type="checkbox" class="custom-control-input" id="show-clusters" (click)="toggleClusters()"/>
+        <label class="custom-control-label" for="show-clusters">Show clusters</label>
       </div>
       <br/>
       <div class="row bottom-border">
