@@ -1,9 +1,10 @@
-# Suggestions for bindings
+# Built-in Functions
 
-As part of DEW, we provide suggestions for action and event bindings. This page lists the different suggestions provided by DEW.
+As part of DEW, we provide some built-in functions, which we later expand into runnable code on the testbed during the export process.
 
-## Action Binding Suggestions
-The suggestions for action bindings are - 
+## Action Bindings
+
+Currently supported built-in functions / suggestions for action bindings are:
 
 |Suggestion|
 |---|
@@ -17,8 +18,9 @@ The suggestions for action bindings are -
 | `start_apache` |
 | `start_bind` |
 
-## Event Binding Suggestions
-The suggestions for event bindings are
+## Event Bindings
+
+Currently supported built-in functions for event bindings are:
 
 |Suggestion| Description|
 |:---:|:---|
@@ -28,19 +30,20 @@ The suggestions for event bindings are
 |`psuccess($action) `| process completed w success for the given action|
 
 
-## Built in functions
+## OS Built-in Functions
 
-We have also provided some built-in functions in `Ubuntu-EDU` OS image on Deterlab. If you use that image you can use the following built-in functions in your bindings, and we will resolve them automatically.
+We have also provided some built-in functions in `Ubuntu-DEW` OS image on Deterlab. If you use that image you can use the following built-in functions in your bindings, and we will resolve them automatically.
 
 | Built-in function |   Description   |
 |:---:|:---|
-|`expIP` | experimental IP on the given node|
-|`ctlIP` | control IP on the given node|
-|`expeth` | experimental iface on the given node|
-|`ctleth` | control iface on the given node|
-|`expIP($n)` | experimental IP on the given node, leading |to node $n
-|`expeth($n)` | experimental iface on the given node, |leading to node $n
+|`expIP` | experimental IP on the node|
+|`ctlIP` | control IP on the node|
+|`expeth` | experimental iface on the node|
+|`ctleth` | control iface on the node|
+|`expIP(A)` | experimental IP on the given node, leading |to node A
+|`expeth(A)` | experimental iface on the given node, |leading to node A
+|`IP(A)` | IP address of node A |
 |`proj` | project name|
 |`exp` | experiment name|
 |`node` | node name|
-|`epoch` | current time in epoch format|
+|`epoch` | epoch time|
