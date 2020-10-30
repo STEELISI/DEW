@@ -2,6 +2,7 @@
 
 This guide provides a quick introduction to Distributed Experiment Workflows (DEW).
 
+
 ## What is DEW?
 
 DEW is an attempt to encode behavior and toplogical constraints which help with realization on testbeds. DEW consists of 3 major components. They are Actors, Scenario/Behavior, Constraints, and Bindings.

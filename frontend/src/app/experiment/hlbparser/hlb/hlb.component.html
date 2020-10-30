@@ -142,21 +142,21 @@
             <mat-form-field style="width: 100%;" appearance="outline">
               <mat-label>{{ item.key + " represents: " }}</mat-label>
               <input type="text"
-              [disabled]="isExperimentDisabled()"
-                [(ngModel)]="item.value"
-                (change)="storeBinding()"
+                     [disabled]="isExperimentDisabled()"
+                     [(ngModel)]="item.value"
+                     (change)="storeBinding(index)"
                      aria-label="string"
                      matInput
                      (focus)="searchFilter(item.value, item.category)"
-                     (keyup) = "searchFilter(item.value, item.category)"
+                     (keyup)="searchFilter(item.value, item.category)"
                      [matAutocomplete]="UserInfo">
 
-              <mat-autocomplete #UserInfo="matAutocomplete" (optionSelected)="storeBinding()">
+              <mat-autocomplete #UserInfo="matAutocomplete" (optionSelected)="storeBinding(index)">
                 <mat-option *ngFor="let option of
                 (item.category ==='event' ?
                 (filteredBindingHandleForEvent | async) :
                  (filteredBindingHandle | async))" [value]="option">
-                 {{option}}
+                  {{option}}
                 </mat-option>
               </mat-autocomplete>
             </mat-form-field>
