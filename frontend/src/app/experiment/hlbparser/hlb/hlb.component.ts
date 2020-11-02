@@ -309,6 +309,12 @@ export class HlbComponent implements OnInit {
           }
         });
         this.behaviorService.getSuggestionData().subscribe((data) => {
+          if(data == null){
+            data = {
+              currentSentence: "",
+              remainingSentences: []
+            }
+          }
           if (data != null) {
             var params = {
               type: "behavior",
@@ -375,6 +381,12 @@ export class HlbComponent implements OnInit {
           }
         });
         this.constraintService.getSuggestionData().subscribe((data) => {
+          if(data == null){
+            data = {
+              currentSentence: "",
+              remainingSentences: []
+            }
+          }
           if (data != null) {
             var params = {
               type: "constraint",
