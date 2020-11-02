@@ -166,29 +166,22 @@
     </div>
   </div>
 </div>
-<div class="row build-fn-row">
-  <div class="col-4  offset-8">
-    <div class="row">
-      <div class="col-8 offset-4">
-        <table class="table table-bordered">
-          <thead>
-          <tr>
-            <th scope="col">Special Functions</th>
-            <th scope="col">What they do</th>
-          </tr>
-          </thead>
-          <tbody>
-          <tr *ngFor="let func of specialFunctions">
-            <th scope="row">{{func.name}}</th>
-            <td>{{func.value}}</td>
-          </tr>
-          </tbody>
-        </table>
-      </div>
-    </div>
-  </div>
+<div class="special-func-div" cdkDrag>
+  <table class="table table-bordered">
+    <thead>
+    <tr>
+      <th scope="col">Special Functions</th>
+      <th scope="col">What they do</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr *ngFor="let func of specialFunctions">
+      <th scope="row">{{func.name}}</th>
+      <td>{{func.value}}</td>
+    </tr>
+    </tbody>
+  </table>
 </div>
-
 
 <div class="alert alert-danger alert-dismissible fade show" role="alert" *ngIf="showAlertMsg">
   {{this.alertMessage}}
