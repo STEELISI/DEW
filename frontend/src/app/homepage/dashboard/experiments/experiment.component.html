@@ -54,7 +54,7 @@
                 type="radio"
                 name="accessLevel"
                 [value]="2"
-              /><span style="padding: 0.2em;">Spectalor</span></label
+              /><span style="padding: 0.2em;">Spectator</span></label
             >
           </li>
         </ul>
@@ -65,13 +65,19 @@
         <div class="col-md-12">
           <div
             class="row table-row pointer"
-            (click)="edit(item)"
             style="margin-top: 14px;"
-            matTooltip="Edit {{ item.name }}"
+            
             *ngFor="let item of filterExperiments | async; let i = index"
           >
-            <div class="col-md-12">
+            
+            <div class="col-md-10" matTooltip="Edit {{ item.name }}" (click)="edit(item)">
               <div class="header-experiment">{{ item.name }}</div>
+              
+              <br />
+              <span><b>Created Date:</b> {{ item.created_date }}</span> |
+              <span><b>Updated Date:</b> {{ item.updated_date }}</span>
+            </div>
+            <div class="col-md-2">
               <span class="bubble">
                 <strong
                   matTooltip="{{
@@ -90,9 +96,7 @@
                   }}</strong
                 >
               </span>
-              <br />
-              <span><b>Created Date:</b> {{ item.created_date }}</span> |
-              <span><b>Updated Date:</b> {{ item.updated_date }}</span>
+              <button matTooltip="Duplicate the experiment" class="btn btn-outline-info" (click)="copy(item)">Duplicate</button>
             </div>
             <hr />
           </div>
