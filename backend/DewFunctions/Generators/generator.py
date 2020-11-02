@@ -459,6 +459,7 @@ class GeneralGenerator(object):
         eventsValidDict = {}
         lastCmdResultList = {}
         lastCmdResultIter = 1
+        args = []
         parser = HLBParser([])
         print("scenario:")
         print(scenarios)
@@ -487,6 +488,10 @@ class GeneralGenerator(object):
         dewString += tempString
         dewString += "#\n"
         for key in bindings:
+            tempSplit = bindings[key].split()
+            for each in tempSplit:
+            	if each[0] == "$" and each[1:]:
+            		args.append(each[1:])
             tempString = "#\t"
             tempString += key + " = " + bindings[key]
             while (len(tempString) < 77):
@@ -509,6 +514,16 @@ class GeneralGenerator(object):
             bashScript += "fi\n"
             bashScript += "exp=$1\n"
             bashScript += "proj=$2\n"
+            allArgs = ""
+            for i in range(len(args)):
+                temp = 3 + i
+                bashScript += "if [ -z \"$" + str(temp) + "\" ]\n"
+                bashScript += "then\n"
+                allArgs += args[i] + " "
+                bashScript += "\techo \"Usage: ./bashFile.sh experimentName projectName " + allArgs + "\"\n"
+                bashScript += "\texit 0\n"
+                bashScript += "fi\n"
+                bashScript += args[i] + "=" + "$" + str(temp) + "\n"
             for scenario in scenarios:
                 scenario = scenario.strip()
                 if len(scenario) > 1 and scenario[0] == "@":
