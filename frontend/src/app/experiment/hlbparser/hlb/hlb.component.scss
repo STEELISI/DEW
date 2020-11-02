@@ -124,9 +124,13 @@ ul {
   right: 2%;
   width: 20%;
 }
-.build-fn-row {
-  padding-top: 2%;
+
+.special-func-div {
+  position: absolute;
+  bottom: 10%;
+  right: 1%;
   .table {
     outline: 0.3px solid lightgrey;
+    background: #f3f3f3;
   }
 }

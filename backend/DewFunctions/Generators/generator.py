@@ -459,6 +459,7 @@ class GeneralGenerator(object):
         eventsValidDict = {}
         lastCmdResultList = {}
         lastCmdResultIter = 1
+        args = []
         parser = HLBParser([])
         print("scenario:")
         print(scenarios)
@@ -487,6 +488,10 @@ class GeneralGenerator(object):
         dewString += tempString
         dewString += "#\n"
         for key in bindings:
+            tempSplit = bindings[key].split()
+            for each in tempSplit:
+            	if each[0] == "$" and each[1:]:
+            		args.append(each[1:])
             tempString = "#\t"
             tempString += key + " = " + bindings[key]
             while (len(tempString) < 77):
@@ -509,6 +514,16 @@ class GeneralGenerator(object):
             bashScript += "fi\n"
             bashScript += "exp=$1\n"
             bashScript += "proj=$2\n"
+            allArgs = ""
+            for i in range(len(args)):
+                temp = 3 + i
+                bashScript += "if [ -z \"$" + str(temp) + "\" ]\n"
+                bashScript += "then\n"
+                allArgs += args[i] + " "
+                bashScript += "\techo \"Usage: ./bashFile.sh experimentName projectName " + allArgs + "\"\n"
+                bashScript += "\texit 0\n"
+                bashScript += "fi\n"
+                bashScript += args[i] + "=" + "$" + str(temp) + "\n"
             for scenario in scenarios:
                 scenario = scenario.strip()
                 if len(scenario) > 1 and scenario[0] == "@":
@@ -612,7 +627,7 @@ class GeneralGenerator(object):
 
                                 if v['e_events'] is not None:
                                     tempResult = v['e_events'][0]
-                                    sampleString = tab + "rm -f " + "~/" + v['e_events'][0] + "\n"
+                                    sampleString += tab + "rm -f " + "~/" + v['e_events'][0] + "\n"
                                 else:
                                     tempResult = "res" + str(resultIter)
                                     sampleString += tab + "rm -f " + "~/"
@@ -711,6 +726,18 @@ class GeneralGenerator(object):
                                 eventsValidDict[i].append("then\n")
                                 if re.search('success', bindings[i], re.IGNORECASE):
                                     eventsValidDict[i].append("\t" + i +  "=`echo $?`\n")
+                                elif re.search('pexists', bindings[i], re.IGNORECASE):
+                                        try:
+                                            tempNode = re.search('\(([^)]+)', bindings[i]).group(1)
+                                            tempSplit = bindings[tempNode].split()
+                                            eventsValidDict[i].append("\t" + i + "=" + "`ssh "+ v['actors'][0] + str(min(0, clientServerList[v['actors'][0]])) + "." + exp + "." + proj + ".isi.deterlab.net \'pidof " + tempSplit[0] + "\'`\n")
+                                            eventsValidDict[i].append("\twhile [ ! -e ~/" + i +" ] ; do\n")
+                                            eventsValidDict[i].append("\t\tsleep 1\n")
+                                            eventsValidDict[i].append("\t\t" + i + "=" + "`ssh "+ v['actors'][0] + str(min(0, clientServerList[v['actors'][0]])) + "." + exp + "." + proj + ".isi.deterlab.net \'pidof " + tempSplit[0] + "\'`\n")
+                                            eventsValidDict[tempResult].append("\tdone\n")
+                                        except AttributeError:
+                                            eventsValidDict[i].append("\t" + bindings[i] + "\n")
+                                            eventsValidDict[i].append("\t" + i + "=`echo $?`\n")
                                 else:
                                     eventsValidDict[i].append("\t" + bindings[i] + "\n")
                                     eventsValidDict[i].append("\t" + i + "=`echo $?`\n")

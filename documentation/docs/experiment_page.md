@@ -4,6 +4,12 @@ This is the main page used to create new or edit existing experiments.
 
 ![Experiment page](./img/experiment_page_main.png)
 
+View video tutorials on using the experiment page below - 
+<iframe width="560" height="315" src="https://www.youtube.com/embed/JNOLuf4gwUc" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+
+<iframe width="560" height="315" src="https://www.youtube.com/embed/5q8fAJtRyUA" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+
+
 ## Experiment name
 * The name of the experiment is displayed on the top left corner of the page.
 * To edit the name, click on the name and update the text. (just like Google docs)
