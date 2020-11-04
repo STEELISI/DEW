@@ -9,7 +9,7 @@
   
   <link rel="canonical" href="https://dew.isi.edu/docs/binding_suggestions/">
   <link rel="shortcut icon" href="../img/favicon.ico">
-  <title>Suggestions for Bindings - Distributed Experiment Workflows</title>
+  <title>Built-in Functions - Distributed Experiment Workflows</title>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lato:400,700|Roboto+Slab:400,700|Inconsolata:400,700" />
 
   <link rel="stylesheet" href="../css/theme.css" />
@@ -19,7 +19,7 @@
   
   <script>
     // Current page data
-    var mkdocs_page_name = "Suggestions for Bindings";
+    var mkdocs_page_name = "Built-in Functions";
     var mkdocs_page_input_path = "binding_suggestions.md";
     var mkdocs_page_url = "/docs/binding_suggestions/";
   </script>
@@ -69,15 +69,17 @@
                     </li>
                     <li class="toctree-l1"><a class="reference internal" href="../backup_and_recovery/">Backup and recovery</a>
                     </li>
-                    <li class="toctree-l1"><a class="reference internal" href="../running_on_deter/">Running on Deter</a>
+                    <li class="toctree-l1"><a class="reference internal" href="../running_on_deter/">From DEW to testbed</a>
                     </li>
-                    <li class="toctree-l1 current"><a class="reference internal current" href="./">Suggestions for Bindings</a>
+                    <li class="toctree-l1"><a class="reference internal" href="../manual_capture/">From testbed to DEW</a>
+                    </li>
+                    <li class="toctree-l1 current"><a class="reference internal current" href="./">Built-in Functions</a>
     <ul class="current">
-    <li class="toctree-l2"><a class="reference internal" href="#action-binding-suggestions">Action Binding Suggestions</a>
+    <li class="toctree-l2"><a class="reference internal" href="#action-bindings">Action Bindings</a>
     </li>
-    <li class="toctree-l2"><a class="reference internal" href="#event-binding-suggestions">Event Binding Suggestions</a>
+    <li class="toctree-l2"><a class="reference internal" href="#event-bindings">Event Bindings</a>
     </li>
-    <li class="toctree-l2"><a class="reference internal" href="#built-in-functions">Built in functions</a>
+    <li class="toctree-l2"><a class="reference internal" href="#os-built-in-functions">OS Built-in Functions</a>
     </li>
     </ul>
                     </li>
@@ -119,7 +121,7 @@
         
       
     
-    <li>Suggestions for Bindings</li>
+    <li>Built-in Functions</li>
     <li class="wy-breadcrumbs-aside">
       
     </li>
@@ -130,10 +132,10 @@
           <div role="main">
             <div class="section">
               
-                <h1 id="suggestions-for-bindings">Suggestions for bindings</h1>
-<p>As part of DEW, we provide suggestions for action and event bindings. This page lists the different suggestions provided by DEW.</p>
-<h2 id="action-binding-suggestions">Action Binding Suggestions</h2>
-<p>The suggestions for action bindings are - </p>
+                <h1 id="built-in-functions">Built-in Functions</h1>
+<p>As part of DEW, we provide some built-in functions, which we later expand into runnable code on the testbed during the export process.</p>
+<h2 id="action-bindings">Action Bindings</h2>
+<p>Currently supported built-in functions / suggestions for action bindings are:</p>
 <table>
 <thead>
 <tr>
@@ -170,8 +172,8 @@
 </tr>
 </tbody>
 </table>
-<h2 id="event-binding-suggestions">Event Binding Suggestions</h2>
-<p>The suggestions for event bindings are</p>
+<h2 id="event-bindings">Event Bindings</h2>
+<p>Currently supported built-in functions for event bindings are:</p>
 <table>
 <thead>
 <tr>
@@ -198,8 +200,8 @@
 </tr>
 </tbody>
 </table>
-<h2 id="built-in-functions">Built in functions</h2>
-<p>We have also provided some built-in functions in <code>Ubuntu-EDU</code> OS image on Deterlab. If you use that image you can use the following built-in functions in your bindings, and we will resolve them automatically.</p>
+<h2 id="os-built-in-functions">OS Built-in Functions</h2>
+<p>We have also provided some built-in functions in <code>Ubuntu-DEW</code> OS image on Deterlab. If you use that image you can use the following built-in functions in your bindings, and we will resolve them automatically.</p>
 <table>
 <thead>
 <tr>
@@ -210,27 +212,31 @@
 <tbody>
 <tr>
 <td align="center"><code>expIP</code></td>
-<td align="left">experimental IP on the given node</td>
+<td align="left">experimental IP on the node</td>
 </tr>
 <tr>
 <td align="center"><code>ctlIP</code></td>
-<td align="left">control IP on the given node</td>
+<td align="left">control IP on the node</td>
 </tr>
 <tr>
 <td align="center"><code>expeth</code></td>
-<td align="left">experimental iface on the given node</td>
+<td align="left">experimental iface on the node</td>
 </tr>
 <tr>
 <td align="center"><code>ctleth</code></td>
-<td align="left">control iface on the given node</td>
+<td align="left">control iface on the node</td>
 </tr>
 <tr>
-<td align="center"><code>expIP($n)</code></td>
+<td align="center"><code>expIP(A)</code></td>
 <td align="left">experimental IP on the given node, leading</td>
 </tr>
 <tr>
-<td align="center"><code>expeth($n)</code></td>
+<td align="center"><code>expeth(A)</code></td>
 <td align="left">experimental iface on the given node,</td>
+</tr>
+<tr>
+<td align="center"><code>IP(A)</code></td>
+<td align="left">IP address of node A</td>
 </tr>
 <tr>
 <td align="center"><code>proj</code></td>
@@ -246,7 +252,7 @@
 </tr>
 <tr>
 <td align="center"><code>epoch</code></td>
-<td align="left">current time in epoch format</td>
+<td align="left">epoch time</td>
 </tr>
 </tbody>
 </table>
@@ -260,7 +266,7 @@
         <a href="../examples/" class="btn btn-neutral float-right" title="Examples">Next <span class="icon icon-circle-arrow-right"></span></a>
       
       
-        <a href="../running_on_deter/" class="btn btn-neutral" title="Running on Deter"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href="../manual_capture/" class="btn btn-neutral" title="From testbed to DEW"><span class="icon icon-circle-arrow-left"></span> Previous</a>
       
     </div>
   
@@ -286,7 +292,7 @@
     <span class="rst-current-version" data-toggle="rst-current-version">
       
       
-        <span><a href="../running_on_deter/" style="color: #fcfcfc;">&laquo; Previous</a></span>
+        <span><a href="../manual_capture/" style="color: #fcfcfc;">&laquo; Previous</a></span>
       
       
         <span style="margin-left: 15px"><a href="../examples/" style="color: #fcfcfc">Next &raquo;</a></span>

@@ -459,6 +459,7 @@ class GeneralGenerator(object):
         eventsValidDict = {}
         lastCmdResultList = {}
         lastCmdResultIter = 1
+        args = []
         parser = HLBParser([])
         print("scenario:")
         print(scenarios)
@@ -487,6 +488,10 @@ class GeneralGenerator(object):
         dewString += tempString
         dewString += "#\n"
         for key in bindings:
+            tempSplit = bindings[key].split()
+            for each in tempSplit:
+            	if each[0] == "$" and each[1:]:
+            		args.append(each[1:])
             tempString = "#\t"
             tempString += key + " = " + bindings[key]
             while (len(tempString) < 77):
@@ -496,19 +501,29 @@ class GeneralGenerator(object):
         dewString += "################################################################################\n"
         bashScript += dewString
         bashScript += bashTag
+        allArgs = ""
+        allArgs = ' '.join(args)
         if scenarios is not None:
             bashScript += "if [ -z \"$1\" ]\n"
             bashScript += "then\n"
-            bashScript += "\techo \"Usage: ./bashFile.sh experimentName projectName [arguments]\"\n"
+            bashScript += "\techo \"Usage: ./bashFile.sh experimentName projectName " + allArgs + "\"\n"
             bashScript += "\texit 0\n"
             bashScript += "fi\n"
             bashScript += "if [ -z \"$2\" ]\n"
             bashScript += "then\n"
-            bashScript += "\techo \"Usage: ./bashFile.sh experimentName projectName [arguments]\"\n"
+            bashScript += "\techo \"Usage: ./bashFile.sh experimentName projectName " + allArgs + "\"\n"
             bashScript += "\texit 0\n"
             bashScript += "fi\n"
             bashScript += "exp=$1\n"
             bashScript += "proj=$2\n"
+            for i in range(len(args)):
+                temp = 3 + i
+                bashScript += "if [ -z \"$" + str(temp) + "\" ]\n"
+                bashScript += "then\n"
+                bashScript += "\techo \"Usage: ./bashFile.sh experimentName projectName " + allArgs + "\"\n"
+                bashScript += "\texit 0\n"
+                bashScript += "fi\n"
+                bashScript += args[i] + "=" + "$" + str(temp) + "\n"
             for scenario in scenarios:
                 scenario = scenario.strip()
                 if len(scenario) > 1 and scenario[0] == "@":
@@ -576,6 +591,7 @@ class GeneralGenerator(object):
                         temp = bindings[v['action']]
                         sampleList = temp.split()
                         if temp:
+                            pexists = 0
                             #if sampleList[0] in commandSupported:
                             if sampleList[0]:
                                 tempStr = ""
@@ -611,50 +627,99 @@ class GeneralGenerator(object):
                                         bashScript += "fi\n"
 
                                 if v['e_events'] is not None:
-                                    tempResult = v['e_events'][0]
-                                    sampleString = tab + "rm -f " + "~/" + v['e_events'][0] + "\n"
-                                else:
-                                    tempResult = "res" + str(resultIter)
-                                    sampleString += tab + "rm -f " + "~/"
-                                    sampleString += tempResult
+                                    for event in v['e_events']:
+                                        if re.search('pexists', bindings[event], re.IGNORECASE):
+                                            pexists = 1
+
+                                tempResult = ""
+                                if not pexists:
+                                    if v['e_events'] is not None:
+                                        tempResult = v['e_events'][0]
+                                        sampleString += tab + "rm -f " + "~/" + v['e_events'][0] + "\n"
+                                    else:
+                                        tempResult = "res" + str(resultIter)
+                                        sampleString += tab + "rm -f " + "~/"
+                                        sampleString += tempResult
+                                        sampleString += "\n"
+                                argsInCmdFlag = 0
+                                argsInCmd = bindings[v['action']].split()
+                                arguments = []
+                                for tempStr in argsInCmd:
+                                    if tempStr[0] == "$":
+                                        argsInCmdFlag = 1
+                                        arguments.append(tempStr);
+                                for j in arguments:
+                                    bindings[v['action']] = bindings[v['action']].replace(j, "\""+j+"\"")
+                                resultStrore = ""
+                                if argsInCmdFlag:
+                                    resultStrore = "cmd"
+                                    sampleString += tab + resultStrore + "=" + "\"" + bindings[v['action']]
+                                    if v['e_events'] is not None:
+                                        if not pexists:
+                                            sampleString += ";"
+                                            sampleString += "echo $? > " + "~/" + v['e_events'][0] + "\""
+                                        else:
+                                            sampleString += "\""
+                                    else:
+                                        if not pexists:
+                                            sampleString += ";"
+                                            sampleString += writeResultFile
+                                            sampleString += tempResult
+                                            sampleString += "\""
+                                            resultIter += 1
+                                        else:
+                                            sampleString += "\""
                                     sampleString += "\n"
                                 if clientServerList[v['actors'][0]] == 1:
                                     sampleString += tab + "ssh "+ v['actors'][0] + "." + exp + "." + proj + ".isi.deterlab.net "
                                 else:
                                     sampleString += tab + "ssh "+ v['actors'][0] + str(min(0, clientServerList[v['actors'][0]])) + "." + exp + "." + proj + ".isi.deterlab.net "
                                 if v['e_events'] is not None:
-                                    sampleString += "\'"
-                                    sampleString += bindings[v['action']]
-                                    sampleString += ";"
-                                    sampleString += "echo $? > " + "~/" + v['e_events'][0] + "\' &"
+                                    if not argsInCmdFlag:
+                                        sampleString += "\'"
+                                        sampleString += bindings[v['action']]
+                                        if not pexists:
+                                            sampleString += ";"
+                                            sampleString += "echo $? > " + "~/" + v['e_events'][0] + "\' &"
+                                        else:
+                                            sampleString += "\' &"
+                                    else:
+                                        sampleString += "\"" + "$" + resultStrore + "\"" + " &"
                                 else:
-                                    sampleString += "\'"
-                                    sampleString += bindings[v['action']]
-                                    sampleString += ";"
-                                    sampleString += writeResultFile
-                                    sampleString += tempResult
-                                    sampleString += "\' &"
-                                    resultIter += 1
+                                    if not argsInCmdFlag:
+                                        sampleString += "\'"
+                                        sampleString += bindings[v['action']]
+                                        if not pexists:
+                                            sampleString += ";"
+                                            sampleString += writeResultFile
+                                            sampleString += tempResult
+                                            sampleString += "\' &"
+                                            resultIter += 1
+                                        else:
+                                            sampleString += "\' &"
+                                    else:
+                                        sampleString += "\"" + "$" + resultStrore + "\"" + " &"
                                 sampleString += "\n"
                                 if tempResult not in eventsValidDict:
                                     eventsValidDict[tempResult] = []
-                                eventsValidDict[tempResult].append("while [ ! -e ~/" + tempResult +" ] ; do\n")
-                                eventsValidDict[tempResult].append("\tsleep 1\n")
-                                eventsValidDict[tempResult].append("done\n")
-                                if clientServerList[v['actors'][0]] == 1:
-                                    if v['e_events'] is not None:
-                                        eventsValidDict[tempResult].append("lastCmdResult" + str(lastCmdResultIter) + "=" + "`ssh "+ v['actors'][0] + "." + exp + "." + proj + ".isi.deterlab.net \'cat ~/" + tempResult + "\'`\n")
-                                        lastCmdResultList[v['e_events'][0]] = "lastCmdResult" + str(lastCmdResultIter)
-                                        lastCmdResultIter += 1
+                                if not pexists:
+                                    eventsValidDict[tempResult].append("while [ ! -e ~/" + tempResult +" ] ; do\n")
+                                    eventsValidDict[tempResult].append("\tsleep 1\n")
+                                    eventsValidDict[tempResult].append("done\n")
+                                    if clientServerList[v['actors'][0]] == 1:
+                                        if v['e_events'] is not None:
+                                            eventsValidDict[tempResult].append("lastCmdResult" + str(lastCmdResultIter) + "=" + "`ssh "+ v['actors'][0] + "." + exp + "." + proj + ".isi.deterlab.net \'cat ~/" + tempResult + "\'`\n")
+                                            lastCmdResultList[v['e_events'][0]] = "lastCmdResult" + str(lastCmdResultIter)
+                                            lastCmdResultIter += 1
+                                        else:
+                                            eventsValidDict[tempResult].append("lastCmdResult" + "=" + "`ssh "+ v['actors'][0] + "." + exp + "." + proj + ".isi.deterlab.net \'cat ~/" + tempResult + "\'`\n")
                                     else:
-                                        eventsValidDict[tempResult].append("lastCmdResult" + "=" + "`ssh "+ v['actors'][0] + "." + exp + "." + proj + ".isi.deterlab.net \'cat ~/" + tempResult + "\'`\n")
-                                else:
-                                    if v['e_events'] is not None:
-                                        eventsValidDict[tempResult].append("lastCmdResult" + str(lastCmdResultIter) + "=" + "`ssh "+ v['actors'][0] + str(min(0, clientServerList[v['actors'][0]])) + "." + exp + "." + proj + ".isi.deterlab.net \'cat ~/" + tempResult + "\'`\n")
-                                        lastCmdResultList[v['e_events'][0]] = "lastCmdResult" + str(lastCmdResultIter)
-                                        lastCmdResultIter += 1
-                                    else:
-                                        eventsValidDict[tempResult].append("lastCmdResult" + "=" + "`ssh "+ v['actors'][0] + str(min(0, clientServerList[v['actors'][0]])) + "." + exp + "." + proj + ".isi.deterlab.net \'cat ~/" + tempResult + "\'`\n")
+                                        if v['e_events'] is not None:
+                                            eventsValidDict[tempResult].append("lastCmdResult" + str(lastCmdResultIter) + "=" + "`ssh "+ v['actors'][0] + str(min(0, clientServerList[v['actors'][0]])) + "." + exp + "." + proj + ".isi.deterlab.net \'cat ~/" + tempResult + "\'`\n")
+                                            lastCmdResultList[v['e_events'][0]] = "lastCmdResult" + str(lastCmdResultIter)
+                                            lastCmdResultIter += 1
+                                        else:
+                                            eventsValidDict[tempResult].append("lastCmdResult" + "=" + "`ssh "+ v['actors'][0] + str(min(0, clientServerList[v['actors'][0]])) + "." + exp + "." + proj + ".isi.deterlab.net \'cat ~/" + tempResult + "\'`\n")
                                 if v['t_events'] is not None:
                                     tempString = ""
                                     for i in v['t_events']:
@@ -666,7 +731,8 @@ class GeneralGenerator(object):
                                     if tempResult in eventsValidDict.keys():
                                         for string in eventsValidDict[tempResult]:
                                             tempString += tab + string
-                                    del eventsValidDict[tempResult]
+                                    if tempResult in eventsValidDict:
+                                        del eventsValidDict[tempResult]
                                     sampleString += tempString
                                     sampleString += "fi\n"
                                 tab = ""
@@ -703,30 +769,39 @@ class GeneralGenerator(object):
                                 events[i] = bindings[i]
                                 if i not in eventsValidDict:
                                     eventsValidDict[i] = []
-                                eventsValidDict[i].append(i + "=\"\"\n")
-                                if i in lastCmdResultList:
-                                    eventsValidDict[i].append("if [ " + "$" + lastCmdResultList[i] + " -eq 0 ]\n")
-                                else:
-                                    eventsValidDict[i].append("if [ " + "$lastCmdResult" + " -eq 0 ]\n")
-                                eventsValidDict[i].append("then\n")
+                                if not re.search('pexists', bindings[i], re.IGNORECASE):
+                                    eventsValidDict[i].append(i + "=\"\"\n")
+                                    if i in lastCmdResultList:
+                                        eventsValidDict[i].append("if [ " + "$" + lastCmdResultList[i] + " -eq 0 ]\n")
+                                    else:
+                                        eventsValidDict[i].append("if [ " + "$lastCmdResult" + " -eq 0 ]\n")
+                                    eventsValidDict[i].append("then\n")
                                 if re.search('success', bindings[i], re.IGNORECASE):
                                     eventsValidDict[i].append("\t" + i +  "=`echo $?`\n")
+                                    eventsValidDict[i].append("fi\n") 
                                 elif re.search('pexists', bindings[i], re.IGNORECASE):
                                         try:
                                             tempNode = re.search('\(([^)]+)', bindings[i]).group(1)
                                             tempSplit = bindings[tempNode].split()
-                                            eventsValidDict[i].append("\t" + i + "=" + "`ssh "+ v['actors'][0] + str(min(0, clientServerList[v['actors'][0]])) + "." + exp + "." + proj + ".isi.deterlab.net \'pidof " + tempSplit[0] + "\'`\n")
-                                            eventsValidDict[i].append("\twhile [ ! -e ~/" + i +" ] ; do\n")
-                                            eventsValidDict[i].append("\t\tsleep 1\n")
-                                            eventsValidDict[i].append("\t\t" + i + "=" + "`ssh "+ v['actors'][0] + str(min(0, clientServerList[v['actors'][0]])) + "." + exp + "." + proj + ".isi.deterlab.net \'pidof " + tempSplit[0] + "\'`\n")
-                                            eventsValidDict[tempResult].append("\tdone\n")
+                                            if clientServerList[v['actors'][0]] != 1:
+                                                eventsValidDict[i].append(i + "=" + "`ssh "+ v['actors'][0] + str(min(0, clientServerList[v['actors'][0]])) + "." + exp + "." + proj + ".isi.deterlab.net \'/bin/pidof " + tempSplit[0] + "\'`\n")
+                                                eventsValidDict[i].append("while [ -z $" + i +" ] ; do\n")
+                                                eventsValidDict[i].append("\tsleep 1\n")
+                                                eventsValidDict[i].append("\t" + i + "=" + "`ssh "+ v['actors'][0] + str(min(0, clientServerList[v['actors'][0]])) + "." + exp + "." + proj + ".isi.deterlab.net \'/bin/pidof " + tempSplit[0] + "\'`\n")
+                                                eventsValidDict[i].append("done\n")
+                                            else:
+                                                eventsValidDict[i].append(i + "=" + "`ssh "+ v['actors'][0] + "." + exp + "." + proj + ".isi.deterlab.net \'/bin/pidof " + tempSplit[0] + "\'`\n")
+                                                eventsValidDict[i].append("while [ -z $" + i +" ] ; do\n")
+                                                eventsValidDict[i].append("\tsleep 1\n")
+                                                eventsValidDict[i].append("\t" + i + "=" + "`ssh "+ v['actors'][0] + "." + exp + "." + proj + ".isi.deterlab.net \'/bin/pidof " + tempSplit[0] + "\'`\n")
+                                                eventsValidDict[i].append("done\n")
                                         except AttributeError:
-                                            eventsValidDict[i].append("\t" + bindings[i] + "\n")
-                                            eventsValidDict[i].append("\t" + i + "=`echo $?`\n")
+                                            eventsValidDict[i].append(bindings[i] + "\n")
+                                            eventsValidDict[i].append(i + "=`echo $?`\n")
                                 else:
                                     eventsValidDict[i].append("\t" + bindings[i] + "\n")
                                     eventsValidDict[i].append("\t" + i + "=`echo $?`\n")
-                                eventsValidDict[i].append("fi\n") 
+                                    eventsValidDict[i].append("fi\n") 
                                 #if bindings[i].find("SUCCESS") == -1 or bindings[i].find("Success") == -1 or bindings[i].find("success") == -1:
                 if idx < len(bashScriptList):
                     if not bashScriptList[idx][1]:

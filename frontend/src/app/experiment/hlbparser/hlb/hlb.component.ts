@@ -515,7 +515,7 @@ export class HlbComponent implements OnInit {
 
   extractInfo(data: ParseApiBean) {
     this.extractScenario(data.parsedScenario);
-    this.storeBinding();
+    this.storeBinding(undefined);
   }
 
   checkIfEmittedEventIsATriggerEvent(emittedEvents, scenario) {
@@ -861,15 +861,21 @@ export class HlbComponent implements OnInit {
         }
       );
   }
-  storeBinding() {
-    // console.log(this.bindingList);
-    // var binding = [];
-    // this.bindingList.forEach((element) => {
-    //   binding.push(element.key.trim() + " " + element.value.trim());
-    // });
+  storeBinding(index) {
+    const str1 = ' - file exists';
+    const str2 = ' - file was modified';
+    const str3 = ' - process exists that performs action in the binding';
+    const str4 = ' - process completed w success for the given action';
 
+    // This part is done just to remove the the description
+    if (index && (this.bindingList[index].value.includes(str1) || this.bindingList[index].value.includes(str2) ||
+        this.bindingList[index].value.includes(str3) || this.bindingList[index].value.includes(str4))) {
+      const splitter = this.bindingList[index].value.split(' - ');
+      this.bindingList[index].value = splitter[0];
+    }
     this.stateservice.setBindings(this.bindingList);
   }
+
   downLoadFile(data: any) {
     var blob = new Blob([data], { type: "text/plain" });
     //console.log(blob);
