@@ -8,9 +8,15 @@ import { RouterModule } from '@angular/router';
 import { HttpService } from './http-service.service';
 import { AuthModule } from './@auth/auth.module';
 import { StateService } from './state-service.service';
+import {SpecialFuncPopUpComponent} from './experiment/hlbparser/hlb/hlb.component';
+
 @NgModule({
   declarations: [
-    AppComponent
+    AppComponent,
+    SpecialFuncPopUpComponent
+  ],
+  entryComponents: [
+    SpecialFuncPopUpComponent
   ],
   imports: [
     AuthModule.forRoot(),
@@ -20,8 +26,9 @@ import { StateService } from './state-service.service';
     AppRoutingModule,
     HttpClientModule
   ],
-  providers:[HttpService,StateService
+  providers: [HttpService, StateService
   ],
   bootstrap: [AppComponent]
 })
-export class AppModule {}
+export class AppModule {
+}
