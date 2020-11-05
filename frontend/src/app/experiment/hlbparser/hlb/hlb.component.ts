@@ -637,6 +637,10 @@ export class HlbComponent implements OnInit {
     });
   }
 
+  openSpecialFuncDialog() {
+    const dialogRef = this.dialog.open(SpecialFuncPopUpComponent);
+  }
+
   unsetShowAlertMessage() {
     this.showAlertMsg = false;
   }
@@ -935,6 +939,21 @@ export class HLBInforPopUp {
   constructor(
     public dialogRef: MatDialogRef<HLBInforPopUp>,
     @Inject(MAT_DIALOG_DATA) public showId: number
+  ) {}
+
+  onNoClick(): void {
+    this.dialogRef.close();
+  }
+}
+
+@Component({
+  selector: 'app-hlb-special-func',
+  templateUrl: 'hlb-special-func-component.html',
+  styleUrls: ['./hlb.component.scss'],
+})
+export class SpecialFuncPopUpComponent {
+  constructor(
+    public dialogRef: MatDialogRef<SpecialFuncPopUpComponent>,
   ) {}
 
   onNoClick(): void {
