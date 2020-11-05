@@ -282,8 +282,8 @@ export class HlbComponent implements OnInit {
         this.behaviorService = editor.getModule("counter");
 
         this.behaviorService.isBlur().subscribe((data) => {
-          if (data && instance.behaviorService.isTextChanged())
-            this.updateActors();
+          // if (data && instance.behaviorService.isTextChanged())
+          //   this.updateActors();
 
           if (!data) this.textBoxId = 2;
           else this.textBoxId = -1;
@@ -355,8 +355,8 @@ export class HlbComponent implements OnInit {
       case 3:
         this.constraintService = editor.getModule("counter");
         this.constraintService.isBlur().subscribe((data) => {
-          if (data && instance.constraintService.isTextChanged())
-            this.updateActorsConstraint();
+          // if (data && instance.constraintService.isTextChanged())
+          //   this.updateActorsConstraint();
 
           if (!data) this.textBoxId = 3;
           else this.textBoxId = -1;
