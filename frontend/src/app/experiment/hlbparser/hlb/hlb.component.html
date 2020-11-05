@@ -62,6 +62,7 @@
             [disabled]="isExperimentDisabled()"
             (onContentChanged)="logChangeBehavior($event)"
             (onEditorCreated)="created($event, 2)"
+            (focusout)="updateActors()"
           ></quill-editor>
         </div>
       </div>
@@ -116,6 +117,7 @@
             [(ngModel)]="constraintsObjFormat"
             (onContentChanged)="logChangeConstraints($event)"
             (onEditorCreated)="created($event, 3)"
+            (focusout)="updateActorsConstraint()"
           ></quill-editor>
         </div>
       </div>
