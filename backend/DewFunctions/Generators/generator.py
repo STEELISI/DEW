@@ -506,12 +506,12 @@ class GeneralGenerator(object):
         if scenarios is not None:
             bashScript += "if [ -z \"$1\" ]\n"
             bashScript += "then\n"
-            bashScript += "\techo \"Usage: ./bashFile.sh experimentName projectName " + allArgs + "\"\n"
+            bashScript += "\techo \"Usage: $0 experimentName projectName " + allArgs + "\"\n"
             bashScript += "\texit 0\n"
             bashScript += "fi\n"
             bashScript += "if [ -z \"$2\" ]\n"
             bashScript += "then\n"
-            bashScript += "\techo \"Usage: ./bashFile.sh experimentName projectName " + allArgs + "\"\n"
+            bashScript += "\techo \"Usage: $0 experimentName projectName " + allArgs + "\"\n"
             bashScript += "\texit 0\n"
             bashScript += "fi\n"
             bashScript += "exp=$1\n"
@@ -520,7 +520,7 @@ class GeneralGenerator(object):
                 temp = 3 + i
                 bashScript += "if [ -z \"$" + str(temp) + "\" ]\n"
                 bashScript += "then\n"
-                bashScript += "\techo \"Usage: ./bashFile.sh experimentName projectName " + allArgs + "\"\n"
+                bashScript += "\techo \"Usage: $0 experimentName projectName " + allArgs + "\"\n"
                 bashScript += "\texit 0\n"
                 bashScript += "fi\n"
                 bashScript += args[i] + "=" + "$" + str(temp) + "\n"
@@ -671,9 +671,9 @@ class GeneralGenerator(object):
                                             sampleString += "\""
                                     sampleString += "\n"
                                 if clientServerList[v['actors'][0]] == 1:
-                                    sampleString += tab + "ssh "+ v['actors'][0] + "." + exp + "." + proj + ".isi.deterlab.net "
+                                    sampleString += tab + "ssh -o \"StrictHostKeyChecking=no\" "+ v['actors'][0] + "." + exp + "." + proj + ".isi.deterlab.net "
                                 else:
-                                    sampleString += tab + "ssh "+ v['actors'][0] + str(min(0, clientServerList[v['actors'][0]])) + "." + exp + "." + proj + ".isi.deterlab.net "
+                                    sampleString += tab + "ssh -o \"StrictHostKeyChecking=no\" "+ v['actors'][0] + str(min(0, clientServerList[v['actors'][0]])) + "." + exp + "." + proj + ".isi.deterlab.net "
                                 if v['e_events'] is not None:
                                     if not argsInCmdFlag:
                                         sampleString += "\'"
@@ -708,18 +708,18 @@ class GeneralGenerator(object):
                                     eventsValidDict[tempResult].append("done\n")
                                     if clientServerList[v['actors'][0]] == 1:
                                         if v['e_events'] is not None:
-                                            eventsValidDict[tempResult].append("lastCmdResult" + str(lastCmdResultIter) + "=" + "`ssh "+ v['actors'][0] + "." + exp + "." + proj + ".isi.deterlab.net \'cat ~/" + tempResult + "\'`\n")
+                                            eventsValidDict[tempResult].append("lastCmdResult" + str(lastCmdResultIter) + "=" + "`ssh -o \"StrictHostKeyChecking=no\" "+ v['actors'][0] + "." + exp + "." + proj + ".isi.deterlab.net \'cat ~/" + tempResult + "\'`\n")
                                             lastCmdResultList[v['e_events'][0]] = "lastCmdResult" + str(lastCmdResultIter)
                                             lastCmdResultIter += 1
                                         else:
-                                            eventsValidDict[tempResult].append("lastCmdResult" + "=" + "`ssh "+ v['actors'][0] + "." + exp + "." + proj + ".isi.deterlab.net \'cat ~/" + tempResult + "\'`\n")
+                                            eventsValidDict[tempResult].append("lastCmdResult" + "=" + "`ssh -o \"StrictHostKeyChecking=no\" "+ v['actors'][0] + "." + exp + "." + proj + ".isi.deterlab.net \'cat ~/" + tempResult + "\'`\n")
                                     else:
                                         if v['e_events'] is not None:
-                                            eventsValidDict[tempResult].append("lastCmdResult" + str(lastCmdResultIter) + "=" + "`ssh "+ v['actors'][0] + str(min(0, clientServerList[v['actors'][0]])) + "." + exp + "." + proj + ".isi.deterlab.net \'cat ~/" + tempResult + "\'`\n")
+                                            eventsValidDict[tempResult].append("lastCmdResult" + str(lastCmdResultIter) + "=" + "`ssh -o \"StrictHostKeyChecking=no\" "+ v['actors'][0] + str(min(0, clientServerList[v['actors'][0]])) + "." + exp + "." + proj + ".isi.deterlab.net \'cat ~/" + tempResult + "\'`\n")
                                             lastCmdResultList[v['e_events'][0]] = "lastCmdResult" + str(lastCmdResultIter)
                                             lastCmdResultIter += 1
                                         else:
-                                            eventsValidDict[tempResult].append("lastCmdResult" + "=" + "`ssh "+ v['actors'][0] + str(min(0, clientServerList[v['actors'][0]])) + "." + exp + "." + proj + ".isi.deterlab.net \'cat ~/" + tempResult + "\'`\n")
+                                            eventsValidDict[tempResult].append("lastCmdResult" + "=" + "`ssh -o \"StrictHostKeyChecking=no\" "+ v['actors'][0] + str(min(0, clientServerList[v['actors'][0]])) + "." + exp + "." + proj + ".isi.deterlab.net \'cat ~/" + tempResult + "\'`\n")
                                 if v['t_events'] is not None:
                                     tempString = ""
                                     for i in v['t_events']:
@@ -784,16 +784,16 @@ class GeneralGenerator(object):
                                             tempNode = re.search('\(([^)]+)', bindings[i]).group(1)
                                             tempSplit = bindings[tempNode].split()
                                             if clientServerList[v['actors'][0]] != 1:
-                                                eventsValidDict[i].append(i + "=" + "`ssh "+ v['actors'][0] + str(min(0, clientServerList[v['actors'][0]])) + "." + exp + "." + proj + ".isi.deterlab.net \'/bin/pidof " + tempSplit[0] + "\'`\n")
-                                                eventsValidDict[i].append("while [ -z $" + i +" ] ; do\n")
+                                                eventsValidDict[i].append(i + "=" + "`ssh -o \"StrictHostKeyChecking=no\" "+ v['actors'][0] + str(min(0, clientServerList[v['actors'][0]])) + "." + exp + "." + proj + ".isi.deterlab.net \'/bin/pidof " + tempSplit[0] + "\'`\n")
+                                                eventsValidDict[i].append("while [ -z \"$" + i +"\" ] ; do\n")
                                                 eventsValidDict[i].append("\tsleep 1\n")
-                                                eventsValidDict[i].append("\t" + i + "=" + "`ssh "+ v['actors'][0] + str(min(0, clientServerList[v['actors'][0]])) + "." + exp + "." + proj + ".isi.deterlab.net \'/bin/pidof " + tempSplit[0] + "\'`\n")
+                                                eventsValidDict[i].append("\t" + i + "=" + "`ssh -o \"StrictHostKeyChecking=no\" "+ v['actors'][0] + str(min(0, clientServerList[v['actors'][0]])) + "." + exp + "." + proj + ".isi.deterlab.net \'/bin/pidof " + tempSplit[0] + "\'`\n")
                                                 eventsValidDict[i].append("done\n")
                                             else:
-                                                eventsValidDict[i].append(i + "=" + "`ssh "+ v['actors'][0] + "." + exp + "." + proj + ".isi.deterlab.net \'/bin/pidof " + tempSplit[0] + "\'`\n")
-                                                eventsValidDict[i].append("while [ -z $" + i +" ] ; do\n")
+                                                eventsValidDict[i].append(i + "=" + "`ssh -o \"StrictHostKeyChecking=no\" "+ v['actors'][0] + "." + exp + "." + proj + ".isi.deterlab.net \'/bin/pidof " + tempSplit[0] + "\'`\n")
+                                                eventsValidDict[i].append("while [ -z \"$" + i +"\" ] ; do\n")
                                                 eventsValidDict[i].append("\tsleep 1\n")
-                                                eventsValidDict[i].append("\t" + i + "=" + "`ssh "+ v['actors'][0] + "." + exp + "." + proj + ".isi.deterlab.net \'/bin/pidof " + tempSplit[0] + "\'`\n")
+                                                eventsValidDict[i].append("\t" + i + "=" + "`ssh -o \"StrictHostKeyChecking=no\" "+ v['actors'][0] + "." + exp + "." + proj + ".isi.deterlab.net \'/bin/pidof " + tempSplit[0] + "\'`\n")
                                                 eventsValidDict[i].append("done\n")
                                         except AttributeError:
                                             eventsValidDict[i].append(bindings[i] + "\n")
