@@ -282,8 +282,8 @@ export class HlbComponent implements OnInit {
         this.behaviorService = editor.getModule("counter");
 
         this.behaviorService.isBlur().subscribe((data) => {
-          if (data && instance.behaviorService.isTextChanged())
-            this.updateActors();
+          // if (data && instance.behaviorService.isTextChanged())
+          //   this.updateActors();
 
           if (!data) this.textBoxId = 2;
           else this.textBoxId = -1;
@@ -309,6 +309,12 @@ export class HlbComponent implements OnInit {
           }
         });
         this.behaviorService.getSuggestionData().subscribe((data) => {
+          if(data == null){
+            data = {
+              currentSentence: "",
+              remainingSentences: []
+            }
+          }
           if (data != null) {
             var params = {
               type: "behavior",
@@ -349,8 +355,8 @@ export class HlbComponent implements OnInit {
       case 3:
         this.constraintService = editor.getModule("counter");
         this.constraintService.isBlur().subscribe((data) => {
-          if (data && instance.constraintService.isTextChanged())
-            this.updateActorsConstraint();
+          // if (data && instance.constraintService.isTextChanged())
+          //   this.updateActorsConstraint();
 
           if (!data) this.textBoxId = 3;
           else this.textBoxId = -1;
@@ -375,6 +381,12 @@ export class HlbComponent implements OnInit {
           }
         });
         this.constraintService.getSuggestionData().subscribe((data) => {
+          if(data == null){
+            data = {
+              currentSentence: "",
+              remainingSentences: []
+            }
+          }
           if (data != null) {
             var params = {
               type: "constraint",
@@ -623,6 +635,10 @@ export class HlbComponent implements OnInit {
         }
       }
     });
+  }
+
+  openSpecialFuncDialog() {
+    const dialogRef = this.dialog.open(SpecialFuncPopUpComponent);
   }
 
   unsetShowAlertMessage() {
@@ -923,6 +939,21 @@ export class HLBInforPopUp {
   constructor(
     public dialogRef: MatDialogRef<HLBInforPopUp>,
     @Inject(MAT_DIALOG_DATA) public showId: number
+  ) {}
+
+  onNoClick(): void {
+    this.dialogRef.close();
+  }
+}
+
+@Component({
+  selector: 'app-hlb-special-func',
+  templateUrl: 'hlb-special-func-component.html',
+  styleUrls: ['./hlb.component.scss'],
+})
+export class SpecialFuncPopUpComponent {
+  constructor(
+    public dialogRef: MatDialogRef<SpecialFuncPopUpComponent>,
   ) {}
 
   onNoClick(): void {

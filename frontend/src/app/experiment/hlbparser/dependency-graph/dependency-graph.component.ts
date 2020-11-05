@@ -18,10 +18,11 @@ export class DependencyGraphComponent implements OnInit{
   public layoutSettings = {
     orientation: "TB"
   }
-  public clusters = undefined;
+  public clusters = [];
+  public clusters2 = [];
 
   curveType: string = 'Bundle';
-  curve: any = shape.curveCardinal;
+  curve: any = shape.curveLinear;
   interpolationTypes = [
     'Bundle',
     'Cardinal',
@@ -65,6 +66,8 @@ export class DependencyGraphComponent implements OnInit{
   autoZoom: boolean = false;
   autoCenter: boolean = true; 
 
+  showClusters: boolean = false;
+
   isDragging: boolean = false;
   draggingNode: Node = null;
 
@@ -93,7 +96,9 @@ export class DependencyGraphComponent implements OnInit{
       this.http.put("v1/pr/hlb/dependency_graph/parse", {"scenario": behavior}, {withCredential: true}).subscribe((d) => {
         this.nodes = []
         this.links = []
+        this.clusters = []
         var actors = {}
+        var c2: ClusterNode[] = []
         for (const n of d['nodes']) {
           var n2: Node = {
             data: n,
@@ -109,10 +114,24 @@ export class DependencyGraphComponent implements OnInit{
           this.nodes =  [...this.nodes]
         }
 
+        for(const [actor, values] of Object.entries(actors)){
+          console.log(values)
+          var c1: ClusterNode = {
+            id: actor,
+            label: actor,
+            childNodeIds: actors[actor],
+          }
+          c2.push(c1)
+        }
+
         for(const e of d['edges']){
           var e2: Edge = e
           this.links.push(e2)
           this.links = [...this.links]
+        }
+        this.clusters2 = c2;
+        if(this.showClusters){
+          this.clusters = c2;
         }
         this.update$.next(true);
       })
@@ -126,6 +145,14 @@ export class DependencyGraphComponent implements OnInit{
   public toggleDragging() {
     this.draggingEnabled = !this.draggingEnabled
     console.log(this.nodes)
+    this.update$.next(true)
+  }
+
+  public toggleClusters(){
+    this.showClusters = !this.showClusters
+    var x = this.clusters
+    this.clusters = this.clusters2
+    this.clusters2 = x
     this.update$.next(true)
   }
 

@@ -71,14 +71,9 @@
           >
             
             <div class="col-md-10" matTooltip="Edit {{ item.name }}" (click)="edit(item)">
-              <div class="header-experiment">{{ item.name }}</div>
-              
-              <br />
-              <span><b>Created Date:</b> {{ item.created_date }}</span> |
-              <span><b>Updated Date:</b> {{ item.updated_date }}</span>
-            </div>
-            <div class="col-md-2">
-              <span class="bubble">
+              <div class="header-experiment">
+                {{ item.name }}
+                <span class="badge badge-info">
                 <strong
                   matTooltip="{{
                     item.accessLevel == 4
@@ -96,7 +91,15 @@
                   }}</strong
                 >
               </span>
-              <button matTooltip="Duplicate the experiment" class="btn btn-outline-info" (click)="copy(item)">Duplicate</button>
+              </div>
+              
+              <br />
+              <span><b>Created Date:</b> {{ item.created_date }}</span> |
+              <span><b>Updated Date:</b> {{ item.updated_date }}</span>
+            </div>
+            <div class="col-md-2">
+              
+              <button matTooltip="Duplicate the experiment" class="bubble" (click)="copy(item)">Duplicate</button>
             </div>
             <hr />
           </div>
