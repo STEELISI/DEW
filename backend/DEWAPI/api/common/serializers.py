@@ -1,44 +1,21 @@
 from flask_restplus import fields
 from DEWAPI.api.restplus import api
 
-blog_post = api.model('Blog post', {
-    'id': fields.Integer(readOnly=True, description='The unique identifier of a blog post'),
-    'title': fields.String(required=True, description='Article title'),
-    'body': fields.String(required=True, description='Article content'),
-    'pub_date': fields.DateTime,
-    'category_id': fields.Integer(attribute='category.id'),
-    'category': fields.String(attribute='category.name'),
-})
-
-pagination = api.model('A page of results', {
-    'page': fields.Integer(description='Number of this page of results'),
-    'pages': fields.Integer(description='Total number of pages of results'),
-    'per_page': fields.Integer(description='Number of items per page of results'),
-    'total': fields.Integer(description='Total number of results'),
-})
-
-page_of_blog_posts = api.inherit('Page of blog posts', pagination, {
-    'items': fields.List(fields.Nested(blog_post))
-})
-
-category = api.model('Blog category', {
-    'id': fields.Integer(readOnly=True, description='The unique identifier of a blog category'),
-    'name': fields.String(required=True, description='Category name'),
-})
-
-category_with_posts = api.inherit('Blog category with posts', category, {
-    'posts': fields.List(fields.Nested(blog_post))
-})
-
 nlp_text = api.model('NLP input', {
   'text': fields.String(description='The text to be parsed by the NLP')
+})
+
+binding_val = api.model('binding', {
+  'category': fields.String(required=True),
+  'key': fields.String(required=True),
+  'value': fields.String(required=True)
 })
 
 ns_object = api.model('NS object', {
   'actors': fields.List(fields.String, description="Actors involved"),
   'behaviors': fields.List(fields.String, description="Behaviors"),
   'constraints': fields.List(fields.String, description="Constraints"),
-  'bindings': fields.List(fields.String, description="Bindings")
+  'bindings': fields.Nested(binding_val, as_list=True)
 })
 
 parse_request = api.model('Parser object', {
@@ -60,21 +37,46 @@ suggestion_object = api.model('Suggestion v1 request', {
 })
 
 persist_data = api.model('Save request', {
-  'userId': fields.String(description="user id", required=True),
   'name':fields.String(description="Name of experiment", required=True),
   'id':fields.String(description="Id of experiment", required=False),
   'description':fields.String(description="Description of experiment", required=True),
-  'behaviors': fields.List(fields.String, description="List of behaviors",required=True),
-  'constraints': fields.List(fields.String, description="List of constraints",required=True),
-  'actors': fields.List(fields.String, description="List of actors",required=True),
-  'bindings': fields.List(fields.String, description="List of bindings",required=True)
+  'behaviors': fields.List(fields.String, description="List of behaviors", required=True),
+  'constraints': fields.List(fields.String, description="List of constraints", required=True),
+  'actors': fields.List(fields.String, description="List of actors", required=True),
+  'bindings': fields.Nested(binding_val, as_list=True),
+  'driveId': fields.String(description="File id of Google drive", required=False),
   })
 
+push_to_drive_data = api.model('Save to drive', {
+  'name': fields.String(description="Name of experiment", required=True),
+  'id': fields.String(description="Id of experiment", required=False),
+  'description':fields.String(description="Description of experiment", required=True),
+  'behaviors': fields.List(fields.String, description="List of behaviors", required=True),
+  'constraints': fields.List(fields.String, description="List of constraints", required=True),
+  'actors': fields.List(fields.String, description="List of actors", required=True),
+  'bindings': fields.Nested(binding_val, as_list=True),
+  'create_new_file': fields.Boolean(description="Create a new file in drive", default=False),
+  'token': fields.String(description='Token used to authorize google apis', required=True)
+  })
+
+scenario_text = api.model('Graph parsing', {
+  'scenario': fields.List(fields.String, description="Scenario of the experiment",required=True)
+})
+
 experiment_detail = api.model('get experiment request', {
-  'userId': fields.String(description="user id", required=True),
   'id':fields.String(description="Id of experiment", required=True)
   })
 
+grantaccess = api.model('Grant experiment access', {
+  'userHandle': fields.String(description="user id", required=True),
+  'id':fields.String(description="Id of experiment", required=True),
+  'accessLevel':fields.String(description="Access level read,write or manage", required=True)
+  })
+
+remove_access = api.model('Remove experiment access', {
+  'userHandle': fields.String(description="user id", required=True),
+  'id':fields.String(description="Id of experiment", required=True)
+  })
 suggestion_v2_object = api.model('Suggestion v2 request',{
   'username': fields.String(description="Username", required=True),
   'type': fields.String(description="Type of suggestions required",required=True, enum=['behavior', 'constraint']),
@@ -83,4 +85,43 @@ suggestion_v2_object = api.model('Suggestion v2 request',{
 
 user_object = api.model('User information request',{
   'token': fields.String(description="token", required=True),
+})
+user_handle = api.model('User handle verification',{
+  'handle': fields.String(description="handle", required=True),
+})
+
+register_user_handle = api.model('Register a new user ',{
+  'token': fields.String(description="token", required=True),
+  'handle': fields.String(description="handle", required=True),
+})
+
+token_data = api.model('Create token object',{
+  'experiment_id': fields.String(description="experiment id for which the token is to be created", required=True),
+  'access_level': fields.String(description="Access level allowed", required=True, enum=['read', 'write'])
+})
+
+tokenListModel = api.model('Get List of all tokens',{
+  'experiment_id': fields.String(description="experiment id for which the token is to be created", required=True)
+})
+
+userAccessListModel = api.model('Get List of all access',{
+  'experiment_id': fields.String(description="experiment id", required=True)
+})
+
+token_data_small = api.model('Toggle token object',{
+  'experiment_id': fields.String(description="experiment id for which the token is to be created", required=True),
+  'token': fields.String(description="Auth token to be toggled", required=True)
+})
+
+
+uid_header_parser = api.parser()
+uid_header_parser.add_argument('X-user-id',location='headers')
+
+experiment_update_by_token = api.model('Experiment object update by token', {
+  'name':fields.String(description="Name of experiment", required=True),
+  'description':fields.String(description="Description of experiment", required=True),
+  'behaviors': fields.List(fields.String, description="List of behaviors",required=True),
+  'constraints': fields.List(fields.String, description="List of constraints",required=True),
+  'actors': fields.List(fields.String, description="List of actors",required=True),
+  'bindings': fields.List(fields.String, description="List of bindings",required=True)
 })

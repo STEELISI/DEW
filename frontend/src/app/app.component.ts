@@ -1,5 +1,5 @@
 import { Component, OnInit } from "@angular/core";
-import { StateService } from "./pages/hlbparser/common/state-service.service";
+import { StateService } from "./state-service.service";
 
 @Component({
   selector: "app-root",

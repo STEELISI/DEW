@@ -1,18 +1,14 @@
 
 import { Component, OnDestroy } from '@angular/core';
-import { Location } from '@angular/common';
 
-import { takeWhile } from 'rxjs/operators';
-import { Router } from '@angular/router';
-import { AuthService } from './auth.service';
 
 @Component({
   selector: 'auth',
   styleUrls:['auth.component.scss'],
   template: `
-  <layout>
+
               <router-outlet></router-outlet>
-         </layout>
+        
   `,
 })
 export class AuthComponent {

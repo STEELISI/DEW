@@ -9,7 +9,7 @@ import { InitUserService } from '../../init-user.service';
   selector: 'google-oauth2-callback',
   template: `
   <div>
-    <div>Welcome {{name}}!</div>
+    <div>Signing in.....</div>
   </div>
 `,
   styleUrls: ['./google-oauth2-callback.component.scss']
@@ -21,15 +21,16 @@ export class GoogleOAuth2CallbackComponent implements OnDestroy {
   constructor(private authService: AuthService,private router: Router,private initUserService:InitUserService) {
     this.authService.authenticate('google')
       .pipe(takeWhile(() => this.alive))
-      .subscribe((authResult: AuthResult) => {
+      .subscribe((authResult) => {
         console.log(authResult);
-        if (authResult.isSuccess()) {
-        this.router.navigate(['pages/dashboard']);
-        //  console.log(authResult);
-        //  this.api.setOAuth2Token(authResult.getToken());
-        //  this.initUserService.initCurrentUser();
-        //  this.router.navigateByUrl('/pages/dashboard');
-        }
+       if(authResult.navigateTo ==undefined ){
+        this.authService.enableAuthentication();
+        this.router.navigate(['dashboard']);
+       }else
+        this.router.navigate(['auth/registerwithgoogle',this.authService.getToken()])
+      },(error) => {
+        alert("Invalid User. Please Try again");
+        this.router.navigate(['auth/login']);
       });
   }
 

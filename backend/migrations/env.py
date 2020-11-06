@@ -4,20 +4,34 @@ from sqlalchemy import engine_from_config
 from sqlalchemy import pool
 
 from alembic import context
+import os
 
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.
 config = context.config
+s = config.config_ini_section
+config.set_section_option(s, "DATABASE_URI", os.environ.get("DATABASE_URI"))
 
 # Interpret the config file for Python logging.
 # This line sets up loggers basically.
 fileConfig(config.config_file_name)
 
+
+# Add sql continuum migration
+from sqlalchemy_continuum import make_versioned
+make_versioned(user_cls=None)
+
 # add your model's MetaData object here
 # for 'autogenerate' support
-# from myapp import mymodel
-# target_metadata = mymodel.Base.metadata
-target_metadata = None
+import sys, os
+sys.path.append(os.getcwd())
+from DEWAPI.models.experiment import Experiment
+from DEWAPI.models.access_control import AccessControl
+from DEWAPI.models.auth_token import AuthToken
+from DEWAPI.models.user import User
+target_metadata = Experiment.metadata
+# target_metadata = None
+
 
 # other values from the config, defined by the needs of env.py,
 # can be acquired:

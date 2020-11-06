@@ -1,16 +1,28 @@
 import { BehaviorSubject, Observable, of } from 'rxjs';
 import { Injectable } from '@angular/core';
-import { AuthResult } from './auth-result';
-import { tokenName } from '@angular/compiler';
+import { HttpService } from '../http-service.service';
+import { environment } from '../../environments/environment'
 
 @Injectable({
     providedIn: 'root'
   })
 export class AuthService {
-
+ 
+ 
+  constructor(protected http:HttpService){}
 
   login:boolean=false;
   token:String;
+  expiry:Number;
+
+  startSession(id): Observable<any> {
+    
+      var param = {
+        token:id
+      }
+     return this.http.post('/api/v1/p/user/validateUser/',param,{withCredential:true});
+
+  }
   authenticate(arg0: string):Observable<any> {
    // //console.log(window.location.hash.substr(1));
     var params = {}
@@ -19,10 +31,16 @@ export class AuthService {
         params[temp[0]] = temp[1] 
     });
    // //console.log(params);
-    this.isAuthenticate.next(true);
-    this.setCookie("token",params["access_token"],Number(params["expires_in"]));
+  
+    
     this.token = params["access_token"];
-    return of( new AuthResult(true,params["access_token"]));
+    this.expiry = Number(params["expires_in"]);
+    return this.startSession(params["access_token"]);
+  }
+
+  enableAuthentication(){
+    this.isAuthenticate.next(true);
+    this.setCookie("token",this.token,this.expiry);
   }
   getToken() {
     return this.token;
@@ -77,8 +95,10 @@ export class AuthService {
   }
 
   loginWithGoogle(){
-    var redirect = 'http://dew.isi.edu/auth/googleoauth2callback';
-    var client_id = '926607687771-0lll564e4sbjo4davt10fufmhuehgl1s.apps.googleusercontent.com';
+    //  var redirect = 'http://dew.isi.edu/auth/googleoauth2callback';
+    // var redirect = 'http://localhost:4200/auth/googleoauth2callback';
+    var redirect = environment.authRedirectUrl
+    var client_id = '789341153375-qeeo9deuouq9ea3ke4ou0ipqr2gjd0vr.apps.googleusercontent.com';
     var url = [];
   //  var apuUrl = "https://accounts.google.com/o/oauth2/v2/auth";
     var apiurl = "https://accounts.google.com/o/oauth2/auth";
@@ -91,6 +111,28 @@ export class AuthService {
     //console.log(url.join(""));
     window.location.href = url.join("");
   }
+
+  authorizeGoogleDrive(experiment_id){
+    const scopes = [
+      "email",
+      "profile",
+      "openid",
+      encodeURIComponent("https://www.googleapis.com/auth/userinfo.profile"),
+      encodeURIComponent("https://www.googleapis.com/auth/drive.file")
+    ]
+    var apiurl = `https://accounts.google.com/o/oauth2/v2/auth?client_id=${environment.googleClientId}&response_type=token&state=${experiment_id}&scope=${scopes.join("%20")}&redirect_uri=${encodeURIComponent(environment.googleDriveRedirectUrl)}&include_granted_scopes=true`
+    var popupWindow = window.open(apiurl, 'authorize')
+    var prom = (resolve) => {  
+      if(popupWindow.closed)
+      {
+        resolve();
+      } else {
+        setTimeout(_ => prom(resolve), 1000)
+      }
+    }
+    return new Promise(prom)
+  }
+
   logout() {
    //console.log("logout");
    this.isAuthenticate.next(false);
@@ -102,6 +144,7 @@ export class AuthService {
    this.setCookie("givenName","",0);
    this.setCookie("lastName","",0);
    this.setCookie("img","",0);
+   this.setCookie("userHandle","",0);
    
 
   }

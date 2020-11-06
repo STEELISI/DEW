@@ -20,18 +20,18 @@ depends_on = None
 def upgrade():
     op.create_table(
     	'user',
-    	sa.Column('uid', sa.String, primary_key=True),
+    	sa.Column('uid', sa.String(255), primary_key=True),
     	sa.Column('email',sa.String(255), nullable=False),
-    	sa.Column('name',sa.String, nullable=False),
-    	sa.Column('username',sa.String, nullable=False, unique=True),
-    	sa.Column('access_token',sa.String),
+    	sa.Column('name',sa.String(255), nullable=False),
+    	sa.Column('username',sa.String(255), nullable=False, unique=True),
+    	sa.Column('access_token',sa.String(255)),
     	sa.Column('created_at',sa.DateTime, nullable=False,default=datetime.utcnow),
     	sa.Column('updated_at',sa.DateTime, onupdate=datetime.utcnow),
     	sa.Column('last_login_time',sa.DateTime),
-    	sa.Column('last_login_ip',sa.String),
-    	sa.Column('salt',sa.String),
-    	sa.Column('password_digest',sa.String),
-    	sa.Column('default_experiment_id',sa.Integer, sa.ForeignKey('experiment.experiment_id'))
+    	sa.Column('last_login_ip',sa.String(255)),
+    	sa.Column('salt',sa.String(255)),
+    	sa.Column('password_digest',sa.String(255)),
+    	# sa.Column('default_experiment_id',sa.Integer, sa.ForeignKey('experiment.experiment_id'))
     )
 
 

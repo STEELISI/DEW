@@ -32,3 +32,27 @@
     /* Use the Roboto font that is loaded in the <head> */
     font-family: 'Roboto', sans-serif;
   }
+  .pointer{
+    cursor: pointer;
+  }
+
+  .title{
+    color: #900;
+    font-family: 'Roboto', sans-serif;
+    text-align: center;
+  }
+
+  .center-aligned{
+    align-items: center;
+    display: grid;
+    margin: auto;
+    text-align: center;
+  }
+
+  .description-image{
+    margin: auto;
+  }
+
+  .green{
+    color: green;;
+  }

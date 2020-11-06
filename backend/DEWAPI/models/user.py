@@ -12,6 +12,7 @@ class User(db.Model):
     access_token = db.Column(db.String, nullable=True)
     created_at = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
     updated_at = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
+    drive_folder_id = db.Column(db.String,nullable=True)
     # last_login_time = db.Column(db.DateTime)
     # last_login_ip = db.Column(db.String)
     # salt = db.Column(db.String)
@@ -20,3 +21,13 @@ class User(db.Model):
 
     # default_experiment = db.relationship('Experiment', backref=db.backref('user', lazy=True))
 
+    def to_dict(self):
+        return {
+            'uid': self.uid,
+            'email': self.email,
+            'name': self.name,
+            'username': self.username,
+            'created_at': self.created_at,
+            'updated_at': self.updated_at,
+            'access_token': self.access_token
+            }

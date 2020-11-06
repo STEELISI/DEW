@@ -106,7 +106,7 @@ class HLBService():
             suggestion_text = suggestion_text + t
         return suggestions, suggestion_text
 
-    def HandleConstraintSuggestions(self, constraints, actors, last_constraint):
+    def HandleConstraintSuggestions(self, constraints, actors, last_constraint, scenarios):
         suggestions = []
       
         items = re.split("[\s,]",last_constraint.strip())
@@ -280,9 +280,20 @@ class HLBService():
         #     "Bindings":{"min":0,"max":500}
         # }
         errors = []
+        tn = json_data['ParseType']
+        scenario = json_data['Scenario']
+        constraints = json_data['Constraints']
+        actors = json_data['actors']
+
+        if tn == 'bash':
+            generator = bashGenerator(scenario, constraints=constraints)
+        elif tn == 'magi':
+            generator = bashGenerator(scenario, constraints=constraints) # TODO: Use magi generator
 
 
-
+        scenario_parsed, constraints_parsed = generator.generate()
+        ns_script = generator.generateNS(constraints_parsed, actors)
+        return ns_script
         # Check for valid input fields
         # for name in json_data:
         #     if name in EXPECTED:
@@ -299,12 +310,12 @@ class HLBService():
         #     if name not in json_data:
         #         errors.append(f"Missing value: {name}.")
 
-        ns_script = "set ns [new Simulator]\nsource tb_compat.tcl\n# Nodes\nforeach node {\n"
+        #ns_script = "set ns [new Simulator]\nsource tb_compat.tcl\n# Nodes\nforeach node {\n"
 
-        for actor in json_data['actors']:
-            ns_script += "\t" + actor + "\n"
-        ns_script += "} {\n\tset $node [$ns node]\n\ttb-set-node-os $node Ubuntu-STD\n}\nset lan0 [$ns make-lan \""
-        for a in json_data['actors']:
-            ns_script += "$" + a + " "
-        ns_script += "\" 100000.0kb 0.0ms]\n\n$ns rtproto Static\n$ns run"
-        return ns_script
+        #for actor in json_data['actors']:
+        #    ns_script += "\t" + actor + "\n"
+        #ns_script += "} {\n\tset $node [$ns node]\n\ttb-set-node-os $node Ubuntu-STD\n}\nset lan0 [$ns make-lan \""
+        #for a in json_data['actors']:
+        #    ns_script += "$" + a + " "
+        #ns_script += "\" 100000.0kb 0.0ms]\n\n$ns rtproto Static\n$ns run"
+        #return ns_script

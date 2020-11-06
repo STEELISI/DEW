@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  
+  <link rel="canonical" href="https://dew.isi.edu/docs/examples/">
+  <link rel="shortcut icon" href="../img/favicon.ico">
+  <title>Examples - Distributed Experiment Workflows</title>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lato:400,700|Roboto+Slab:400,700|Inconsolata:400,700" />
+
+  <link rel="stylesheet" href="../css/theme.css" />
+  <link rel="stylesheet" href="../css/theme_extra.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css" />
+  <link href="../css/style.css" rel="stylesheet" />
+  
+  <script>
+    // Current page data
+    var mkdocs_page_name = "Examples";
+    var mkdocs_page_input_path = "examples.md";
+    var mkdocs_page_url = "/docs/examples/";
+  </script>
+  
+  <script src="../js/jquery-2.1.1.min.js" defer></script>
+  <script src="../js/modernizr-2.8.3.min.js" defer></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+  <script>hljs.initHighlightingOnLoad();</script> 
+  
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+    <div class="wy-side-scroll">
+      <div class="wy-side-nav-search">
+        <a href=".." class="icon icon-home"> Distributed Experiment Workflows</a>
+        <div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" title="Type search term here" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+                <ul>
+                    <li class="toctree-l1"><a class="reference internal" href="..">Home</a>
+                    </li>
+                </ul>
+                <p class="caption"><span class="caption-text">UI</span></p>
+                <ul>
+                    <li class="toctree-l1"><a class="reference internal" href="../first_time/">First time setup</a>
+                    </li>
+                    <li class="toctree-l1"><a class="reference internal" href="../dashboard/">Dashboard</a>
+                    </li>
+                    <li class="toctree-l1"><a class="reference internal" href="../experiment_page/">Experiment page</a>
+                    </li>
+                </ul>
+                <p class="caption"><span class="caption-text">DEW concepts</span></p>
+                <ul>
+                    <li class="toctree-l1"><a class="reference internal" href="../basics/">Basics</a>
+                    </li>
+                    <li class="toctree-l1"><a class="reference internal" href="../sharing_and_collaboration/">Sharing and Collaboration</a>
+                    </li>
+                    <li class="toctree-l1"><a class="reference internal" href="../backup_and_recovery/">Backup and recovery</a>
+                    </li>
+                    <li class="toctree-l1"><a class="reference internal" href="../running_on_deter/">From DEW to testbed</a>
+                    </li>
+                    <li class="toctree-l1"><a class="reference internal" href="../manual_capture/">From testbed to DEW</a>
+                    </li>
+                    <li class="toctree-l1"><a class="reference internal" href="../binding_suggestions/">Built-in Functions</a>
+                    </li>
+                </ul>
+                <ul class="current">
+                    <li class="toctree-l1 current"><a class="reference internal current" href="./">Examples</a>
+    <ul class="current">
+    <li class="toctree-l2"><a class="reference internal" href="#iperf-on-two-nodes">Iperf on two nodes</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#ping-nodes">Ping nodes</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#web-server-attack">Web server attack</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#complex-experiment">Complex experiment</a>
+    </li>
+    </ul>
+                    </li>
+                </ul>
+                <ul>
+                    <li class="toctree-l1"><a class="reference internal" href="../contact_us/">Contact us</a>
+                    </li>
+                </ul>
+                <ul>
+                    <li class="toctree-l1"><a class="reference internal" href="../redirect-to-dew.html">Go back to DEW</a>
+                    </li>
+                </ul>
+      </div>
+    </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="..">Distributed Experiment Workflows</a>
+      </nav>
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="..">Docs</a> &raquo;</li>
+    
+      
+    
+    <li>Examples</li>
+    <li class="wy-breadcrumbs-aside">
+      
+    </li>
+  </ul>
+  
+  <hr/>
+</div>
+          <div role="main">
+            <div class="section">
+              
+                <h1 id="examples">Examples</h1>
+<p>This page contains DEW file contents of various scenarios.</p>
+<p>View video tutorials on simple experiments here - 
+<iframe width="560" height="315" src="https://www.youtube.com/embed/JNOLuf4gwUc" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe></p>
+<iframe width="560" height="315" src="https://www.youtube.com/embed/5q8fAJtRyUA" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+
+<h2 id="iperf-on-two-nodes">Iperf on two nodes</h2>
+<pre><code>[Scenario]
+// Install iPerf on two nodes and run them as server/client
+// Run waits until iPerf is installed on both nodes
+// Note that installation would be better if specified under a
+// separate label, since it is a one-time operation.
+
+a setup emit setup_done1
+b setup emit setup_done2
+when setup_done1, setup_done2 a send_traffic
+when setup_done1, setup_done2 b receive_traffic
+
+[Bindings]
+setup = sudo apt-get install iperf -y
+setup_done1 = psuccess(setup) - process completed w success for the given action
+setup_done2 = psuccess(setup)
+send_traffic = iperf -c b
+receive_traffic = iperf -s
+
+[Constraints]
+link a b
+</code></pre>
+
+<h2 id="ping-nodes">Ping nodes</h2>
+<pre><code>[Scenario]
+// Three nodes in a line. A pings B once. After that
+// B pings C once
+
+A runping1 emit Adone
+when Adone B runping2
+
+[Bindings]
+runping1 = ping B -c 1
+Adone = psuccess(runping1)
+runping2 = ping C -c 1
+
+[Constraints]
+link A B
+link B C
+</code></pre>
+
+<h2 id="web-server-attack">Web server attack</h2>
+<pre><code>[Scenario]
+@setup
+client installFlooder
+server installApache
+@run
+server startServer emit serverStarted
+when serverStarted client startAttack
+
+[Bindings]
+installFlooder = /share/education/TCPSYNFlood_USC_ISI/install-flooder
+installApache = sudo apt-get install apache2 -y
+startServer = sudo service apache2 start
+serverStarted = pexists(apache2)
+startAttack = sudo flooder --dst expIP(server) --src 1.1.1.0 --srcmask 255.255.255.0 --highrate 10000
+
+[Constraints]
+link client server
+</code></pre>
+
+<h2 id="complex-experiment">Complex experiment</h2>
+<pre><code>[Scenario]
+@configure
+server install_iperf
+client install_iperf
+client install_flooder
+server install_tcpdump
+@monitor
+server start_measure emit mstarted
+server start_server emit sstarted
+@run
+when mstarted, sstarted client start_traffic emit cstarted
+when cstarted wait t1 attacker start_attack emit astarted
+when astarted wait t2 attacker stop_attack emit astopped
+when astopped wait t3 client stop_traffic emit cstopped
+@analyze
+when cstopped server stop_measure emit mstopped
+when mstopped server calculate_entropy
+
+[Bindings]
+install_iperf = apt-get install iperf -y
+install_flooder = /scripts/common/install_flooder.sh
+install_tcpdump = apt-get install tcpdump -y
+start_measure = tcpdump -i ETH(IP(server)) -w DUMP_OUTPUT
+mstarted = pexists($action)
+start_server = iperf -s
+sstarted = pexists($action)
+start_traffic = iperf -c IP(server)
+cstarted = pexists($action)
+start_attack = flooder --dst IP(server) --proto 6 —rate RATE
+astarted = pexists($action)
+stop_attack = pkill -9 flooder
+astopped = psuccess($action)
+stop_traffic = pkill -9 iperf
+cstopped = psuccess($action)
+stop_measure = pkill -9 tcpdump
+mstopped = psuccess($action)
+calculate_entropy = /scripts/entropy_calculator.sh ANALYSIS_OUTPUT
+
+[Constraints]
+server os Ubuntu-latest
+attacker num 2
+lan client attacker router
+link router server
+
+</code></pre>
+              
+            </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="../contact_us/" class="btn btn-neutral float-right" title="Contact us">Next <span class="icon icon-circle-arrow-right"></span></a>
+      
+      
+        <a href="../binding_suggestions/" class="btn btn-neutral" title="Built-in Functions"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+    
+  </div>
+
+  Built with <a href="https://www.mkdocs.org/">MkDocs</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+      
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <div class="rst-versions" role="note" aria-label="versions">
+    <span class="rst-current-version" data-toggle="rst-current-version">
+      
+      
+        <span><a href="../binding_suggestions/" style="color: #fcfcfc;">&laquo; Previous</a></span>
+      
+      
+        <span style="margin-left: 15px"><a href="../contact_us/" style="color: #fcfcfc">Next &raquo;</a></span>
+      
+    </span>
+</div>
+    <script>var base_url = '..';</script>
+    <script src="../js/theme.js" defer></script>
+      <script src="../search/main.js" defer></script>
+    <script defer>
+        window.onload = function () {
+            SphinxRtdTheme.Navigation.enable(true);
+        };
+    </script>
+
+</body>
+</html>

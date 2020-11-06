@@ -14,11 +14,12 @@ if __name__ == "__main__":
     # We're cheating and using configparser (ConfigParser in 2.x) so we can
     # keep separate sections for Scenario and Constraints
     # XXX We should think about combining constraints with the DEW language.
-    # XXX For now, constraints and scenario each have their own parsers.
+    # XXX For now, constraints and scenarios each have their own parsers.
     hlbFullParser = configparser.ConfigParser(allow_no_value=True)
     hlbFullParser.read_file(args.inputFileName)
     constraints = [x[0] for x in hlbFullParser.items('Constraints')]
-    scenario = [x[0] for x in hlbFullParser.items('Scenario')]
+    scenarios = [x[0] for x in hlbFullParser.items('Scenario')]
+    bindings = [x[0] for x in hlbFullParser.items('Bindings')]
 
     cwd = os.path.dirname(os.path.realpath(__file__))
     parentDirectory = os.path.abspath(os.path.join(cwd, os.pardir))
@@ -32,12 +33,9 @@ if __name__ == "__main__":
         exit(1)
 
     chosenGenerator = __import__(args.generatorType, fromlist=['Generator'])
-    generator = chosenGenerator.Generator(scenario, constraints=constraints)
+    generator = chosenGenerator.Generator(scenarios, constraints=constraints)
     [t, y] = generator.generate()
-    generator.generateNS(y)
-
-
-
-
-
-
+    nsScript, clientServerList = generator.generateNS(y, scenarios, None)
+    print(nsScript)
+    bashScriptList = generator.generateBASH(scenarios, bindings, clientServerList)
+    print(bashScriptList)

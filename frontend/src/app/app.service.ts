@@ -1,7 +1,7 @@
 
 
 import { Injectable } from '@angular/core';
-import { StateService } from './pages/hlbparser/common/state-service.service';
+import { StateService } from './state-service.service';
 import { Router } from '@angular/router';
 
 @Injectable()

@@ -5,14 +5,12 @@ import { CommonModule } from '@angular/common';
 import { LayoutComponent } from './layout/layout.component';
 import { FormsModule } from '@angular/forms';
 import { MatMenuModule, MatButtonModule } from '@angular/material';
-import { AuthModule } from '../@auth/auth.module';
-import { AuthService } from '../@auth/auth.service';
-import { InitUserService } from '../@auth/init-user.service';
-import { HttpService } from '../pages/hlbparser/common/http-service.service';
+import { FixedLayoutComponent } from './fixedLayout/layout.component';
 
 const COMPONENTS = [
     HeaderComponent,
-    LayoutComponent
+    LayoutComponent,
+    FixedLayoutComponent
   ];
 
 @NgModule({

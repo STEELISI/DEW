@@ -1,0 +1,117 @@
+import { NgModule, ModuleWithProviders } from "@angular/core";
+import { MatTabsModule } from "@angular/material/tabs";
+import { FormsModule, ReactiveFormsModule } from "@angular/forms";
+import { MatExpansionModule } from "@angular/material/expansion";
+import { MatInputModule } from "@angular/material/input";
+import { MatCardModule } from "@angular/material/card";
+import { DragDropModule } from "@angular/cdk/drag-drop";
+import { QuillModule } from "ngx-quill";
+import { FontAwesomeModule } from "@fortawesome/angular-fontawesome";
+import { StateService } from "../../state-service.service";
+import {
+  MatButtonModule,
+  MatSnackBarModule,
+  MatDialogModule,
+  MatTableModule,
+  MatAutocompleteModule,
+  MatSelectModule,
+  MatTooltipModule,
+  MatIconModule,
+} from "@angular/material";
+import { NgxFileDropModule } from "ngx-file-drop";
+import { HLBParserComponent } from "./hlpparser.component";
+import { NgxGraphModule } from "@swimlane/ngx-graph";
+import { CommonModule } from "@angular/common";
+import { HLBParserRoutingModule } from "./hlbparser-routing.module";
+import { RouterModule } from "@angular/router";
+import { HlbComponent, BindingPopUp, HLBInforPopUp } from "./hlb/hlb.component";
+import { NlpComponent } from "./nlp/nlp.component";
+import { TextFilterPipe } from "./common/text-filter.pipe";
+import {
+  UploadComponent,
+  FilePreviewComponent,
+} from "./upload/upload.component";
+import { AuthGuard } from "src/app/@auth/auth.guard";
+import { AuthModule } from "src/app/@auth/auth.module";
+import { DependencyGraphComponent } from "./dependency-graph/dependency-graph.component";
+import { MatRadioModule } from "@angular/material/radio";
+import {
+  InfoComponent,
+  AddUserPopUp,
+  NLPPopUp,
+  UploadPopUp,
+  NSFilePopUp,
+  BASHFilePopUp,
+  UserListPopUp,
+  VersionsPopUp,
+} from "./experiment-info/info.component";
+import {MatToolbarModule} from '@angular/material/toolbar';
+import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
+import { BrowserModule } from '@angular/platform-browser';
+import { UserIdleModule } from 'angular-user-idle';
+
+@NgModule({
+  exports: [HLBParserComponent],
+  declarations: [
+    HLBParserComponent,
+    HlbComponent,
+    NlpComponent,
+    DependencyGraphComponent,
+    TextFilterPipe,
+    UploadComponent,
+    FilePreviewComponent,
+    HLBInforPopUp,
+    BindingPopUp,
+    InfoComponent,
+    AddUserPopUp,
+    NLPPopUp,
+    UploadPopUp,
+    NSFilePopUp,
+    BASHFilePopUp,
+    UserListPopUp,
+    VersionsPopUp,
+  ],
+  imports: [
+    CommonModule,
+    MatToolbarModule,
+    AuthModule.forRoot(),
+    ReactiveFormsModule,
+    MatAutocompleteModule,
+    RouterModule,
+    MatTooltipModule,
+    MatSelectModule,
+    MatRadioModule,
+    NgxGraphModule,
+    MatDialogModule,
+    MatButtonModule,
+    MatSnackBarModule,
+    FontAwesomeModule,
+    MatTabsModule,
+    DragDropModule,
+    FormsModule,
+    MatTableModule,
+    MatExpansionModule,
+    MatCardModule,
+    QuillModule.forRoot(),
+    UserIdleModule.forRoot({}),
+    HLBParserRoutingModule,
+    MatInputModule,
+    NgxFileDropModule,
+    MatIconModule,
+  ],
+  entryComponents: [
+    FilePreviewComponent,
+    HLBInforPopUp,
+    BindingPopUp,
+    AddUserPopUp,
+    NLPPopUp,
+    UploadPopUp,
+    NSFilePopUp,
+    BASHFilePopUp,
+    UserListPopUp,
+    VersionsPopUp,
+  ],
+  providers: [StateService],
+  bootstrap: [HLBParserComponent],
+})
+export class HLBParserModule {}

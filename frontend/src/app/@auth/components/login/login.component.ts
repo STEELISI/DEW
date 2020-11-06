@@ -21,7 +21,10 @@ export class LoginComponent implements OnInit {
 
  
   alive: boolean = true;
-
+  emailId:string="";
+  password:string="";
+  hide:boolean=true;
+  showAlternatelogin:boolean=true;
   constructor(
     protected cd: ChangeDetectorRef,
     private fb: FormBuilder,
@@ -30,11 +33,26 @@ export class LoginComponent implements OnInit {
 
   ngOnInit(): void {
       if(this.authService.checkAuthentication()){
-          this.router.navigate(['pages/dashboard']);
+          this.router.navigate(['dashboard']);
     }else{
       this.alive=false;
     }
   
+  }
+
+  login(){
+    this.authService.loginWithGoogle();
+  }
+
+  enablePassword(){
+    this.showAlternatelogin=false;
+  }
+  disablePassword(){
+    this.showAlternatelogin=true;
+
+  }
+  isAlternateLoginEnable(){
+  return this.showAlternatelogin;
   }
  
 }

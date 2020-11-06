@@ -12,7 +12,7 @@ import { AuthResult } from '../../auth-result';
 
 @Component({
   selector: 'logout',
-  template: '<p> logout Successfully</p>',
+  template: '<p> logout Successfully</p>, <a href="/">Go to home page</a>',
   //styleUrls:['login.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
