@@ -43,41 +43,43 @@ class RpcClient(object):
 test_rpc = RpcClient()
 program_name  = os.path.basename(sys.argv[0])
 print("CLIENT : Requesting bash command")
-l = ["actor0,touch 0.txt", "actor1,touch 1.txt", "actor2,ping -c 1 nodeB"]
+l = ["A touch nodeA.txt emit pdone1" ,"B when pdone1 touch nodeB.txt emit pdone2 "]
 #x = h.parse_with_labels(l)
 #print("hi")
 for s in l:
-    actor_name = s.split(",")[0]
-    action_name = s.split(",")[1]
-    #print(actor_name)
-    #print(action_name)
-    var1 = actor_name
-    var2 = action_name
-    print("CLIENT : actor requesting", var1)
-    print("CLIENT : action requesting", var2)
-   # subprocess.check_call(["/home/kishu/dew/create_pipeline.sh", var1, var2])
-    command =  action_name
-    #ifile = "/home/kishu/dew/"+var2+".sh"
-    #print(ifile)
-    #line = open(ifile, "r")
-    #print("action to be executed is", line.readline())
-    print("CLIENT : command is ", command)
-    msg = [program_name, command]
-    print("CLIENT :  msg IS", msg)
-    res = test_rpc.call(msg)
-    res = res.decode("utf-8")
-    A = list(map(str, res.strip('[]').split(',')))
-    print("CLIENT : A is", A, type(A))
-    response = int(A[0])
-    p_name = A[1]
-    print("CLIENT RECEIVED : response is", response)
-    print("CLIENT RECEIVED : programe name is", p_name)
-
-    if response == 0:
-        print("CLIENT : suucessfully executed command", command, "for program :", p_name)
-        #print("now need to write the clean up script")
-        #subprocess.call("/home/kishu/dew/cleanup.sh")
-       # os.system("sudo rm /etc/monit/ac*")
-       # print("returned after clean up")
+    node = s.split(" ")[0]
+    # print(s.find("when"),"\n")
+    if (s.find("when") != -1):
+        # print("in true",s,"\n")
+        actor_name = s.split(" ")[3]+node
+        action_name = s.split(" ")[3]+"*"+s.split(" ")[4]
+        emitted_keyword = s.split(" ")[6]
+        dependency = s.split(" ")[2]
+        msg = ["when", action_name, actor_name, emitted_keyword, node, dependency]
     else:
-        print("CLIENT : didnt execute the command", command)
+        # print("in else")
+        actor_name = s.split(" ")[1]+node
+        action_name = s.split(" ")[1]+"*" +s.split(" ")[2]
+        emitted_keyword = s.split(" ")[4]
+        msg = [action_name, actor_name, emitted_keyword, node]
+    print("CLIENT : sending message to node executor", msg)
+    test_rpc.call(msg)
+    print("CLIENT: msg added to queue ")
+    #
+    # res = res.decode("utf-8")
+    # A = list(map(str, res.strip('[]').split(',')))
+    # print("CLIENT : A is", A, type(A))
+    # response = int(A[0])
+    # p_name = A[1]
+    # print("CLIENT RECEIVED : response is", response)
+    # print("CLIENT RECEIVED : programe name is", p_name)
+    #
+    # if response == 0:
+    #     print("CLIENT : suucessfully executed command", action_name, "for program :", p_name)
+    #     #print("now need to write the clean up script")
+    #     #subprocess.call("/home/kishu/dew/cleanup.sh")
+    #    # os.system("sudo rm /etc/monit/ac*")
+    #    # print("returned after clean up")
+    # else:
+    #     print("CLIENT : didnt execute the command", command)
+
