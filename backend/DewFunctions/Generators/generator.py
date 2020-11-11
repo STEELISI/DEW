@@ -213,16 +213,16 @@ class GeneralGenerator(object):
            sampleList = []
            for x in linkList:
                 c = 0
-                allLink = 0
-                anyLink = 0
+                allLink = 1
+                #anyLink = 0
                 sampleList.clear()
                 for y in x:
                     if y is not None:
                         if "link" in y:
                             if "all" in y:
                                 allLink = 1
-                            elif "any" in y:
-                                anyLink = 1
+                            #elif "any" in y:
+                            #    anyLink = 1
                             continue
                     if y == None:
                         continue
@@ -233,7 +233,7 @@ class GeneralGenerator(object):
                     print("ERROR:\t Invalid statement, Cannot be converted to NS command:", x)
                     continue;
                 minimum = 0xffffffff;
-                for k in sampleList:
+                '''for k in sampleList:
                     if str(k) in clientServerList:
                         if int(clientServerList[str(k)]) < minimum:
                             if allLink == 1:
@@ -247,14 +247,19 @@ class GeneralGenerator(object):
                         clientServerList[str(k)] = minimum
                         clientServerList[str(x)] = 1
                         sampleString = "set " + str(k) + " [$ns node]\n"
-                        nsCommands += sampleString
-                if int(clientServerList[str(sampleList[0])]) != 1 and int(clientServerList[str(sampleList[1])]) != 1:
+                        nsCommands += sampleString'''
+                for k in sampleList:
+                    if str(k) not in clientServerList:
+                        clientServerList[str(k)] = 1
+                nodeA = int(clientServerList[str(sampleList[0])])
+                nodeB = int(clientServerList[str(sampleList[1])])
+                '''if int(clientServerList[str(sampleList[0])]) != 1 and int(clientServerList[str(sampleList[1])]) != 1:
                     if allLink == 0 and anyLink == 0:
                         print("ERROR:\t ALL or ANY keyword must be specified for node more than 1, Node:",str(sampleList[0]),",",str(sampleList[1]))
                         minimum = 1
                 else:
-                    minimum = 1
-                if minimum == 1:
+                    minimum = 1'''
+                '''if minimum == 1:
                     counter+=1
                     nsCommands += "set link"+ str(counter) +" "
                     nsCommands += "[$ns duplex-link "
@@ -275,7 +280,37 @@ class GeneralGenerator(object):
                         nsCommands += "[$ns duplex-link "
                         nsCommands += "$"+ str(sampleList[0]) + str(j) +" "
                         nsCommands += "$"+ str(sampleList[1]) + str(j) +" "
-                        nsCommands += "1Gb 0ms DropTail]\n"
+                        nsCommands += "1Gb 0ms DropTail]\n"'''
+
+                if nodeA == 1 and nodeB == 1:
+                    counter+=1
+                    nsCommands += "set link"+ str(counter) +" "
+                    nsCommands += "[$ns duplex-link "
+                    if clientServerList[str(sampleList[0])] == 1:
+                        nsCommands += "$"+ str(sampleList[0]) +" "
+                    else:
+                        nsCommands += "$"+ str(sampleList[0]) +"0" + " "
+
+                    if clientServerList[str(sampleList[1])] == 1:
+                        nsCommands += "$"+ str(sampleList[1]) +" "
+                    else:
+                        nsCommands += "$"+ str(sampleList[1]) +"0" + " "
+                    nsCommands += "1Gb 0ms DropTail]\n"
+                else:
+                    for j in range(0,nodeA):
+                        for k in range(0,nodeB):
+                            counter+=1
+                            nsCommands += "set link"+ str(counter) +" "
+                            nsCommands += "[$ns duplex-link "
+                            nsCommands += "$"+ str(sampleList[0])
+                            if nodeA != 1:
+                                nsCommands += str(j)
+                            nsCommands += " "
+                            nsCommands += "$"+ str(sampleList[1])
+                            if nodeB != 1:
+                                nsCommands += str(k)
+                            nsCommands += " "
+                            nsCommands += "1Gb 0ms DropTail]\n"
 
         if len(osList):
            for x in osList:
@@ -325,16 +360,16 @@ class GeneralGenerator(object):
            sampleLanList = []
            for x in lanList:
                 c = 0
-                allLan = 0
-                anyLan = 0
-                sampleLanList.clear()
+                allLan = 1
+                #anyLan = 0
+                #sampleLanList.clear()
                 for y in x:
                     if y is not None:
                         if "lan" in y:
                             if "all" in y:
                                 allLan = 1
-                            elif "any" in y:
-                                anyLan = 1
+                            #elif "any" in y:
+                            #    anyLan = 1
                             continue
                     if y == None:
                         continue
@@ -345,7 +380,7 @@ class GeneralGenerator(object):
                     print("ERROR:\t Invalid statement, Cannot be converted to NS command:", x)
                     continue;
                 minimum = 0xffffffff;
-                for k in sampleLanList:
+                '''for k in sampleLanList:
                     if str(k) in clientServerList:
                         if int(clientServerList[str(k)]) < minimum:
                             if allLan == 1:
@@ -357,9 +392,11 @@ class GeneralGenerator(object):
                         #print("ALERT:\t Node is not defined, Creating a node:", str(k))
                         minimum = 1
                         clientServerList[str(k)] = minimum
-                        nsCommands += "set " + str(k) + " [$ns node]\n"
-
-                if int(clientServerList[str(sampleLanList[0])]) != 1 and int(clientServerList[str(sampleLanList[1])]) != 1:
+                        nsCommands += "set " + str(k) + " [$ns node]\n"'''
+                for k in sampleLanList:
+                    if str(k) not in clientServerList:
+                        clientServerList[str(k)] = 1
+                '''if int(clientServerList[str(sampleLanList[0])]) != 1 and int(clientServerList[str(sampleLanList[1])]) != 1:
                     if allLan == 0 and anyLan == 0:
                         print("ERROR:\t ALL or ANY keyword must be specified for node more than 1, Node:",str(sampleLanList[0]),",",str(sampleLanList[1]))
                         minimum = 1
@@ -399,7 +436,19 @@ class GeneralGenerator(object):
                             nsCommands += "tb-set-lan-loss"
                             nsCommands += " " + "$" + "lan" + str(counter) + " " + ".02"
                             nsCommands += "\n"
-                    break
+                    break'''
+           nsCommands += "set lan"+ str(counter) +" "
+           nsCommands += "[$ns make-lan"
+           nsCommands += " \" "
+           for node in sampleLanList:
+                if node in clientServerList:
+                    if clientServerList[node] != 1:
+                        for j in range(clientServerList[node]):
+                            nsCommands += "$"+ str(node) + str(j) +" "
+                    else:
+                        nsCommands += "$"+ str(node) +" "
+           nsCommands += "\""
+           nsCommands += " " + "100Mb 0ms" + "]\n"
 
         for node in clientServerList:
             if node not in nodesInOsList:
