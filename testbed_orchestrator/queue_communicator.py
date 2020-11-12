@@ -1,15 +1,23 @@
 #!/usr/bin/env python
 import pika
-import os
-import subprocess
+#Make the connection and declare the queue
 connection = pika.BlockingConnection(
     pika.ConnectionParameters(host="localhost"))
 channel = connection.channel()
 channel.queue_declare(queue="rpc_queue")
 
+'''
+the following part requires changes
+need to read a dew file, use HLB parser to parse it
+and form the message into the following pattern
+To incorporate this the message has 2 formats
+    1) #msg format when  no dependency found msg = [action_name, actor_name, emitted_keyword, node]
+    2) #msg format when dependency found msg = ["when",action_name, actor_name, emitted_keyword, node, dependency]
+
+'''
+
 l = ["A touch nodeA.txt emit pdone1" ,"B when pdone1 touch nodeB.txt emit pdone2 "]
-#x = h.parse_with_labels(l)
-#print("hi")
+
 for s in l:
     node = s.split(" ")[0]
     # print(s.find("when"),"\n")
@@ -29,22 +37,7 @@ for s in l:
     print("CLIENT : sending message to node executor", msg)
     # test_rpc.call(msg)
     print("CLIENT: msg added to queue ")
-    channel.basic_publish(exchange = " ",body= str(msg),routing_key="rpc_queue")
+    channel.basic_publish(exchange = "fanout",body= str(msg),routing_key="rpc_queue")
 print("CLIENT : Client sent everything to queue ")
 connection.close()
-#print("CLIENT: now we need to wait for the commands to be executed")
-#def on_request(ch, method, props, body):
-#    print("trying to fetch message in client")
-#    msg = body
-#    print("CLIENT: msg received from queue is", msg)
-#    ch.basic_ack(delivery_tag=method.delivery_tag)
-#channel.basic_qos()
-#connection = pika.BlockingConnection(
-#    pika.ConnectionParameters(host="localhost"))
-#channel = connection.channel()
-#channel.queue_declare(queue="rpc_queue")
-#channel.basic_consume(queue="rpc_queue", on_message_callback=on_request)
-#print("CLIENT: Searching for commands in queue ")
-#channel.start_consuming()
-# channel.start_consuming()
 
