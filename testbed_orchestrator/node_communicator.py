@@ -29,7 +29,7 @@ for s in l:
     print("CLIENT : sending message to node executor", msg)
     # test_rpc.call(msg)
     print("CLIENT: msg added to queue ")
-    channel.basic_publish(exchange = " ",body= str(msg),routing_key="rpc_queue")
+    channel.basic_publish(exchange = "fanout",body= str(msg),routing_key="rpc_queue")
 print("CLIENT : Client sent everything to queue ")
 connection.close()
 #print("CLIENT: now we need to wait for the commands to be executed")
