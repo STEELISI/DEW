@@ -21,7 +21,8 @@ QueueCommunicator.py : This python file reads the input dew file,
                        All the actions are put in the queue and then NodeExecutor executes these actions.
 
 RabbitMqAdmin : this file is just to check if the queue is created, messages are put in the queue or not.
+
                 Commands to check:
-                python3 rabbitmqadmin list queues : to check for all the queues and number of messages in the queue
-                ./rabbitmqadmin delete queue name=rpc_queue : to delete any queue
+                #python3 rabbitmqadmin list queues : to check for all the queues and number of messages in the queue
+                #./rabbitmqadmin delete queue name=rpc_queue : to delete any queue
 
