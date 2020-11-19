@@ -626,7 +626,7 @@ export class HlbComponent implements OnInit {
       if (val[2] && val[0] === 'num') {
         // Check if its in any link attribute
         const foundInLinkLan = _.find(parsedConstraintData.parsedConstraints, (vl) => {
-          return (vl[0] === 'link' || vl[0] === 'lan' || vl[0] === 'os') && vl[1].includes(val[1][0]);
+          return (vl[0] === 'link' || vl[0] === 'lan') && vl[1].includes(val[1][0]);
         });
 
         // get if the Actor emits an event and get the emitted events
