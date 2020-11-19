@@ -95,6 +95,7 @@ export class HlbComponent implements OnInit {
   experimentAccess = 4;
   showAlertMsg = false;
   alertMessage: string;
+  showSpecialFuncDialog = false;
   constructor(
     private http: HttpService,
     public dialog: MatDialog,
@@ -448,9 +449,9 @@ export class HlbComponent implements OnInit {
     return cList;
   }
 
-  checkIfAllAnyPresentInStrings(values) {
+  checkIfAllKeywordPresentInStrings(values) {
     for (const value of values) {
-      if (value.includes('ALL|ANY')) {
+      if (value.includes('ALL') || value.includes('all')) {
         return true;
       }
     }
@@ -468,31 +469,33 @@ export class HlbComponent implements OnInit {
       Constraints: [],
     };
     const scenarios = this.getScenariosFromEditor();
-    const constraints = this.getConstraintsFromEditor();
-
-    // exit if all/any Keyword is still present and user has not removed them
-    if (this.checkIfAllAnyPresentInStrings(scenarios) || this.checkIfAllAnyPresentInStrings(constraints)) {
-      this.alertMessage = 'You have an unresolved choice between ALL or ANY for either a link or an event.' +
-                          ' Please resolved it to process the bindings.';
-      this.showAlertMsg = true;
-      return;
-    } else {
-      this.showAlertMsg = false;
-      this.stateservice.setAllAnyPresentFlag(false);
-    }
-    data.Constraints = constraints;
+    // const constraints = this.getConstraintsFromEditor();
+    // if (this.stateservice.getAllAnyPresentFlag() && (!this.checkIfAllKeywordPresentInStrings(scenarios) ||
+    //     !this.checkIfAllKeywordPresentInStrings(constraints))) {
+    //   // this.alertMessage = 'You have an unresolved choice between ALL or ANY for either a link or an event.' +
+    //   //                     ' Please resolved it to process the bindings.';
+    //   this.alertMessage = 'You have not inserted an ALL keyword for either a link command, lan command, ' +
+    //                       'os command or an event. Please resolve it to process the bindings.';
+    //   this.showAlertMsg = true;
+    //   return;
+    // } else {
+    //   this.showAlertMsg = false;
+    //   this.stateservice.setAllAnyPresentFlag(false);
+    // }
+    data.Constraints = this.getConstraintsFromEditor();
     data.Scenario = this.behaviorList = scenarios;
     this.stateservice.setBehavior(this.behaviorList);
     this.http
       .put('v1/pr/hlb/parse', data, { withCredential: true })
       .subscribe((receivedData: ParseApiBean) => {
         this.extractInfo(receivedData);
-        this.suggestAllAny(receivedData);
+        this.suggestAll(receivedData);
       });
   }
 
   updateActorsConstraint() {
     if (this.constraintService.getText().trim() === '') {
+      this.stateservice.setConstraints(this.getConstraintsFromEditor());
       this.actorsList = [];
       return;
     }
@@ -503,17 +506,18 @@ export class HlbComponent implements OnInit {
     };
     const scenarios = this.getScenariosFromEditor();
     const constraints = this.getConstraintsFromEditor();
-
-    // exit if all/any Keyword is still present and user has not removed them
-    if (this.checkIfAllAnyPresentInStrings(scenarios) || this.checkIfAllAnyPresentInStrings(constraints)) {
-      this.alertMessage = 'You have an unresolved choice between ALL or ANY for either a link or an event.' +
-                          ' Please resolved it to process the bindings.';
-      this.showAlertMsg = true;
-      return;
-    } else {
-      this.showAlertMsg = false;
-      this.stateservice.setAllAnyPresentFlag(false);
-    }
+    // if (this.stateservice.getAllAnyPresentFlag() && (!this.checkIfAllKeywordPresentInStrings(scenarios) ||
+    //     !this.checkIfAllKeywordPresentInStrings(constraints))) {
+    //   // this.alertMessage = 'You have an unresolved choice between ALL or ANY for either a link or an event.' +
+    //   //                     ' Please resolved it to process the bindings.';
+    //   this.alertMessage = 'You have not inserted an ALL keyword for either a link command, lan command, ' +
+    //                       'os command or an event. Please resolve it to process the bindings.';
+    //   this.showAlertMsg = true;
+    //   return;
+    // } else {
+    //   this.showAlertMsg = false;
+    //   this.stateservice.setAllAnyPresentFlag(false);
+    // }
 
     data.Scenario = scenarios;
     data.Constraints = this.contraintList = constraints;
@@ -521,7 +525,7 @@ export class HlbComponent implements OnInit {
     this.http
       .put('v1/pr/hlb/parse', data, { withCredential: true })
       .subscribe((receivedData: ParseApiBean) => {
-        this.suggestAllAny(receivedData);
+        this.suggestAll(receivedData);
       });
   }
 
@@ -549,8 +553,8 @@ export class HlbComponent implements OnInit {
       const allIdxs = _.map(_.keys(_.pickBy(this.scenariosObjFormat, {insert: evt + ' '})), Number);
       for (const idx of allIdxs) {
         if (idx > 0) {
-          if (this.scenariosObjFormat[idx - 1].insert.toLowerCase() === 'all ' ||
-              this.scenariosObjFormat[idx - 1].insert.toLowerCase() === 'any ') {
+          if (this.scenariosObjFormat[idx - 1].insert.toLowerCase() === 'all ') {
+              // || this.scenariosObjFormat[idx - 1].insert.toLowerCase() === 'any ') {
             return true;
           }
         }
@@ -559,59 +563,70 @@ export class HlbComponent implements OnInit {
     return false;
   }
 
-  addAllAnyInScenarioEditor(emittedEvents) {
+  async addAllInScenarioEditor(emittedEvents) {
+    // addAllAnyInScenarioEditor - change function name to this when including all and any
     if (!emittedEvents) {
       return;
     }
-    emittedEvents.forEach(val => {
-      // Get all indexes where the emitted event value is present
+
+    for (const val of emittedEvents) {
       const allIdxs = _.map(_.keys(_.pickBy(this.scenariosObjFormat, {insert: val + ' '})), Number);
 
       // Add the all/any keyword at the location of the when keyword and assign new array to the scenario object array
       const tempObjFmtArray = _.cloneDeep(this.scenariosObjFormat);
-      allIdxs.forEach(idx => {
+
+      for (const idx of allIdxs) {
         if (idx > 0) {
           if (this.scenariosObjFormat[idx - 1].insert.toLowerCase() === 'when ') {
-            tempObjFmtArray.splice(idx, 0, {insert: 'ALL|ANY ', attributes: {bold: true, color: 'red'}});
+            // tempObjFmtArray.splice(idx, 0, {insert: 'ALL|ANY ', attributes: {bold: true, color: 'red'}});
+             tempObjFmtArray.splice(idx, 0, {insert: 'all '});
           }
         }
-      });
+      }
+
       this.scenariosObjFormat = tempObjFmtArray;
-    });
+    }
   }
 
-  addAllAnyToConstraints(actor) {
+  async addAllInConstraintsEditor(actor) {
+    // addAllAnyInConstraintsEditor - change function name to this when including all and any
     if (!actor) {
       return;
     }
-    // Get all indexes where the actor is present
-    const allIdxs = _.map(_.keys(_.pickBy(this.constraintsObjFormat, {insert: actor + ' '})), Number);
-
     // Add the all/any keyword at the location of the when keyword and assign new array to the scenario object array
     const tempObjFmtArray = _.cloneDeep(this.constraintsObjFormat);
-
-    allIdxs.forEach(idx => {
-        if (idx === 1) {
-          if (this.constraintsObjFormat[idx - 1].insert.toLowerCase() === 'link ') {
-            tempObjFmtArray.splice(idx, 0, {insert: 'ALL|ANY ', attributes: {bold: true, color: 'red'}});
-          }
+    // Get all indexes where the actor is present
+    const allIdxs = _.map(_.keys(_.pickBy(tempObjFmtArray, {insert: actor + ' '})), Number);
+    for (const idx of allIdxs) {
+      if (idx === 1) {
+        if (this.constraintsObjFormat[idx - 1].insert.toLowerCase() === 'link ' ||
+            this.constraintsObjFormat[idx - 1].insert.toLowerCase() === 'lan ') {
+          // tempObjFmtArray.splice(idx, 0, {insert: 'ALL|ANY ', attributes: {bold: true, color: 'red'}});
+          tempObjFmtArray.splice(idx, 0, {insert: 'all '});
+          continue;
         }
-        if (idx > 1) {
-          if (this.constraintsObjFormat[idx - 1].insert.toLowerCase() === 'link ' ||
-              this.constraintsObjFormat[idx - 2].insert.toLowerCase() === 'link ') {
-            tempObjFmtArray.splice(idx, 0, {insert: 'ALL|ANY ', attributes: {bold: true, color: 'red'}});
-          }
+      }
+      if (idx > 1) {
+        if ((this.constraintsObjFormat[idx - 1].insert.toLowerCase() === 'link ' ||
+            this.constraintsObjFormat[idx - 2].insert.toLowerCase() === 'link ' ||
+            this.constraintsObjFormat[idx - 1].insert.toLowerCase() === 'lan ' ||
+            this.constraintsObjFormat[idx - 2].insert.toLowerCase() === 'lan ') &&
+            (this.constraintsObjFormat[idx - 1].insert.toLowerCase() !== 'all ')) {
+          // tempObjFmtArray.splice(idx, 0, {insert: 'ALL|ANY ', attributes: {bold: true, color: 'red'}});
+          tempObjFmtArray.splice(idx, 0, {insert: 'all '});
         }
-      });
+      }
+    }
     this.constraintsObjFormat = tempObjFmtArray;
   }
 
-  suggestAllAny(parsedConstraintData: ParseApiBean) {
+  suggestAll(parsedConstraintData: ParseApiBean) {
+    // change name to suggestAllAny when adding any also
     parsedConstraintData.parsedConstraints.forEach((val) => {
       if (val[2] && val[0] === 'num') {
         // Check if its in any link attribute
-        const foundInLink = _.find(parsedConstraintData.parsedConstraints, (vl) => {
-          return vl[0] === 'link' && vl[1].includes(val[1][0]);
+        const foundInLinkLan = _.find(parsedConstraintData.parsedConstraints, (vl) => {
+          return (vl[0] === 'link' || vl[0] === 'lan') && vl[1].includes(val[1][0]);
         });
 
         // get if the Actor emits an event and get the emitted events
@@ -621,24 +636,34 @@ export class HlbComponent implements OnInit {
         const emittedEvents = foundScenario ? foundScenario[3] : [];
 
         // if it has a link attribute or its emitted event is waited for my some node
-        if (foundInLink || (this.checkIfEmittedEventIsATriggerEvent(emittedEvents, parsedConstraintData.parsedScenario)
+        if (foundInLinkLan || (this.checkIfEmittedEventIsATriggerEvent(emittedEvents, parsedConstraintData.parsedScenario)
             && !this.checkIfAllOrAnyAlreadyEntered(emittedEvents))) {
-          this.alertMessage = 'You should have an ALL or ANY preceding ' + val[1][0] + '. Please see the documentation';
+          // this.alertMessage = 'You should have an ALL or ANY preceding ' + val[1][0] + '. Please see the documentation';
+          this.alertMessage = 'An ALL keyword has been inserted preceding ' + val[1][0] +
+              ' and/or its events as it maps to multiple nodes. Please see the documentation';
           this.showAlertMsg = true;
+          setTimeout(() => {
+            this.showAlertMsg = false;
+          }, 5000);
 
-          // add all any in the scenarios
-          this.addAllAnyInScenarioEditor(emittedEvents);
-
-          // add all any in the constraints
-          this.addAllAnyToConstraints(val[1][0]);
+          // add all in the scenarios and constraints
+          Promise.all([this.addAllInScenarioEditor(emittedEvents), this.addAllInConstraintsEditor(val[1][0])])
+              .then((done) => {
+                // Still have to resolve the promises part. This is a hack and ugly way of doing it
+                setTimeout(() => {
+                  this.stateservice.setBehavior(this.getScenariosFromEditor());
+                  this.stateservice.setConstraints(this.getConstraintsFromEditor());
+                }, 1000);
+              });
           this.stateservice.setAllAnyPresentFlag(true);
+
         }
       }
     });
   }
 
-  openSpecialFuncDialog() {
-    const dialogRef = this.dialog.open(SpecialFuncPopUpComponent);
+  toggleSpecialFuncDialog() {
+    this.showSpecialFuncDialog = !this.showSpecialFuncDialog;
   }
 
   unsetShowAlertMessage() {
@@ -946,17 +971,3 @@ export class HLBInforPopUp {
   }
 }
 
-@Component({
-  selector: 'app-hlb-special-func',
-  templateUrl: 'hlb-special-func-component.html',
-  styleUrls: ['./hlb.component.scss'],
-})
-export class SpecialFuncPopUpComponent {
-  constructor(
-    public dialogRef: MatDialogRef<SpecialFuncPopUpComponent>,
-  ) {}
-
-  onNoClick(): void {
-    this.dialogRef.close();
-  }
-}

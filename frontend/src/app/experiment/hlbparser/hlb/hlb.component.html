@@ -138,7 +138,12 @@
       <span><i>No Bindings Needed</i></span>
     </div>
     <div class="d-flex justify-content-center">
-      <button type="button" class="btn btn-light special-func-btn" (click)="openSpecialFuncDialog()">Show Special Functions</button>
+      <button type="button" class="btn btn-light special-func-btn" (click)="toggleSpecialFuncDialog()"
+              *ngIf="!showSpecialFuncDialog; else elseBlock">Show Special Functions</button>
+      <ng-template #elseBlock>
+        <button type="button" class="btn btn-light special-func-btn"
+                                      (click)="toggleSpecialFuncDialog()" >Hide Special Functions</button>
+      </ng-template>
     </div>
     <div *ngIf="bindingList.length != 0">
       <ul class="behavior-list">
@@ -172,10 +177,26 @@
   </div>
 </div>
 
-<div class="alert alert-danger alert-dismissible fade show" role="alert" *ngIf="showAlertMsg">
+<div class="special-func-div" cdkDrag *ngIf="showSpecialFuncDialog">
+  <table class="table table-bordered">
+    <thead>
+    <tr>
+      <th scope="col">Special Functions</th>
+      <th scope="col">What they do</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr *ngFor="let func of specialFunctions">
+      <th scope="row">{{func.name}}</th>
+      <td>{{func.value}}</td>
+    </tr>
+    </tbody>
+  </table>
+</div>
+
+<div class="alert alert-warning alert-dismissible fade show" role="alert" *ngIf="showAlertMsg">
   {{this.alertMessage}}
   <button type="button" class="close" data-dismiss="alert" aria-label="Close" (click)="unsetShowAlertMessage()">
     <span aria-hidden="true">&times;</span>
   </button>
 </div>
-

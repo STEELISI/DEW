@@ -324,11 +324,11 @@ export class InfoComponent implements OnInit {
           }
         });
       }
-      if (this.state.getAllAnyPresentFlag()) {
-        this.alertMessage = 'You have an unresolved ALL|ANY keyword. Please choose one of them and then click on save.';
-        this.showAlertMsg = true;
-        return;
-      }
+      // if (this.state.getAllAnyPresentFlag()) {
+      //   this.alertMessage = 'You have an unresolved ALL|ANY keyword. Please choose one of them and then click on save.';
+      //   this.showAlertMsg = true;
+      //   return;
+      // }
 
       let continueFlag;
       if (bindingFLag) {
