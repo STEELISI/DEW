@@ -469,19 +469,19 @@ export class HlbComponent implements OnInit {
       Constraints: [],
     };
     const scenarios = this.getScenariosFromEditor();
-    const constraints = this.getConstraintsFromEditor();
-    if (this.stateservice.getAllAnyPresentFlag() && (!this.checkIfAllKeywordPresentInStrings(scenarios) ||
-        !this.checkIfAllKeywordPresentInStrings(constraints))) {
-      // this.alertMessage = 'You have an unresolved choice between ALL or ANY for either a link or an event.' +
-      //                     ' Please resolved it to process the bindings.';
-      this.alertMessage = 'You have not inserted an ALL keyword for either a link command, lan command, ' +
-                          'os command or an event. Please resolve it to process the bindings.';
-      this.showAlertMsg = true;
-      return;
-    } else {
-      this.showAlertMsg = false;
-      this.stateservice.setAllAnyPresentFlag(false);
-    }
+    // const constraints = this.getConstraintsFromEditor();
+    // if (this.stateservice.getAllAnyPresentFlag() && (!this.checkIfAllKeywordPresentInStrings(scenarios) ||
+    //     !this.checkIfAllKeywordPresentInStrings(constraints))) {
+    //   // this.alertMessage = 'You have an unresolved choice between ALL or ANY for either a link or an event.' +
+    //   //                     ' Please resolved it to process the bindings.';
+    //   this.alertMessage = 'You have not inserted an ALL keyword for either a link command, lan command, ' +
+    //                       'os command or an event. Please resolve it to process the bindings.';
+    //   this.showAlertMsg = true;
+    //   return;
+    // } else {
+    //   this.showAlertMsg = false;
+    //   this.stateservice.setAllAnyPresentFlag(false);
+    // }
     data.Constraints = this.getConstraintsFromEditor();
     data.Scenario = this.behaviorList = scenarios;
     this.stateservice.setBehavior(this.behaviorList);
@@ -495,6 +495,7 @@ export class HlbComponent implements OnInit {
 
   updateActorsConstraint() {
     if (this.constraintService.getText().trim() === '') {
+      this.stateservice.setConstraints(this.getConstraintsFromEditor());
       this.actorsList = [];
       return;
     }
@@ -505,19 +506,18 @@ export class HlbComponent implements OnInit {
     };
     const scenarios = this.getScenariosFromEditor();
     const constraints = this.getConstraintsFromEditor();
-
-    if (this.stateservice.getAllAnyPresentFlag() && (!this.checkIfAllKeywordPresentInStrings(scenarios) ||
-        !this.checkIfAllKeywordPresentInStrings(constraints))) {
-      // this.alertMessage = 'You have an unresolved choice between ALL or ANY for either a link or an event.' +
-      //                     ' Please resolved it to process the bindings.';
-      this.alertMessage = 'You have not inserted an ALL keyword for either a link command, lan command, ' +
-                          'os command or an event. Please resolve it to process the bindings.';
-      this.showAlertMsg = true;
-      return;
-    } else {
-      this.showAlertMsg = false;
-      this.stateservice.setAllAnyPresentFlag(false);
-    }
+    // if (this.stateservice.getAllAnyPresentFlag() && (!this.checkIfAllKeywordPresentInStrings(scenarios) ||
+    //     !this.checkIfAllKeywordPresentInStrings(constraints))) {
+    //   // this.alertMessage = 'You have an unresolved choice between ALL or ANY for either a link or an event.' +
+    //   //                     ' Please resolved it to process the bindings.';
+    //   this.alertMessage = 'You have not inserted an ALL keyword for either a link command, lan command, ' +
+    //                       'os command or an event. Please resolve it to process the bindings.';
+    //   this.showAlertMsg = true;
+    //   return;
+    // } else {
+    //   this.showAlertMsg = false;
+    //   this.stateservice.setAllAnyPresentFlag(false);
+    // }
 
     data.Scenario = scenarios;
     data.Constraints = this.contraintList = constraints;
@@ -600,8 +600,7 @@ export class HlbComponent implements OnInit {
     for (const idx of allIdxs) {
       if (idx === 1) {
         if (this.constraintsObjFormat[idx - 1].insert.toLowerCase() === 'link ' ||
-            this.constraintsObjFormat[idx - 1].insert.toLowerCase() === 'lan ' ||
-            this.constraintsObjFormat[idx - 1].insert.toLowerCase() === 'os ') {
+            this.constraintsObjFormat[idx - 1].insert.toLowerCase() === 'lan ') {
           // tempObjFmtArray.splice(idx, 0, {insert: 'ALL|ANY ', attributes: {bold: true, color: 'red'}});
           tempObjFmtArray.splice(idx, 0, {insert: 'all '});
           continue;
@@ -611,8 +610,7 @@ export class HlbComponent implements OnInit {
         if ((this.constraintsObjFormat[idx - 1].insert.toLowerCase() === 'link ' ||
             this.constraintsObjFormat[idx - 2].insert.toLowerCase() === 'link ' ||
             this.constraintsObjFormat[idx - 1].insert.toLowerCase() === 'lan ' ||
-            this.constraintsObjFormat[idx - 2].insert.toLowerCase() === 'lan ' ||
-            this.constraintsObjFormat[idx - 1].insert.toLowerCase() === 'os ' ) &&
+            this.constraintsObjFormat[idx - 2].insert.toLowerCase() === 'lan ') &&
             (this.constraintsObjFormat[idx - 1].insert.toLowerCase() !== 'all ')) {
           // tempObjFmtArray.splice(idx, 0, {insert: 'ALL|ANY ', attributes: {bold: true, color: 'red'}});
           tempObjFmtArray.splice(idx, 0, {insert: 'all '});
@@ -627,7 +625,7 @@ export class HlbComponent implements OnInit {
     parsedConstraintData.parsedConstraints.forEach((val) => {
       if (val[2] && val[0] === 'num') {
         // Check if its in any link attribute
-        const foundInLinkLanOs = _.find(parsedConstraintData.parsedConstraints, (vl) => {
+        const foundInLinkLan = _.find(parsedConstraintData.parsedConstraints, (vl) => {
           return (vl[0] === 'link' || vl[0] === 'lan' || vl[0] === 'os') && vl[1].includes(val[1][0]);
         });
 
@@ -638,7 +636,7 @@ export class HlbComponent implements OnInit {
         const emittedEvents = foundScenario ? foundScenario[3] : [];
 
         // if it has a link attribute or its emitted event is waited for my some node
-        if (foundInLinkLanOs || (this.checkIfEmittedEventIsATriggerEvent(emittedEvents, parsedConstraintData.parsedScenario)
+        if (foundInLinkLan || (this.checkIfEmittedEventIsATriggerEvent(emittedEvents, parsedConstraintData.parsedScenario)
             && !this.checkIfAllOrAnyAlreadyEntered(emittedEvents))) {
           // this.alertMessage = 'You should have an ALL or ANY preceding ' + val[1][0] + '. Please see the documentation';
           this.alertMessage = 'An ALL keyword has been inserted preceding ' + val[1][0] +
