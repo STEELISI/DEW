@@ -132,7 +132,7 @@ class GeneralGenerator(object):
         osList = []
         nodesInOsList = set([])
         osSupported = ['ubuntu','fedora','freebsd','fbsd','centos','kali','metasploitable','linux','windows','winxp']
-        defaultOS = "Ubuntu-EDU"
+        defaultOS = "Ubuntu-DEW"
         nodes = []
         parser = HLBParser([])
         if actors is None:
