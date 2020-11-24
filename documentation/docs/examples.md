@@ -17,7 +17,7 @@ pingClient = ping -c 10 client
 link client server
 ```
 
-<iframe width="560" height="315" src="https://www.youtube.com/watch?v=JNOLuf4gwUc" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+<iframe width="560" height="315" src="https://www.youtube.com/embed/JNOLuf4gwUc" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
 
 ## Sequential ping
 
@@ -35,7 +35,7 @@ clientRunpingServerSig = psuccess(pingServer)
 link server client
 ```
 
-<iframe width="560" height="315" src="https://www.youtube.com/watch?v=5q8fAJtRyUA" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+<iframe width="560" height="315" src="https://www.youtube.com/embed/5q8fAJtRyUA" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
 
 ## Complex experiment
 
