@@ -459,10 +459,10 @@ export class HlbComponent implements OnInit {
   }
 
   updateActors() {
-    if (this.behaviorService.getText().trim() === '') {
-      this.actorsList = [];
-      return;
-    }
+    // if (this.behaviorService.getText().trim() === '') {
+    //   this.actorsList = [];
+    //   return;
+    // }
     const data = {
       ParseType: 'bash',
       Scenario: [],
@@ -494,11 +494,11 @@ export class HlbComponent implements OnInit {
   }
 
   updateActorsConstraint() {
-    if (this.constraintService.getText().trim() === '') {
-      this.stateservice.setConstraints(this.getConstraintsFromEditor());
-      this.actorsList = [];
-      return;
-    }
+    // if (this.constraintService.getText().trim() === '') {
+    //   this.stateservice.setConstraints(this.getConstraintsFromEditor());
+    //   this.actorsList = [];
+    //   return;
+    // }
     const data = {
       ParseType: 'bash',
       Scenario: [],
@@ -620,10 +620,44 @@ export class HlbComponent implements OnInit {
     this.constraintsObjFormat = tempObjFmtArray;
   }
 
+  validateAllKeywordIfPresent(constraints, actorEventObj) {
+    // Filter all actors with the all keyword
+    const constraintsWithNum = _.filter(constraints, (v) => v[0] === 'num');
+
+    // First run in the scenario editor and update the object
+    let tempArray = _.cloneDeep(this.scenariosObjFormat);
+    let allIdxs = _.map(_.keys(_.pickBy(tempArray, {insert: 'all '})), Number);
+    for (const idx of allIdxs) {
+      const actName = _.findKey(actorEventObj, (v, k)  => {
+        return v.includes(this.scenariosObjFormat[idx + 1].insert.trimEnd());
+      });
+      const numActor = _.find(constraintsWithNum, v => v[1][0] === actName);
+      if (!constraintsWithNum.map(v => v[1][0]).includes(actName) ||
+          (numActor && parseInt(numActor[2][0], 10) === 1)) {
+         tempArray.splice(idx, 1);
+      }
+    }
+    this.scenariosObjFormat = tempArray;
+
+    // Secondly run in the constraints editor and update the object
+    tempArray = _.cloneDeep(this.constraintsObjFormat);
+    allIdxs = _.map(_.keys(_.pickBy(tempArray, {insert: 'all '})), Number);
+    for (const idx of allIdxs) {
+      const actName = this.constraintsObjFormat[idx + 1].insert.trimEnd();
+      const numActor = _.find(constraintsWithNum, v => v[1][0] === actName);
+      if (!constraintsWithNum.map(v => v[1][0]).includes(actName) ||
+          (numActor && parseInt(numActor[2][0], 10) === 1)) {
+         tempArray.splice(idx, 1);
+      }
+    }
+    this.constraintsObjFormat = tempArray;
+  }
+
   suggestAll(parsedConstraintData: ParseApiBean) {
     // change name to suggestAllAny when adding any also
+    const actorEventObj = {};
     parsedConstraintData.parsedConstraints.forEach((val) => {
-      if (val[2] && val[0] === 'num') {
+      if (val[2]) {
         // Check if its in any link attribute
         const foundInLinkLan = _.find(parsedConstraintData.parsedConstraints, (vl) => {
           return (vl[0] === 'link' || vl[0] === 'lan') && vl[1].includes(val[1][0]);
@@ -634,10 +668,12 @@ export class HlbComponent implements OnInit {
           return vl[1].includes(val[1][0]);
         });
         const emittedEvents = foundScenario ? foundScenario[3] : [];
+        // this.validateAllKeywordIfPresent(val[1][0], emittedEvents, val);
 
+        actorEventObj[val[1][0]] = emittedEvents;
         // if it has a link attribute or its emitted event is waited for my some node
-        if (foundInLinkLan || (this.checkIfEmittedEventIsATriggerEvent(emittedEvents, parsedConstraintData.parsedScenario)
-            && !this.checkIfAllOrAnyAlreadyEntered(emittedEvents))) {
+        if (val[0] === 'num' && (foundInLinkLan || (this.checkIfEmittedEventIsATriggerEvent(emittedEvents,
+            parsedConstraintData.parsedScenario) && !this.checkIfAllOrAnyAlreadyEntered(emittedEvents)))) {
           // this.alertMessage = 'You should have an ALL or ANY preceding ' + val[1][0] + '. Please see the documentation';
           this.alertMessage = 'An ALL keyword has been inserted preceding ' + val[1][0] +
               ' and/or its events as it maps to multiple nodes. Please see the documentation';
@@ -656,10 +692,10 @@ export class HlbComponent implements OnInit {
                 }, 1000);
               });
           this.stateservice.setAllAnyPresentFlag(true);
-
         }
       }
     });
+    this.validateAllKeywordIfPresent(parsedConstraintData.parsedConstraints, actorEventObj);
   }
 
   toggleSpecialFuncDialog() {
