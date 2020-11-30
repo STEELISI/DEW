@@ -127,7 +127,24 @@ class HandleGraphParse(Resource):
         nodes, edges = hlb.HandleGraphParse(scenarios)
         return {"status": "success", "nodes": nodes, "edges": edges }
 
-
+@ns.route('/hlb/topology/parse')
+class HandleTopologyParse(Resource):
+    @api.expect(topology_text)
+    def put(self):
+        """
+          Parses scenario to help in building a graph
+        """
+        # TODO : Remove globals
+        globals.actors = dict()
+        globals.behaviors = dict()
+        globals.constraints = dict()
+        globals.events = dict()
+        globals.actions = dict()
+        json_data = request.get_json(force=True)
+        scenarios = json_data['scenario']
+        constraints = json_data['constraints']
+        nodes, edges = hlb.HandleTopologyParse(scenarios, constraints)
+        return {"status": "success", "nodes": nodes, "edges": edges }
 
 @ns.route('/nlp/behavior')
 class HandleNLPTranslator(Resource):

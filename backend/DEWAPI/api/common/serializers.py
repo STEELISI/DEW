@@ -63,6 +63,11 @@ scenario_text = api.model('Graph parsing', {
   'scenario': fields.List(fields.String, description="Scenario of the experiment",required=True)
 })
 
+topology_text = api.model('Toplogy parsing', {
+  'scenario': fields.List(fields.String,description="Scenario of the experiment",required=True),
+  'constraints': fields.List(fields.String,description="Constraints of the experiment",required=True)
+  })
+
 experiment_detail = api.model('get experiment request', {
   'id':fields.String(description="Id of experiment", required=True)
   })

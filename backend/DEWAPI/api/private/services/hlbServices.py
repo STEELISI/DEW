@@ -332,6 +332,41 @@ class HLBService():
                     edges.append({ 'id': e + str(j), 'source': s, 'target': t, 'label': e, 'data': {'all_or_any': all_any_flags[t] }})
         return nodes, edges
 
+    def HandleTopologyParse(self,sceanrios,constraints):
+        nodes = {}
+        edges = []
+        gen = bashGenerator(sceanrios,constraints=constraints)
+        parsed_scenario, parsed_constraints = gen.generate()
+        print("Parsed results(b) : ",parsed_scenario)
+        print("Parsed results(c) : ",parsed_constraints)
+        lanCount = 0
+        for line in parsed_scenario:
+            if line[1] is not None:
+                nodes[line[1][0]] = { 'num': 1, 'os': 'default', 'type': 'actor' }
+        for const in parsed_constraints:
+            if const[0] is not None:
+                print("const 0 : ", const[0])
+                for n in const[1]:
+                    nodes[n] = { 'num': 1, 'os': 'default', 'type': 'actor' }
+
+                if const[0] == "num":
+                    nodes[const[1][0]]['num'] = int(const[2][0])
+                elif const[0] == "os":
+                    nodes[const[1][0]]['os'] = const[2][0]
+                elif "link" in const[0]:
+                    edges.append({ 'source': const[1][0], 'target': const[1][1] })
+                elif const[0] == "lan":
+                    lanCount += 1
+                    nodeName = "lan" + str(lanCount)
+                    nodes[nodeName] = { 'type' : 'lan' }
+                    for n in const[1]:
+                        edges.append({'source': n, 'target': nodeName})
+
+
+        return nodes, edges
+
+
+
     #Handle generateNS
     def HandleNS(self,json_data):
         errors = []

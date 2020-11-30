@@ -34,6 +34,7 @@ import {
 import { AuthGuard } from "src/app/@auth/auth.guard";
 import { AuthModule } from "src/app/@auth/auth.module";
 import { DependencyGraphComponent } from "./dependency-graph/dependency-graph.component";
+import { TopologyGraphComponent } from "./topology/topology.component";
 import { MatRadioModule } from "@angular/material/radio";
 import {
   InfoComponent,
@@ -57,6 +58,7 @@ import { UserIdleModule } from 'angular-user-idle';
     HlbComponent,
     NlpComponent,
     DependencyGraphComponent,
+    TopologyGraphComponent,
     TextFilterPipe,
     UploadComponent,
     FilePreviewComponent,
