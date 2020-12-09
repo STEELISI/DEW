@@ -355,9 +355,9 @@ class HLBService():
                     nodes[const[1][0]]['os'] = const[2][0]
                 elif "link" in const[0]:
                     edges.append({ 'source': const[1][0], 'target': const[1][1] })
-                elif const[0] == "lan":
-                    lanCount += 1
+                elif "lan" in const[0]:
                     nodeName = "lan" + str(lanCount)
+                    lanCount += 1
                     nodes[nodeName] = { 'type' : 'lan' }
                     for n in const[1]:
                         edges.append({'source': n, 'target': nodeName})

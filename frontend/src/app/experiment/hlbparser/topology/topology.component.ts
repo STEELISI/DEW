@@ -1,4 +1,5 @@
 import { Component, OnInit, Input, ViewChild, HostListener } from '@angular/core';
+import { FormBuilder } from '@angular/forms';
 import { Edge, Node, Layout, ClusterNode, NodePosition, GraphComponent } from '@swimlane/ngx-graph';
 import { Subject } from 'rxjs';
 import * as shape from 'd3-shape';
@@ -18,6 +19,7 @@ export class TopologyGraphComponent implements OnInit{
   public layoutSettings = {
     orientation: "TB"
   }
+  actorForm;
   curveType: string = 'Bundle';
   curve: any = shape.curveLinear;
   interpolationTypes = [
@@ -62,10 +64,14 @@ export class TopologyGraphComponent implements OnInit{
 
   autoZoom: boolean = false;
   autoCenter: boolean = true; 
+  @ViewChild('graph', { static: false }) graphEl: GraphComponent;
+
+  zoomToFit$: Subject<boolean> = new Subject();
 
   constructor(
     protected http: HttpService,
-    protected state: StateService
+    protected state: StateService,
+    private formBuilder: FormBuilder
   ) {
   }
 
@@ -119,6 +125,87 @@ export class TopologyGraphComponent implements OnInit{
       this.matching[node.label] = c
       this.state.setExperimentColors(this.matching)
       return c
+    }
+
+  }
+
+  public isLanNode(node, dim){
+    if(node.data.type == "lan"){
+      if(dim == 'x'){
+        return node.dimension.width
+      }else{
+        return node.dimension.height
+      }
+    }else{
+      return "0"
+    }
+  }
+
+  public zoomIn(){
+    this.graphEl.zoom(1.1)
+  }
+
+  public zoomOut(){
+    this.graphEl.zoom(0.9)
+  }
+
+  public fitToView(){
+    this.zoomToFit$.next(true)
+  }
+
+  public addActor(event){
+    event.preventDefault();
+    event.stopPropagation();
+    const id = (this.nodes.length+1).toString()
+    var node: Node = {
+      data: {
+        'num': 1,
+        'os': 'default',
+        'type': 'actor'
+      },
+      id: id,
+      label: 'actor' + id.toString()
+    }
+    var newConstraints = this.generateConstraintDEW(node)
+    this.state.getConstraints().subscribe(c => {
+       this.state.setConstraints(c + newConstraints)
+    })
+
+    this.nodes.push(node)
+    this.nodes = [...this.nodes]
+  }
+
+  public addLan(event){
+    event.preventDefault();
+    event.stopPropagation();
+    const id = (this.nodes.length+1).toString()
+    var node: Node = {
+      data: {
+        'type': 'lan'
+      },
+      id: id,
+      label: 'lan' + id.toString()
+    }
+
+    this.nodes.push(node)
+    this.nodes = [...this.nodes]
+  }
+
+  public editNode(event,node){
+    event.preventDefault()
+    event.stopPropagation()
+    debugger;
+  }
+
+  private generateConstraintDEW(node){
+    if(node.data.type == "lan"){
+       nodes = this.getLanNodes(node)
+       return ["lan all " + nodes.join(" ")]
+    } else {
+      str = []
+      str.push("num " + node.label + node.data.num)
+      str.push("os " + node.label + node.data.os)
+      return str
     }
 
   }
