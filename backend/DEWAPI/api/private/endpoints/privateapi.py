@@ -9,6 +9,7 @@ from ..services.nlpServices import NLPService
 from ..services.experiment_manager import ExperimentManager
 from ..services.dew_parser import DEWParser
 from ..services.token_manager import TokenManager
+from ..services.profileService import ProfileService
 from DEWAPI.user import userObj
 import globals
 
@@ -21,6 +22,7 @@ nlp = NLPService()
 em = ExperimentManager()
 dew_parser = DEWParser()
 tm = TokenManager()
+ps = ProfileService()
 
 @ns.route('/hlb/translate/<string:format>')
 class HandleHLBTranslator(Resource):
@@ -522,3 +524,55 @@ class HandleTokenBasedAuthTokenList(Resource):
             if str(e) == "Forbidden":
                 return {}, 403
 
+
+
+@ns.route('/profile/accounts/deterLab/save')
+class HandleProfileDeterLabSaveAccounts(Resource):
+    @api.expect(deterlab_user_details)
+    def post(self):
+        """
+        Create token for a given experiment
+        """
+        print("hello")
+        content = request.get_json(force=True)
+        username = content['username']
+        password = content['password']
+        creator_uid = userObj.getUserId()
+        print(creator_uid)
+        try:
+            result = ps.save(creator_uid, username, password)
+            return result, 200
+        except ValueError as e:
+            if str(e) == "Forbidden":
+                return {}, 403
+
+
+@ns.route('/profile/accounts/deterLab/get')
+class HandleProfileDeterLabGetAccounts(Resource):
+    def get(self):
+        """
+        Create token for a given experiment
+        """
+        creator_uid = userObj.getUserId()
+
+        try:
+            result = ps.get(creator_uid)
+            return result, 200
+        except ValueError as e:
+            if str(e) == "Forbidden":
+                return {}, 403
+
+@ns.route('/profile/accounts/deterLab/delete')
+class HandleProfileDeterLabDeleteAccounts(Resource):
+    def delete(self):
+        """
+        Create token for a given experiment
+        """
+        creator_uid = userObj.getUserId()
+
+        try:
+            result = ps.delete(creator_uid)
+            return result, 200
+        except ValueError as e:
+            if str(e) == "Forbidden":
+                return {}, 403
