@@ -497,10 +497,18 @@ class GeneralGenerator(object):
         writeResult = "\'cat ~/res1\' > lastCmdResult"
         bashScript = ""
         labelSet = False
-        labelName = "bashFile.sh"
+        labelName = "run.sh"
+        cleanupFileName = "cleanup.sh"
         resultIter = 1
         idx = 0
         bashScriptList = [[labelName,""]]
+        cleanupString = ""
+        cleanupString =  "#####################################################################################################################\n"
+        cleanupString += "#File:cleanup.sh                                                                                                    #\n"
+        cleanupString += "#Description: Uninstall all the package which has been installed and deletes all the process which has been created #\n"
+        cleanupString += "#####################################################################################################################\n"
+        emitEventFiles = {}
+        emitEventFilesList = ""
         bashTag = "#!/usr/bin/bash\n"
         tab = ""
         commandSupported = ["tcpdump","ping","iperf","nmap","curl","scp","dig","Install_and_run_apache","Install_and_run_bind"]
@@ -537,6 +545,7 @@ class GeneralGenerator(object):
         dewString += tempString
         dewString += "#\n"
         for key in bindings:
+            clenupString = bindings[key]
             tempSplit = bindings[key].split()
             for each in tempSplit:
             	if each[0] == "$" and each[1:]:
@@ -685,11 +694,17 @@ class GeneralGenerator(object):
                                     if v['e_events'] is not None:
                                         tempResult = v['e_events'][0]
                                         sampleString += tab + "rm -f " + "~/" + v['e_events'][0] + "\n"
+                                        if v['e_events'][0] not in emitEventFiles:
+                                            emitEventFiles[v['e_events'][0]] = 1
+                                        else:
+                                            emitEventFiles[v['e_events'][0]] += 1
+                                        emitEventFilesList += "rm -f " + "~/" + v['e_events'][0] + "\n"
                                     else:
                                         tempResult = "res" + str(resultIter)
                                         sampleString += tab + "rm -f " + "~/"
                                         sampleString += tempResult
                                         sampleString += "\n"
+                                        emitEventFilesList += "rm -f " + "~/" + tempResult + "\n"
                                 argsInCmdFlag = 0
                                 argsInCmd = bindings[v['action']].split()
                                 arguments = []
@@ -872,4 +887,29 @@ class GeneralGenerator(object):
                     tempString += tab + string
             eventsValidDict = {}
             bashScriptList[idx][1] += tempString
+        print("Darsh: Final Result bashScriptList -> ",bashScriptList)
+        for each in bashScriptList:
+            bashScriptLines = each[1].split("\n")
+            for line in bashScriptLines:
+                if re.search(r'#.*#', line):
+                   continue
+                if line.find("apt-get install") != -1:
+                   cleanupString +=  line.replace("apt-get install", "apt-get remove")
+                   cleanupString += "\n"
+                elif line.find("/bin/pidof") != -1:
+                    sampleSplit = line.split("=",1)
+                    if len(sampleSplit) > 1:
+                        sampleSplit = sampleSplit[1].split("`")
+                        if len(sampleSplit) > 1:
+                            sampleSplit = sampleSplit[1]
+                    tempList = re.findall(r"'/bin/pidof .*'",sampleSplit)
+                    if not tempList:
+                        continue
+                    print("Darsh: templList",tempList, sampleSplit)
+                    tempSplit = tempList[0].split("'")
+                    process = tempSplit[1].split()
+                    cleanupString += re.sub(r"'/bin/pidof .*'", "'kill -9 $(/bin/pidof "+process[-1]+")'",sampleSplit)
+                    cleanupString += "\n"
+        cleanupString += emitEventFilesList
+        bashScriptList.append([cleanupFileName, cleanupString])
         return bashScriptList
