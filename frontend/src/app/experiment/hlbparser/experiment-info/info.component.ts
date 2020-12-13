@@ -10,6 +10,8 @@ import { startWith, map } from "rxjs/operators";
 import { MatDialogRef, MAT_DIALOG_DATA, MatDialog, MatSnackBar } from '@angular/material';
 import { HttpHeaders } from '@angular/common/http';
 import { UserIdleService } from 'angular-user-idle';
+import * as JSZip from 'jszip';
+import * as FileSaver from 'file-saver';
 
 @Component({
   selector: "experiment-info",
@@ -736,10 +738,16 @@ export class InfoComponent implements OnInit {
       console.log(data)
       var keys = Object.keys(data)
       console.log(keys)
+      var zip = new JSZip();
+      var bashFolder = zip.folder("Bash Files");
       keys.forEach((key)=> {
         console.log(key,data[key])
-        this.downLoadBashFile(data[key], key);
+        bashFolder.file(key, data[key]);
       })
+      zip.generateAsync({ type: "blob" })
+      .then(function (content) {
+        FileSaver.saveAs(content, "Scripts.zip");
+      });
         this._snackBar.open("Successfully Downloaded.", "close", {
           duration: 2000,
         });
