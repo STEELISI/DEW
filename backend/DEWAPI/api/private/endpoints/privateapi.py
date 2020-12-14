@@ -10,6 +10,7 @@ from ..services.experiment_manager import ExperimentManager
 from ..services.dew_parser import DEWParser
 from ..services.token_manager import TokenManager
 from ..services.profileService import ProfileService
+from ..services.sshConnectivity import SSHConnection
 from DEWAPI.user import userObj
 import globals
 
@@ -533,7 +534,6 @@ class HandleProfileDeterLabSaveAccounts(Resource):
         """
         Create token for a given experiment
         """
-        print("hello")
         content = request.get_json(force=True)
         username = content['username']
         password = content['password']
@@ -572,6 +572,68 @@ class HandleProfileDeterLabDeleteAccounts(Resource):
 
         try:
             result = ps.delete(creator_uid)
+            return result, 200
+        except ValueError as e:
+            if str(e) == "Forbidden":
+                return {}, 403
+
+@ns.route('/deterlab/project/exists')
+class HandleDeterLabProjectExists(Resource):
+    @api.expect(deterlab_project_name)
+    def post(self):
+        content = request.get_json(force=True)
+        projectName = content['projectName']
+        creator_uid = userObj.getUserId()
+
+        try:
+            details = ps.get(creator_uid)
+            if str(details['username']).strip() !='' and str(details['password']).strip() !='':
+              ssh = SSHConnection(details['username'],details['password'])
+              result = ssh.isProjectExists(projectName)
+            else:
+              result = {'error':'username or password doesnot exists'}
+            return result, 200
+        except ValueError as e:
+            if str(e) == "Forbidden":
+                return {}, 403
+
+@ns.route('/deterlab/experiment/exists')
+class HandleDeterLabExperimentExists(Resource):
+    @api.expect(deterlab_experiment_details)
+    def post(self):
+        content = request.get_json(force=True)
+        projectName = content['projectName']
+        experimentName = content['experimentName']
+        creator_uid = userObj.getUserId()
+
+        try:
+            details = ps.get(creator_uid)
+            if str(details['username']).strip() !='' and str(details['password']).strip() !='':
+              ssh = SSHConnection(details['username'],details['password'])
+              result = ssh.isExperimentExists(projectName,experimentName)
+            else:
+              result = {'error':'username or password doesnot exists'}
+            return result, 200
+        except ValueError as e:
+            if str(e) == "Forbidden":
+                return {}, 403
+
+@ns.route('/deterlab/experiment/nsfile')
+class HandleDeterLabExperimentExists(Resource):
+    @api.expect(deterlab_experiment_details)
+    def post(self):
+        content = request.get_json(force=True)
+        projectName = content['projectName']
+        experimentName = content['experimentName']
+        creator_uid = userObj.getUserId()
+
+        try:
+            details = ps.get(creator_uid)
+            if str(details['username']).strip() !='' and str(details['password']).strip() !='':
+              ssh = SSHConnection(details['username'],details['password'])
+              result = ssh.getFileContent(projectName,experimentName)
+            else:
+              result = {'error':'username or password doesnot exists'}
             return result, 200
         except ValueError as e:
             if str(e) == "Forbidden":

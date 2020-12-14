@@ -118,6 +118,14 @@ deterlab_user_details = api.model('Deter Lab user details', {
   'password': fields.String(description="Deter Lab Password", required=True)
 })
 
+deterlab_project_name = api.model('Deter Lab project name', {
+  'projectName': fields.String(description="Deter Lab Project Name", required=True)
+})
+
+deterlab_experiment_details = api.model('Deter Lab Experiment Details', {
+  'projectName': fields.String(description="Deter Lab Project Name", required=True),
+  'experimentName': fields.String(description="Deter Lab Experiment Name", required=True)
+})
 
 uid_header_parser = api.parser()
 uid_header_parser.add_argument('X-user-id',location='headers')
