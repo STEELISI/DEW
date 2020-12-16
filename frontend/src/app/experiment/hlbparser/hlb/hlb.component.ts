@@ -637,7 +637,9 @@ export class HlbComponent implements OnInit {
          tempArray.splice(idx, 1);
       }
     }
-    this.scenariosObjFormat = tempArray;
+    if (!_.isEqual(this.scenariosObjFormat, tempArray)) {
+        this.scenariosObjFormat = tempArray;
+    }
 
     // Secondly run in the constraints editor and update the object
     tempArray = _.cloneDeep(this.constraintsObjFormat);
@@ -650,7 +652,9 @@ export class HlbComponent implements OnInit {
          tempArray.splice(idx, 1);
       }
     }
-    this.constraintsObjFormat = tempArray;
+    if (!_.isEqual(this.constraintsObjFormat, tempArray)) {
+        this.constraintsObjFormat = tempArray;
+    }
   }
 
   suggestAll(parsedConstraintData: ParseApiBean) {
