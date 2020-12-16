@@ -676,7 +676,7 @@ export class HlbComponent implements OnInit {
 
         actorEventObj[val[1][0]] = emittedEvents;
         // if it has a link attribute or its emitted event is waited for my some node
-        if (val[0] === 'num' && (foundInLinkLan || (this.checkIfEmittedEventIsATriggerEvent(emittedEvents,
+        if (val[0] === 'num' && parseInt(val[2][0], 10) > 1 && (foundInLinkLan || (this.checkIfEmittedEventIsATriggerEvent(emittedEvents,
             parsedConstraintData.parsedScenario) && !this.checkIfAllOrAnyAlreadyEntered(emittedEvents)))) {
           // this.alertMessage = 'You should have an ALL or ANY preceding ' + val[1][0] + '. Please see the documentation';
           this.alertMessage = 'An ALL keyword has been inserted preceding ' + val[1][0] +
