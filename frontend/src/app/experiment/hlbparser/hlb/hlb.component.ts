@@ -637,7 +637,9 @@ export class HlbComponent implements OnInit {
          tempArray.splice(idx, 1);
       }
     }
-    this.scenariosObjFormat = tempArray;
+    if (!_.isEqual(this.scenariosObjFormat, tempArray)) {
+        this.scenariosObjFormat = tempArray;
+    }
 
     // Secondly run in the constraints editor and update the object
     tempArray = _.cloneDeep(this.constraintsObjFormat);
@@ -650,7 +652,9 @@ export class HlbComponent implements OnInit {
          tempArray.splice(idx, 1);
       }
     }
-    this.constraintsObjFormat = tempArray;
+    if (!_.isEqual(this.constraintsObjFormat, tempArray)) {
+        this.constraintsObjFormat = tempArray;
+    }
   }
 
   suggestAll(parsedConstraintData: ParseApiBean) {
@@ -672,7 +676,7 @@ export class HlbComponent implements OnInit {
 
         actorEventObj[val[1][0]] = emittedEvents;
         // if it has a link attribute or its emitted event is waited for my some node
-        if (val[0] === 'num' && (foundInLinkLan || (this.checkIfEmittedEventIsATriggerEvent(emittedEvents,
+        if (val[0] === 'num' && parseInt(val[2][0], 10) > 1 && (foundInLinkLan || (this.checkIfEmittedEventIsATriggerEvent(emittedEvents,
             parsedConstraintData.parsedScenario) && !this.checkIfAllOrAnyAlreadyEntered(emittedEvents)))) {
           // this.alertMessage = 'You should have an ALL or ANY preceding ' + val[1][0] + '. Please see the documentation';
           this.alertMessage = 'An ALL keyword has been inserted preceding ' + val[1][0] +
