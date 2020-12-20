@@ -11,6 +11,7 @@ from ..services.dew_parser import DEWParser
 from ..services.token_manager import TokenManager
 from ..services.profileService import ProfileService
 from ..services.sshConnectivity import SSHConnection
+from ..services.deterlab_user_experiment_mapping import DeterLabExperimentMapper
 from DEWAPI.user import userObj
 import globals
 
@@ -24,6 +25,7 @@ em = ExperimentManager()
 dew_parser = DEWParser()
 tm = TokenManager()
 ps = ProfileService()
+dm = DeterLabExperimentMapper()
 
 @ns.route('/hlb/translate/<string:format>')
 class HandleHLBTranslator(Resource):
@@ -415,6 +417,7 @@ class HandleExperimentControl(Resource):
     except ValueError as e:
       if str(e) == "Forbidden":
         return {}, 403
+
 @ns.route('/persist/getUserAccessList/')
 class HandleExperimentUserControlList(Resource):
     @api.expect(userAccessListModel)
@@ -638,12 +641,107 @@ class HandleDeterLabExperimentExists(Resource):
         except ValueError as e:
             if str(e) == "Forbidden":
                 return {}, 403
+
 @ns.route('/deter/userlist')
 class HandleDeterUserList(Resource):
     def get(self):
         uid = userObj.getUserId()
         try:
           result = ps.getUserList(uid)
+          return result, 200
+        except ValueError as e:
+            if str(e) == "Forbidden":
+                return {}, 403
+
+@ns.route('/deter/project')
+class HandleProjectMapping(Resource):
+    def get(self):
+        eid = request.args.get('eid')
+        uid = userObj.getUserId()
+        try:
+          result = {}
+          if not dm.user_can(uid,eid):
+            result['error'] = "User does not have access to this experiment"
+          else: 
+            result = dm.getMapping(uid,eid)
+          return result, 200
+        except ValueError as e:
+            if str(e) == "Forbidden":
+                return {}, 403
+
+@ns.route('/deter/add/project/mapping')
+class HandleAddProjectMapping(Resource):
+    @api.expect(deterlab_experiment_mapping_details)
+    def post(self):
+        content = request.get_json(force=True)
+        projectName = content['projectName']
+        experimentName = content['experimentName']
+        eid = content['experimentId']
+        uid = userObj.getUserId()
+        try:
+          result = {}
+          if not dm.user_can(uid,eid):
+            result['error'] = "User does not have access to this experiment"
+          else: 
+            details = ps.get(uid)
+            
+            if str(details['username']).strip() !='' and str(details['password']).strip() !='':
+              experiment = em.get_experiment(eid, uid)
+              script = hlb.HandleNS(json.loads(experiment.content))
+              ssh = SSHConnection(details['username'],details['password'])
+              result = ssh.createExperimentIfNotExistOnDeterLab(projectName,experimentName,script)
+              if 'error' not in result:
+                result = dm.createOrModifyMapping(uid,eid,projectName,experimentName)
+            else:
+              result = {'error':'username or password doesnot exists'}
+          return result, 200
+        except ValueError as e:
+            if str(e) == "Forbidden":
+                return {}, 403
+
+@ns.route('/deter/project/getactivity')
+class HandleGetActivity(Resource):
+    def get(self):
+        eid = request.args.get('eid')
+        uid = userObj.getUserId()
+        try:
+          result = {}
+          if not dm.user_can(uid,eid):
+            result['error'] = "User does not have access to this experiment"
+          else: 
+            details = ps.get(uid)
+            
+            if str(details['username']).strip() !='' and str(details['password']).strip() !='':
+              ssh = SSHConnection(details['username'],details['password'])
+              mapping = dm.getMapping(uid,eid)
+              result = ssh.getActivityLogOfExperiment(mapping['project_name'],mapping['experiment_name'])
+            else:
+              result = {'error':'username or password doesnot exists'}
+              
+          return result, 200
+        except ValueError as e:
+            if str(e) == "Forbidden":
+                return {}, 403
+
+@ns.route('/deter/project/getstatus')
+class HandleGetStatus(Resource):
+    def get(self):
+        eid = request.args.get('eid')
+        uid = userObj.getUserId()
+        try:
+          result = {}
+          if not dm.user_can(uid,eid):
+            result['error'] = "User does not have access to this experiment"
+          else: 
+            details = ps.get(uid)
+            
+            if str(details['username']).strip() !='' and str(details['password']).strip() !='':
+              ssh = SSHConnection(details['username'],details['password'])
+              mapping = dm.getMapping(uid,eid)
+              result = ssh.getExperimentStatusInformation(mapping['project_name'],mapping['experiment_name'])
+            else:
+              result = {'error':'username or password doesnot exists'}
+              
           return result, 200
         except ValueError as e:
             if str(e) == "Forbidden":

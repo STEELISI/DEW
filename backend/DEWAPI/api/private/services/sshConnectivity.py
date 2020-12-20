@@ -45,28 +45,25 @@ class SSHConnection():
             result['error'] = "Unable to connect to 'deterlab' with user '" + self.username + "'"
         return result
 
-    def createFile(self,exp,fileContent):
+    def createFile(self,gatewaySession,exp,fileContent):
         result = {}
-        try:
-            gatewaySession = SSHSession(self.sshURL, self.username, password=self.password).open()
-
-            gatewaySession.file(remote_path='/users/' + self.username + '/' + exp + '.ns', content=fileContent)
-            result['success'] = True
-            gatewaySession.close()
-        except ConnectionError as e:
-            result['error'] = "Unable to connect to 'deterlab' with user '" + self.username + "'"
-
-        return result
+        gatewaySession.file(remote_path='/users/' + self.username + '/' + exp + '.ns', content=fileContent)
+        return True
     
-    def createProjectOnDeterLab(self,project,exp):
+    def createExperimentIfNotExistOnDeterLab(self,project,exp,fileContent):
         result = {}
         try:
             gatewaySession = SSHSession(self.sshURL, self.username, password=self.password).open()
+            if not gatewaySession.exists('/proj/' + project):
+                result['error'] = "project '" + project + "' doesn't exist"
             try:
-                gatewaySession.get_cmd_output('/usr/testbed/bin/startexp -f -p ' + project + ' -e ' + exp + ' ' + exp + '.ns ')
+                if not gatewaySession.exists('/proj/' + project + '/exp/' + exp):
+                    if self.createFile(gatewaySession,exp,fileContent):
+                        gatewaySession.get_cmd_output('/usr/testbed/bin/startexp -f -p ' + project + ' -e ' + exp + ' ' + exp + '.ns ')
+                
                 result['success'] = True
             except RunCmdError as e:
-                result=e.error
+                result['error']= "project '" + project + "' doesn't exist"
             finally:
                 gatewaySession.close()
         except ConnectionError as e:
@@ -93,7 +90,7 @@ class SSHConnection():
         try:
             gatewaySession = SSHSession(self.sshURL, self.username, password=self.password).open()
             try:
-                if self.isProjectExists(project)['isExists'] and self.isExperimentExists(project,exp)['isExists']:
+                if gatewaySession.exists('/proj/' + project) and gatewaySession.exists('/proj/' + project + '/exp/' + exp):
                     result['content'] = gatewaySession.get_cmd_output('cat /proj/' + project + '/exp/' + exp + '/tbdata/activity.log')
                 else:
                     result['error'] = "project or experiment doesn't exist"
