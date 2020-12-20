@@ -32,4 +32,4 @@ def upgrade():
 
 
 def downgrade():
-    op.drop_table('user')
+    op.drop_table('deterlab-account-details')

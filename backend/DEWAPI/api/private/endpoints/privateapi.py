@@ -638,3 +638,13 @@ class HandleDeterLabExperimentExists(Resource):
         except ValueError as e:
             if str(e) == "Forbidden":
                 return {}, 403
+@ns.route('/deter/userlist')
+class HandleDeterUserList(Resource):
+    def get(self):
+        uid = userObj.getUserId()
+        try:
+          result = ps.getUserList(uid)
+          return result, 200
+        except ValueError as e:
+            if str(e) == "Forbidden":
+                return {}, 403

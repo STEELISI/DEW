@@ -36,7 +36,7 @@ class ProfileService(object):
     def get(self, userId):
         u = DeterlabAccountDetails.query.filter(DeterlabAccountDetails.uid == userId, DeterlabAccountDetails.isdeleted == False).first()
         
-        print("inside get")
+        # print("inside get")
         if u is None:
             return {"username":"","password":""}
         else:
@@ -45,3 +45,13 @@ class ProfileService(object):
             result['username'] = detailObject['username']
             result['password'] = aESCipher.decrypt(detailObject['password']).decode('utf-8')
             return result  
+
+    def getUserList(self,uid):
+        u = DeterlabAccountDetails.query.filter(DeterlabAccountDetails.uid == uid, DeterlabAccountDetails.isdeleted == False)
+        result = []
+        for x in u:
+            detailObject = x.to_dict()
+            r = {}
+            r['username'] = detailObject['username']
+            result.append(r)
+        return result  
