@@ -621,26 +621,30 @@ class HandleDeterLabExperimentExists(Resource):
             if str(e) == "Forbidden":
                 return {}, 403
 
-@ns.route('/deterlab/experiment/nsfile')
-class HandleDeterLabExperimentExists(Resource):
-    @api.expect(deterlab_experiment_details)
-    def post(self):
-        content = request.get_json(force=True)
-        projectName = content['projectName']
-        experimentName = content['experimentName']
-        creator_uid = userObj.getUserId()
-
+@ns.route('/deter/project/getnsfile')
+class HandleDeterGetNsFileContent(Resource):
+    def get(self):
+        eid = request.args.get('eid')
+        uid = userObj.getUserId()
         try:
-            details = ps.get(creator_uid)
+          result = {}
+          if not dm.user_can(uid,eid):
+            result['error'] = "User does not have access to this experiment"
+          else: 
+            details = ps.get(uid)
+            
             if str(details['username']).strip() !='' and str(details['password']).strip() !='':
               ssh = SSHConnection(details['username'],details['password'])
-              result = ssh.getFileContent(projectName,experimentName)
+              mapping = dm.getMapping(uid,eid)
+              result = ssh.getFileContent(mapping['project_name'],mapping['experiment_name'])
             else:
               result = {'error':'username or password doesnot exists'}
-            return result, 200
+              
+          return result, 200
         except ValueError as e:
             if str(e) == "Forbidden":
                 return {}, 403
+        
 
 @ns.route('/deter/userlist')
 class HandleDeterUserList(Resource):
