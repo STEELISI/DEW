@@ -746,3 +746,34 @@ class HandleGetStatus(Resource):
         except ValueError as e:
             if str(e) == "Forbidden":
                 return {}, 403
+
+@ns.route('/deter/project/swap')
+class HandleGetStatus(Resource):
+    def get(self):
+        eid = request.args.get('eid')
+        swapModeString = request.args.get('mode')
+        if swapModeString is None or (swapModeString.lower() != 'swapin' and swapModeString.lower() != 'swapout'):
+          return "Please select a mode, either 'swapin' or 'swapout'",200
+        if swapModeString.lower() == 'swapin':
+          swapmode = 'in'
+        else:
+          swapmode = 'out'
+        uid = userObj.getUserId()
+        try:
+          result = {}
+          if not dm.user_can(uid,eid):
+            result['error'] = "User does not have access to this experiment"
+          else: 
+            details = ps.get(uid)
+            
+            if str(details['username']).strip() !='' and str(details['password']).strip() !='':
+              ssh = SSHConnection(details['username'],details['password'])
+              mapping = dm.getMapping(uid,eid)
+              result = ssh.swap(mapping['project_name'],mapping['experiment_name'],swapmode)
+            else:
+              result = {'error':'username or password doesnot exists'}
+              
+          return result, 200
+        except ValueError as e:
+            if str(e) == "Forbidden":
+                return {}, 403

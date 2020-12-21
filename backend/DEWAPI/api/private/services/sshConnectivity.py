@@ -102,3 +102,22 @@ class SSHConnection():
             result['error'] = "Unable to connect to 'deterlab' with user '" + self.username + "'"
 
         return result
+
+    def swap(self,project,exp,mode):
+        result = {}
+        try:
+            gatewaySession = SSHSession(self.sshURL, self.username, password=self.password).open()
+            try:
+                if gatewaySession.exists('/proj/' + project) and gatewaySession.exists('/proj/' + project + '/exp/' + exp):
+                    gatewaySession.get_cmd_output('/usr/testbed/bin/swapexp ' + project + ' ' + exp + ' ' + mode)
+                    result['content'] = 'Successfull'
+                else:
+                    result['error'] = "project or experiment doesn't exist"
+            except RunCmdError as e:
+                result['error']=e.error
+            finally:
+                gatewaySession.close()
+        except ConnectionError as e:
+            result['error'] = "Unable to connect to 'deterlab' with user '" + self.username + "'"
+
+        return result
