@@ -636,7 +636,10 @@ class HandleDeterGetNsFileContent(Resource):
             if str(details['username']).strip() !='' and str(details['password']).strip() !='':
               ssh = SSHConnection(details['username'],details['password'])
               mapping = dm.getMapping(uid,eid)
-              result = ssh.getFileContent(mapping['project_name'],mapping['experiment_name'])
+              if 'error' not in mapping:
+                result = ssh.getFileContent(mapping['project_name'],mapping['experiment_name'])
+              else:
+                result = mapping
             else:
               result = {'error':'username or password doesnot exists'}
               
@@ -718,7 +721,10 @@ class HandleGetActivity(Resource):
             if str(details['username']).strip() !='' and str(details['password']).strip() !='':
               ssh = SSHConnection(details['username'],details['password'])
               mapping = dm.getMapping(uid,eid)
-              result = ssh.getActivityLogOfExperiment(mapping['project_name'],mapping['experiment_name'])
+              if 'error' not in mapping:
+                result = ssh.getActivityLogOfExperiment(mapping['project_name'],mapping['experiment_name'])
+              else:
+                result = mapping
             else:
               result = {'error':'username or password doesnot exists'}
               
@@ -742,7 +748,10 @@ class HandleGetStatus(Resource):
             if str(details['username']).strip() !='' and str(details['password']).strip() !='':
               ssh = SSHConnection(details['username'],details['password'])
               mapping = dm.getMapping(uid,eid)
-              result = ssh.getExperimentStatusInformation(mapping['project_name'],mapping['experiment_name'])
+              if 'error' not in mapping:
+                result = ssh.getExperimentStatusInformation(mapping['project_name'],mapping['experiment_name'])
+              else:
+                result = mapping
             else:
               result = {'error':'username or password doesnot exists'}
               
@@ -773,10 +782,42 @@ class HandleGetStatus(Resource):
             if str(details['username']).strip() !='' and str(details['password']).strip() !='':
               ssh = SSHConnection(details['username'],details['password'])
               mapping = dm.getMapping(uid,eid)
-              result = ssh.swap(mapping['project_name'],mapping['experiment_name'],swapmode)
+              if 'error' not in mapping:
+                result = ssh.swap(mapping['project_name'],mapping['experiment_name'],swapmode)
+              else:
+                result = mapping
             else:
               result = {'error':'username or password doesnot exists'}
               
+          return result, 200
+        except ValueError as e:
+            if str(e) == "Forbidden":
+                return {}, 403
+
+@ns.route('/deter/update/project/nsfile')
+class HandleUpdateProjectNSFile(Resource):
+    def get(self):
+        eid = request.args.get('eid')
+        uid = userObj.getUserId()
+        try:
+          result = {}
+          if not dm.user_can(uid,eid):
+            result['error'] = "User does not have access to this experiment"
+          else: 
+            details = ps.get(uid)
+            
+            if str(details['username']).strip() !='' and str(details['password']).strip() !='':
+              
+              mapping = dm.getMapping(uid,eid)
+              if 'error' not in mapping:
+                experiment = em.get_experiment(eid, uid)
+                script = hlb.HandleNS(json.loads(experiment.content))
+                ssh = SSHConnection(details['username'],details['password'])
+                result = ssh.updateProjectNsfile(mapping['project_name'],mapping['experiment_name'],script)
+              else:
+                result = mapping
+            else:
+              result = {'error':'username or password doesnot exists'}
           return result, 200
         except ValueError as e:
             if str(e) == "Forbidden":

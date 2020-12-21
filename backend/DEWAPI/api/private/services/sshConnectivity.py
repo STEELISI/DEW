@@ -123,3 +123,27 @@ class SSHConnection():
             result['error'] = "Unable to connect to 'deterlab' with user '" + self.username + "'"
 
         return result
+
+    def updateProjectNsfile(self,project,exp,fileContent):
+        result = {}
+        try:
+            gatewaySession = SSHSession(self.sshURL, self.username, password=self.password).open()
+            if not gatewaySession.exists('/proj/' + project):
+                result['error'] = "project '" + project + "' doesn't exist"
+            try:
+                if gatewaySession.exists('/proj/' + project + '/exp/' + exp):
+                    filename = exp + str(uuid.uuid4())
+                    if self.createFile(gatewaySession,filename,fileContent):
+                        gatewaySession.get_cmd_output('/usr/testbed/bin/modexp ' + project + ' ' + exp + ' ' + filename + '.ns ')
+                        result['success'] = True
+                    else:
+                        result['error']= "unable to upload file to server."
+                else:
+                    result['error']= "experiment '" + exp + "' doesn't exist"
+            except RunCmdError as e:
+                result['error']= "project '" + project + "' doesn't exist"
+            finally:
+                gatewaySession.close()
+        except ConnectionError as e:
+            result['error'] = "Unable to connect to 'deterlab' with user '" + self.username + "'"
+        return result
