@@ -1,5 +1,6 @@
 from jumpssh import SSHSession, RunCmdError, ConnectionError
 from DEWAPI import settings
+import uuid
 
 class SSHConnection():
     def __init__(self,username,password):
@@ -45,9 +46,9 @@ class SSHConnection():
             result['error'] = "Unable to connect to 'deterlab' with user '" + self.username + "'"
         return result
 
-    def createFile(self,gatewaySession,exp,fileContent):
+    def createFile(self,gatewaySession,filename,fileContent):
         result = {}
-        gatewaySession.file(remote_path='/users/' + self.username + '/' + exp + '.ns', content=fileContent)
+        gatewaySession.file(remote_path='/users/' + self.username + '/' + filename + '.ns', content=fileContent)
         return True
     
     def createExperimentIfNotExistOnDeterLab(self,project,exp,fileContent):
@@ -58,8 +59,9 @@ class SSHConnection():
                 result['error'] = "project '" + project + "' doesn't exist"
             try:
                 if not gatewaySession.exists('/proj/' + project + '/exp/' + exp):
-                    if self.createFile(gatewaySession,exp,fileContent):
-                        gatewaySession.get_cmd_output('/usr/testbed/bin/startexp -f -p ' + project + ' -e ' + exp + ' ' + exp + '.ns ')
+                    filename = exp + str(uuid.uuid4())
+                    if self.createFile(gatewaySession,filename,fileContent):
+                        gatewaySession.get_cmd_output('/usr/testbed/bin/startexp -f -p ' + project + ' -e ' + exp + ' ' + filename + '.ns ')
                 
                 result['success'] = True
             except RunCmdError as e:
