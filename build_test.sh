@@ -1,25 +1,31 @@
 #!/usr/bin/env bash
 
-# change test1 to test2 or test3 to get the script for test2 or test3
+# change PORTS as per environment
+# 4000 - prod
+# 6100 - test1
+# 6200 - test2
+# 6300 - test3
 
 echo "Building frontend..."
-cd /home/ubuntu/dew/test1
-cd DEW/frontend
+
+cd frontend
 npm install
 npm run prod
+cd ..
 
 echo "Building documentation..."
-cd /home/ubuntu/dew/test1
-cd DEW/documentation
+
+cd documentation
 python3 -m venv venv
 source venv/bin/activate
 pip3 install -r requirements.txt
 mkdocs build
+cd ..
 
 echo "Building backend..."
-cd /home/ubuntu/dew/test1
-cd DEW/backend
-make deploy_test1
+cd backend
+make deploy PORT=6100
+cd ..
 
 echo "Reloading nginx..."
 sudo service nginx reload
