@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<div *ngIf="!showWarning; else elseBlock">
+    <div class="row">
+        <div class="col-9">
+            <div *ngIf="showLinkWindow || showCreateWindow">
+                <div class="card">
+                    <h6 class="card-title" *ngIf="showLinkWindow">Link to Deterlab Experiment</h6>
+                    <h6 class="card-title" *ngIf="showCreateWindow">Create a new Deterlab Experiment</h6>
+                    <div class="card-body">
+                        <div class="form-group">
+                            <label for="deterProjName">Project Name</label>
+                            <input type="text" class="form-control" id="deterProjName"
+                                   aria-describedby="projHelp" placeholder="Enter project name"
+                                    (change)="testProjectValidity()"
+                                   [(ngModel)]="projName"
+                                   [ngClass]="activateOnProjValidity()"
+                            >
+                            <div id="projHelp" class="invalid-feedback">
+                                Please enter a valid Deterlab project name
+                            </div>
+                        </div>
+
+                        <div class="form-group" *ngIf="isValidProjName && showLinkWindow">
+                            <label for="deterExpName1">Experiment Name</label>
+                            <input type="text" class="form-control" id="deterExpName1"
+                                   aria-describedby="expHelp1" placeholder="Enter experiment name"
+                                    (change)="testExperimentValidity()"
+                                   [(ngModel)]="expName"
+                                   [ngClass]="activateOnExpValidity()"
+                            >
+                            <div id="expHelp1" class="invalid-feedback">
+                                Please enter a valid Deterlab experiment name
+                            </div>
+                        </div>
+
+                        <div class="form-group" *ngIf="isValidProjName && showCreateWindow">
+                            <label for="deterExpName2">Experiment Name</label>
+                            <input type="text" class="form-control" id="deterExpName2"
+                                   aria-describedby="expHelp2" placeholder="Enter experiment name"
+                                    (change)="testExperimentValidity()"
+                                   [(ngModel)]="expName"
+                                   [ngClass]="activateOnExpCreateValidity()"
+                            >
+                            <div id="expHelp2" class="invalid-feedback">
+                                Experiment already exists
+                            </div>
+                        </div>
+                        <div class="row" *ngIf="expName">
+                            <div class="col-4"></div>
+                            <div class="col-2" *ngIf="isValidExpName && showLinkWindow">
+                                <button type="button" class="btn btn-success link-btn"
+                                (click)="createOrLinkToNewExperiment()">Link</button>
+                            </div>
+                            <div class="col-2" *ngIf="!isValidExpName && showCreateWindow">
+                                <button type="button" class="btn btn-success link-btn"
+                                (click)="createOrLinkToNewExperiment()">Create</button>
+                            </div>
+                            <div class="col-2">
+                                <button type="button" class="btn btn-danger cancel-btn">Cancel</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-3">
+            <b>Profile:</b> {{this.userDetails.username}}<br/>
+            <button type="button" class="btn btn-outline-success link-dt"
+                    (click)="enableTheLinkWindow()">Link to Deterlab experiment
+            </button>
+            <button type="button" class="btn btn-outline-success new-dt"
+            (click)="enableTheCreateWindow()">Create a new Deterlab experiment</button>
+        </div>
+    </div>
+</div>
+<ng-template #elseBlock>
+    <div class="card">
+        <div class="card-body">
+            You have not added any deterlab profile. Please add a profile and try again.
+        </div>
+    </div>
+</ng-template>
+</body>
+</html>
