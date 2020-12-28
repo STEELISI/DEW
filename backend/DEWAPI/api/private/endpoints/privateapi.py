@@ -143,8 +143,8 @@ class HandleTopologyParse(Resource):
         json_data = request.get_json(force=True)
         scenarios = json_data['scenario']
         constraints = json_data['constraints']
-        nodes, edges = hlb.HandleTopologyParse(scenarios, constraints)
-        return {"status": "success", "nodes": nodes, "edges": edges }
+        actors, lans, edges = hlb.HandleTopologyParse(scenarios, constraints)
+        return {"status": "success", "actors": actors, "lans": lans, "edges": edges }
 
 @ns.route('/nlp/behavior')
 class HandleNLPTranslator(Resource):

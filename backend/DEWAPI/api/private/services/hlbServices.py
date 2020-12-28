@@ -333,37 +333,29 @@ class HLBService():
         return nodes, edges
 
     def HandleTopologyParse(self,sceanrios,constraints):
-        nodes = {}
+        actors = dict()
+        lans = []
         edges = []
         gen = bashGenerator(sceanrios,constraints=constraints)
         parsed_scenario, parsed_constraints = gen.generate()
-        print("Parsed results(b) : ",parsed_scenario)
-        print("Parsed results(c) : ",parsed_constraints)
-        lanCount = 0
-        for line in parsed_scenario:
-            if line[1] is not None:
-                nodes[line[1][0]] = { 'num': 1, 'os': 'default', 'type': 'actor' }
-        for const in parsed_constraints:
+        # for line in parsed_scenario:
+        #     if line[1] is not None:
+        #         nodes[line[1][0]] = dict({ 'num': 1, 'os': 'default', 'type': 'actor' })
+        for i, const in enumerate(parsed_constraints):
             if const[0] is not None:
-                print("const 0 : ", const[0])
-                for n in const[1]:
-                    nodes[n] = { 'num': 1, 'os': 'default', 'type': 'actor' }
-
-                if const[0] == "num":
-                    nodes[const[1][0]]['num'] = int(const[2][0])
-                elif const[0] == "os":
-                    nodes[const[1][0]]['os'] = const[2][0]
+                if const[1][0] not in actors:
+                    actors[const[1][0]] = dict({ 'num': 1, 'os': 'default', 'type': 'actor' })
+                if const[0] == "num" or const[0] == "os":
+                    actors[const[1][0]][const[0]] = const[2][0]
                 elif "link" in const[0]:
                     edges.append({ 'source': const[1][0], 'target': const[1][1] })
                 elif "lan" in const[0]:
-                    nodeName = "lan" + str(lanCount)
-                    lanCount += 1
-                    nodes[nodeName] = { 'type' : 'lan' }
+                    nodeName = "lan" + str(i)
+                    lans.append({ 'type' : 'lan', 'lineNum': i, 'actors': const[1]})
                     for n in const[1]:
                         edges.append({'source': n, 'target': nodeName})
 
-
-        return nodes, edges
+        return actors, lans, edges
 
 
 
