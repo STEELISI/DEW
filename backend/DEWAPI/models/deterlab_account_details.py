@@ -6,7 +6,7 @@ class DeterlabAccountDetails(db.Model):
     __tablename__ = 'deterlab_account_details'
 
     daid = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    uid = db.Column(db.String, db.ForeignKey('user.uid'))
+    uid = db.Column(db.String, nullable=False)
     username = db.Column(db.String(255), nullable=False)
     password = db.Column(db.String(255), nullable=False)
     created_at = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
