@@ -21,7 +21,7 @@ def upgrade():
     op.create_table(
     	'deterlab_account_details',
     	sa.Column('daid', sa.Integer, primary_key=True),
-    	sa.Column('uid', sa.String(255), sa.ForeignKey('user.uid')),
+    	sa.Column('uid', sa.String(255), nullable=False),
     	sa.Column('username',sa.String(255), nullable=False),
     	sa.Column('password',sa.String(255),nullable=False,),
     	sa.Column('created_at',sa.DateTime, nullable=False,default=datetime.utcnow),
