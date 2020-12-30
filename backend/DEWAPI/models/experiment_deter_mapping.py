@@ -6,7 +6,7 @@ class DeterLabExperimentMapping(db.Model):
     __tablename__ = 'deterlab_userid_experiment_mapping'
 
     mid = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    daid = db.Column(db.Integer, db.ForeignKey('deterlab_account_details.daid'))
+    daid = db.Column(db.Integer,nullable=False)
     experiment_id = db.Column(db.Integer, db.ForeignKey('experiment.experiment_id'))
     project_name = db.Column(db.String(255), nullable=False)
     experiment_name = db.Column(db.String(255), nullable=False)

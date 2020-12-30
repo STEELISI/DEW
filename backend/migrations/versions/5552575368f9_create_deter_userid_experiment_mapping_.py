@@ -21,7 +21,7 @@ def upgrade():
     op.create_table(
     	'deterlab_userid_experiment_mapping',
     	sa.Column('mid', sa.Integer, primary_key=True),
-    	sa.Column('daid', sa.Integer,sa.ForeignKey('deterlab_account_details.daid')),
+    	sa.Column('daid', sa.Integer, nullable=False),
     	sa.Column('experiment_id', sa.Integer, sa.ForeignKey('experiment.experiment_id')),
     	sa.Column('project_name',sa.String(255), nullable=False),
     	sa.Column('experiment_name',sa.String(255),nullable=False),
