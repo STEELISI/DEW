@@ -12,11 +12,11 @@ import io
 
 class DeterLabExperimentMapper(object):
     
-    def createOrModifyMapping(self, uid, experiment_id, project_name, experiment_name):
-        m = DeterLabExperimentMapping.query.filter(DeterLabExperimentMapping.uid == uid , DeterLabExperimentMapping.experiment_id == experiment_id , DeterLabExperimentMapping.isdeleted == False).first()
+    def createOrModifyMapping(self, daid, experiment_id, project_name, experiment_name):
+        m = DeterLabExperimentMapping.query.filter(DeterLabExperimentMapping.daid == daid , DeterLabExperimentMapping.experiment_id == experiment_id , DeterLabExperimentMapping.isdeleted == False).first()
 
         if m is None:
-            mapping = DeterLabExperimentMapping(uid=uid, experiment_id=experiment_id, project_name=project_name, experiment_name=experiment_name,isdeleted=False)
+            mapping = DeterLabExperimentMapping(daid=daid, experiment_id=experiment_id, project_name=project_name, experiment_name=experiment_name,isdeleted=False)
             db.session.add(mapping)
         else:
             m.project_name = project_name
@@ -30,9 +30,9 @@ class DeterLabExperimentMapper(object):
 
         return "Successfull"
     
-    def getMapping(self, uid, experiment_id):
+    def getMapping(self, daid, experiment_id):
         result = {}
-        m = DeterLabExperimentMapping.query.filter(DeterLabExperimentMapping.uid == uid, DeterLabExperimentMapping.experiment_id == experiment_id, DeterLabExperimentMapping.isdeleted == False).first()
+        m = DeterLabExperimentMapping.query.filter(DeterLabExperimentMapping.daid == daid, DeterLabExperimentMapping.experiment_id == experiment_id, DeterLabExperimentMapping.isdeleted == False).first()
         
         if m is None:
             result['error'] = 'No Mapping Found.'

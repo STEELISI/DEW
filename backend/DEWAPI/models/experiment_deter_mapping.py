@@ -6,7 +6,7 @@ class DeterLabExperimentMapping(db.Model):
     __tablename__ = 'deterlab_userid_experiment_mapping'
 
     mid = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    uid = db.Column(db.String, db.ForeignKey('user.uid'))
+    daid = db.Column(db.Integer, db.ForeignKey('deterlab_account_details.daid'))
     experiment_id = db.Column(db.String, db.ForeignKey('experiment.experiment_id'))
     project_name = db.Column(db.String(255), nullable=False)
     experiment_name = db.Column(db.String(255), nullable=False)
@@ -17,7 +17,7 @@ class DeterLabExperimentMapping(db.Model):
     def to_dict(self):
         return {
             'mid':self.mid,
-            'uid': self.uid,
+            'daid': self.daid,
             'experiment_id': self.experiment_id,
             'project_name': self.project_name,
             'experiment_name': self.experiment_name,

@@ -36,12 +36,12 @@ class ProfileService(object):
     def get(self, userId):
         u = DeterlabAccountDetails.query.filter(DeterlabAccountDetails.uid == userId, DeterlabAccountDetails.isdeleted == False).first()
         
-        # print("inside get")
         if u is None:
             return {"username":"","password":""}
         else:
             result = {}
             detailObject = u.to_dict()
+            result['id'] = detailObject['daid']
             result['username'] = detailObject['username']
             result['password'] = aESCipher.decrypt(detailObject['password']).decode('utf-8')
             return result  
