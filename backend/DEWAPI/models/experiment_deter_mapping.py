@@ -7,7 +7,7 @@ class DeterLabExperimentMapping(db.Model):
 
     mid = db.Column(db.Integer, primary_key=True, autoincrement=True)
     daid = db.Column(db.Integer, db.ForeignKey('deterlab_account_details.daid'))
-    experiment_id = db.Column(db.String, db.ForeignKey('experiment.experiment_id'))
+    experiment_id = db.Column(db.Integer, db.ForeignKey('experiment.experiment_id'))
     project_name = db.Column(db.String(255), nullable=False)
     experiment_name = db.Column(db.String(255), nullable=False)
     created_at = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
