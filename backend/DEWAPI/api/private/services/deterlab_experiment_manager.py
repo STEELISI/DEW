@@ -26,7 +26,7 @@ class DeterLabExperimentManager(object):
         
         db.session.commit()
 
-        return "Successfull"
+        return "Successful"
     
     def getMapping(self, daid, experiment_id):
         result = {}

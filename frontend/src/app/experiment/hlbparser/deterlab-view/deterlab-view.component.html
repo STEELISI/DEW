@@ -8,16 +8,16 @@
 <div *ngIf="!showWarning; else elseBlock">
     <div class="row">
         <div class="col-9">
-            <div *ngIf="showLinkWindow || showCreateWindow">
+            <div *ngIf="showLinkWindow || showCreateWindow; else activityWindow">
                 <div class="card">
-                    <h6 class="card-title" *ngIf="showLinkWindow">Link to Deterlab Experiment</h6>
-                    <h6 class="card-title" *ngIf="showCreateWindow">Create a new Deterlab Experiment</h6>
                     <div class="card-body">
+                        <h5 class="card-title" *ngIf="showLinkWindow">Link to Deterlab Experiment</h5>
+                        <h5 class="card-title" *ngIf="showCreateWindow">Create a new Deterlab Experiment</h5>
                         <div class="form-group">
                             <label for="deterProjName">Project Name</label>
                             <input type="text" class="form-control" id="deterProjName"
                                    aria-describedby="projHelp" placeholder="Enter project name"
-                                    (change)="testProjectValidity()"
+                                   (change)="testProjectValidity()"
                                    [(ngModel)]="projName"
                                    [ngClass]="activateOnProjValidity()"
                             >
@@ -30,7 +30,7 @@
                             <label for="deterExpName1">Experiment Name</label>
                             <input type="text" class="form-control" id="deterExpName1"
                                    aria-describedby="expHelp1" placeholder="Enter experiment name"
-                                    (change)="testExperimentValidity()"
+                                   (change)="testExperimentValidity()"
                                    [(ngModel)]="expName"
                                    [ngClass]="activateOnExpValidity()"
                             >
@@ -43,7 +43,7 @@
                             <label for="deterExpName2">Experiment Name</label>
                             <input type="text" class="form-control" id="deterExpName2"
                                    aria-describedby="expHelp2" placeholder="Enter experiment name"
-                                    (change)="testExperimentValidity()"
+                                   (change)="testExperimentValidity()"
                                    [(ngModel)]="expName"
                                    [ngClass]="activateOnExpCreateValidity()"
                             >
@@ -55,11 +55,13 @@
                             <div class="col-4"></div>
                             <div class="col-2" *ngIf="isValidExpName && showLinkWindow">
                                 <button type="button" class="btn btn-success link-btn"
-                                (click)="createOrLinkToNewExperiment()">Link</button>
+                                        (click)="createOrLinkToNewExperiment()">Link
+                                </button>
                             </div>
                             <div class="col-2" *ngIf="!isValidExpName && showCreateWindow">
                                 <button type="button" class="btn btn-success link-btn"
-                                (click)="createOrLinkToNewExperiment()">Create</button>
+                                        (click)="createOrLinkToNewExperiment()">Create
+                                </button>
                             </div>
                             <div class="col-2">
                                 <button type="button" class="btn btn-danger cancel-btn">Cancel</button>
@@ -68,14 +70,35 @@
                     </div>
                 </div>
             </div>
+            <ng-template #activityWindow>
+                <div class="card" *ngIf="activityMessages.length > 0">
+                    <div class="card-body">
+                        <h5 class="card-title">Activity of experiment</h5>
+                        <div *ngFor="let line of activityMessages">
+                            {{line}}
+                        </div>
+                    </div>
+                </div>
+            </ng-template>
         </div>
         <div class="col-3">
             <b>Profile:</b> {{this.userDetails.username}}<br/>
-            <button type="button" class="btn btn-outline-success link-dt"
-                    (click)="enableTheLinkWindow()">Link to Deterlab experiment
-            </button>
-            <button type="button" class="btn btn-outline-success new-dt"
-            (click)="enableTheCreateWindow()">Create a new Deterlab experiment</button>
+            <div *ngIf="showSwap; else nonSwapBlock">
+                <button type="button" class="btn btn-outline-success swap-dt"
+                        (click)="swapInOrSwapOutExperiment('swapin')">Swap In Experiment
+                </button>
+                <br/>
+                <b>Name: </b>{{this.experimentName}}<br/>
+                <b>Status: </b>{{this.experimentStatus}}<br/>
+            </div>
+            <ng-template #nonSwapBlock>
+                <button type="button" class="btn btn-outline-success link-dt"
+                        (click)="enableTheLinkWindow()">Link to Deterlab experiment
+                </button>
+                <button type="button" class="btn btn-outline-success new-dt"
+                        (click)="enableTheCreateWindow()">Create a new Deterlab experiment
+                </button>
+            </ng-template>
         </div>
     </div>
 </div>
@@ -86,5 +109,12 @@
         </div>
     </div>
 </ng-template>
+<div class="alert deter-alert alert-dismissible fade show" [ngClass]="alertType" role="alert" *ngIf="showAlert">
+    <h5 class="alert-heading">Update</h5>
+    <p>{{alertMsg}}</p>
+    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+    </button>
+</div>
 </body>
 </html>

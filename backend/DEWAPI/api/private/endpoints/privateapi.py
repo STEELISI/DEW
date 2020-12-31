@@ -777,6 +777,7 @@ class HandleGetStatus(Resource):
         eid = request.args.get('eid')
         daid = request.args.get('account_id')
         swapModeString = request.args.get('mode')
+        print(eid, swapModeString)
         if swapModeString is None or (swapModeString.lower() != 'swapin' and swapModeString.lower() != 'swapout'):
           return "Please select a mode, either 'swapin' or 'swapout'",200
         if swapModeString.lower() == 'swapin':
