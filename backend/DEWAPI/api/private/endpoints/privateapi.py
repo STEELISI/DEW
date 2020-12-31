@@ -9,6 +9,9 @@ from ..services.nlpServices import NLPService
 from ..services.experiment_manager import ExperimentManager
 from ..services.dew_parser import DEWParser
 from ..services.token_manager import TokenManager
+from ..services.profileService import ProfileService
+from ..services.sshConnectivity import SSHConnection
+from ..services.deterlab_user_experiment_mapping import DeterLabExperimentMapper
 from DEWAPI.user import userObj
 import globals
 
@@ -21,6 +24,8 @@ nlp = NLPService()
 em = ExperimentManager()
 dew_parser = DEWParser()
 tm = TokenManager()
+ps = ProfileService()
+dm = DeterLabExperimentMapper()
 
 @ns.route('/hlb/translate/<string:format>')
 class HandleHLBTranslator(Resource):
@@ -429,6 +434,7 @@ class HandleExperimentControl(Resource):
     except ValueError as e:
       if str(e) == "Forbidden":
         return {}, 403
+
 @ns.route('/persist/getUserAccessList/')
 class HandleExperimentUserControlList(Resource):
     @api.expect(userAccessListModel)
@@ -539,3 +545,298 @@ class HandleTokenBasedAuthTokenList(Resource):
             if str(e) == "Forbidden":
                 return {}, 403
 
+
+
+@ns.route('/profile/accounts/deterLab/save')
+class HandleProfileDeterLabSaveAccounts(Resource):
+    @api.expect(deterlab_user_details)
+    def post(self):
+        """
+        Create token for a given experiment
+        """
+        content = request.get_json(force=True)
+        username = content['username']
+        password = content['password']
+        creator_uid = userObj.getUserId()
+        print(creator_uid)
+        try:
+            result = ps.save(creator_uid, username, password)
+            return result, 200
+        except ValueError as e:
+            if str(e) == "Forbidden":
+                return {}, 403
+
+
+@ns.route('/profile/accounts/deterLab/get')
+class HandleProfileDeterLabGetAccounts(Resource):
+    def get(self):
+        """
+        Create token for a given experiment
+        """
+        creator_uid = userObj.getUserId()
+
+        try:
+            result = ps.get(creator_uid)
+            return result, 200
+        except ValueError as e:
+            if str(e) == "Forbidden":
+                return {}, 403
+
+@ns.route('/profile/accounts/deterLab/delete')
+class HandleProfileDeterLabDeleteAccounts(Resource):
+    def delete(self):
+        """
+        Create token for a given experiment
+        """
+        creator_uid = userObj.getUserId()
+
+        try:
+            result = ps.delete(creator_uid)
+            return result, 200
+        except ValueError as e:
+            if str(e) == "Forbidden":
+                return {}, 403
+
+@ns.route('/deterlab/project/exists')
+class HandleDeterLabProjectExists(Resource):
+    @api.expect(deterlab_project_name)
+    def post(self):
+        content = request.get_json(force=True)
+        projectName = content['projectName']
+        creator_uid = userObj.getUserId()
+
+        try:
+            details = ps.get(creator_uid)
+            if str(details['username']).strip() !='' and str(details['password']).strip() !='':
+              ssh = SSHConnection(details['username'],details['password'])
+              result = ssh.isProjectExists(projectName)
+            else:
+              result = {'error':'username or password doesnot exists'}
+            return result, 200
+        except ValueError as e:
+            if str(e) == "Forbidden":
+                return {}, 403
+
+@ns.route('/deterlab/experiment/exists')
+class HandleDeterLabExperimentExists(Resource):
+    @api.expect(deterlab_experiment_details)
+    def post(self):
+        content = request.get_json(force=True)
+        projectName = content['projectName']
+        experimentName = content['experimentName']
+        creator_uid = userObj.getUserId()
+
+        try:
+            details = ps.get(creator_uid)
+            if str(details['username']).strip() !='' and str(details['password']).strip() !='':
+              ssh = SSHConnection(details['username'],details['password'])
+              result = ssh.isExperimentExists(projectName,experimentName)
+            else:
+              result = {'error':'username or password doesnot exists'}
+            return result, 200
+        except ValueError as e:
+            if str(e) == "Forbidden":
+                return {}, 403
+
+@ns.route('/deter/project/getnsfile')
+class HandleDeterGetNsFileContent(Resource):
+    def get(self):
+        eid = request.args.get('eid')
+        uid = userObj.getUserId()
+        try:
+          result = {}
+          if not dm.user_can(uid,eid):
+            result['error'] = "User does not have access to this experiment"
+          else: 
+            details = ps.get(uid)
+            
+            if str(details['username']).strip() !='' and str(details['password']).strip() !='':
+              ssh = SSHConnection(details['username'],details['password'])
+              mapping = dm.getMapping(details['id'],eid)
+              if 'error' not in mapping:
+                result = ssh.getFileContent(mapping['project_name'],mapping['experiment_name'])
+              else:
+                result = mapping
+            else:
+              result = {'error':'username or password doesnot exists'}
+              
+          return result, 200
+        except ValueError as e:
+            if str(e) == "Forbidden":
+                return {}, 403
+        
+
+@ns.route('/deter/userlist')
+class HandleDeterUserList(Resource):
+    def get(self):
+        uid = userObj.getUserId()
+        try:
+          result = ps.getUserList(uid)
+          return result, 200
+        except ValueError as e:
+            if str(e) == "Forbidden":
+                return {}, 403
+
+@ns.route('/deter/project')
+class HandleProjectMapping(Resource):
+    def get(self):
+        eid = request.args.get('eid')
+        uid = userObj.getUserId()
+        try:
+          result = {}
+          if not dm.user_can(uid,eid):
+            result['error'] = "User does not have access to this experiment"
+          else: 
+            details = ps.get(uid)
+            result = dm.getMapping(details['id'],eid)
+          return result, 200
+        except ValueError as e:
+            if str(e) == "Forbidden":
+                return {}, 403
+
+@ns.route('/deter/add/project/mapping')
+class HandleAddProjectMapping(Resource):
+    @api.expect(deterlab_experiment_mapping_details)
+    def post(self):
+        content = request.get_json(force=True)
+        projectName = content['projectName']
+        experimentName = content['experimentName']
+        eid = content['experimentId']
+        uid = userObj.getUserId()
+        try:
+          result = {}
+          if not dm.user_can(uid,eid):
+            result['error'] = "User does not have access to this experiment"
+          else: 
+            details = ps.get(uid)
+            
+            if str(details['username']).strip() !='' and str(details['password']).strip() !='':
+              experiment = em.get_experiment(eid, uid)
+              script = hlb.HandleNS(json.loads(experiment.content))
+              ssh = SSHConnection(details['username'],details['password'])
+              result = ssh.createExperimentIfNotExistOnDeterLab(projectName,experimentName,script)
+              if 'error' not in result:
+                result = dm.createOrModifyMapping(details['id'],eid,projectName,experimentName)
+            else:
+              result = {'error':'username or password doesnot exists'}
+          return result, 200
+        except ValueError as e:
+            if str(e) == "Forbidden":
+                return {}, 403
+
+@ns.route('/deter/project/getactivity')
+class HandleGetActivity(Resource):
+    def get(self):
+        eid = request.args.get('eid')
+        uid = userObj.getUserId()
+        try:
+          result = {}
+          if not dm.user_can(uid,eid):
+            result['error'] = "User does not have access to this experiment"
+          else: 
+            details = ps.get(uid)
+            
+            if str(details['username']).strip() !='' and str(details['password']).strip() !='':
+              ssh = SSHConnection(details['username'],details['password'])
+              mapping = dm.getMapping(details['id'],eid)
+              if 'error' not in mapping:
+                result = ssh.getActivityLogOfExperiment(mapping['project_name'],mapping['experiment_name'])
+              else:
+                result = mapping
+            else:
+              result = {'error':'username or password doesnot exists'}
+              
+          return result, 200
+        except ValueError as e:
+            if str(e) == "Forbidden":
+                return {}, 403
+
+@ns.route('/deter/project/getstatus')
+class HandleGetStatus(Resource):
+    def get(self):
+        eid = request.args.get('eid')
+        uid = userObj.getUserId()
+        try:
+          result = {}
+          if not dm.user_can(uid,eid):
+            result['error'] = "User does not have access to this experiment"
+          else: 
+            details = ps.get(uid)
+            
+            if str(details['username']).strip() !='' and str(details['password']).strip() !='':
+              ssh = SSHConnection(details['username'],details['password'])
+              mapping = dm.getMapping(details['id'],eid)
+              if 'error' not in mapping:
+                result = ssh.getExperimentStatusInformation(mapping['project_name'],mapping['experiment_name'])
+              else:
+                result = mapping
+            else:
+              result = {'error':'username or password doesnot exists'}
+              
+          return result, 200
+        except ValueError as e:
+            if str(e) == "Forbidden":
+                return {}, 403
+
+@ns.route('/deter/project/swap')
+class HandleGetStatus(Resource):
+    def get(self):
+        eid = request.args.get('eid')
+        swapModeString = request.args.get('mode')
+        if swapModeString is None or (swapModeString.lower() != 'swapin' and swapModeString.lower() != 'swapout'):
+          return "Please select a mode, either 'swapin' or 'swapout'",200
+        if swapModeString.lower() == 'swapin':
+          swapmode = 'in'
+        else:
+          swapmode = 'out'
+        uid = userObj.getUserId()
+        try:
+          result = {}
+          if not dm.user_can(uid,eid):
+            result['error'] = "User does not have access to this experiment"
+          else: 
+            details = ps.get(uid)
+            
+            if str(details['username']).strip() !='' and str(details['password']).strip() !='':
+              ssh = SSHConnection(details['username'],details['password'])
+              mapping = dm.getMapping(details['id'],eid)
+              if 'error' not in mapping:
+                result = ssh.swap(mapping['project_name'],mapping['experiment_name'],swapmode)
+              else:
+                result = mapping
+            else:
+              result = {'error':'username or password doesnot exists'}
+              
+          return result, 200
+        except ValueError as e:
+            if str(e) == "Forbidden":
+                return {}, 403
+
+@ns.route('/deter/update/project/nsfile')
+class HandleUpdateProjectNSFile(Resource):
+    def get(self):
+        eid = request.args.get('eid')
+        uid = userObj.getUserId()
+        try:
+          result = {}
+          if not dm.user_can(uid,eid):
+            result['error'] = "User does not have access to this experiment"
+          else: 
+            details = ps.get(uid)
+            
+            if str(details['username']).strip() !='' and str(details['password']).strip() !='':
+              
+              mapping = dm.getMapping(details['id'],eid)
+              if 'error' not in mapping:
+                experiment = em.get_experiment(eid, uid)
+                script = hlb.HandleNS(json.loads(experiment.content))
+                ssh = SSHConnection(details['username'],details['password'])
+                result = ssh.updateProjectNsfile(mapping['project_name'],mapping['experiment_name'],script)
+              else:
+                result = mapping
+            else:
+              result = {'error':'username or password doesnot exists'}
+          return result, 200
+        except ValueError as e:
+            if str(e) == "Forbidden":
+                return {}, 403

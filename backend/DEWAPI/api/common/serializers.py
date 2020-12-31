@@ -118,6 +118,25 @@ token_data_small = api.model('Toggle token object',{
   'token': fields.String(description="Auth token to be toggled", required=True)
 })
 
+deterlab_user_details = api.model('Deter Lab user details', {
+  'username': fields.String(description="Deter Lab User Name", required=True),
+  'password': fields.String(description="Deter Lab Password", required=True)
+})
+
+deterlab_project_name = api.model('Deter Lab project name', {
+  'projectName': fields.String(description="Deter Lab Project Name", required=True)
+})
+
+deterlab_experiment_details = api.model('Deter Lab Experiment Details', {
+  'projectName': fields.String(description="Deter Lab Project Name", required=True),
+  'experimentName': fields.String(description="Deter Lab Experiment Name", required=True)
+})
+
+deterlab_experiment_mapping_details = api.model('Deter Lab Experiment Mapping Details', {
+  'projectName': fields.String(description="Deter Lab Project Name", required=True),
+  'experimentName': fields.String(description="Deter Lab Experiment Name", required=True),
+  'experimentId': fields.String(description="DEW Experiment Id", required=True)
+})
 
 uid_header_parser = api.parser()
 uid_header_parser.add_argument('X-user-id',location='headers')

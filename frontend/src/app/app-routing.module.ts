@@ -9,6 +9,12 @@ const routes: Routes = [
       .then(m => m.HomePageModule),
    },
    {
+    path: 'profile',
+    canActivate:[AuthGuard],
+    loadChildren: () => import('./profile/profile.module')
+      .then(m => m.ProfileModule),
+   },
+   {
     path: 'public',
     loadChildren: () => import('./public/public.module')
       .then(m => m.PublicModule),

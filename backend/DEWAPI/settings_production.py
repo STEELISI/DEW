@@ -12,6 +12,10 @@ RESTPLUS_ERROR_404_HELP = False
 
 SQLALCHEMY_DATABASE_URI = os.environ.get("DATABASE_URI")
 
+ENCRYPTION_KEY = os.environ.get("ENCRYPTION_KEY")
+
+DETERLAB_USER_URL = os.environ.get("DETERLAB_USER_URL")
+
 if not SQLALCHEMY_DATABASE_URI:
     raise ValueError("Valid database URI not provided")
 

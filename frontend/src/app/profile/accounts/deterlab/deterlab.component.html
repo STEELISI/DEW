@@ -1,0 +1,28 @@
+
+  <div class="row" style="margin: 0.5em;">
+    <div class="col-md-6" style="margin: 0.5em;">
+      
+      <mat-card>
+        <label>User details:</label>
+        <mat-form-field class="col-md-12" appearance="outline">
+          <mat-label>User Name</mat-label>
+          <input
+            matInput
+            [(ngModel)]="userName"
+          />
+         
+        </mat-form-field>
+
+        <mat-form-field class="col-md-12"  appearance="outline">
+          <mat-label>Enter your password</mat-label>
+          <input matInput [type]="hide ? 'password' : 'text'" [(ngModel)]="password">
+          <button mat-icon-button matSuffix (click)="hide = !hide" [attr.aria-label]="'Hide password'" [attr.aria-pressed]="hide">
+          <mat-icon>{{hide ? 'visibility_off' : 'visibility'}}</mat-icon>
+          </button>
+        </mat-form-field>
+        <button mat-raised-button class="margin_2em" (click)="save()">Save</button>
+        <button mat-raised-button class="margin_2em" (click)="delete()">Delete</button>
+      </mat-card>
+    </div>
+    </div>
+
