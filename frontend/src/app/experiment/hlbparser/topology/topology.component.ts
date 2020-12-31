@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, ViewChild, HostListener } from '@angular/core';
+import { Component, OnInit, Inject, Input, ViewChild, HostListener } from '@angular/core';
 import { FormBuilder } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA, MatDialog, MatSnackBar } from '@angular/material';
 import { Edge, Node, Layout, ClusterNode, NodePosition, GraphComponent } from '@swimlane/ngx-graph';
@@ -92,44 +92,7 @@ export class TopologyGraphComponent implements OnInit{
       this.matching = d
     })
 
-    var behaviors = null
-    var constraints = null
-    this.state.getConstraints().subscribe((c) => {
-      constraints = c
-    })
-    this.state.getBehavior().subscribe((b) => {
-      behaviors = b
-    })
-    this.http.put("v1/pr/hlb/topology/parse", {"scenario": behaviors, "constraints": constraints},{withCredential: true}).subscribe((data) => {
-      this.nodes = []
-      this.links = []
-      for(const n in data['actors']){
-        var n2: Node = {
-          data: data['actors'][n],
-          id: n,
-          label: n
-        }
-        console.log(n2)
-        this.nodes.push(n2)
-        this.nodes =  [...this.nodes]
-      }
-
-      for(const n of data['lans']){
-        var n2: Node = {
-          data: n,
-          id: "lan" + n['lineNum'],
-          label: "lan"
-        }
-        this.nodes.push(n2)
-        this.nodes =  [...this.nodes]
-      }
-
-      for(const e of data['edges']){
-        var e2: Edge = e
-        this.links.push(e2)
-        this.links = [...this.links]
-      }
-    })
+    this.drawGraph()
 
   }
 
@@ -226,7 +189,7 @@ export class TopologyGraphComponent implements OnInit{
     var node: Node = {
       data: {
         'type': 'lan',
-        nodes: [],
+        actors: [],
         lineNum: null
 
       },
@@ -234,22 +197,31 @@ export class TopologyGraphComponent implements OnInit{
       label: 'lan'
     }
 
-    this.updateLanDEW(node)
+    this.addLanDEW(node)
 
     this.nodes.push(node)
     this.nodes = [...this.nodes]
   }
 
   public editNode(event,node){
+    if(node.data.type !== "actor"){
+      return
+    }
     event.preventDefault()
     event.stopPropagation()
-    debugger;
+    var dialogRef = this.dialog.open(UpdateActorInfo, {
+      width: "60%",
+      data: node
+    });
+    dialogRef.afterClosed().subscribe((result) => {
+      this.redrawGraph()
+    })
   }
 
   private generateConstraintDEW(node){
     if(node.data.type == "lan"){
        // var nodes = this.getLanNodes(node)
-       this.updateLanDEW(node)
+       this.addLanDEW(node)
     } else {
       var str = []
       str.push("num " + node.label + " " + node.data.num)
@@ -262,31 +234,52 @@ export class TopologyGraphComponent implements OnInit{
     if(source.data.type == "actor" && target.data.type == "actor"){
       return ["link all "+ source.label + " " + target.label]
     } else if(source.data.type == "lan" && target.data.type == "actor"){
-      source.data.nodes.push(target.label)
-      this.updateLanDEW(source)
+      source.data.actors.push(target.label)
+      this.addLanDEW(source)
     } else if(source.data.type == "actor" && target.data.type == "lan"){
-      target.data.nodes.push(source.label)
-      this.updateLanDEW(target)
+      target.data.actors.push(source.label)
+      this.addLanDEW(target)
     }
   }
 
-  private updateLanDEW(lannode){
-    if ((lannode.data.type != 'lan') || (lannode.data.nodes.length < 2)) {
+  private addLanDEW(lannode){
+    if (lannode.data.actors.length < 2) {
       return
     }
-    var str = "lan all " + lannode.data.nodes.join(" ")
+    this.updateLanDEW(lannode)
+  }
+
+  private removeLanDEW(lannode){
     var oldConstraints = null;
     this.state.getConstraints().subscribe(c => {
        oldConstraints = c
     })
-    debugger;
-    if (lannode.data.lineNum) {
-      oldConstraints[parseInt(lannode.data.lineNum)] = str
-    }else{
-      oldConstraints.push(str)
-    }
-    
+    oldConstraints.splice(parseInt(lannode.data.lineNum),1)
     this.state.setConstraints(oldConstraints)
+  }
+
+  private updateLanDEW(lannode){
+    if (lannode.data.type != 'lan') {
+      return
+    }
+    if(lannode.data.actors.length < 2){
+      this.removeLanDEW(lannode)
+    }
+    else {
+      var str = "lan all " + lannode.data.actors.join(" ")
+      var oldConstraints = null;
+      this.state.getConstraints().subscribe(c => {
+         oldConstraints = c
+      })
+      if (lannode.data.lineNum) {
+        oldConstraints[parseInt(lannode.data.lineNum)] = str
+      }else{
+        oldConstraints.push(str)
+        lannode.data.lineNum = oldConstraints.length - 1
+      }
+      
+      this.state.setConstraints(oldConstraints)
+    }
 
   }
 
@@ -395,10 +388,169 @@ export class TopologyGraphComponent implements OnInit{
    */
   public toggleDragging() {
     this.draggingEnabled = !this.draggingEnabled
-    console.log(this.nodes)
     this.update$.next(true)
   }
 
-  
+  /**
+   * isEditable
+   */
+  public isEditable() {
+    if(this.draggingEnabled){
+      return "hidden"
+    }else{
+      return "visible"
+    }
+  }
 
+  public removeEdge(edge){
+    if(this.draggingEnabled){
+      return;
+    }
+    this.links = this.links.filter((e) => {
+      return e.id != edge.id
+    })
+    var source = this.nodes.find(node => node.id == edge.source)
+    var target = this.nodes.find(node => node.id == edge.target)
+    var newConstraints = this.removeLinkDEW(source, target)
+
+    if (newConstraints) {
+      this.state.setConstraints(newConstraints)
+    }
+    this.redrawGraph()
+
+  }
+
+  private removeLinkDEW(source, target){
+    if(source.data.type == "actor" && target.data.type == "actor"){
+      const dew = "link all "+ source.label + " " + target.label
+      const dew2 = "link "+ source.label + " " + target.label
+      var oldConstraints = null;
+      this.state.getConstraints().subscribe(c => {
+        oldConstraints = c
+      })
+      return oldConstraints.filter(constraint => constraint != dew && constraint != dew2)
+    } else if(source.data.type == "lan" && target.data.type == "actor"){
+      source.data.actors = source.data.actors.filter(n => n !== target.label)
+      this.updateLanDEW(source)
+    } else if(source.data.type == "actor" && target.data.type == "lan"){
+      target.data.actors = target.data.actors.filter(n => n !== source.label)
+      this.updateLanDEW(target)
+    }
+  }
+  
+  private drawGraph(){
+    var behaviors = null
+    var constraints = null
+    this.state.getConstraints().subscribe((c) => {
+      constraints = c
+    })
+    this.state.getBehavior().subscribe((b) => {
+      behaviors = b
+    })
+    this.http.put("v1/pr/hlb/topology/parse", {"scenario": behaviors, "constraints": constraints},{withCredential: true}).subscribe((data) => {
+      this.nodes = []
+      this.links = []
+      for(const n in data['actors']){
+        var n2: Node = {
+          data: data['actors'][n],
+          id: n,
+          label: n
+        }
+        this.nodes.push(n2)
+        this.nodes =  [...this.nodes]
+      }
+
+      for(const n of data['lans']){
+        var n2: Node = {
+          data: n,
+          id: "lan" + n['lineNum'],
+          label: "lan"
+        }
+        this.nodes.push(n2)
+        this.nodes =  [...this.nodes]
+      }
+
+      for(const e of data['edges']){
+        var e2: Edge = e
+        this.links.push(e2)
+        this.links = [...this.links]
+      }
+    })
+  }
+
+  private redrawGraph(){
+    this.nodes = []
+    this.links = []
+    this.drawGraph()
+  }
+
+  public removeNode(node){
+    if(this.draggingEnabled){
+      return;
+    }
+    var dependentEdges = this.links.filter(edge => edge.source == node.id || edge.target == node.id)
+    if(dependentEdges.length > 0){
+      alert("Please remove all dependent edges before removing the node.")
+      return
+    }else{
+      if(node.data.type == "lan"){
+        this.removeLanDEW(node)
+      }else{
+        var numConstraint = "num " + node.label + " " + node.data.num
+        var osConstraint = "os " + node.label + " " + node.data.os
+
+        var constraints = null;
+        this.state.getConstraints().subscribe(c => {
+          constraints = c
+        })
+        constraints = constraints.filter(c => c != numConstraint && c != osConstraint)
+        this.state.setConstraints(constraints)
+      }
+    }
+    this.redrawGraph()
+  }
+}
+
+@Component({
+  selector: "update-actor",
+  templateUrl: "actor-info.component.html",
+  styleUrls: ['./topology.component.scss']
+})
+export class UpdateActorInfo implements OnInit {
+
+  numIndex: number
+  osIndex: number
+  constraints: any;
+  newLabel: string
+  oldLabel: RegExp;
+  
+  constructor(public dialogRef: MatDialogRef<UpdateActorInfo>,
+    protected http: HttpService,
+    protected state: StateService,
+    private _snackBar: MatSnackBar,
+    @Inject(MAT_DIALOG_DATA) public actor: any) {}
+
+  ngOnInit(): void{
+    this.state.getConstraints().subscribe(constraints => {
+      this.constraints = constraints
+    })
+    this.numIndex = this.constraints.indexOf("num " + this.actor.label + " " + this.actor.data.num)
+    this.osIndex = this.constraints.indexOf("os " + this.actor.label + " " + this.actor.data.os)
+    this.newLabel = this.actor.label
+    this.oldLabel = new RegExp(`\\b${this.actor.label}\\b`, "g")
+  }
+
+  onNoClick(): void {
+    this.dialogRef.close();
+  }
+
+  updateActorConstraints() {
+    this.constraints[this.numIndex] = "num " + this.newLabel + " " + this.actor.data.num
+    this.constraints[this.osIndex] = "os " + this.newLabel + " " + this.actor.data.os
+    for(var i=0; i < this.constraints.length; i++){
+      this.constraints[i] = this.constraints[i].replace(this.oldLabel,this.newLabel)
+    }
+    this.state.setConstraints(this.constraints);
+    this.dialogRef.close();
+  }
 }

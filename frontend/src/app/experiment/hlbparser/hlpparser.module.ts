@@ -34,7 +34,10 @@ import {
 import { AuthGuard } from "src/app/@auth/auth.guard";
 import { AuthModule } from "src/app/@auth/auth.module";
 import { DependencyGraphComponent } from "./dependency-graph/dependency-graph.component";
-import { TopologyGraphComponent } from "./topology/topology.component";
+import { 
+  TopologyGraphComponent,
+  UpdateActorInfo
+} from "./topology/topology.component";
 import { MatRadioModule } from "@angular/material/radio";
 import {
   InfoComponent,
@@ -72,6 +75,7 @@ import { UserIdleModule } from 'angular-user-idle';
     BASHFilePopUp,
     UserListPopUp,
     VersionsPopUp,
+    UpdateActorInfo,
   ],
   imports: [
     CommonModule,
@@ -112,6 +116,7 @@ import { UserIdleModule } from 'angular-user-idle';
     BASHFilePopUp,
     UserListPopUp,
     VersionsPopUp,
+    UpdateActorInfo,
   ],
   providers: [StateService],
   bootstrap: [HLBParserComponent],
