@@ -2,6 +2,8 @@ import os.path
 import sys
 import configparser
 import argparse
+import importlib
+from bash import BashGenerator
 
 if __name__ == "__main__":
 
@@ -17,9 +19,9 @@ if __name__ == "__main__":
     # XXX For now, constraints and scenarios each have their own parsers.
     hlbFullParser = configparser.ConfigParser(allow_no_value=True)
     hlbFullParser.read_file(args.inputFileName)
-    constraints = [x[0] for x in hlbFullParser.items('Constraints')]
-    scenarios = [x[0] for x in hlbFullParser.items('Scenario')]
-    bindings = [x[0] for x in hlbFullParser.items('Bindings')]
+    constraints = hlbFullParser.items('Constraints')
+    scenarios = hlbFullParser.items('Scenario')
+    bindings = hlbFullParser.items('Bindings')
 
     cwd = os.path.dirname(os.path.realpath(__file__))
     parentDirectory = os.path.abspath(os.path.join(cwd, os.pardir))
@@ -32,10 +34,10 @@ if __name__ == "__main__":
         print("\n")
         exit(1)
 
-    chosenGenerator = __import__(args.generatorType, fromlist=['Generator'])
-    generator = chosenGenerator.Generator(scenarios, constraints=constraints)
-    [t, y] = generator.generate()
-    nsScript, clientServerList = generator.generateNS(y, scenarios, None)
-    print(nsScript)
-    bashScriptList = generator.generateBASH(scenarios, bindings, clientServerList)
-    print(bashScriptList)
+    generator = BashGenerator.BashGenerator(scenarios, constraints, bindings)
+    print("Generator ", generator.name)
+    generator.generate()
+    #nsScript, clientServerList = generator.generateNS(y, scenarios, None)
+    print(generator.text)
+    #bashScriptList = generator.generateBASH(scenarios, bindings, clientServerList)
+    #print(bashScriptList)
