@@ -1,0 +1,52 @@
+#!/usr/bin/bash
+
+exp=""
+proj=""
+status=0
+pid=0
+id=`date +%s`.$RANDOM
+cnt=0
+
+execute_fork()
+{
+    local node=$1
+    local cmd=$2
+    local cnt=$3
+    if [ ! -d ~/cmds/$id ] ; then
+	mkdir ~/cmds/$id
+    fi
+    echo "$cmd 2>~/cmds/$id/error.$cnt &" > ~/cmds/$id/script.$cnt.sh
+    echo "echo \$? > ~/cmds/$id/status.$cnt" >>  ~/cmds/$id/script.$cnt.sh
+    echo "echo \$! > ~/cmds/$id/pid.$cnt" >>  ~/cmds/$id/script.$cnt.sh
+    ssh $node.$exp.$proj "bash ~/cmds/$id/script.$cnt.sh" &
+}
+
+execute_wait()
+{
+    local node=$1
+    local cmd=$2
+    local cnt=$3
+    if [ ! -d ~/cmds/$id ] ; then
+	mkdir ~/cmds/$id
+    fi
+    echo "$cmd 2>~/cmds/$id/error.$cnt" > ~/cmds/$id/script.$cnt.sh
+    echo "echo \$? > ~/cmds/$id/status.$cnt" >>  ~/cmds/$id/script.$cnt.sh
+    echo "echo \$! > ~/cmds/$id/pid.$cnt" >>  ~/cmds/$id/script.$cnt.sh
+    ssh $node.$exp.$proj "bash ~/cmds/$id/script.$cnt.sh" &
+}
+
+psuccess()
+{
+    local cnt=$1
+    while [ ! -f ~/cmds/$id/status.$cnt ] ; do
+	sleep 0.1
+    done
+}
+
+pexists()
+{
+    local cnt=$1
+    while [ ! -f ~/cmds/$id/pid.$cnt ] ; do
+	sleep 0.1
+    done
+}
