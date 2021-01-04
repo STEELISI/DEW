@@ -46,6 +46,7 @@ export class DeterLabViewComponent implements OnInit {
             .subscribe(data => {
                 this.showSwap = data.error === undefined;
             });
+        // setInterval(() => {
         this.http.get('v1/pr/deter/project/getstatus', {params, withCredentials: true})
             .subscribe(data => {
                 if (data.error) {
@@ -59,6 +60,7 @@ export class DeterLabViewComponent implements OnInit {
                     this.experimentStatus = lines[1].replace(' ', '').split(':')[1];
                 }
             });
+        // }, 5000);
         this.http.get('v1/pr/deter/project/getactivity', {params, withCredentials: true})
             .subscribe(data => {
                 this.activityMessages = data.content.split('\n');
@@ -123,15 +125,15 @@ export class DeterLabViewComponent implements OnInit {
         this.http.get('v1/pr/deter/project/swap', {params, withCredentials: true})
             .subscribe(data => {
                 if (data) {
-                this.alertMsg = type === 'swapin' ? 'Successfully swapped-in experiment' :
-                    'Successfully swapped-out experiment';
-                this.alertType = 'alert-success';
-                this.showAlert = true;
-                setTimeout(() => {
-                    this.showAlert = false;
-                    location.reload();
-                }, 3000);
-            }
+                    this.alertMsg = type === 'swapin' ? 'Successfully swapped-in experiment' :
+                        'Successfully swapped-out experiment';
+                    this.alertType = 'alert-success';
+                    this.showAlert = true;
+                    setTimeout(() => {
+                        this.showAlert = false;
+                        location.reload();
+                    }, 3000);
+                }
             });
     }
 
