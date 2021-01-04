@@ -51,7 +51,7 @@ class ProfileService(object):
                 detailObject = a.to_dict()
                 r['id'] = detailObject['daid']
                 r['username'] = detailObject['username']
-                r['password'] = aESCipher.decrypt(detailObject['password']).decode('utf-8')
+                r['created_date'] = detailObject['created_at'].strftime("%d %B, %Y")
                 result.append(r)
             return result  
     def getUserList(self,uid):
