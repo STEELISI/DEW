@@ -11,21 +11,14 @@ class ProfileService(object):
         u = DeterlabAccountDetails.query.filter(DeterlabAccountDetails.uid == uid).first()
         
         password = aESCipher.encrypt(password).decode('utf-8')
-
-        if u is None:
-            e = DeterlabAccountDetails(uid=uid, username=username, password=password, isdeleted=False)
-            db.session.add(e)
-        else:
-            u.username = username
-            u.password = password
-            u.isdeleted = False
-        
+        e = DeterlabAccountDetails(uid=uid, username=username, password=password, isdeleted=False)
+        db.session.add(e)
         db.session.commit()
 
         return "Successfull"
 
-    def delete(self, uid):
-        u = DeterlabAccountDetails.query.filter(DeterlabAccountDetails.uid == uid).first()
+    def delete(self, uid, daid):
+        u = DeterlabAccountDetails.query.filter(DeterlabAccountDetails.uid == uid, DeterlabAccountDetails.daid == daid).first()
 
         if u is not None:
             u.isdeleted = True
@@ -33,8 +26,8 @@ class ProfileService(object):
 
         return "Successfull"
     
-    def get(self, userId):
-        u = DeterlabAccountDetails.query.filter(DeterlabAccountDetails.uid == userId, DeterlabAccountDetails.isdeleted == False).first()
+    def get(self, userId, daid):
+        u = DeterlabAccountDetails.query.filter(DeterlabAccountDetails.uid == userId, DeterlabAccountDetails.daid == daid,DeterlabAccountDetails.isdeleted == False).first()
         
         if u is None:
             return {"username":"","password":""}
@@ -46,6 +39,21 @@ class ProfileService(object):
             result['password'] = aESCipher.decrypt(detailObject['password']).decode('utf-8')
             return result  
 
+    def getList(self, userId):
+        u = DeterlabAccountDetails.query.filter(DeterlabAccountDetails.uid == userId, DeterlabAccountDetails.isdeleted == False)
+        
+        if u is None:
+            return []
+        else:
+            result = []
+            for a in u:
+                r = {}
+                detailObject = a.to_dict()
+                r['id'] = detailObject['daid']
+                r['username'] = detailObject['username']
+                r['created_date'] = detailObject['created_at'].strftime("%d %B, %Y")
+                result.append(r)
+            return result  
     def getUserList(self,uid):
         u = DeterlabAccountDetails.query.filter(DeterlabAccountDetails.uid == uid, DeterlabAccountDetails.isdeleted == False)
         result = []
@@ -53,5 +61,6 @@ class ProfileService(object):
             detailObject = x.to_dict()
             r = {}
             r['username'] = detailObject['username']
+            r['id'] = detailObject['daid']
             result.append(r)
         return result  

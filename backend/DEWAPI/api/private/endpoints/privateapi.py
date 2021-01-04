@@ -576,7 +576,7 @@ class HandleProfileDeterLabGetAccounts(Resource):
         creator_uid = userObj.getUserId()
 
         try:
-            result = ps.get(creator_uid)
+            result = ps.getList(creator_uid)
             return result, 200
         except ValueError as e:
             if str(e) == "Forbidden":
@@ -589,9 +589,9 @@ class HandleProfileDeterLabDeleteAccounts(Resource):
         Create token for a given experiment
         """
         creator_uid = userObj.getUserId()
-
+        daid = request.args.get('id')
         try:
-            result = ps.delete(creator_uid)
+            result = ps.delete(creator_uid,daid)
             return result, 200
         except ValueError as e:
             if str(e) == "Forbidden":
@@ -603,10 +603,11 @@ class HandleDeterLabProjectExists(Resource):
     def post(self):
         content = request.get_json(force=True)
         projectName = content['projectName']
+        daid = content['account_id']
         creator_uid = userObj.getUserId()
 
         try:
-            details = ps.get(creator_uid)
+            details = ps.get(creator_uid,daid)
             if str(details['username']).strip() !='' and str(details['password']).strip() !='':
               ssh = SSHConnection(details['username'],details['password'])
               result = ssh.isProjectExists(projectName)
@@ -624,10 +625,11 @@ class HandleDeterLabExperimentExists(Resource):
         content = request.get_json(force=True)
         projectName = content['projectName']
         experimentName = content['experimentName']
+        daid = content['account_id']
         creator_uid = userObj.getUserId()
 
         try:
-            details = ps.get(creator_uid)
+            details = ps.get(creator_uid,daid)
             if str(details['username']).strip() !='' and str(details['password']).strip() !='':
               ssh = SSHConnection(details['username'],details['password'])
               result = ssh.isExperimentExists(projectName,experimentName)
@@ -642,13 +644,14 @@ class HandleDeterLabExperimentExists(Resource):
 class HandleDeterGetNsFileContent(Resource):
     def get(self):
         eid = request.args.get('eid')
+        daid = request.args.get('account_id')
         uid = userObj.getUserId()
         try:
           result = {}
           if not dm.user_can(uid,eid):
             result['error'] = "User does not have access to this experiment"
           else: 
-            details = ps.get(uid)
+            details = ps.get(uid,daid)
             
             if str(details['username']).strip() !='' and str(details['password']).strip() !='':
               ssh = SSHConnection(details['username'],details['password'])
@@ -681,14 +684,18 @@ class HandleDeterUserList(Resource):
 class HandleProjectMapping(Resource):
     def get(self):
         eid = request.args.get('eid')
+        daid = request.args.get('account_id')
         uid = userObj.getUserId()
         try:
           result = {}
           if not dm.user_can(uid,eid):
             result['error'] = "User does not have access to this experiment"
           else: 
-            details = ps.get(uid)
-            result = dm.getMapping(details['id'],eid)
+            details = ps.get(uid,daid)
+            if str(details['username']).strip() !='' and str(details['password']).strip() !='':
+              result = dm.getMapping(details['id'],eid)
+            else:
+              result = {'error':'username or password doesnot exists'}
           return result, 200
         except ValueError as e:
             if str(e) == "Forbidden":
@@ -702,13 +709,14 @@ class HandleAddProjectMapping(Resource):
         projectName = content['projectName']
         experimentName = content['experimentName']
         eid = content['experimentId']
+        daid = content['account_id']
         uid = userObj.getUserId()
         try:
           result = {}
           if not dm.user_can(uid,eid):
             result['error'] = "User does not have access to this experiment"
           else: 
-            details = ps.get(uid)
+            details = ps.get(uid,daid)
             
             if str(details['username']).strip() !='' and str(details['password']).strip() !='':
               experiment = em.get_experiment(eid, uid)
@@ -728,13 +736,14 @@ class HandleAddProjectMapping(Resource):
 class HandleGetActivity(Resource):
     def get(self):
         eid = request.args.get('eid')
+        daid = request.args.get('account_id')
         uid = userObj.getUserId()
         try:
           result = {}
           if not dm.user_can(uid,eid):
             result['error'] = "User does not have access to this experiment"
           else: 
-            details = ps.get(uid)
+            details = ps.get(uid,daid)
             
             if str(details['username']).strip() !='' and str(details['password']).strip() !='':
               ssh = SSHConnection(details['username'],details['password'])
@@ -755,13 +764,14 @@ class HandleGetActivity(Resource):
 class HandleGetStatus(Resource):
     def get(self):
         eid = request.args.get('eid')
+        daid = request.args.get('account_id')
         uid = userObj.getUserId()
         try:
           result = {}
           if not dm.user_can(uid,eid):
             result['error'] = "User does not have access to this experiment"
           else: 
-            details = ps.get(uid)
+            details = ps.get(uid,daid)
             
             if str(details['username']).strip() !='' and str(details['password']).strip() !='':
               ssh = SSHConnection(details['username'],details['password'])
@@ -782,6 +792,7 @@ class HandleGetStatus(Resource):
 class HandleGetStatus(Resource):
     def get(self):
         eid = request.args.get('eid')
+        daid = request.args.get('account_id')
         swapModeString = request.args.get('mode')
         if swapModeString is None or (swapModeString.lower() != 'swapin' and swapModeString.lower() != 'swapout'):
           return "Please select a mode, either 'swapin' or 'swapout'",200
@@ -795,7 +806,7 @@ class HandleGetStatus(Resource):
           if not dm.user_can(uid,eid):
             result['error'] = "User does not have access to this experiment"
           else: 
-            details = ps.get(uid)
+            details = ps.get(uid,daid)
             
             if str(details['username']).strip() !='' and str(details['password']).strip() !='':
               ssh = SSHConnection(details['username'],details['password'])
@@ -816,14 +827,14 @@ class HandleGetStatus(Resource):
 class HandleUpdateProjectNSFile(Resource):
     def get(self):
         eid = request.args.get('eid')
+        daid = request.args.get('account_id')
         uid = userObj.getUserId()
         try:
           result = {}
           if not dm.user_can(uid,eid):
             result['error'] = "User does not have access to this experiment"
           else: 
-            details = ps.get(uid)
-            
+            details = ps.get(uid,daid)
             if str(details['username']).strip() !='' and str(details['password']).strip() !='':
               
               mapping = dm.getMapping(details['id'],eid)
@@ -837,6 +848,27 @@ class HandleUpdateProjectNSFile(Resource):
             else:
               result = {'error':'username or password doesnot exists'}
           return result, 200
+        except ValueError as e:
+            if str(e) == "Forbidden":
+                return {}, 403
+
+@ns.route('/deter/project/mapping/delete')
+class HandleProfileDeterLabDeleteMapping(Resource):
+    def delete(self):
+        uid = userObj.getUserId()
+        daid = request.args.get('account_id')
+        eid = request.args.get('eid')
+        try:
+            result = {}
+            if not dm.user_can(uid,eid):
+              result['error'] = "User does not have access to this experiment"
+            else: 
+              details = ps.get(uid,daid)
+              if str(details['username']).strip() !='' and str(details['password']).strip() !='':
+                result = dm.deleteMapping(details['id'],eid)
+              else:
+                result['error'] = "username or password doesnot exists"
+            return result, 200
         except ValueError as e:
             if str(e) == "Forbidden":
                 return {}, 403

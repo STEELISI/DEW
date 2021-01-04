@@ -1,6 +1,6 @@
 
-  <div class="row" style="margin: 0.5em;">
-    <div class="col-md-6" style="margin: 0.5em;">
+   <div class="row" style="margin: 0.5em;">
+    <div class="col-md-4" style="margin: 0.5em;">
       
       <mat-card>
         <label>User details:</label>
@@ -20,9 +20,32 @@
           <mat-icon>{{hide ? 'visibility_off' : 'visibility'}}</mat-icon>
           </button>
         </mat-form-field>
-        <button mat-raised-button class="margin_2em" (click)="save()">Save</button>
-        <button mat-raised-button class="margin_2em" (click)="delete()">Delete</button>
+        <button mat-raised-button class="margin_2em" (click)="save()">Add</button>
       </mat-card>
     </div>
-    </div>
+
+    <div class="col-md-7" style="margin: 0.5em;">
+      <mat-card style="max-height: 500px;overflow: auto;">
+        <table class="col-md-12" border="1" style="text-align: center;">
+          <tr style="font-size: 14px;">
+            <th style="width: 10%;">id</th>
+            <th style="width: 40%;">User Name</th>
+            <th style="width: 40%;">Created At</th>
+            <th style="width: 10%;"></th>
+          </tr>
+          <tr *ngFor="let x of userList;let i =index">
+            <td style="width: 10%;">{{i+1}}</td>
+            <td style="width: 40%;">{{x.username}}</td>
+            <td style="width: 40%;">{{x.created_date}}</td>
+            <td style="width: 10%;"><i class="fa fa-trash" aria-hidden="true" matTooltip="{{'Delete '+x.username}}" (click)="delete(x.id)" style="cursor: pointer;"></i></td>
+          </tr>
+          <tr *ngIf="userList.length==0">
+            <td colspan="4"><i>No Profiles added.</i></td>
+
+          </tr>
+        </table>
+      </mat-card>
+      </div>
+   </div>
+  
 

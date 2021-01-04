@@ -15,6 +15,7 @@ import { MatSnackBar } from '@angular/material';
 export class DeterLabComponent implements OnInit{
   userInfo:any;
   show:boolean=false;
+  userList = []
   userName:String = "";
   password:String = "";
   hide:boolean =true;
@@ -40,9 +41,7 @@ export class DeterLabComponent implements OnInit{
   }
   load(){
     this.http.get("v1/pr/profile/accounts/deterLab/get",{withCredentials: true}).subscribe(data=>{
-    
-      this.userName = data.username;
-      this.password = data.password;
+      this.userList = data
      });
   }
 
@@ -65,6 +64,8 @@ export class DeterLabComponent implements OnInit{
       this._snackBar.open("Saved Successfully!", "close", {
         duration: 2000,
       });
+      this.userName = ""
+      this.password = ""
       this.load();
      },error=>{
       this._snackBar.open("There was some error in saving, please try again!", "close", {
@@ -73,11 +74,11 @@ export class DeterLabComponent implements OnInit{
      });
   }
 
-  delete(){
-    this.http.delete("v1/pr/profile/accounts/deterLab/delete",{withCredentials: true}).subscribe(data=>{
+  delete(id){
+    this.http.delete("v1/pr/profile/accounts/deterLab/delete?id="+id,{withCredentials: true}).subscribe(data=>{
       this._snackBar.open("Deleted Successfully!", "close", {
         duration: 2000,
-      });
+      });    
       this.load();
      },error=>{
         this._snackBar.open("There was some error in deleting, please try again!", "close", {
