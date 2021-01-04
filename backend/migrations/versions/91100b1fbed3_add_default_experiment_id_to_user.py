@@ -18,7 +18,7 @@ depends_on = None
 
 def upgrade():
     op.add_column('user',
-    	sa.Column('default_experiment_id',sa.Integer, sa.ForeignKey('experiment.experiment_id'))
+    	sa.Column('default_experiment_id',sa.Integer)
     )
 
 
