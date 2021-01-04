@@ -627,7 +627,7 @@ class HandleDeterLabExperimentExists(Resource):
 class HandleDeterGetNsFileContent(Resource):
     def get(self):
         eid = request.args.get('eid')
-        daid = content['account_id']
+        daid = request.args.get('account_id')
         uid = userObj.getUserId()
         try:
           result = {}
