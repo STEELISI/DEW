@@ -61,7 +61,7 @@ class SSHConnection():
                 if not gatewaySession.exists('/proj/' + project + '/exp/' + exp):
                     filename = exp + str(uuid.uuid4())
                     if self.createFile(gatewaySession,filename,fileContent):
-                        gatewaySession.get_cmd_output('/usr/testbed/bin/startexp -f -p ' + project + ' -e ' + exp + ' ' + filename + '.ns ')
+                        gatewaySession.get_cmd_output('/usr/testbed/bin/startexp -f -i -p ' + project + ' -e ' + exp + ' ' + filename + '.ns ')
                 
                 result['success'] = True
             except RunCmdError as e:
