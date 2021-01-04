@@ -818,7 +818,6 @@ class HandleUpdateProjectNSFile(Resource):
             result['error'] = "User does not have access to this experiment"
           else: 
             details = ps.get(uid,daid)
-            
             if str(details['username']).strip() !='' and str(details['password']).strip() !='':
               
               mapping = dm.getMapping(details['id'],eid)
@@ -832,6 +831,27 @@ class HandleUpdateProjectNSFile(Resource):
             else:
               result = {'error':'username or password doesnot exists'}
           return result, 200
+        except ValueError as e:
+            if str(e) == "Forbidden":
+                return {}, 403
+
+@ns.route('/deter/project/mapping/delete')
+class HandleProfileDeterLabDeleteMapping(Resource):
+    def delete(self):
+        uid = userObj.getUserId()
+        daid = request.args.get('account_id')
+        eid = request.args.get('eid')
+        try:
+            result = {}
+            if not dm.user_can(uid,eid):
+              result['error'] = "User does not have access to this experiment"
+            else: 
+              details = ps.get(uid,daid)
+              if str(details['username']).strip() !='' and str(details['password']).strip() !='':
+                result = dm.deleteMapping(details['id'],eid)
+              else:
+                result['error'] = "username or password doesnot exists"
+            return result, 200
         except ValueError as e:
             if str(e) == "Forbidden":
                 return {}, 403

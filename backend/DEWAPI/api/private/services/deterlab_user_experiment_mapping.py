@@ -49,3 +49,13 @@ class DeterLabExperimentMapper(object):
         # print(ac)
         return ac is not None
 
+    def deleteMapping(self, daid, experiment_id):
+        m = DeterLabExperimentMapping.query.filter(DeterLabExperimentMapping.daid == daid, DeterLabExperimentMapping.experiment_id == experiment_id, DeterLabExperimentMapping.isdeleted == False).first()
+        
+        if m is not None:
+            m.isdeleted = True
+            db.session.add(m)
+            db.session.commit()
+        
+        return "Successfull"
+
