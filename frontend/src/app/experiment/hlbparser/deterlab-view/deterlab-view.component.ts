@@ -10,7 +10,8 @@ import {HttpParams} from '@angular/common/http';
 })
 
 export class DeterLabViewComponent implements OnInit {
-    userDetails = {username: '', password: ''};
+    userId;
+    userName = '';
     showWarning = false;
     showLinkWindow = false;
     showCreateWindow = false;
@@ -26,6 +27,7 @@ export class DeterLabViewComponent implements OnInit {
     showAlert = false;
     alertMsg = '';
     activityMessages = [];
+    activateSwap = true;
 
     constructor(private http: HttpService, private route: Router) {
     }
@@ -34,38 +36,45 @@ export class DeterLabViewComponent implements OnInit {
         const url = this.route.url.split('/');
         this.experimentId = url[url.length - 1];
         this.http.get('v1/pr/profile/accounts/deterLab/get', {withCredentials: true}).subscribe(data => {
-            if (data.username !== '') {
-                this.userDetails.username = data.username;
-                this.userDetails.password = data.password;
+            if (data.length > 0) {
+                this.userId = data[0].id.toString();
+                this.userName = data[0].username;
             } else {
                 this.showWarning = true;
+                return;
             }
+            let params = new HttpParams().append('eid', this.experimentId);
+            params = params.append('account_id', this.userId);
+            this.http.get('v1/pr/deter/project', {params, withCredentials: true})
+                .subscribe(data1 => {
+                    this.showSwap = data1.error === undefined;
+                });
+            // setInterval(() => {
+            this.http.get('v1/pr/deter/project/getstatus', {params, withCredentials: true})
+                .subscribe(data2 => {
+                    if (data2.error) {
+                        this.showSwap = false;
+                    } else if (data2.content === 'No information available.') {
+                        this.experimentName = 'In transition';
+                        this.experimentStatus = 'In transition';
+                    } else {
+                        const lines = data2.content.split('\n');
+                        this.experimentName = lines[0].replace(' ', '').split(':')[1];
+                        this.experimentStatus = lines[1].replace(' ', '').split(':')[1].trim();
+                        if (this.experimentStatus === 'active') {
+                            this.activateSwap = false;
+                        }
+                    }
+                });
+            // }, 5000);
+            this.http.get('v1/pr/deter/project/getactivity', {params, withCredentials: true})
+                .subscribe(data3 => {
+                    if (data3.content) {
+                        this.activityMessages = data3.content.split('\n');
+                    }
+                });
         });
-        const params = new HttpParams().append('eid', this.experimentId);
-        this.http.get('v1/pr/deter/project', {params, withCredentials: true})
-            .subscribe(data => {
-                this.showSwap = data.error === undefined;
-            });
-        // setInterval(() => {
-        this.http.get('v1/pr/deter/project/getstatus', {params, withCredentials: true})
-            .subscribe(data => {
-                if (data.error) {
-                    this.showSwap = false;
-                } else if (data.content === 'No information available.') {
-                    this.experimentName = 'Not available';
-                    this.experimentStatus = 'Not available';
-                } else {
-                    const lines = data.content.split('\n');
-                    this.experimentName = lines[0].replace(' ', '').split(':')[1];
-                    this.experimentStatus = lines[1].replace(' ', '').split(':')[1];
-                }
-            });
-        // }, 5000);
-        this.http.get('v1/pr/deter/project/getactivity', {params, withCredentials: true})
-            .subscribe(data => {
-                this.activityMessages = data.content.split('\n');
-                console.log(this.activityMessages);
-            });
+
         this.projName = '';
         this.expName = '';
     }
@@ -87,7 +96,8 @@ export class DeterLabViewComponent implements OnInit {
     }
 
     testProjectValidity() {
-        this.http.post('/api/v1/pr/deterlab/project/exists', {projectName: this.projName},
+        this.http.post('/api/v1/pr/deterlab/project/exists',
+            {projectName: this.projName, account_id: this.userId},
             {withCredentials: true}).subscribe(data => {
             this.isValidProjName = data.isExists;
         });
@@ -95,7 +105,7 @@ export class DeterLabViewComponent implements OnInit {
 
     testExperimentValidity() {
         this.http.post('/api/v1/pr/deterlab/experiment/exists',
-            {projectName: this.projName, experimentName: this.expName},
+            {projectName: this.projName, experimentName: this.expName, account_id: this.userId},
             {withCredentials: true}).subscribe(data => {
             this.isValidExpName = data.isExists;
         });
@@ -103,7 +113,10 @@ export class DeterLabViewComponent implements OnInit {
 
     createOrLinkToNewExperiment() {
         this.http.post('/api/v1/pr/deter/add/project/mapping',
-            {projectName: this.projName, experimentName: this.expName, experimentId: this.experimentId},
+            {
+                projectName: this.projName, experimentName: this.expName,
+                experimentId: this.experimentId, account_id: this.userId
+            },
             {withCredentials: true}).subscribe(data => {
             console.log(data);
             if (data === 'Successful') {
@@ -122,6 +135,7 @@ export class DeterLabViewComponent implements OnInit {
     swapInOrSwapOutExperiment(type) {
         let params = new HttpParams().append('eid', this.experimentId);
         params = params.append('mode', type);
+        params = params.append('account_id', this.userId);
         this.http.get('v1/pr/deter/project/swap', {params, withCredentials: true})
             .subscribe(data => {
                 if (data) {

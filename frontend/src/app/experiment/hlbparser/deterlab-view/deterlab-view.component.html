@@ -82,9 +82,10 @@
             </ng-template>
         </div>
         <div class="col-3">
-            <b>Profile:</b> {{this.userDetails.username}}<br/>
+            <b>Profile:</b> {{this.userName}}<br/>
             <div *ngIf="showSwap; else nonSwapBlock">
                 <button type="button" class="btn btn-outline-success swap-dt"
+                        [disabled]="!activateSwap"
                         (click)="swapInOrSwapOutExperiment('swapin')">Swap In Experiment
                 </button>
                 <br/>
