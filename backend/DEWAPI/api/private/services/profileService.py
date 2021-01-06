@@ -22,6 +22,7 @@ class ProfileService(object):
 
         if u is not None:
             u.isdeleted = True
+            u.updated_at = datetime.utcnow()
             db.session.commit()
 
         return "Successfull"

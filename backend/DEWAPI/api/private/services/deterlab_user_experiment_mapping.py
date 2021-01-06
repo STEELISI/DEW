@@ -54,6 +54,7 @@ class DeterLabExperimentMapper(object):
         
         if m is not None:
             m.isdeleted = True
+            m.updated_at = datetime.utcnow()
             db.session.add(m)
             db.session.commit()
         
