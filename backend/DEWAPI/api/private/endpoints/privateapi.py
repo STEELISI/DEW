@@ -11,7 +11,7 @@ from ..services.dew_parser import DEWParser
 from ..services.token_manager import TokenManager
 from ..services.profileService import ProfileService
 from ..services.sshConnectivity import SSHConnection
-from ..services.deterlab_user_experiment_mapping import DeterLabExperimentMapper
+from ..services.deterlab_experiment_manager import DeterLabExperimentManager
 from DEWAPI.user import userObj
 import globals
 
@@ -25,7 +25,7 @@ em = ExperimentManager()
 dew_parser = DEWParser()
 tm = TokenManager()
 ps = ProfileService()
-dm = DeterLabExperimentMapper()
+dm = DeterLabExperimentManager()
 
 @ns.route('/hlb/translate/<string:format>')
 class HandleHLBTranslator(Resource):

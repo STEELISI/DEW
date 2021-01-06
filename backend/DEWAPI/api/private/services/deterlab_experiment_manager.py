@@ -10,7 +10,7 @@ import configparser
 import io
 
 
-class DeterLabExperimentMapper(object):
+class DeterLabExperimentManager(object):
     
     def createOrModifyMapping(self, daid, experiment_id, project_name, experiment_name):
         m = DeterLabExperimentMapping.query.filter(DeterLabExperimentMapping.daid == daid , DeterLabExperimentMapping.experiment_id == experiment_id , DeterLabExperimentMapping.isdeleted == False).first()
