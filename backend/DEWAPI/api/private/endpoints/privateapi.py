@@ -872,3 +872,43 @@ class HandleProfileDeterLabDeleteMapping(Resource):
         except ValueError as e:
             if str(e) == "Forbidden":
                 return {}, 403
+
+
+@ns.route('/design/experiment/slides')
+class HandleExperimentSlides(Resource):
+    
+    @api.expect(create_slides_object)
+    def post(self):
+        """
+            Create a new slide
+        """
+        try:
+            json_data = request.get_json(force=True)
+            userId = userObj.getUserId()
+            experiment_id = json_data['experiment_id']
+            sequence_number = json_data['sequence_number']
+            slide = em.create_experiment_slide(userId, experiment_id,"{}", sequence_number)
+
+        except ValueError as e:
+                msg = {'saved': False, 'message': str(e)}
+                return msg, 403
+        if slide:
+            return {'saved': True, 'message': "Successful", "slide": slide.to_dict()}
+
+
+    @api.expect(experiment_detail)
+    def get(self):
+        """
+            Get slides for an experiment
+        """
+        try:
+            json_data = request.get_json(force=True)
+            userId = userObj.getUserId()
+            experiment_id = json_data['experiment_id']
+            slide = em.slides_of_experiment(userId, experiment_id)
+
+        except ValueError as e:
+                msg = {'saved': False, 'message': str(e)}
+                return msg, 403
+        if slide:
+            return {'saved': True, 'message': "Successful", "slide": slide.to_dict()}

@@ -25,7 +25,7 @@ def upgrade():
     	sa.Column('sequence_number', sa.Integer,default=1,nullable=False),
     	sa.Column('actor_action_mapping', sa.Text),
     	sa.Column('created_at', sa.DateTime,default=datetime.utcnow),
-        sa.Column('updated_at', sa.DateTime,onupdate=datetime.utcnow),
+    	sa.Column('updated_at', sa.DateTime,onupdate=datetime.utcnow)
 
     )
 

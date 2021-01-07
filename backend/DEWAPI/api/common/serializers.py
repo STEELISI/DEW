@@ -141,6 +141,11 @@ deterlab_experiment_mapping_details = api.model('Deter Lab Experiment Mapping De
   'account_id': fields.String(description="Deter Lab Account Id", required=True)
 })
 
+create_slides_object = api.model('Create Experiment slide', {
+    'experiment_id': fields.String(description="Experiment id", required=True),
+    'sequence_number': fields.Integer(description="Sequence number of slide", required=True)
+  })
+
 uid_header_parser = api.parser()
 uid_header_parser.add_argument('X-user-id',location='headers')
 

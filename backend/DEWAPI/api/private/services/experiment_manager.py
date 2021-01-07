@@ -1,5 +1,6 @@
 from extensions import db
 from DEWAPI.models.user import User
+from DEWAPI.models.slide import Slide
 from DEWAPI.models.experiment import Experiment
 from DEWAPI.models.drive_table import DriveTable
 from DEWAPI.models.access_control import AccessControl
@@ -323,4 +324,41 @@ class ExperimentManager(object):
         return driveTableId.driveFileId
 
 
+    def create_experiment_slide(self, user_id, experiment_id, actor_action_mapping, sequence_number):
+        user = User.query.filter(User.uid == user_id).first()
 
+        if user is None:
+            return False, "Invalid User"
+
+
+        e = Experiment.query.filter(Experiment.experiment_id == experiment_id).first()
+
+        if e is None:
+            raise ValueError("Forbidden")
+        if self.user_can(experiment_id, user_id, AccessControlEnum.write.value) is not None:
+
+            slide = Slide(experiment_id=experiment_id, actor_action_mapping=actor_action_mapping,sequence_number=sequence_number)
+
+            db.session.add(slide)
+            db.session.commit()
+        return slide
+
+    def update_experiment_slide_sequence(self, user_id, experiment_id, slide_id_sequence_mapping):
+        if self.user_can(experiment_id, user_id, AccessControlEnum.write) is not None:
+            for slide_id in slide_id_sequence_mapping:
+                s = Slide.query.filter(Slide.slide_id == slide_id)
+                s.sequence_number = slide_id_sequence_mapping[slide_id]
+            
+            db.session.commit()
+
+    def update_experiment_slide_mapping(self, user_id, experiment_id, slide_id, actor_action_mapping):
+        if self.user_can(experiment_id, user_id, AccessControlEnum.write) is not None:
+            s = Slide.query.filter(Slide.slide_id == slide_id)
+            s.actor_action_mapping = actor_action_mapping
+            db.session.commit()
+
+
+    def slides_of_experiment(self, user_id, experiment_id):
+        if self.user_can(experiment_id, user_id, AccessControlEnum.read) is not None:
+            slides = Slide.query.filter(Slide.experiment_id == experiment_id)
+            return [s.to_dict() for s in slides]
