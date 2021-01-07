@@ -2,6 +2,7 @@
 # In the meantime:
 import os.path
 import sys
+import configparser
 
 # cwd = os.path.dirname(os.path.realpath(__file__))
 # parentDir = os.path.abspath(os.path.join(cwd, os.pardir))
@@ -21,20 +22,17 @@ from hlb_parser import HLBParser, ConstraintParser, BindingParser
 
 class Generator(object):
     # scenario and constraints given as a list.
-    def __init__(self, scenario, constraints, bindings, name='Generic Class'):
+    def __init__(self, inputFileName, name='Generic Class'):
+        hlbFullParser = configparser.ConfigParser(allow_no_value=True)
+        self.dew = open(inputFileName.name, 'r').read()
+        hlbFullParser.read_file(inputFileName)
+        self.constraints = hlbFullParser.items('Constraints')
+        self.scenario = hlbFullParser.items('Scenario')
+        self.bindings = hlbFullParser.items('Bindings')
+
         # For debugging. Subclass should set this to something meaningful. e.g. "bash"
         self.name = name
-
-        # A list of DEW constraints. E.g. ['num actorA 3', 'os actorB ubuntu']
-        self.constraints = constraints
-
-        # A list of Scenario statements. E.g. ['Scenario statement 1', 'Scenario statement 2']
-        # The order of the list is not meaningful.
-        self.scenario = scenario
-
-        # A list of bindings statements. E.g. ['Bindings statement 1', 'Bindings statement 2']
-        self.bindings = bindings
-
+        
         # Imported from hlb_parser.
         self.HLBparser = HLBParser(globals.actors)
         self.ConstParser = ConstraintParser()
