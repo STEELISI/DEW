@@ -855,3 +855,64 @@ class HandleProfileDeterLabDeleteMapping(Resource):
         except ValueError as e:
             if str(e) == "Forbidden":
                 return {}, 403
+
+@ns.route('/deter/project/run')
+class HandleProjectRunLog(Resource):
+    def get(self):
+        eid = request.args.get('eid')
+        daid = request.args.get('account_id')
+        uid = userObj.getUserId()
+        try:
+          result = {}
+          if not dm.user_can(uid,eid):
+            result['error'] = "User does not have access to this experiment"
+          else: 
+            details = ps.get(uid,daid)
+            if str(details['username']).strip() !='' and str(details['password']).strip() !='':
+              mapping = dm.getMapping(details['id'],eid)
+              if 'error' not in mapping:
+                experiment = list(em.get_experiment(eid, uid).versions)[-1]
+                transaction_id = experiment.transaction_id
+                script = hlb.HandleBASH(json.loads(experiment.content))
+                run_content = script[0][1]
+                ssh = SSHConnection(details['username'],details['password'])
+                result_log = ssh.runFile(mapping['project_name'],mapping['experiment_name'],run_content)
+                if 'error' not in result_log:
+                  unique_name = result_log['filename']
+                  dm.addLog(eid, details['id'], uid, transaction_id, unique_name)
+                  result['success'] = True
+                else:
+                  result = result_log
+              else:
+                result = mapping
+            else:
+              result = {'error':'username or password doesnot exists'}
+          return result, 200
+        except ValueError as e:
+            if str(e) == "Forbidden":
+                return {}, 403
+
+@ns.route('/deter/project/run/logs')
+class HandleProjectGetRunLogs(Resource):
+    def get(self):
+        eid = request.args.get('eid')
+        daid = request.args.get('account_id')
+        uid = userObj.getUserId()
+        try:
+          result = {}
+          if not dm.user_can(uid,eid):
+            result['error'] = "User does not have access to this experiment"
+          else: 
+            details = ps.get(uid,daid)
+            if str(details['username']).strip() !='' and str(details['password']).strip() !='':
+              mapping = dm.getMapping(details['id'],eid)
+              if 'error' not in mapping:
+                result['logs'] = dm.getLogs(eid, details['id'], uid)
+              else:
+                result = mapping
+            else:
+              result = {'error':'username or password doesnot exists'}
+          return result, 200
+        except ValueError as e:
+            if str(e) == "Forbidden":
+                return {}, 403
