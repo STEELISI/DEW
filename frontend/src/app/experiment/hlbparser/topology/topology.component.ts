@@ -165,7 +165,7 @@ export class TopologyGraphComponent implements OnInit{
     var newConstraints = this.generateConstraintDEW(node)
     var oldConstraints = null;
     this.state.getConstraints().subscribe(c => {
-       oldConstraints = c
+       oldConstraints = c || []
     })
     newConstraints = oldConstraints.concat(newConstraints)
     this.state.setConstraints(newConstraints)
@@ -442,10 +442,10 @@ export class TopologyGraphComponent implements OnInit{
     var behaviors = null
     var constraints = null
     this.state.getConstraints().subscribe((c) => {
-      constraints = c
+      constraints = c || []
     })
     this.state.getBehavior().subscribe((b) => {
-      behaviors = b
+      behaviors = b || []
     })
     this.http.put("v1/pr/hlb/topology/parse", {"scenario": behaviors, "constraints": constraints},{withCredential: true}).subscribe((data) => {
       this.nodes = []
