@@ -11,7 +11,7 @@ import {HttpParams} from '@angular/common/http';
 
 export class DeterLabViewComponent implements OnInit {
     userId;
-    userName = '';
+    userNameObj = {username: '', created_date: '', id: null};
     showWarning = false;
     showLinkWindow = false;
     showCreateWindow = false;
@@ -22,61 +22,81 @@ export class DeterLabViewComponent implements OnInit {
     experimentId;
     showSwap = false;
     experimentStatus = '';
-    experimentName = '';
+    // experimentName = '';
     alertType = '';
     showAlert = false;
     alertMsg = '';
     activityMessages = [];
     activateSwap = true;
+    userCreatedDate;
+    userNamesList = [];
 
     constructor(private http: HttpService, private route: Router) {
     }
 
     ngOnInit() {
         const url = this.route.url.split('/');
+        if (!parseInt(url[url.length - 1], 10)) {
+            this.showWarning = true;
+            return;
+        }
         this.experimentId = url[url.length - 1];
         this.http.get('v1/pr/profile/accounts/deterLab/get', {withCredentials: true}).subscribe(data => {
             if (data.length > 0) {
+                this.userNamesList = data;
                 this.userId = data[0].id.toString();
-                this.userName = data[0].username;
+                this.userNameObj = data[0];
             } else {
                 this.showWarning = true;
                 return;
             }
             let params = new HttpParams().append('eid', this.experimentId);
             params = params.append('account_id', this.userId);
-            this.http.get('v1/pr/deter/project', {params, withCredentials: true})
-                .subscribe(data1 => {
-                    this.showSwap = data1.error === undefined;
-                });
-            // setInterval(() => {
-            this.http.get('v1/pr/deter/project/getstatus', {params, withCredentials: true})
-                .subscribe(data2 => {
-                    if (data2.error) {
-                        this.showSwap = false;
-                    } else if (data2.content === 'No information available.') {
-                        this.experimentName = 'In transition';
-                        this.experimentStatus = 'In transition';
-                    } else {
-                        const lines = data2.content.split('\n');
-                        this.experimentName = lines[0].replace(' ', '').split(':')[1];
-                        this.experimentStatus = lines[1].replace(' ', '').split(':')[1].trim();
-                        if (this.experimentStatus === 'active') {
-                            this.activateSwap = false;
-                        }
-                    }
-                });
-            // }, 5000);
-            this.http.get('v1/pr/deter/project/getactivity', {params, withCredentials: true})
-                .subscribe(data3 => {
-                    if (data3.content) {
-                        this.activityMessages = data3.content.split('\n');
-                    }
-                });
+            this.getProjectMapping(params);
+            this.getExperimentStatus(params);
+            this.getExperimentActivity(params);
         });
-
         this.projName = '';
         this.expName = '';
+    }
+
+    getProjectMapping(params) {
+        this.http.get('v1/pr/deter/project', {params, withCredentials: true})
+            .subscribe(data1 => {
+                this.showSwap = data1.error === undefined;
+                if (!data1.error) {
+                    this.projName = data1.project_name;
+                    this.expName = data1.experiment_name;
+                }
+            });
+    }
+
+    getExperimentStatus(params) {
+        this.http.get('v1/pr/deter/project/getstatus', {params, withCredentials: true})
+            .subscribe(data2 => {
+                if (data2.error) {
+                    this.showSwap = false;
+                } else if (data2.content === 'No information available.') {
+                    // this.experimentName = 'In transition';
+                    this.experimentStatus = 'In transition';
+                } else {
+                    const lines = data2.content.split('\n');
+                    // this.experimentName = lines[0].replace(' ', '').split(':')[1];
+                    this.experimentStatus = lines[1].replace(' ', '').split(':')[1].trim();
+                    if (this.experimentStatus === 'active') {
+                        this.activateSwap = false;
+                    }
+                }
+            });
+    }
+
+    getExperimentActivity(params) {
+        this.http.get('v1/pr/deter/project/getactivity', {params, withCredentials: true})
+            .subscribe(data3 => {
+                if (data3.content) {
+                    this.activityMessages = data3.content.split('\n');
+                }
+            });
     }
 
     enableTheLinkWindow() {
@@ -126,7 +146,7 @@ export class DeterLabViewComponent implements OnInit {
                 this.showAlert = true;
                 setTimeout(() => {
                     this.showAlert = false;
-                    location.reload();
+                    this.ngOnInit();
                 }, 3000);
             }
         });
@@ -145,7 +165,7 @@ export class DeterLabViewComponent implements OnInit {
                     this.showAlert = true;
                     setTimeout(() => {
                         this.showAlert = false;
-                        location.reload();
+                        this.ngOnInit();
                     }, 3000);
                 }
             });
@@ -173,5 +193,15 @@ export class DeterLabViewComponent implements OnInit {
         } else {
             return '';
         }
+    }
+
+    userChanged() {
+        this.userId = this.userNameObj.id;
+        this.activityMessages = [];
+        let params = new HttpParams().append('eid', this.experimentId);
+        params = params.append('account_id', this.userId);
+        this.getProjectMapping(params);
+        this.getExperimentStatus(params);
+        this.getExperimentActivity(params);
     }
 }

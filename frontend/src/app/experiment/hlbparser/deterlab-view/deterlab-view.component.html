@@ -82,14 +82,30 @@
             </ng-template>
         </div>
         <div class="col-3">
-            <b>Profile:</b> {{this.userName}}<br/>
+            <div class="form-group">
+                <label for="exampleFormControlSelect1">Choose Profile </label>
+                <select class="form-control" id="exampleFormControlSelect1" [(ngModel)]="userNameObj"
+                        (change)="userChanged()">
+                    <option *ngFor="let uname of userNamesList"
+                            [ngValue]="uname">{{uname.username}}</option>
+                </select>
+            </div>
+            <b>Selected Profile: </b> {{this.userNameObj.username}}<br/>
+            <b>Created Date: </b> {{this.userNameObj.created_date}}<br/>
             <div *ngIf="showSwap; else nonSwapBlock">
                 <button type="button" class="btn btn-outline-success swap-dt"
-                        [disabled]="!activateSwap"
+                        *ngIf="activateSwap; else showSwapOut"
                         (click)="swapInOrSwapOutExperiment('swapin')">Swap In Experiment
                 </button>
+                <ng-template #showSwapOut>
+                    <button type="button" class="btn btn-outline-success swap-dt"
+                            [disabled]="!activateSwap"
+                            (click)="swapInOrSwapOutExperiment('swapout')">Swap Out Experiment
+                    </button>
+                </ng-template>
                 <br/>
-                <b>Name: </b>{{this.experimentName}}<br/>
+                <b>Project Name: </b>{{this.projName}}<br/>
+                <b>Experiment Name: </b>{{this.expName}}<br/>
                 <b>Status: </b>{{this.experimentStatus}}<br/>
             </div>
             <ng-template #nonSwapBlock>
@@ -106,7 +122,8 @@
 <ng-template #elseBlock>
     <div class="card">
         <div class="card-body">
-            You have not added any deterlab profile. Please add a profile and try again.
+            You have not added any deterlab profile or saved the current experiment.
+            Please add a profile or save the experiment and try again.
         </div>
     </div>
 </ng-template>
