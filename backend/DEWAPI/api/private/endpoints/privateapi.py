@@ -891,7 +891,10 @@ class HandleExperimentSlides(Resource):
 
         except ValueError as e:
                 msg = {'saved': False, 'message': str(e)}
-                return msg, 403
+                if str(e) == "Forbidden":
+                    return msg, 403
+                else:
+                    return msg, 400
         if slide:
             return {'saved': True, 'message': "Successful", "slide": slide.to_dict()}
 
@@ -904,9 +907,45 @@ class HandleExperimentSlides(Resource):
         try:
             json_data = request.get_json(force=True)
             userId = userObj.getUserId()
-            experiment_id = json_data['experiment_id']
-            slide = em.slides_of_experiment(userId, experiment_id)
+            experiment_id = json_data['id']
+            slides = em.slides_of_experiment(userId, experiment_id)
 
+        except ValueError as e:
+                msg = {'status': "Failure", 'message': str(e)}
+                return msg, 403
+        if slides:
+            return {'status': "Successful", "slides": slides}
+
+    @api.expect(delete_slide_object)
+    def delete(self):
+        """
+            Remove slide for an experiment
+        """
+        try:
+            json_data = request.get_json(force=True)
+            userId = userObj.getUserId()
+            experiment_id = json_data['experiment_id']
+            slide_id = json_data['slide_id']
+            status = em.delete_slide(userId, experiment_id, slide_id)
+
+        except ValueError as e:
+                msg = {'status': "Failure", 'message': str(e)}
+                return msg, 403
+        if status:
+            return None, 204
+
+    @api.expect(update_slide_dew_object)
+    def put(self):
+        """
+            Update slide contents
+        """
+        try:
+            json_data = request.get_json(force=True)
+            userId = userObj.getUserId()
+            experiment_id = json_data['experiment_id']
+            slide_id = json_data['slide_id']
+            actor_action_mapping = json_data['actor_action_mapping']
+            slide = em.update_experiment_slide_mapping(userId, experiment_id,slide_id,actor_action_mapping)
         except ValueError as e:
                 msg = {'saved': False, 'message': str(e)}
                 return msg, 403

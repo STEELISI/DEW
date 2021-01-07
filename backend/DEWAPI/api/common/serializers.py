@@ -146,6 +146,17 @@ create_slides_object = api.model('Create Experiment slide', {
     'sequence_number': fields.Integer(description="Sequence number of slide", required=True)
   })
 
+delete_slide_object = api.model('Delete Experiment slide', {
+  'slide_id': fields.String(description="Slide id", required=True),
+  'experiment_id': fields.String(description="Experiment id", required=True),
+  })
+
+update_slide_dew_object = api.model('Update Experiment slide dew', {
+  'slide_id': fields.String(description="Slide id", required=True),
+  'experiment_id': fields.String(description="Experiment id", required=True),
+  'actor_action_mapping': fields.String(description="Actor action mapping", required=True)
+  })
+
 uid_header_parser = api.parser()
 uid_header_parser.add_argument('X-user-id',location='headers')
 

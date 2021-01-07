@@ -337,6 +337,10 @@ class ExperimentManager(object):
             raise ValueError("Forbidden")
         if self.user_can(experiment_id, user_id, AccessControlEnum.write.value) is not None:
 
+            existing_slide = Slide.query.filter(Slide.experiment_id == experiment_id, Slide.sequence_number == sequence_number).first()
+            if existing_slide:
+                raise ValueError("Slide with same sequence number exists")
+
             slide = Slide(experiment_id=experiment_id, actor_action_mapping=actor_action_mapping,sequence_number=sequence_number)
 
             db.session.add(slide)
@@ -353,12 +357,21 @@ class ExperimentManager(object):
 
     def update_experiment_slide_mapping(self, user_id, experiment_id, slide_id, actor_action_mapping):
         if self.user_can(experiment_id, user_id, AccessControlEnum.write) is not None:
-            s = Slide.query.filter(Slide.slide_id == slide_id)
+            s = Slide.query.filter(Slide.slide_id == slide_id).first()
             s.actor_action_mapping = actor_action_mapping
             db.session.commit()
+            return s
 
 
     def slides_of_experiment(self, user_id, experiment_id):
         if self.user_can(experiment_id, user_id, AccessControlEnum.read) is not None:
             slides = Slide.query.filter(Slide.experiment_id == experiment_id)
             return [s.to_dict() for s in slides]
+
+    def delete_slide(self, user_id, experiment_id, slide_id):
+        if self.user_can(experiment_id, user_id, AccessControlEnum.write) is not None:
+            Slide.query.filter(Slide.slide_id == slide_id).delete()
+            db.session.commit()
+            return True
+
+
