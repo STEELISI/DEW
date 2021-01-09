@@ -1,9 +1,4 @@
-
-exp=""
-proj=""
-status=0
-pid=0
-id=`date +%s`.$RANDOM
+id=$label
 cnt=0
 
 execute_fork()
@@ -15,8 +10,7 @@ execute_fork()
 	mkdir ~/cmds/$id
     fi
     echo "$cmd 2>~/cmds/$id/error.$cnt &" > ~/cmds/$id/script.$cnt.sh
-    echo "echo \$? > ~/cmds/$id/status.$cnt" >>  ~/cmds/$id/script.$cnt.sh
-    echo "echo \$! > ~/cmds/$id/pid.$cnt" >>  ~/cmds/$id/script.$cnt.sh
+    echo "echo \$! > ~/cmds/$id/pid.$cnt" >> ~/cmds/$id/script.$cnt.sh
     ssh $node.$exp.$proj "bash ~/cmds/$id/script.$cnt.sh" &
 }
 
@@ -28,9 +22,7 @@ execute_wait()
     if [ ! -d ~/cmds/$id ] ; then
 	mkdir ~/cmds/$id
     fi
-    echo "$cmd 2>~/cmds/$id/error.$cnt" > ~/cmds/$id/script.$cnt.sh
-    echo "echo \$? > ~/cmds/$id/status.$cnt" >>  ~/cmds/$id/script.$cnt.sh
-    echo "echo \$! > ~/cmds/$id/pid.$cnt" >>  ~/cmds/$id/script.$cnt.sh
+    echo "$cmd 2>~/cmds/$id/error.$cnt && echo \$? > ~/cmds/$id/status.$cnt" > ~/cmds/$id/script.$cnt.sh
     ssh $node.$exp.$proj "bash ~/cmds/$id/script.$cnt.sh" &
 }
 
