@@ -41,6 +41,8 @@ class BashGenerator(Generator):
                     self.text += self.conditions[cond][0] + " " + str(count[cond]) + "\n"
                     if (self.conditions[cond][0] == "psuccess"):
                         self.text += "status" + str(count[cond]) +"=`cat ~/cmds/$label/status."+str(count[cond])+"`\n"
+                    else:
+                        self.text += "pex" + str(count[cond]) +"=$(pexists "+str(count[cond])+")\n"
             
             if clist is not None and len(clist)>0:
                 ctext = ""
@@ -50,11 +52,16 @@ class BashGenerator(Generator):
                             ctext +=  "|| [ $status" +str(count[cond])+" -ne 0 ] "
                         else:
                             ctext +=  "if [ $status" +str(count[cond])+" -ne 0 ] "
+                    else:
+                        if ctext != "":
+                            ctext +=  "|| [ $pex" + str(count[cond])+" -ne 0 ] "
+                        else:
+                            ctext +=  "if [ $pex" + str(count[cond])+" -ne 0 ] "
                 if ctext != "":
                     self.text += ctext + " ; then \n\t exit 1\nfi\n"
             print("Actor ", actor," action ", action, " event ", event)
             if (self.cflags[action] & 2 > 0):
-                self.text += "execute_wait \"" + actor + "\" \"" + self.bindings_parsed[action] +"\" " + str(sid) + " &\n"
+                self.text += "execute_fork \"" + actor + "\" \"" + self.bindings_parsed[action] +"\" " + str(sid) + " &\n"
             else:
                 self.text += "execute_fork \"" + actor + "\" \"" + self.bindings_parsed[action] +"\" " + str(sid) + " &\n"
             if (event is not None):
