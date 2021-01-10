@@ -10,7 +10,14 @@ execute_fork()
 	mkdir ~/cmds/$id
     fi
     echo "$cmd 2>~/cmds/$id/error.$cnt &" > ~/cmds/$id/script.$cnt.sh
-    echo "echo \$! > ~/cmds/$id/pid.$cnt" >> ~/cmds/$id/script.$cnt.sh
+    echo "echo \"running $cmd\"" >> ~/cmds/$id/script.$cnt.sh
+    echo "pid=\"\$!\""  >> ~/cmds/$id/script.$cnt.sh
+    echo "echo \$pid > ~/cmds/$id/pid.$cnt" >> ~/cmds/$id/script.$cnt.sh
+    echo "if wait \$pid; then" >> ~/cmds/$id/script.$cnt.sh
+    echo "    echo 0 > ~/cmds/$id/status.$cnt" >> ~/cmds/$id/script.$cnt.sh	    
+    echo "else" >> ~/cmds/$id/script.$cnt.sh
+    echo "    echo 1 > ~/cmds/$id/status.$cnt" >> ~/cmds/$id/script.$cnt.sh	    
+    echo "fi" >> ~/cmds/$id/script.$cnt.sh	    
     ssh $node.$exp.$proj "bash ~/cmds/$id/script.$cnt.sh" &
 }
 
@@ -40,4 +47,9 @@ pexists()
     while [ ! -f ~/cmds/$id/pid.$cnt ] ; do
 	sleep 0.1
     done
+    if [ ! -f ~/cmds/$id/status.$cnt ] ; then
+       echo "0"
+    else
+       echo "1"
+    fi     
 }
