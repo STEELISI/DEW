@@ -26,6 +26,7 @@ export class DeterLabViewComponent implements OnInit {
     alertType = '';
     showAlert = false;
     alertMsg = '';
+    statusMessages = [];
     activityMessages = [];
     activateSwap = true;
     userCreatedDate;
@@ -80,9 +81,9 @@ export class DeterLabViewComponent implements OnInit {
                     // this.experimentName = 'In transition';
                     this.experimentStatus = 'In transition';
                 } else {
-                    const lines = data2.content.split('\n');
+                    this.statusMessages =  data2.content.split('\n');
                     // this.experimentName = lines[0].replace(' ', '').split(':')[1];
-                    this.experimentStatus = lines[1].replace(' ', '').split(':')[1].trim();
+                    this.experimentStatus = this.statusMessages[1].replace(' ', '').split(':')[1].trim();
                     if (this.experimentStatus === 'active') {
                         this.activateSwap = false;
                     }
@@ -146,6 +147,8 @@ export class DeterLabViewComponent implements OnInit {
                 this.showAlert = true;
                 setTimeout(() => {
                     this.showAlert = false;
+                    this.showLinkWindow = false;
+                    this.showCreateWindow = false;
                     this.ngOnInit();
                 }, 3000);
             }
@@ -165,6 +168,42 @@ export class DeterLabViewComponent implements OnInit {
                     this.showAlert = true;
                     setTimeout(() => {
                         this.showAlert = false;
+                        this.ngOnInit();
+                    }, 3000);
+                }
+            });
+    }
+
+    updateNSFile() {
+        let params = new HttpParams().append('eid', this.experimentId);
+        params = params.append('account_id', this.userId);
+        this.http.get('v1/pr/deter/update/project/nsfile', {params, withCredentials: true})
+            .subscribe(data => {
+                console.log(data);
+            });
+    }
+
+    updateMapping() {
+        this.showCreateWindow = true;
+    }
+
+    deleteMapping() {
+        let params = new HttpParams().append('eid', this.experimentId);
+        params = params.append('account_id', this.userId);
+        this.http.delete('v1/pr/deter/project/mapping/delete', {params, withCredentials: true})
+            .subscribe(data => {
+                if (data === 'Successful') {
+                    this.alertMsg = 'Successfully deleted mapping';
+                    this.alertType = 'alert-success';
+                    this.showAlert = true;
+                    setTimeout(() => {
+                        this.showAlert = false;
+                        this.showLinkWindow = false;
+                        this.showCreateWindow = false;
+                        this.projName = '';
+                        this.expName = '';
+                        this.activityMessages = [];
+                        this.statusMessages = [];
                         this.ngOnInit();
                     }, 3000);
                 }

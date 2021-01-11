@@ -71,12 +71,28 @@
                 </div>
             </div>
             <ng-template #activityWindow>
-                <div class="card" *ngIf="activityMessages.length > 0">
-                    <div class="card-body">
-                        <h5 class="card-title">Activity of experiment</h5>
+                <nav *ngIf="activityMessages.length > 0">
+                    <div class="nav nav-tabs" id="nav-tab" role="tablist">
+                        <a class="nav-item nav-link active" id="nav-home-tab" data-toggle="tab" href="#nav-home"
+                           role="tab" aria-controls="nav-home" aria-selected="true">Status</a>
+                        <a class="nav-item nav-link" id="nav-profile-tab" data-toggle="tab" href="#nav-profile"
+                           role="tab" aria-controls="nav-profile" aria-selected="false">Activity</a>
+                        <a class="nav-item nav-link" id="nav-contact-tab" data-toggle="tab" href="#nav-contact"
+                           role="tab" aria-controls="nav-contact" aria-selected="false">Run Logs</a>
+                    </div>
+                </nav>
+                <div class="tab-content" id="nav-tabContent">
+                    <div class="tab-pane fade show active" id="nav-home" role="tabpanel" aria-labelledby="nav-home-tab">
+                        <div *ngFor="let line of statusMessages">
+                            {{line}}
+                        </div>
+                    </div>
+                    <div class="tab-pane fade" id="nav-profile" role="tabpanel" aria-labelledby="nav-profile-tab">
                         <div *ngFor="let line of activityMessages">
                             {{line}}
                         </div>
+                    </div>
+                    <div class="tab-pane fade" id="nav-contact" role="tabpanel" aria-labelledby="nav-contact-tab">...
                     </div>
                 </div>
             </ng-template>
@@ -87,26 +103,41 @@
                 <select class="form-control" id="exampleFormControlSelect1" [(ngModel)]="userNameObj"
                         (change)="userChanged()">
                     <option *ngFor="let uname of userNamesList"
-                            [ngValue]="uname">{{uname.username}}</option>
+                            [ngValue]="uname">{{uname.username + ' - (' + uname.created_date + ')'}}</option>
                 </select>
             </div>
-            <b>Selected Profile: </b> {{this.userNameObj.username}}<br/>
-            <b>Created Date: </b> {{this.userNameObj.created_date}}<br/>
+            <b *ngIf="projName">Project Name: </b>{{this.projName}}<br/>
+            <b *ngIf="expName">Experiment Name: </b>{{this.expName}}<br/>
             <div *ngIf="showSwap; else nonSwapBlock">
                 <button type="button" class="btn btn-outline-success swap-dt"
                         *ngIf="activateSwap; else showSwapOut"
                         (click)="swapInOrSwapOutExperiment('swapin')">Swap In Experiment
+                </button>
+                <button type="button" class="btn btn-outline-success swap-dt"
+                        *ngIf="activateSwap; else showSwapOut"
+                        (click)="updateMapping()">Update Mapping
+                </button>
+                <button type="button" class="btn btn-outline-success swap-dt"
+                        *ngIf="activateSwap; else showSwapOut"
+                        (click)="deleteMapping()">Delete Mapping
+                </button>
+
+                <button type="button" class="btn btn-outline-success swap-dt"
+                        *ngIf="activateSwap; else showSwapOut"
+                        (click)="updateNSFile()">Update NS file
                 </button>
                 <ng-template #showSwapOut>
                     <button type="button" class="btn btn-outline-success swap-dt"
                             [disabled]="!activateSwap"
                             (click)="swapInOrSwapOutExperiment('swapout')">Swap Out Experiment
                     </button>
+                    <button type="button" class="btn btn-outline-success swap-dt"
+                            [disabled]="!activateSwap"
+                            (click)="swapInOrSwapOutExperiment('swapout')">Run Experiment
+                    </button>
                 </ng-template>
                 <br/>
-                <b>Project Name: </b>{{this.projName}}<br/>
-                <b>Experiment Name: </b>{{this.expName}}<br/>
-                <b>Status: </b>{{this.experimentStatus}}<br/>
+
             </div>
             <ng-template #nonSwapBlock>
                 <button type="button" class="btn btn-outline-success link-dt"
