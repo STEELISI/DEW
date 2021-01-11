@@ -6,7 +6,7 @@
 # 6200 - test2
 # 6300 - test3
 PORT=4000
-FRNTBLD=prod
+FRNTBLD="prod"
 path=`pwd`
 if [[ $path =~ "test1" ]]; then
 	PORT=6100
