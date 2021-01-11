@@ -157,6 +157,12 @@ update_slide_dew_object = api.model('Update Experiment slide dew', {
   'actor_action_mapping': fields.String(description="Actor action mapping", required=True)
   })
 
+move_slides_object = api.model('Swap slide positions', {
+  'experiment_id': fields.String(description="Experiment id", required=True),
+  'first_slide_id': fields.String(description="First Slide id", required=True),
+  'second_slide_id': fields.String(description="Second Slide id", required=True),
+  })
+
 uid_header_parser = api.parser()
 uid_header_parser.add_argument('X-user-id',location='headers')
 

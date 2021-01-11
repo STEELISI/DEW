@@ -347,13 +347,16 @@ class ExperimentManager(object):
             db.session.commit()
         return slide
 
-    def update_experiment_slide_sequence(self, user_id, experiment_id, slide_id_sequence_mapping):
+    def swap_slides(self, user_id, experiment_id, first_slide_id, second_slide_id):
         if self.user_can(experiment_id, user_id, AccessControlEnum.write) is not None:
-            for slide_id in slide_id_sequence_mapping:
-                s = Slide.query.filter(Slide.slide_id == slide_id)
-                s.sequence_number = slide_id_sequence_mapping[slide_id]
+            first_slide = Slide.query.filter(Slide.slide_id == first_slide_id).first()
+            second_slide = Slide.query.filter(Slide.slide_id == second_slide_id).first()
+            tmp = first_slide.sequence_number
+            first_slide.sequence_number = second_slide.sequence_number
+            second_slide.sequence_number = tmp
             
             db.session.commit()
+            return True
 
     def update_experiment_slide_mapping(self, user_id, experiment_id, slide_id, actor_action_mapping):
         if self.user_can(experiment_id, user_id, AccessControlEnum.write) is not None:

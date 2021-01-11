@@ -899,23 +899,6 @@ class HandleExperimentSlides(Resource):
             return {'saved': True, 'message': "Successful", "slide": slide.to_dict()}
 
 
-    @api.expect(experiment_detail)
-    def get(self):
-        """
-            Get slides for an experiment
-        """
-        try:
-            json_data = request.get_json(force=True)
-            userId = userObj.getUserId()
-            experiment_id = json_data['id']
-            slides = em.slides_of_experiment(userId, experiment_id)
-
-        except ValueError as e:
-                msg = {'status': "Failure", 'message': str(e)}
-                return msg, 403
-        if slides:
-            return {'status': "Successful", "slides": slides}
-
     @api.expect(delete_slide_object)
     def delete(self):
         """
@@ -951,3 +934,49 @@ class HandleExperimentSlides(Resource):
                 return msg, 403
         if slide:
             return {'saved': True, 'message': "Successful", "slide": slide.to_dict()}
+
+
+
+
+@ns.route('/design/experiment/slides/<experiment_id>')
+class HandleGetExperimentSlides(Resource):
+    def get(self, experiment_id):
+        """
+            Get slides for an experiment
+        """
+        try:
+            userId = userObj.getUserId()
+            slides = em.slides_of_experiment(userId, experiment_id)
+
+        except ValueError as e:
+                msg = {'status': "Failure", 'message': str(e)}
+                return msg, 403
+        if slides:
+            return {'status': "Successful", "slides": slides}
+    
+
+@ns.route('/design/experiment/slides/swap')
+class HandleExperimentSlideMovement(Resource):
+    
+    @api.expect(move_slides_object)
+    def post(self):
+        """
+            Takes 2 slides and swap their positions
+        """
+        try:
+            json_data = request.get_json(force=True)
+            userId = userObj.getUserId()
+            experiment_id = json_data['experiment_id']
+            first_slide_id = json_data['first_slide_id']
+            second_slide_id = json_data['second_slide_id']
+            status = em.swap_slides(userId, experiment_id,first_slide_id, second_slide_id)
+
+        except ValueError as e:
+                msg = {'saved': False, 'message': str(e)}
+                if str(e) == "Forbidden":
+                    return msg, 403
+                else:
+                    return msg, 400
+        if status:
+            return {'saved': True, 'message': "Successful"}
+
