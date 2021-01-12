@@ -108,6 +108,7 @@
             </div>
             <b *ngIf="projName">Project Name: </b>{{this.projName}}<br/>
             <b *ngIf="expName">Experiment Name: </b>{{this.expName}}<br/>
+            <b *ngIf="experimentStatus">Status: </b>{{this.experimentStatus}}<br/>
             <div *ngIf="showSwap; else nonSwapBlock">
                 <button type="button" class="btn btn-outline-success swap-dt"
                         *ngIf="activateSwap; else showSwapOut"

@@ -184,7 +184,9 @@ export class DeterLabViewComponent implements OnInit {
     }
 
     updateMapping() {
-        this.showCreateWindow = true;
+        this.showLinkWindow = true;
+        this.isValidExpName = true;
+        this.isValidProjName = true;
     }
 
     deleteMapping() {
@@ -202,6 +204,7 @@ export class DeterLabViewComponent implements OnInit {
                         this.showCreateWindow = false;
                         this.projName = '';
                         this.expName = '';
+                        this.experimentStatus = '';
                         this.activityMessages = [];
                         this.statusMessages = [];
                         this.ngOnInit();
