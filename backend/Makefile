@@ -1,6 +1,11 @@
+ifdef PORT
+PORT := $(PORT)
+else
+PORT := 4000
+endif
+
 build: 
 	docker build -t dew:$(shell git log -1 --format=%h) .
-
 
 create_db:
 	mkdir -p db/
