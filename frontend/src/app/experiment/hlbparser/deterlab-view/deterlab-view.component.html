@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<div *ngIf="!showWarning; else elseBlock">
+    <div class="row">
+        <div class="col-9">
+            <div *ngIf="showLinkWindow || showCreateWindow; else activityWindow">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title" *ngIf="showLinkWindow">Link to Deterlab Experiment</h5>
+                        <h5 class="card-title" *ngIf="showCreateWindow">Create a new Deterlab Experiment</h5>
+                        <div class="form-group">
+                            <label for="deterProjName">Project Name</label>
+                            <input type="text" class="form-control" id="deterProjName"
+                                   aria-describedby="projHelp" placeholder="Enter project name"
+                                   (change)="testProjectValidity()"
+                                   [(ngModel)]="projName"
+                                   [ngClass]="activateOnProjValidity()"
+                            >
+                            <div id="projHelp" class="invalid-feedback">
+                                Please enter a valid Deterlab project name
+                            </div>
+                        </div>
+
+                        <div class="form-group" *ngIf="isValidProjName && showLinkWindow">
+                            <label for="deterExpName1">Experiment Name</label>
+                            <input type="text" class="form-control" id="deterExpName1"
+                                   aria-describedby="expHelp1" placeholder="Enter experiment name"
+                                   (change)="testExperimentValidity()"
+                                   [(ngModel)]="expName"
+                                   [ngClass]="activateOnExpValidity()"
+                            >
+                            <div id="expHelp1" class="invalid-feedback">
+                                Please enter a valid Deterlab experiment name
+                            </div>
+                        </div>
+
+                        <div class="form-group" *ngIf="isValidProjName && showCreateWindow">
+                            <label for="deterExpName2">Experiment Name</label>
+                            <input type="text" class="form-control" id="deterExpName2"
+                                   aria-describedby="expHelp2" placeholder="Enter experiment name"
+                                   (change)="testExperimentValidity()"
+                                   [(ngModel)]="expName"
+                                   [ngClass]="activateOnExpCreateValidity()"
+                            >
+                            <div id="expHelp2" class="invalid-feedback">
+                                Experiment already exists
+                            </div>
+                        </div>
+                        <div class="row" *ngIf="expName">
+                            <div class="col-4"></div>
+                            <div class="col-2" *ngIf="isValidExpName && showLinkWindow">
+                                <button type="button" class="btn btn-success link-btn"
+                                        (click)="createOrLinkToNewExperiment()">Link
+                                </button>
+                            </div>
+                            <div class="col-2" *ngIf="!isValidExpName && showCreateWindow">
+                                <button type="button" class="btn btn-success link-btn"
+                                        (click)="createOrLinkToNewExperiment()">Create
+                                </button>
+                            </div>
+                            <div class="col-2">
+                                <button type="button" class="btn btn-danger cancel-btn">Cancel</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <ng-template #activityWindow>
+                <nav *ngIf="activityMessages.length > 0">
+                    <div class="nav nav-tabs" id="nav-tab" role="tablist">
+                        <a class="nav-item nav-link active" id="nav-home-tab" data-toggle="tab" href="#nav-home"
+                           role="tab" aria-controls="nav-home" aria-selected="true">Status</a>
+                        <a class="nav-item nav-link" id="nav-profile-tab" data-toggle="tab" href="#nav-profile"
+                           role="tab" aria-controls="nav-profile" aria-selected="false">Activity</a>
+                        <a class="nav-item nav-link" id="nav-contact-tab" data-toggle="tab" href="#nav-contact"
+                           role="tab" aria-controls="nav-contact" aria-selected="false">Run Logs</a>
+                    </div>
+                </nav>
+                <div class="tab-content" id="nav-tabContent">
+                    <div class="tab-pane fade show active" id="nav-home" role="tabpanel" aria-labelledby="nav-home-tab">
+                        <div *ngFor="let line of statusMessages">
+                            {{line}}
+                        </div>
+                    </div>
+                    <div class="tab-pane fade" id="nav-profile" role="tabpanel" aria-labelledby="nav-profile-tab">
+                        <div *ngFor="let line of activityMessages">
+                            {{line}}
+                        </div>
+                    </div>
+                    <div class="tab-pane fade" id="nav-contact" role="tabpanel" aria-labelledby="nav-contact-tab">...
+                    </div>
+                </div>
+            </ng-template>
+        </div>
+        <div class="col-3">
+            <div class="form-group">
+                <label for="exampleFormControlSelect1">Choose Profile </label>
+                <select class="form-control" id="exampleFormControlSelect1" [(ngModel)]="userNameObj"
+                        (change)="userChanged()">
+                    <option *ngFor="let uname of userNamesList"
+                            [ngValue]="uname">{{uname.username + ' - (' + uname.created_date + ')'}}</option>
+                </select>
+            </div>
+            <b *ngIf="projName">Project Name: </b>{{this.projName}}<br/>
+            <b *ngIf="expName">Experiment Name: </b>{{this.expName}}<br/>
+            <b *ngIf="experimentStatus">Status: </b>{{this.experimentStatus}}<br/>
+            <div *ngIf="showSwap; else nonSwapBlock">
+                <button type="button" class="btn btn-outline-success swap-dt"
+                        *ngIf="activateSwap; else showSwapOut"
+                        (click)="swapInOrSwapOutExperiment('swapin')">Swap In Experiment
+                </button>
+                <button type="button" class="btn btn-outline-success swap-dt"
+                        *ngIf="activateSwap; else showSwapOut"
+                        (click)="updateMapping()">Update Mapping
+                </button>
+                <button type="button" class="btn btn-outline-success swap-dt"
+                        *ngIf="activateSwap; else showSwapOut"
+                        (click)="deleteMapping()">Delete Mapping
+                </button>
+
+                <button type="button" class="btn btn-outline-success swap-dt"
+                        *ngIf="activateSwap; else showSwapOut"
+                        (click)="updateNSFile()">Update NS file
+                </button>
+                <ng-template #showSwapOut>
+                    <button type="button" class="btn btn-outline-success swap-dt"
+                            [disabled]="!activateSwap"
+                            (click)="swapInOrSwapOutExperiment('swapout')">Swap Out Experiment
+                    </button>
+                    <button type="button" class="btn btn-outline-success swap-dt"
+                            [disabled]="!activateSwap"
+                            (click)="swapInOrSwapOutExperiment('swapout')">Run Experiment
+                    </button>
+                </ng-template>
+                <br/>
+
+            </div>
+            <ng-template #nonSwapBlock>
+                <button type="button" class="btn btn-outline-success link-dt"
+                        (click)="enableTheLinkWindow()">Link to Deterlab experiment
+                </button>
+                <button type="button" class="btn btn-outline-success new-dt"
+                        (click)="enableTheCreateWindow()">Create a new Deterlab experiment
+                </button>
+            </ng-template>
+        </div>
+    </div>
+</div>
+<ng-template #elseBlock>
+    <div class="card">
+        <div class="card-body">
+            You have not added any deterlab profile or saved the current experiment.
+            Please add a profile or save the experiment and try again.
+        </div>
+    </div>
+</ng-template>
+<div class="alert deter-alert alert-dismissible fade show" [ngClass]="alertType" role="alert" *ngIf="showAlert">
+    <h5 class="alert-heading">Update</h5>
+    <p>{{alertMsg}}</p>
+    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+    </button>
+</div>
+<!--<div class="loader"></div>-->
+</body>
+</html>

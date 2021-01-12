@@ -112,7 +112,7 @@ class SSHConnection():
             try:
                 if gatewaySession.exists('/proj/' + project) and gatewaySession.exists('/proj/' + project + '/exp/' + exp):
                     gatewaySession.get_cmd_output('/usr/testbed/bin/swapexp ' + project + ' ' + exp + ' ' + mode)
-                    result['content'] = 'Successfull'
+                    result['content'] = 'Successful'
                 else:
                     result['error'] = "project or experiment doesn't exist"
             except RunCmdError as e:

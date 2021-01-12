@@ -26,7 +26,7 @@ class DeterLabExperimentManager(object):
         
         db.session.commit()
 
-        return "Successfull"
+        return "Successful"
     
     def getMapping(self, daid, experiment_id):
         result = {}
@@ -56,7 +56,7 @@ class DeterLabExperimentManager(object):
             db.session.add(m)
             db.session.commit()
         
-        return "Successfull"
+        return "Successful"
 
     def addLog(self, eid, daid, uid, transaction_id, unique_name):
         d = DeterlabRunScriptLogs(daid=daid, eid=eid, uid=uid, version_id=transaction_id,unique_name=unique_name,isdeleted=False)
