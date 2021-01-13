@@ -148,7 +148,7 @@ class SSHConnection():
             result['error'] = "Unable to connect to 'deterlab' with user '" + self.username + "'"
         return result
 
-    def runFile(self,project,exp,fileContent):
+    def runFile(self,project,exp,fileContent,variables):
         result = {}
         try:
             gatewaySession = SSHSession(self.sshURL, self.username, password=self.password).open()

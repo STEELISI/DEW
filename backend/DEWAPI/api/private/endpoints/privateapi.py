@@ -75,7 +75,7 @@ class HandleHLBGeneratorBash(Resource):
           Generates BASH file for given behaviors, actors, and constraints
         """
         json_data = request.get_json(force=True)
-        scriptList = hlb.HandleBASH(json_data)
+        scriptList, paramterlist = hlb.HandleBASH(json_data)
         bashScriptDict = {}
         for i in range(len(scriptList)):
             if scriptList[i][0] not in bashScriptDict:
@@ -858,9 +858,14 @@ class HandleProfileDeterLabDeleteMapping(Resource):
 
 @ns.route('/deter/project/run')
 class HandleProjectRunLog(Resource):
-    def get(self):
-        eid = request.args.get('eid')
-        daid = request.args.get('account_id')
+    def post(self):
+        content = request.get_json(force=True)
+        eid = content['eid']
+        daid = content['account_id']
+        data = dict()
+        if 'data' in content:
+          data = content['data']
+        
         uid = userObj.getUserId()
         try:
           result = {}
@@ -873,16 +878,25 @@ class HandleProjectRunLog(Resource):
               if 'error' not in mapping:
                 experiment = list(em.get_experiment(eid, uid).versions)[-1]
                 transaction_id = experiment.transaction_id
-                script = hlb.HandleBASH(json.loads(experiment.content))
-                run_content = script[0][1]
-                ssh = SSHConnection(details['username'],details['password'])
-                result_log = ssh.runFile(mapping['project_name'],mapping['experiment_name'],run_content)
-                if 'error' not in result_log:
-                  unique_name = result_log['filename']
-                  dm.addLog(eid, details['id'], uid, transaction_id, unique_name)
-                  result['success'] = True
-                else:
-                  result = result_log
+                script,variable_list = hlb.HandleBASH(json.loads(experiment.content))
+                variables = []
+                if len(variable_list) != 0:
+                  for x in variable_list:
+                    if x in data:
+                      variables.append(data[x])
+                  if len(variables) != len(variable_list):
+                    result['error'] = "Parameters are missing" 
+                    result['paramters'] = variable_list
+                if 'error' not in result:
+                  run_content = script[0][1]
+                  ssh = SSHConnection(details['username'],details['password'])
+                  result_log = ssh.runFile(mapping['project_name'],mapping['experiment_name'],run_content,variables)
+                  if 'error' not in result_log:
+                    unique_name = result_log['filename']
+                    dm.addLog(eid, details['id'], uid, transaction_id, unique_name)
+                    result['success'] = True
+                  else:
+                    result = result_log
               else:
                 result = mapping
             else:
