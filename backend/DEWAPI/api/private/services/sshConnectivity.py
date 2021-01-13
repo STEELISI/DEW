@@ -154,22 +154,31 @@ class SSHConnection():
             gatewaySession = SSHSession(self.sshURL, self.username, password=self.password).open()
             if not gatewaySession.exists('/proj/' + project):
                 result['error'] = "project '" + project + "' doesn't exist"
+                return result
+            if not gatewaySession.exists('/proj/' + project + '/exp/' + exp):
+                result['error']= "experiment '" + exp + "' doesn't exist"
+                return result
+            status_log = gatewaySession.get_cmd_output('/usr/testbed/bin/expinfo -a ' + project + ' ' + exp )
+            if 'State: swapped' in status_log:
+                result['error']= "experiment '" + exp + "' is not active."
+                return result     
+            if 'No information available.' in status_log:
+                result['error']= "experiment '" + exp + "' is in transition."
+                return result 
             try:
-                if gatewaySession.exists('/proj/' + project + '/exp/' + exp):
-                    unique_name = exp + '_run_' + str(uuid.uuid4())
-                    filename = unique_name + ".sh"
-                    if self.createFile(gatewaySession,filename,fileContent):
-                        # run command to be added
-                        result['success'] = True
-                        result['filename'] = unique_name
-                    else:
-                        result['error']= "unable to upload file to server."
+                unique_name = exp + '_run_' + str(uuid.uuid4())
+                filename = unique_name + ".sh"
+                if self.createFile(gatewaySession,filename,fileContent):
+                    # run command to be added
+                    result['success'] = True
+                    result['filename'] = unique_name
                 else:
-                    result['error']= "experiment '" + exp + "' doesn't exist"
+                    result['error']= "unable to upload file to server."    
             except RunCmdError as e:
                 result['error']= "project '" + project + "' doesn't exist"
             finally:
                 gatewaySession.close()
         except ConnectionError as e:
             result['error'] = "Unable to connect to 'deterlab' with user '" + self.username + "'"
+        
         return result
