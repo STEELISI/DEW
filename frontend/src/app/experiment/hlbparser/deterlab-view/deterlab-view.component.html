@@ -71,7 +71,7 @@
                 </div>
             </div>
             <ng-template #activityWindow>
-                <nav *ngIf="activityMessages.length > 0">
+                <nav>
                     <div class="nav nav-tabs" id="nav-tab" role="tablist">
                         <a class="nav-item nav-link active" id="nav-home-tab" data-toggle="tab" href="#nav-home"
                            role="tab" aria-controls="nav-home" aria-selected="true">Status</a>
@@ -106,9 +106,18 @@
                             [ngValue]="uname">{{uname.username + ' - (' + uname.created_date + ')'}}</option>
                 </select>
             </div>
-            <b *ngIf="projName">Project Name: </b>{{this.projName}}<br/>
-            <b *ngIf="expName">Experiment Name: </b>{{this.expName}}<br/>
-            <b *ngIf="experimentStatus">Status: </b>{{this.experimentStatus}}<br/>
+            <div *ngIf="projName">
+                <b>Project Name: </b>{{this.projName}} <br/>
+            </div>
+            <div *ngIf="expName">
+                <b>Experiment Name: </b>{{this.expName}}<br/>
+            </div>
+            <div *ngIf="experimentStatus">
+                <b>Status: </b>{{this.experimentStatus}}<br/>
+            </div>
+<!--            <b *ngIf="projName">Project Name: </b>{{this.projName}}-->
+<!--            <b *ngIf="expName">Experiment Name: </b>{{this.expName}}-->
+<!--            <b *ngIf="experimentStatus">Status: </b>{{this.experimentStatus}}-->
             <div *ngIf="showSwap; else nonSwapBlock">
                 <button type="button" class="btn btn-outline-success swap-dt"
                         *ngIf="activateSwap; else showSwapOut"

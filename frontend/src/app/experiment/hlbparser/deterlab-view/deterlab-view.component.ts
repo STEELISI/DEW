@@ -81,6 +81,7 @@ export class DeterLabViewComponent implements OnInit {
             .subscribe(data2 => {
                 if (data2.error) {
                     this.showSwap = false;
+                    this.statusMessages = [data2.error];
                 } else if (data2.content === 'No information available.') {
                     // this.experimentName = 'In transition';
                     this.experimentStatus = 'In transition';
@@ -100,6 +101,8 @@ export class DeterLabViewComponent implements OnInit {
             .subscribe(data3 => {
                 if (data3.content) {
                     this.activityMessages = data3.content.split('\n');
+                } else if (data3.error) {
+                    this.activityMessages = [data3.error];
                 }
             });
     }
@@ -244,6 +247,10 @@ export class DeterLabViewComponent implements OnInit {
     userChanged() {
         this.userId = this.userNameObj.id;
         this.activityMessages = [];
+        this.statusMessages = [];
+        this.projName = '';
+        this.expName = '';
+        this.experimentStatus = '';
         let params = new HttpParams().append('eid', this.experimentId);
         params = params.append('account_id', this.userId);
         this.getProjectMapping(params);
