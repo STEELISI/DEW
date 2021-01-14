@@ -38,6 +38,7 @@ import {
   TopologyGraphComponent,
   UpdateActorInfo
 } from "./topology/topology.component";
+import { ExperimentSlides } from "./experiment-slides/experiment-slides.component"
 import { MatRadioModule } from "@angular/material/radio";
 import {
   InfoComponent,
@@ -76,6 +77,7 @@ import { UserIdleModule } from 'angular-user-idle';
     UserListPopUp,
     VersionsPopUp,
     UpdateActorInfo,
+    ExperimentSlides
   ],
   imports: [
     CommonModule,
@@ -117,6 +119,7 @@ import { UserIdleModule } from 'angular-user-idle';
     UserListPopUp,
     VersionsPopUp,
     UpdateActorInfo,
+    ExperimentSlides
   ],
   providers: [StateService],
   bootstrap: [HLBParserComponent],

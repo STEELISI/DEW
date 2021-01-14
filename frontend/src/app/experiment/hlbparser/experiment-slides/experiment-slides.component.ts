@@ -24,7 +24,10 @@ export class ExperimentSlides implements OnInit {
   }
 
   public ngOnInit(): void {
-    
+  	console.log("experimentId : ", this.experimentId)
+    this.http.get("v1/pr/design/experiment/slides/"+this.experimentId, {withCredential: true}).subscribe((response) => {
+    		this.slides = response['slides']
+    })
   }
 
 }
