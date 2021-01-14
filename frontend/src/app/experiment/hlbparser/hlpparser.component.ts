@@ -112,4 +112,8 @@ export class HLBParserComponent implements OnInit {
         this.state.triggerSaveEvent();
     } 
   }
+
+  handleSlideNavigation(viewId: Number){
+    this.show(viewId)
+  }
 }

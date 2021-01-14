@@ -1,4 +1,4 @@
-import { Component, OnInit, Inject, Input, ViewChild, HostListener } from '@angular/core';
+import { Component, OnInit, Inject, Input, Output, ViewChild, HostListener, EventEmitter } from '@angular/core';
 import { FormBuilder } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA, MatDialog, MatSnackBar } from '@angular/material';
 import { Subject } from 'rxjs';
@@ -13,6 +13,7 @@ import { StateService } from "src/app/state-service.service";
 })
 export class ExperimentSlides implements OnInit {
 	@Input() experimentId: Number;
+	@Output() navigate: EventEmitter<any> = new EventEmitter();
 	slides: any = [];
 
   constructor(
@@ -28,6 +29,18 @@ export class ExperimentSlides implements OnInit {
     this.http.get("v1/pr/design/experiment/slides/"+this.experimentId, {withCredential: true}).subscribe((response) => {
     		this.slides = response['slides']
     })
+  }
+
+  showTopology(){
+  	this.navigate.emit(3);
+  }
+
+  showDependencyGraph(){
+  	this.navigate.emit(2);
+  }
+
+  createSlide(){
+  	console.log(this.slides)
   }
 
 }
