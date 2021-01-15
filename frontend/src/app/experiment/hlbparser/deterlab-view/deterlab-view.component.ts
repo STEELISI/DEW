@@ -65,6 +65,13 @@ export class DeterLabViewComponent implements OnInit {
         this.expName = '';
     }
 
+    getRefreshedStatus() {
+        let params = new HttpParams().append('eid', this.experimentId);
+        params = params.append('account_id', this.userId);
+        this.getExperimentStatus(params);
+        this.getExperimentActivity(params);
+    }
+
     getProjectMapping(params) {
         this.http.get('v1/pr/deter/project', {params, withCredentials: true})
             .subscribe(data1 => {
@@ -85,9 +92,10 @@ export class DeterLabViewComponent implements OnInit {
                 } else if (data2.content === 'No information available.') {
                     // this.experimentName = 'In transition';
                     this.experimentStatus = 'In transition';
+                    this.statusMessages = [];
+                    this.activityMessages = [];
                 } else {
                     this.statusMessages =  data2.content.split('\n');
-                    // this.experimentName = lines[0].replace(' ', '').split(':')[1];
                     this.experimentStatus = this.statusMessages[1].replace(' ', '').split(':')[1].trim();
                     if (this.experimentStatus === 'active') {
                         this.activateSwap = false;
@@ -186,7 +194,14 @@ export class DeterLabViewComponent implements OnInit {
         params = params.append('account_id', this.userId);
         this.http.get('v1/pr/deter/update/project/nsfile', {params, withCredentials: true})
             .subscribe(data => {
-                console.log(data);
+                if (data.success) {
+                    this.alertMsg = 'Successfully updated NS file';
+                    this.alertType = 'alert-success';
+                    this.showAlert = true;
+                    setTimeout(() => {
+                        this.showAlert = false;
+                    }, 3000);
+                }
             });
     }
 
@@ -194,6 +209,11 @@ export class DeterLabViewComponent implements OnInit {
         this.showLinkWindow = true;
         this.isValidExpName = true;
         this.isValidProjName = true;
+    }
+
+    cancelClicked() {
+        this.showLinkWindow = false;
+        this.showCreateWindow = false;
     }
 
     deleteMapping() {

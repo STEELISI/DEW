@@ -64,7 +64,9 @@
                                 </button>
                             </div>
                             <div class="col-2">
-                                <button type="button" class="btn btn-danger cancel-btn">Cancel</button>
+                                <button type="button" class="btn btn-danger cancel-btn" (click)="cancelClicked()">
+                                    Cancel
+                                </button>
                             </div>
                         </div>
                     </div>
@@ -114,37 +116,51 @@
             </div>
             <div *ngIf="experimentStatus">
                 <b>Status: </b>{{this.experimentStatus}}<br/>
+                <button type="button" class="btn btn-danger" (click)="getRefreshedStatus()">Refresh</button>
             </div>
-<!--            <b *ngIf="projName">Project Name: </b>{{this.projName}}-->
-<!--            <b *ngIf="expName">Experiment Name: </b>{{this.expName}}-->
-<!--            <b *ngIf="experimentStatus">Status: </b>{{this.experimentStatus}}-->
             <div *ngIf="showSwap; else nonSwapBlock">
-                <button type="button" class="btn btn-outline-success swap-dt"
-                        *ngIf="activateSwap; else showSwapOut"
-                        (click)="swapInOrSwapOutExperiment('swapin')">Swap In Experiment
-                </button>
-                <button type="button" class="btn btn-outline-success swap-dt"
-                        *ngIf="activateSwap; else showSwapOut"
-                        (click)="updateMapping()">Update Mapping
-                </button>
-                <button type="button" class="btn btn-outline-success swap-dt"
-                        *ngIf="activateSwap; else showSwapOut"
-                        (click)="deleteMapping()">Delete Mapping
-                </button>
+                <ul class="ul-style">
+                    <li>
+                        <button type="button" class="btn btn-outline-success swap-dt"
+                                *ngIf="activateSwap; else showSwapOut"
+                                (click)="swapInOrSwapOutExperiment('swapin')">Swap In Experiment
+                        </button>
+                    </li>
+                    <li>
+                        <button type="button" class="btn btn-outline-success swap-dt"
+                                *ngIf="activateSwap; else showSwapOut"
+                                (click)="updateMapping()">Update Mapping
+                        </button>
 
-                <button type="button" class="btn btn-outline-success swap-dt"
-                        *ngIf="activateSwap; else showSwapOut"
-                        (click)="updateNSFile()">Update NS file
-                </button>
+                    <li>
+                        <button type="button" class="btn btn-outline-success swap-dt"
+                                *ngIf="activateSwap; else showSwapOut"
+                                (click)="deleteMapping()">Delete Mapping
+                        </button>
+                    </li>
+                    <li>
+
+                        <button type="button" class="btn btn-outline-success swap-dt"
+                                *ngIf="activateSwap; else showSwapOut"
+                                (click)="updateNSFile()">Update NS file
+                        </button>
+                    </li>
+                </ul>
                 <ng-template #showSwapOut>
-                    <button type="button" class="btn btn-outline-success swap-dt"
-                            [disabled]="!activateSwap"
-                            (click)="swapInOrSwapOutExperiment('swapout')">Swap Out Experiment
-                    </button>
-                    <button type="button" class="btn btn-outline-success swap-dt"
-                            [disabled]="!activateSwap"
-                            (click)="swapInOrSwapOutExperiment('swapout')">Run Experiment
-                    </button>
+                    <ul class="ul-style">
+                        <li>
+                            <button type="button" class="btn btn-outline-success swap-dt"
+                                    [disabled]="!activateSwap"
+                                    (click)="swapInOrSwapOutExperiment('swapout')">Swap Out Experiment
+                            </button>
+                        </li>
+                        <li>
+                            <button type="button" class="btn btn-outline-success swap-dt"
+                                    [disabled]="!activateSwap"
+                                    (click)="swapInOrSwapOutExperiment('swapout')">Run Experiment
+                            </button>
+                        </li>
+                    </ul>
                 </ng-template>
                 <br/>
 
