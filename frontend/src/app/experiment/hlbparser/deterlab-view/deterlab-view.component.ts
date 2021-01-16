@@ -1,7 +1,8 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, Inject, OnInit} from '@angular/core';
 import {HttpService} from 'src/app/http-service.service';
 import {Router} from '@angular/router';
 import {HttpParams} from '@angular/common/http';
+import { MatDialog, MatDialogRef, MatSnackBar, MAT_DIALOG_DATA } from '@angular/material';
 
 @Component({
     selector: 'app-deterlab',
@@ -32,7 +33,10 @@ export class DeterLabViewComponent implements OnInit {
     userCreatedDate;
     userNamesList = [];
 
-    constructor(private http: HttpService, private route: Router) {
+    constructor(private http: HttpService, 
+        private route: Router
+        ,private _snackBar: MatSnackBar,
+        public dialog: MatDialog) {
     }
 
     ngOnInit() {
@@ -246,4 +250,62 @@ export class DeterLabViewComponent implements OnInit {
         this.getExperimentStatus(params);
         this.getExperimentActivity(params);
     }
+
+    run(data={}) {
+
+        let params = {
+            "eid":this.experimentId,
+            "account_id":this.userId,
+            "data":data
+        }
+    
+        this.http.post('/api/v1/pr/deter/project/run',params,{withCredentials: true})
+        .subscribe(data => {
+            if(data['success'])
+            this._snackBar.open("Successfully started", "close", {
+                duration: 2000,
+              });
+            else {
+               
+    var dialogRef = this.dialog.open(RunVariablePopUp, {
+      width: "30%",
+     data: data['paramters'],
+    });
+
+    dialogRef.afterClosed().subscribe((result) => {
+    console.log(result);
+        if(result !=undefined)
+        this.run(result)
+       });
+            }
+        },error=>{
+            this._snackBar.open("Something went wrong please try again later!", "close", {
+                duration: 2000,
+              });
+        });
+    }
 }
+
+@Component({
+    selector: "run-variable-popup",
+    templateUrl: "run-variable-popup.component.html",
+    styleUrls: ["./deterlab-view.component.scss"],
+  })
+  export class RunVariablePopUp implements OnInit{
+    variableList:any
+    constructor(
+      public dialogRef: MatDialogRef<RunVariablePopUp>,
+      @Inject(MAT_DIALOG_DATA) public variable: any
+    ) {}
+
+    ngOnInit(){
+        this.variableList = {}
+        this.variable.forEach(element => {
+            this.variableList[element] =""
+        });
+    }
+  
+    onNoClick(): void {
+      this.dialogRef.close();
+    }
+  }
