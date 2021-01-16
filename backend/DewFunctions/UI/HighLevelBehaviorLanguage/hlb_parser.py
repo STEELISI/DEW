@@ -105,7 +105,7 @@ class HLBParser():
     event = (not_akeyword + Word(alphanums+'_'))
     events = event + ZeroOrMore((comma + wsp + event | comma + event))
     when_trigger = (when_keyword + events("t_events")) | (when_keyword + wsp + keyword_all("all") + wsp + events("t_events")) | (when_keyword + wsp + keyword_any("any") + wsp + events("t_events"))
-    wait_time = (not_akeyword + Word(alphanums+'_'))
+    wait_time = (Word(nums) | Word(initChars='$', bodyChars=alphanums))
     wait_trigger = (wait_keyword + wait_time("wait_time"))
     trigger = (when_trigger + wsp + wait_trigger | when_trigger | wait_trigger)
     
@@ -190,11 +190,12 @@ class HLBParser():
         Values are returned as "None" if they cannot be extracted.
         """
         try:
+            print("Parsing now ", statement)
             parsed = self.hlb_statement.parseString(statement)
-            print(parsed)
+            #print(parsed)
         except ParseException as pe:
             print("WARNING: Could not parse HLB statement:\n\t%s" % (statement))
-            print(pe)
+            #print(pe)
             return(None, None, None, None, None, None, None)
         if parsed.e_events == None:
             parsed.e_events = []
