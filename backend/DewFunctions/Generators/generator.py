@@ -74,6 +74,7 @@ class Generator(object):
         for sc in self.scenario:
             s = sc[0]
             try:
+                print("PArsing scenario ",s)
                 parsedTuple = self.HLBparser.parse_stmt(s)
             except:
                 print("ERROR:\tCannot parse the following Scenario statement: %s\n" % s)
