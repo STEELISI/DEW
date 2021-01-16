@@ -219,7 +219,7 @@ class HandleExperimentSave(Resource):
         driveId = content['driveId']
         print("driveId: ", driveId)
         experiment_content = json.dumps({'actors': actors, 'constraints': constraints, 'behaviors': behaviors, 'bindings': bindings})
-        print("Experiment : ", json.loads(json.dumps({'actors': actors, 'constraints': constraints, 'behaviors': behaviors, 'bindings': bindings},ensure_ascii=False)))
+        # print("Experiment : ", json.loads(json.dumps({'actors': actors, 'constraints': constraints, 'behaviors': behaviors, 'bindings': bindings},ensure_ascii=False)))
 
         if experimentId is None or experimentId.strip() == '':
           experiment = em.create_experiment(userId, experiment_content,experimentId,name,description)
@@ -893,7 +893,10 @@ class HandleProjectRunLog(Resource):
                   result_log = ssh.runFile(mapping['project_name'],mapping['experiment_name'],run_content,variables)
                   if 'error' not in result_log:
                     unique_name = result_log['filename']
-                    dm.addLog(eid, details['id'], uid, transaction_id, unique_name)
+                    variable_data = None
+                    if len(variables)!=0:
+                      variable_data = json.dumps(data)
+                    dm.addLog(eid, details['id'], uid, transaction_id, unique_name, variable_data)
                     result['success'] = True
                   else:
                     result = result_log

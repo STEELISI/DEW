@@ -9,6 +9,7 @@ class DeterlabRunScriptLogs(db.Model):
     daid = db.Column(db.Integer, nullable=False)
     eid = db.Column(db.Integer, nullable=False)
     uid = db.Column(db.String, nullable=False)
+    run_variable_value = db.Column(db.String, nullable=True)
     unique_name = db.Column(db.Text, nullable=False)
     version_id = db.Column(db.Integer, nullable=False)
     created_at = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
@@ -21,6 +22,7 @@ class DeterlabRunScriptLogs(db.Model):
             'eid': self.eid,
             'daid': self.daid,
             'uid': self.uid,
+            'run_variable_value':self.run_variable_value,
             'unique_name': self.unique_name,
             'version_id': self.version_id,
             'created_at': self.created_at,

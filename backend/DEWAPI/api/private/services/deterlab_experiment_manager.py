@@ -58,8 +58,8 @@ class DeterLabExperimentManager(object):
         
         return "Successful"
 
-    def addLog(self, eid, daid, uid, transaction_id, unique_name):
-        d = DeterlabRunScriptLogs(daid=daid, eid=eid, uid=uid, version_id=transaction_id,unique_name=unique_name,isdeleted=False)
+    def addLog(self, eid, daid, uid, transaction_id, unique_name, variables):
+        d = DeterlabRunScriptLogs(daid=daid, eid=eid, uid=uid, version_id=transaction_id,unique_name=unique_name,isdeleted=False, run_variable_value=variables)
         db.session.add(d)
         db.session.commit()
     
