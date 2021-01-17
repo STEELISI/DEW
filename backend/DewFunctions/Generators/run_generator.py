@@ -20,19 +20,7 @@ if __name__ == "__main__":
     cwd = os.path.dirname(os.path.realpath(__file__))
     parentDirectory = os.path.abspath(os.path.join(cwd, os.pardir))
     
-    #if os.path.isdir(cwd + "/" + args.generatorType) and os.path.isfile(cwd + "/" + args.generatorType + '/' + args.generatorType + '.py'):
-     #   sys.path.append(cwd + "/" + args.generatorType)
-        # sys.path.append(cwd + "\\" + args.generatorType)
-    #else:
-     #   print("\nERROR:\tExpecting generator type (%s) to match {generator}/{generator}.py\n\t(e.g. %s/%s.py) in %s/ directory.\n\n" %(args.generatorType, args.generatorType, args.generatorType, cwd))
-      #  argparser.print_help()
-       # print("\n")
-        #exit(1)
-
     generator = BashGenerator.BashGenerator(args.inputFileName)
-    print("Generator ", generator.name)
     generator.generate()
-    #nsScript, clientServerList = generator.generateNS(y, scenarios, None)
     print(generator.text)
-    #bashScriptList = generator.generateBASH(scenarios, bindings, clientServerList)
-    #print(bashScriptList)
+    #return generator.evars

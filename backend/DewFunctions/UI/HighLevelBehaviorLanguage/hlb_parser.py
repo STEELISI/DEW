@@ -190,7 +190,6 @@ class HLBParser():
         Values are returned as "None" if they cannot be extracted.
         """
         try:
-            print("Parsing now ", statement)
             parsed = self.hlb_statement.parseString(statement)
             #print(parsed)
         except ParseException as pe:
@@ -305,7 +304,7 @@ class HLBParser():
             # Do we have a trigger, but no actors?
             try:
                 parsed = self.hlb_missing_actors.parseString(partial)
-                print("Missing actors", parsed)
+                #print("Missing actors", parsed)
                 hint_list = []
                 for a in self.actors:
                     if a != "":
