@@ -51,10 +51,8 @@ class Generator(object):
         # (note, some of these can be None)
 
         # Constraints -> ['constraint type', 'target', 'value' ] (some of these can be None)
-        print("Parsijng in superclass")
         for co in self.constraints:
             c = co[0]
-            print("Constraint ", c)
             try:
                 parsedTuple = self.ConstParser.parse_stmt(c)
             except:
@@ -64,7 +62,7 @@ class Generator(object):
             # when we can't parse a statement, instead the parser returns a tuplet of Nones.
             if all(x == None for x in parsedTuple):
                 print("ERROR:\tUnparsable constraint: %s\n" % c)
-                #return False
+                return False
 
             # XXX Right now, for generation we only care about 'num' constraints.
             # XXX At some point we may care about others, like 'os'.
@@ -74,7 +72,6 @@ class Generator(object):
         for sc in self.scenario:
             s = sc[0]
             try:
-                print("PArsing scenario ",s)
                 parsedTuple = self.HLBparser.parse_stmt(s)
             except:
                 print("ERROR:\tCannot parse the following Scenario statement: %s\n" % s)
@@ -84,11 +81,9 @@ class Generator(object):
                 print("ERROR:\tUnparsable Scenario statement: %s\n" % s)
                 #return False
             self.scenario_parsed.append(parsedTuple)
-        print("Scenario ", self.scenario_parsed)
 
         for bi in self.bindings:
             b = bi[0]
-            print("Binding ", bi)
             try:
                 key,value = self.BindParser.parse_stmt(bi[0] + " " + bi[1])
             except:
