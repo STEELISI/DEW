@@ -10,8 +10,8 @@ class Slide(db.Model):
 	experiment_id = db.Column(db.Integer,db.ForeignKey('experiment.experiment_id'))
 	sequence_number = db.Column(db.Integer,default=1,nullable=False)
 	actor_action_mapping = db.Column(db.Text)
-	created_at = db.Column(db.DateTime,default=datetime.utcnow)
-	updated_at = db.Column(db.DateTime,onupdate=datetime.utcnow)
+	created_at = db.Column(db.DateTime,nullable=False,default=datetime.utcnow)
+	updated_at = db.Column(db.DateTime,onupdate=datetime.utcnow, default=datetime.utcnow)
 	
 
 	def to_dict(self):

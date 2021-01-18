@@ -9,9 +9,9 @@
 	</div>
 	<div class="row table">
 		<div class="col-md-12">
-			<div class="row table-row pointer" style="margin-top: 14px;" *ngFor="let slide of slides">
+			<div class="row table-row pointer" style="margin-top: 14px;" *ngFor="let slide of slides; let i = index">
 				
-				<div class="col-md-8" matTooltip="Edit {{ slide.actor_action_mapping }}" (click)="edit(slide)">
+				<div class="col-md-8" matTooltip="Edit {{ slide.actor_action_mapping }}" (click)="editSlide(slide)">
               <div class="header-experiment">
                 {{ slide.actor_action_mapping }}
               </div>
@@ -22,13 +22,13 @@
             </div>
             <div class="col-md-4">
               
-              <button matTooltip="Delete the slide" class="bubble" (click)="delete(slide)">
+              <button matTooltip="Delete the slide" class="bubble" (click)="deleteSlide(slide)">
               	<mat-icon class="fas fa-trash pointer"></mat-icon>
               </button>
-              <button matTooltip="Move up" class="bubble" (click)="moveUp(slide)">
+              <button matTooltip="Move up" class="bubble" (click)="moveUpSlide(slide, i)">
               	<mat-icon class="fas fa-arrow-up pointer"></mat-icon>
               </button>
-              <button matTooltip="Move down" class="bubble" (click)="moveDown(slide)">
+              <button matTooltip="Move down" class="bubble" (click)="moveDownSlide(slide, i)">
               	<mat-icon class="fas fa-arrow-down pointer"></mat-icon>
               </button>
             </div>

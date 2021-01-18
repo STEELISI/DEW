@@ -368,7 +368,7 @@ class ExperimentManager(object):
 
     def slides_of_experiment(self, user_id, experiment_id):
         if self.user_can(experiment_id, user_id, AccessControlEnum.read) is not None:
-            slides = Slide.query.filter(Slide.experiment_id == experiment_id)
+            slides = Slide.query.filter(Slide.experiment_id == experiment_id).order_by(Slide.sequence_number)
             return [s.to_dict() for s in slides]
 
     def delete_slide(self, user_id, experiment_id, slide_id):

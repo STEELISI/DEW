@@ -904,18 +904,7 @@ class HandleExperimentSlides(Resource):
         """
             Remove slide for an experiment
         """
-        try:
-            json_data = request.get_json(force=True)
-            userId = userObj.getUserId()
-            experiment_id = json_data['experiment_id']
-            slide_id = json_data['slide_id']
-            status = em.delete_slide(userId, experiment_id, slide_id)
-
-        except ValueError as e:
-                msg = {'status': "Failure", 'message': str(e)}
-                return msg, 403
-        if status:
-            return None, 204
+        
 
     @api.expect(update_slide_dew_object)
     def put(self):
@@ -936,6 +925,21 @@ class HandleExperimentSlides(Resource):
             return {'saved': True, 'message': "Successful", "slide": slide.to_dict()}
 
 
+@ns.route('/design/experiment/slides/<experiment_id>/<slide_id>')
+class HandleDeleteExperimentSlide(Resource):
+    def delete(self, experiment_id, slide_id):
+        """
+            Delete a slide of the experiment
+        """
+        try:
+            userId = userObj.getUserId()
+            status = em.delete_slide(userId, experiment_id, slide_id)
+
+        except ValueError as e:
+                msg = {'status': "Failure", 'message': str(e)}
+                return msg, 403
+        if status:
+            return None, 204
 
 
 @ns.route('/design/experiment/slides/<experiment_id>')
