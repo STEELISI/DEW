@@ -5,12 +5,32 @@
 # 6100 - test1
 # 6200 - test2
 # 6300 - test3
+PORT=4000
+FRNTBLD="prod"
+path=`pwd`
+if [[ $path =~ "test1" ]]; then
+	PORT=6100
+	FRNTBLD="buildt1"
+fi
+
+if [[ $path =~ "test2" ]]; then
+	PORT=6200
+	FRNTBLD="buildt2"
+fi
+
+if [[ $path =~ "test3" ]]; then
+	PORT=6300
+	FRNTBLD="buildt3"
+fi
+
+echo "port: $PORT"
+echo "FRNTBLD: $FRNTBLD"
 
 echo "Building frontend..."
 
 cd frontend
 npm install
-npm run prod
+$(npm run $FRNTBLD)
 cd ..
 
 echo "Building documentation..."
@@ -24,7 +44,7 @@ cd ..
 
 echo "Building backend..."
 cd backend
-make deploy PORT=6100
+make deploy PORT=$PORT
 cd ..
 
 echo "Reloading nginx..."

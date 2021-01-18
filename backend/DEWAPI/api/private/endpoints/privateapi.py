@@ -11,7 +11,7 @@ from ..services.dew_parser import DEWParser
 from ..services.token_manager import TokenManager
 from ..services.profileService import ProfileService
 from ..services.sshConnectivity import SSHConnection
-from ..services.deterlab_user_experiment_mapping import DeterLabExperimentMapper
+from ..services.deterlab_experiment_manager import DeterLabExperimentManager
 from DEWAPI.user import userObj
 import globals
 
@@ -25,7 +25,7 @@ em = ExperimentManager()
 dew_parser = DEWParser()
 tm = TokenManager()
 ps = ProfileService()
-dm = DeterLabExperimentMapper()
+dm = DeterLabExperimentManager()
 
 @ns.route('/hlb/translate/<string:format>')
 class HandleHLBTranslator(Resource):
@@ -75,7 +75,7 @@ class HandleHLBGeneratorBash(Resource):
           Generates BASH file for given behaviors, actors, and constraints
         """
         json_data = request.get_json(force=True)
-        scriptList = hlb.HandleBASH(json_data)
+        scriptList, paramterlist = hlb.HandleBASH(json_data)
         bashScriptDict = {}
         for i in range(len(scriptList)):
             if scriptList[i][0] not in bashScriptDict:
@@ -236,7 +236,7 @@ class HandleExperimentSave(Resource):
         driveId = content['driveId']
         print("driveId: ", driveId)
         experiment_content = json.dumps({'actors': actors, 'constraints': constraints, 'behaviors': behaviors, 'bindings': bindings})
-        print("Experiment : ", json.loads(json.dumps({'actors': actors, 'constraints': constraints, 'behaviors': behaviors, 'bindings': bindings},ensure_ascii=False)))
+        # print("Experiment : ", json.loads(json.dumps({'actors': actors, 'constraints': constraints, 'behaviors': behaviors, 'bindings': bindings},ensure_ascii=False)))
 
         if experimentId is None or experimentId.strip() == '':
           experiment = em.create_experiment(userId, experiment_content,experimentId,name,description)
@@ -874,6 +874,7 @@ class HandleProfileDeterLabDeleteMapping(Resource):
                 return {}, 403
 
 
+
 @ns.route('/design/experiment/slides')
 class HandleExperimentSlides(Resource):
     
@@ -984,3 +985,81 @@ class HandleExperimentSlideMovement(Resource):
         if status:
             return {'saved': True, 'message': "Successful"}
 
+
+@ns.route('/deter/project/run')
+class HandleProjectRunLog(Resource):
+    def post(self):
+        content = request.get_json(force=True)
+        eid = content['eid']
+        daid = content['account_id']
+        data = dict()
+        if 'data' in content:
+          data = content['data']
+        
+        uid = userObj.getUserId()
+        try:
+          result = {}
+          if not dm.user_can(uid,eid):
+            result['error'] = "User does not have access to this experiment"
+          else: 
+            details = ps.get(uid,daid)
+            if str(details['username']).strip() !='' and str(details['password']).strip() !='':
+              mapping = dm.getMapping(details['id'],eid)
+              if 'error' not in mapping:
+                experiment = list(em.get_experiment(eid, uid).versions)[-1]
+                transaction_id = experiment.transaction_id
+                script,variable_list = hlb.HandleBASH(json.loads(experiment.content))
+                variables = []
+                if len(variable_list) != 0:
+                  for x in variable_list:
+                    if x in data:
+                      variables.append(data[x])
+                  if len(variables) != len(variable_list):
+                    result['error'] = "Parameters are missing" 
+                    result['paramters'] = variable_list
+                if 'error' not in result:
+                  run_content = script[0][1]
+                  ssh = SSHConnection(details['username'],details['password'])
+                  result_log = ssh.runFile(mapping['project_name'],mapping['experiment_name'],run_content,variables)
+                  if 'error' not in result_log:
+                    unique_name = result_log['filename']
+                    variable_data = None
+                    if len(variables)!=0:
+                      variable_data = json.dumps(data)
+                    dm.addLog(eid, details['id'], uid, transaction_id, unique_name, variable_data)
+                    result['success'] = True
+                  else:
+                    result = result_log
+              else:
+                result = mapping
+            else:
+              result = {'error':'username or password doesnot exists'}
+          return result, 200
+        except ValueError as e:
+            if str(e) == "Forbidden":
+                return {}, 403
+
+@ns.route('/deter/project/run/logs')
+class HandleProjectGetRunLogs(Resource):
+    def get(self):
+        eid = request.args.get('eid')
+        daid = request.args.get('account_id')
+        uid = userObj.getUserId()
+        try:
+          result = {}
+          if not dm.user_can(uid,eid):
+            result['error'] = "User does not have access to this experiment"
+          else: 
+            details = ps.get(uid,daid)
+            if str(details['username']).strip() !='' and str(details['password']).strip() !='':
+              mapping = dm.getMapping(details['id'],eid)
+              if 'error' not in mapping:
+                result['logs'] = dm.getLogs(eid, details['id'], uid)
+              else:
+                result = mapping
+            else:
+              result = {'error':'username or password doesnot exists'}
+          return result, 200
+        except ValueError as e:
+            if str(e) == "Forbidden":
+                return {}, 403

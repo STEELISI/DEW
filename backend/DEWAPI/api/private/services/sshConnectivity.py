@@ -48,7 +48,7 @@ class SSHConnection():
 
     def createFile(self,gatewaySession,filename,fileContent):
         result = {}
-        gatewaySession.file(remote_path='/users/' + self.username + '/' + filename + '.ns', content=fileContent)
+        gatewaySession.file(remote_path='/users/' + self.username + '/' + filename, content=fileContent)
         return True
     
     def createExperimentIfNotExistOnDeterLab(self,project,exp,fileContent):
@@ -59,9 +59,9 @@ class SSHConnection():
                 result['error'] = "project '" + project + "' doesn't exist"
             try:
                 if not gatewaySession.exists('/proj/' + project + '/exp/' + exp):
-                    filename = exp + str(uuid.uuid4())
+                    filename = exp + str(uuid.uuid4())  + '.ns'
                     if self.createFile(gatewaySession,filename,fileContent):
-                        gatewaySession.get_cmd_output('/usr/testbed/bin/startexp -f -i -p ' + project + ' -e ' + exp + ' ' + filename + '.ns ')
+                        gatewaySession.get_cmd_output('/usr/testbed/bin/startexp -f -i -p ' + project + ' -e ' + exp + ' ' + filename)
                 
                 result['success'] = True
             except RunCmdError as e:
@@ -112,7 +112,7 @@ class SSHConnection():
             try:
                 if gatewaySession.exists('/proj/' + project) and gatewaySession.exists('/proj/' + project + '/exp/' + exp):
                     gatewaySession.get_cmd_output('/usr/testbed/bin/swapexp ' + project + ' ' + exp + ' ' + mode)
-                    result['content'] = 'Successfull'
+                    result['content'] = 'Successful'
                 else:
                     result['error'] = "project or experiment doesn't exist"
             except RunCmdError as e:
@@ -132,9 +132,9 @@ class SSHConnection():
                 result['error'] = "project '" + project + "' doesn't exist"
             try:
                 if gatewaySession.exists('/proj/' + project + '/exp/' + exp):
-                    filename = exp + str(uuid.uuid4())
+                    filename = exp + str(uuid.uuid4())  + '.ns'
                     if self.createFile(gatewaySession,filename,fileContent):
-                        gatewaySession.get_cmd_output('/usr/testbed/bin/modexp ' + project + ' ' + exp + ' ' + filename + '.ns ')
+                        gatewaySession.get_cmd_output('/usr/testbed/bin/modexp ' + project + ' ' + exp + ' ' + filename)
                         result['success'] = True
                     else:
                         result['error']= "unable to upload file to server."
@@ -146,4 +146,39 @@ class SSHConnection():
                 gatewaySession.close()
         except ConnectionError as e:
             result['error'] = "Unable to connect to 'deterlab' with user '" + self.username + "'"
+        return result
+
+    def runFile(self,project,exp,fileContent,variables):
+        result = {}
+        try:
+            gatewaySession = SSHSession(self.sshURL, self.username, password=self.password).open()
+            if not gatewaySession.exists('/proj/' + project):
+                result['error'] = "project '" + project + "' doesn't exist"
+                return result
+            if not gatewaySession.exists('/proj/' + project + '/exp/' + exp):
+                result['error']= "experiment '" + exp + "' doesn't exist"
+                return result
+            status_log = gatewaySession.get_cmd_output('/usr/testbed/bin/expinfo -a ' + project + ' ' + exp )
+            if 'State: swapped' in status_log:
+                result['error']= "experiment '" + exp + "' is not active."
+                return result     
+            if 'No information available.' in status_log:
+                result['error']= "experiment '" + exp + "' is in transition."
+                return result 
+            try:
+                unique_name = exp + '_run_' + str(uuid.uuid4())
+                filename = unique_name + ".sh"
+                if self.createFile(gatewaySession,filename,fileContent):
+                    # run command to be added
+                    result['success'] = True
+                    result['filename'] = unique_name
+                else:
+                    result['error']= "unable to upload file to server."    
+            except RunCmdError as e:
+                result['error']= "project '" + project + "' doesn't exist"
+            finally:
+                gatewaySession.close()
+        except ConnectionError as e:
+            result['error'] = "Unable to connect to 'deterlab' with user '" + self.username + "'"
+        
         return result

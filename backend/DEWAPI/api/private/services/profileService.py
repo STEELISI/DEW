@@ -15,16 +15,17 @@ class ProfileService(object):
         db.session.add(e)
         db.session.commit()
 
-        return "Successfull"
+        return "Successful"
 
     def delete(self, uid, daid):
         u = DeterlabAccountDetails.query.filter(DeterlabAccountDetails.uid == uid, DeterlabAccountDetails.daid == daid).first()
 
         if u is not None:
             u.isdeleted = True
+            u.updated_at = datetime.utcnow()
             db.session.commit()
 
-        return "Successfull"
+        return "Successful"
     
     def get(self, userId, daid):
         u = DeterlabAccountDetails.query.filter(DeterlabAccountDetails.uid == userId, DeterlabAccountDetails.daid == daid,DeterlabAccountDetails.isdeleted == False).first()

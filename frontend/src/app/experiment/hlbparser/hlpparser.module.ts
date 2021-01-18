@@ -54,6 +54,7 @@ import {MatToolbarModule} from '@angular/material/toolbar';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import { BrowserModule } from '@angular/platform-browser';
 import { UserIdleModule } from 'angular-user-idle';
+import {DeterLabViewComponent, RunVariablePopUp} from './deterlab-view/deterlab-view.component';
 
 @NgModule({
   exports: [HLBParserComponent],
@@ -63,6 +64,7 @@ import { UserIdleModule } from 'angular-user-idle';
     NlpComponent,
     DependencyGraphComponent,
     TopologyGraphComponent,
+    DeterLabViewComponent,
     TextFilterPipe,
     UploadComponent,
     FilePreviewComponent,
@@ -78,6 +80,7 @@ import { UserIdleModule } from 'angular-user-idle';
     VersionsPopUp,
     UpdateActorInfo,
     ExperimentSlides
+    RunVariablePopUp,
   ],
   imports: [
     CommonModule,
@@ -120,6 +123,7 @@ import { UserIdleModule } from 'angular-user-idle';
     VersionsPopUp,
     UpdateActorInfo,
     ExperimentSlides
+    RunVariablePopUp
   ],
   providers: [StateService],
   bootstrap: [HLBParserComponent],

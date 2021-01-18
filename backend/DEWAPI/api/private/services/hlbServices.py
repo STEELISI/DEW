@@ -374,6 +374,7 @@ class HLBService():
     #Handle generateBASH
     def HandleBASH(self,json_data):
         errors = []
+        paramterlist = [] # added for run script. 
         actors = json_data['actors']
         scenario = json_data['behaviors']
         constraints = json_data['constraints']
@@ -382,4 +383,4 @@ class HLBService():
         scenario_parsed, constraints_parsed = generator.generate()
         ns_script, clientServerList = generator.generateNS(constraints_parsed, None, actors)
         bash_script_list = generator.generateBASH(scenario, bindings, clientServerList)
-        return bash_script_list
+        return bash_script_list, paramterlist

@@ -5,7 +5,8 @@
   <div class="main">
     <hlb *ngIf="viewID == 1"></hlb>
     <dependency-graph *ngIf="viewID == 2"></dependency-graph>
-    <topology-graph *ngIf="viewID == 3"></topology-graph>
+    <topology-graph *ngIf="viewID == 5"></topology-graph>
     <experiment-slides *ngIf="viewID == 4" [experimentId]="experimentId" (navigate)="handleSlideNavigation($event)" ></experiment-slides>
+    <app-deterlab *ngIf="viewID == 3"></app-deterlab>
   </div>
 </div>

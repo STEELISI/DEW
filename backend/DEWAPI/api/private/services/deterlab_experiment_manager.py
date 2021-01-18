@@ -1,16 +1,14 @@
 from extensions import db
 from DEWAPI.models.user import User
 from DEWAPI.models.experiment_deter_mapping import DeterLabExperimentMapping
+from DEWAPI.models.deterlab_run_script_log import DeterlabRunScriptLogs
 from DEWAPI.models.access_control import AccessControl
 from utilities.access_control_enum import AccessControlEnum
 from datetime import datetime
-import requests
-import json
-import configparser
-import io
 
 
-class DeterLabExperimentMapper(object):
+
+class DeterLabExperimentManager(object):
     
     def createOrModifyMapping(self, daid, experiment_id, project_name, experiment_name):
         m = DeterLabExperimentMapping.query.filter(DeterLabExperimentMapping.daid == daid , DeterLabExperimentMapping.experiment_id == experiment_id , DeterLabExperimentMapping.isdeleted == False).first()
@@ -28,7 +26,7 @@ class DeterLabExperimentMapper(object):
         
         db.session.commit()
 
-        return "Successfull"
+        return "Successful"
     
     def getMapping(self, daid, experiment_id):
         result = {}
@@ -54,8 +52,28 @@ class DeterLabExperimentMapper(object):
         
         if m is not None:
             m.isdeleted = True
+            m.updated_at = datetime.utcnow()
             db.session.add(m)
             db.session.commit()
         
-        return "Successfull"
+        return "Successful"
 
+    def addLog(self, eid, daid, uid, transaction_id, unique_name, variables):
+        d = DeterlabRunScriptLogs(daid=daid, eid=eid, uid=uid, version_id=transaction_id,unique_name=unique_name,isdeleted=False, run_variable_value=variables)
+        db.session.add(d)
+        db.session.commit()
+    
+    def getLogs(self, eid, daid, uid):
+        d = DeterlabRunScriptLogs.query.filter(DeterlabRunScriptLogs.daid == daid, DeterlabRunScriptLogs.eid == eid, DeterlabRunScriptLogs.uid == uid,DeterlabRunScriptLogs.isdeleted == False)
+
+        result = []
+
+        if d is not None:
+            for x in d:
+                r = {}
+                r['id'] = x.rsid
+                r['started_at'] = x.created_at.strftime("%d %B, %Y")
+                r['filename'] = x.unique_name
+                result.append(r)
+        
+        return result
