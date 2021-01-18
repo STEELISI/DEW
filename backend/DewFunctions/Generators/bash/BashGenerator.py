@@ -12,7 +12,7 @@ from generator import Generator
 class BashGenerator(Generator):
     
     def __init__(self, *args, **kwargs):
-        super().__init__(*args, name="bash", **kwargs)
+        super().__init__(*args,  **kwargs)
         self.cflags = dict()
         # Dictionary of special functions with regex
         # and expansions
@@ -20,9 +20,9 @@ class BashGenerator(Generator):
             '(?: |^)(expIP)(?: |$)': 'inet ip exp',
             '(?: |^)(ctlIP)(?: |$)': 'inet ip ctl',
             '(?: |^)(expeth)(?: |$)': 'inet eth exp',
-            '(?: |^)(expIP(.*))(?: |$)': 'inet ip exp $node',
-            '(?: |^)(expeth(.*))(?: |$)': 'inet eth exp $node',
-            '(?: |^)(IP(.*))(?: |$)': 'inet fip exp $node',
+            '(?: |^)(expIP\((.*)\))(?: |$)': 'inet ip exp $node',
+            '(?: |^)(expeth\((.*)\))(?: |$)': 'inet eth exp $node',
+            '(?: |^)(IP\((.*)\))(?: |$)': 'inet fip exp $node',
             '(?: |^)(epoch)(?: |$)': 'epoch',
             '(?: |^)(proj)(?: |$)': 'pexp -p',
             '(?: |^)(exp)(?: |$)': 'pexp -e',
@@ -45,7 +45,6 @@ class BashGenerator(Generator):
         for c in self.constraints_parsed:
             if c[0] == 'num':
                 self.num[c[1][0]] = int(c[2][0])
-                print("Node ", c[1][0], " num ", c[2][0])
             
     def generateActions(self):
         sid = 0
@@ -82,7 +81,6 @@ class BashGenerator(Generator):
             if clist is not None and len(clist)>0:
                 for cond in clist:
                     if cond in count.keys():
-                        print("Cond ", cond)
                         self.text += self.conditions[cond][0] + " " + str(count[cond]) + "\n"
                         if (self.conditions[cond][0] == "psuccess"):
                             self.text += "status" + str(count[cond]) +"=`cat ~/cmds/$label/status."+str(count[cond])+"`\n"
@@ -132,19 +130,8 @@ class BashGenerator(Generator):
                                 
             if wait is not None:
                 self.text += "sleep "+str(wait)+"\n";
-            for exp in self.special:
-                re_exp = r'{}'.format(exp)
-                r1 = re.findall(re_exp,self.bindings_parsed[action])
-                if len(r1) > 0:
-                    for r in r1:
-                        searchtext = r
-                        candtext = self.special[exp]
-                        if not isinstance(r,str):
-                            searchtext = r[0]
-                            candtext = candtext.replace("$node", r[1].strip("()"))
-                        self.text += "tmp=$(ssh " + actor+".$exp.$proj \"echo \`"+candtext+"\`\")\n"
-                        self.bindings_parsed[action] = self.bindings_parsed[action].replace(searchtext, "$tmp")
-            words = self.bindings_parsed[action].split(" ")
+                
+            words = re.split(' |\(|\)', self.bindings_parsed[action])
             if (actor in self.num.keys()):
                 for i in range(0,self.num[actor]):
                     found = False
@@ -162,16 +149,47 @@ class BashGenerator(Generator):
                             count[event+"."+str(i+1)] = sid
                         sid += 1
             else:
-                self.text += "execute_fork \"" + actor + "\" \"" + self.bindings_parsed[action] +"\" " + str(sid) + " &\n"
-                if (event is not None):
-                    count[event] = sid
-                sid += 1
+                found = False
+                for w in words:
+                    if w in actors and w in self.num.keys():
+                        found = True
+                        for j in range(0,self.num[w]):
+                            self.generateCmd(actor, None , w, j+1, sid, action)
+                            if (event is not None):
+                                count[event + "."+str(j+1)] = sid
+                            sid += 1
+                if not found:
+                    self.text += "execute_fork \"" + actor + "\" \"" + self.bindings_parsed[action] +"\" " + str(sid) + " &\n"
+                    if (event is not None):
+                        count[event] = sid
+                    sid += 1
 
     def generateCmd(self, actor1, i, actor2 , j, sid, action):                                        
         naction = self.bindings_parsed[action]
         if (j is not None):
-            naction = naction.replace(actor2, actor2+str(j))
-        self.text += "execute_fork \"" + actor1 + str(i)+ "\" \"" + naction +"\" " + str(sid) + " &\n"
+            naction = naction.replace(actor2, actor2 + "-" + str(j))
+
+        for exp in self.special:
+                re_exp = r'{}'.format(exp)
+                r1 = re.findall(re_exp,naction)
+                if len(r1) > 0:
+                    for r in r1:
+                        searchtext = r
+                        candtext = self.special[exp]
+                        if not isinstance(r,str):
+                            searchtext = r[0]
+                            newtext = r[1].strip("()")
+                            candtext = candtext.replace("$node", r[1].strip("()"))
+                            if i is not None:
+                                self.text += "tmp=$(ssh -o StrictHostKeyChecking=no " + actor1+"-"+str(i)+".$exp.$proj \"echo \`"+candtext+"\`\")\n"
+                            else:
+                                self.text += "tmp=$(ssh -o StrictHostKeyChecking=no " + actor1+".$exp.$proj \"echo \`"+candtext+"\`\")\n"
+                            naction = naction.replace(searchtext, "$tmp")
+
+        if i is not None:
+            self.text += "execute_fork \"" + actor1 + "-" + str(i)+ "\" \"" + naction +"\" " + str(sid) + " &\n"
+        else:
+            self.text += "execute_fork \"" + actor1 + "\" \"" + naction +"\" " + str(sid) + " &\n"
 
     def collectConds(self):
         self.conditions = dict()

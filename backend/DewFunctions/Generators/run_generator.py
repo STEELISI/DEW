@@ -3,6 +3,8 @@ import sys
 import argparse
 import importlib
 from bash import BashGenerator
+from ns import NSGenerator
+import configparser
 
 if __name__ == "__main__":
 
@@ -19,8 +21,18 @@ if __name__ == "__main__":
 
     cwd = os.path.dirname(os.path.realpath(__file__))
     parentDirectory = os.path.abspath(os.path.join(cwd, os.pardir))
+
+    hlbFullParser = configparser.ConfigParser(allow_no_value=True)
+    hlbFullParser.read_file(args.inputFileName)
+    constraints = hlbFullParser.items('Constraints')
+    scenario = hlbFullParser.items('Scenario')
+    bindings = hlbFullParser.items('Bindings')
     
-    generator = BashGenerator.BashGenerator(args.inputFileName)
+    generator = BashGenerator.BashGenerator(args.inputFileName, constraints, scenario, bindings)
     generator.generate()
     print(generator.text)
+
+    ns = NSGenerator.NSGenerator(args.inputFileName, constraints, scenario, bindings)
+    ns.generate()
+    print(ns.text)
     #return generator.evars
