@@ -18,7 +18,7 @@ execute_fork()
     echo "else" >> ~/cmds/$id/script.$cnt.sh
     echo "    echo 1 > ~/cmds/$id/status.$cnt" >> ~/cmds/$id/script.$cnt.sh	    
     echo "fi" >> ~/cmds/$id/script.$cnt.sh	    
-    ssh $node.$exp.$proj "bash ~/cmds/$id/script.$cnt.sh" &
+    ssh -o StrictHostKeyChecking=no $node.$exp.$proj "bash ~/cmds/$id/script.$cnt.sh" &
 }
 
 execute_wait()

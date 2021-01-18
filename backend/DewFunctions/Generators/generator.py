@@ -22,13 +22,12 @@ from hlb_parser import HLBParser, ConstraintParser, BindingParser
 
 class Generator(object):
     # scenario and constraints given as a list.
-    def __init__(self, inputFileName, name='Generic Class'):
-        hlbFullParser = configparser.ConfigParser(allow_no_value=True)
+    def __init__(self, inputFileName,  constraints, scenario, bindings, name='Generic Class'):
+        
+        self.constraints = constraints
+        self.scenario = scenario
+        self.bindings = bindings
         self.dew = open(inputFileName.name, 'r').read()
-        hlbFullParser.read_file(inputFileName)
-        self.constraints = hlbFullParser.items('Constraints')
-        self.scenario = hlbFullParser.items('Scenario')
-        self.bindings = hlbFullParser.items('Bindings')
 
         # For debugging. Subclass should set this to something meaningful. e.g. "bash"
         self.name = name
