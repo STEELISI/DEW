@@ -79,7 +79,7 @@ import {DeterLabViewComponent, RunVariablePopUp} from './deterlab-view/deterlab-
     UserListPopUp,
     VersionsPopUp,
     UpdateActorInfo,
-    ExperimentSlides
+    ExperimentSlides,
     RunVariablePopUp,
   ],
   imports: [
@@ -122,7 +122,7 @@ import {DeterLabViewComponent, RunVariablePopUp} from './deterlab-view/deterlab-
     UserListPopUp,
     VersionsPopUp,
     UpdateActorInfo,
-    ExperimentSlides
+    ExperimentSlides,
     RunVariablePopUp
   ],
   providers: [StateService],
