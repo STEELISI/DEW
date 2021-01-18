@@ -32,7 +32,7 @@ export class ExperimentSlides implements OnInit {
 
 
   showTopology(){
-  	this.navigate.emit(3);
+  	this.navigate.emit(5);
   }
 
   showDependencyGraph(){
