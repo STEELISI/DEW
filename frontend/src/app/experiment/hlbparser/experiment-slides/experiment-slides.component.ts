@@ -83,6 +83,10 @@ export class ExperimentSlides implements OnInit {
   	console.log(this.slides)
   }
 
+  editSlide(slide){
+    
+  }
+
   private getSlideDetails(){
   	this.http.get("v1/pr/design/experiment/slides/"+this.experimentId, {withCredential: true}).subscribe((response) => {
     	this.slides = response['slides']
