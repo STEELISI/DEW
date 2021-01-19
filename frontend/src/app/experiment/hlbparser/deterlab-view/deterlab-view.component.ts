@@ -29,9 +29,13 @@ export class DeterLabViewComponent implements OnInit {
     alertMsg = '';
     statusMessages = [];
     activityMessages = [];
-    activateSwap = true;
+    activateSwapIn = true;
+    deactivateSwapOut = false;
     userCreatedDate;
     userNamesList = [];
+    showLoader = false;
+    modalMsg = '';
+    modalFor = '';
 
     constructor(private http: HttpService, 
         private route: Router
@@ -46,6 +50,7 @@ export class DeterLabViewComponent implements OnInit {
             return;
         }
         this.experimentId = url[url.length - 1];
+        this.showLoader = true;
         this.http.get('v1/pr/profile/accounts/deterLab/get', {withCredentials: true}).subscribe(data => {
             if (data.length > 0) {
                 this.userNamesList = data;
@@ -66,6 +71,7 @@ export class DeterLabViewComponent implements OnInit {
     }
 
     getRefreshedStatus() {
+        this.showLoader = true;
         let params = new HttpParams().append('eid', this.experimentId);
         params = params.append('account_id', this.userId);
         this.getExperimentStatus(params);
@@ -90,15 +96,19 @@ export class DeterLabViewComponent implements OnInit {
                     this.showSwap = false;
                     this.statusMessages = [data2.error];
                 } else if (data2.content === 'No information available.') {
-                    // this.experimentName = 'In transition';
                     this.experimentStatus = 'In transition';
                     this.statusMessages = [];
                     this.activityMessages = [];
+                    this.activateSwapIn = false;
+                    this.deactivateSwapOut = true;
                 } else {
-                    this.statusMessages =  data2.content.split('\n');
+                    this.statusMessages = data2.content.split('\n');
                     this.experimentStatus = this.statusMessages[1].replace(' ', '').split(':')[1].trim();
                     if (this.experimentStatus === 'active') {
-                        this.activateSwap = false;
+                        this.activateSwapIn = false;
+                        this.deactivateSwapOut = false;
+                    } else {
+                        this.activateSwapIn = true;
                     }
                 }
             });
@@ -112,6 +122,7 @@ export class DeterLabViewComponent implements OnInit {
                 } else if (data3.error) {
                     this.activityMessages = [data3.error];
                 }
+                this.showLoader = false;
             });
     }
 
@@ -176,6 +187,7 @@ export class DeterLabViewComponent implements OnInit {
         params = params.append('account_id', this.userId);
         this.http.get('v1/pr/deter/project/swap', {params, withCredentials: true})
             .subscribe(data => {
+                this.showLoader = false;
                 if (data) {
                     this.alertMsg = type === 'swapin' ? 'Successfully swapped-in experiment' :
                         'Successfully swapped-out experiment';
@@ -194,6 +206,7 @@ export class DeterLabViewComponent implements OnInit {
         params = params.append('account_id', this.userId);
         this.http.get('v1/pr/deter/update/project/nsfile', {params, withCredentials: true})
             .subscribe(data => {
+                this.showLoader = false;
                 if (data.success) {
                     this.alertMsg = 'Successfully updated NS file';
                     this.alertType = 'alert-success';
@@ -221,6 +234,7 @@ export class DeterLabViewComponent implements OnInit {
         params = params.append('account_id', this.userId);
         this.http.delete('v1/pr/deter/project/mapping/delete', {params, withCredentials: true})
             .subscribe(data => {
+                this.showLoader = false;
                 if (data === 'Successful') {
                     this.alertMsg = 'Successfully deleted mapping';
                     this.alertType = 'alert-success';
@@ -238,6 +252,50 @@ export class DeterLabViewComponent implements OnInit {
                     }, 3000);
                 }
             });
+    }
+
+    activateModal(type) {
+        this.modalFor = type;
+        switch (this.modalFor) {
+            case 'delete':
+                this.modalMsg = 'Do you really want to delete the mapping ?';
+                break;
+            case 'swapin':
+                this.modalMsg = 'Do you really want to swap-in the experiment ?';
+                break;
+            case 'swapout':
+                this.modalMsg = 'Do you really want to swap-out the experiment ?';
+                break;
+            case 'updateNs':
+                this.modalMsg = 'Do you really want to update the NS file ?';
+                break;
+            default:
+                this.modalMsg = '';
+        }
+    }
+
+    executeModalAction() {
+        this.showLoader = true;
+        switch (this.modalFor) {
+            case 'delete':
+                this.deleteMapping();
+                break;
+            case 'swapin':
+                this.swapInOrSwapOutExperiment('swapin');
+                break;
+            case 'swapout':
+                this.swapInOrSwapOutExperiment('swapout');
+                break;
+            case 'updateNs':
+                this.updateNSFile();
+                break;
+            default:
+                break;
+        }
+    }
+
+    closeModal() {
+        this.modalFor = '';
     }
 
     activateOnProjValidity() {
