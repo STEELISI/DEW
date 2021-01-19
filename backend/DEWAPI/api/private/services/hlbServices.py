@@ -2,6 +2,7 @@ import sys, os, uuid
 from collections import defaultdict
 
 sys.path.append('./DewFunctions/Generators/')
+sys.path.append('./DewFunctions/Generators/ns')
 sys.path.append('./DewFunctions/Generators/bash')
 sys.path.append('./DewFunctions/UI/HighLevelBehaviorLanguage/')
 sys.path.append('./DewFunctions/UI/')
@@ -12,9 +13,9 @@ import json
 import hlb
 import re
 from parsebash import GeneralParseBash
-from generator import GeneralGenerator
-from generator import GeneralGenerator
-from bash import Generator as bashGenerator
+from generator import Generator
+from BashGenerator import Generator as bashGenerator
+from NSGenerator import Generator as nSGenerator
 from hlb_parser import HLBParser, HLBHintType
 from magiparser import GeneralParseMagi
 import werkzeug
@@ -269,22 +270,11 @@ class HLBService():
             constraints = json_data['Constraints']
 
             if tn == 'bash':
-                generator = bashGenerator(scenario, constraints=constraints)
+                generator = bashGenerator(scenario=scenario, constraints=constraints,bindings=[])
             elif tn == 'magi':
-                generator = bashGenerator(scenario, constraints=constraints) # TODO: Use magi generator
-
-            # cwd = os.path.dirname(os.path.realpath(__file__))
-            # # print(cwd)
-            # if os.path.isdir(cwd + "/DewFunctions/Generators/" + tn):
-            #     sys.path.append(cwd + "/DewFunctions/Generators/" + tn)
-            # else:
-            #     print("\nERROR:\tExpecting generator type (%s) to match {generator}/{generator}.py\n\t(e.g. %s/%s.py) in %s/ directory.\n\n" %(tn, tn, tn, cwd))
-            #     print("\n")
-            #     exit(1)
-
-            # chosenGenerator = __import__(tn, fromlist=['Generator'])
-            # generator = chosenGenerator.Generator(scenario, constraints=constraints)
-            scenario_parsed, constraints_parsed = generator.generate()
+                generator = bashGenerator(scenario=scenario, constraints=constraints,bindings=[]) # TODO: Use magi generator
+            generator.generate()
+            scenario_parsed, constraints_parsed = generator.scenario_parsed,generator.constraints_parsed
             print(scenario_parsed, constraints_parsed)
             return {"_id": str(uuid.uuid4()), "parsedScenario": scenario_parsed, "parsedConstraints": constraints_parsed}
         # else:
@@ -339,9 +329,9 @@ class HLBService():
         scenario = json_data['behaviors']
         constraints = json_data['constraints']
         bindings = json_data['bindings']
-        generator = bashGenerator(scenario, constraints=constraints)
-        scenario_parsed, constraints_parsed = generator.generate()
-        ns_script, clientServerList = generator.generateNS(constraints_parsed, None, actors)
+        generator = nSGenerator(constraints=constraints, scenario=scenario, bindings=bindings)
+        generator.generate()
+        ns_script = generator.text
         return ns_script
 
     #Handle generateBASH
@@ -352,8 +342,8 @@ class HLBService():
         scenario = json_data['behaviors']
         constraints = json_data['constraints']
         bindings = json_data['bindings']
-        generator = bashGenerator(scenario, constraints=constraints)
-        scenario_parsed, constraints_parsed = generator.generate()
-        ns_script, clientServerList = generator.generateNS(constraints_parsed, None, actors)
-        bash_script_list = generator.generateBASH(scenario, bindings, clientServerList)
+        generator = bashGenerator(constraints=constraints, scenario=scenario, bindings=bindings)
+        generator.generate()
+        # print(generator.text)
+        bash_script_list = [['run.sh',generator.text],['cleanup.sh','']]
         return bash_script_list, paramterlist

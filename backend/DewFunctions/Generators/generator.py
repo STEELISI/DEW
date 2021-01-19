@@ -22,12 +22,12 @@ from hlb_parser import HLBParser, ConstraintParser, BindingParser
 
 class Generator(object):
     # scenario and constraints given as a list.
-    def __init__(self, inputFileName,  constraints, scenario, bindings, name='Generic Class'):
+    def __init__(self,   constraints, scenario, bindings, inputFileName=None,name='Generic Class'):
         
         self.constraints = constraints
         self.scenario = scenario
         self.bindings = bindings
-        self.dew = open(inputFileName.name, 'r').read()
+        # self.dew = open(inputFileName.name, 'r').read()
 
         # For debugging. Subclass should set this to something meaningful. e.g. "bash"
         self.name = name
@@ -50,52 +50,57 @@ class Generator(object):
         # (note, some of these can be None)
 
         # Constraints -> ['constraint type', 'target', 'value' ] (some of these can be None)
-        for co in self.constraints:
-            c = co[0]
+        for c in self.constraints:
+            # c = co[0]
             try:
                 parsedTuple = self.ConstParser.parse_stmt(c)
             except:
                 print("ERROR:\tCannot parse the following constraint: %s\n" % c)
-                return False
+                continue
+                # return False
             # Because we use parsing for UI suggestions, we don't throw exceptions
             # when we can't parse a statement, instead the parser returns a tuplet of Nones.
             if all(x == None for x in parsedTuple):
                 print("ERROR:\tUnparsable constraint: %s\n" % c)
-                return False
+                continue
+                #return False
 
             # XXX Right now, for generation we only care about 'num' constraints.
             # XXX At some point we may care about others, like 'os'.
             #if 'num' == parsedTuple[0]:
             self.constraints_parsed.append(parsedTuple)
 
-        for sc in self.scenario:
-            s = sc[0]
+        for s in self.scenario:
+            # s = sc[0]
             try:
                 parsedTuple = self.HLBparser.parse_stmt(s)
             except:
                 print("ERROR:\tCannot parse the following Scenario statement: %s\n" % s)
-                return False
+                continue
+                # return False
             # See above comment - we return all Nones if statement is un-parsable.
             if all(x == None for x in parsedTuple):
                 print("ERROR:\tUnparsable Scenario statement: %s\n" % s)
+                continue
                 #return False
             self.scenario_parsed.append(parsedTuple)
 
-        for bi in self.bindings:
-            b = bi[0]
+        for b in self.bindings:
+            # b = bi[0]
             try:
-                key,value = self.BindParser.parse_stmt(bi[0] + " " + bi[1])
+                key,value = self.BindParser.parse_stmt(b)
             except:
                 print("ERROR:\tCannot parse the following Scenario statement: %s\n" % b)
-                return False
+                continue
+                # return False
             # See above comment - we return all Nones if statement is un-parsable.
             if key == None or value == None:
                 print("ERROR:\tUnparsable Bindings statement: %s\n" % b)
-                return False
+                continue
+                # return False
             self.bindings_parsed[key] = value
 
             
     def generate(self):
         # Parse scenario, constraints and bindings
         self.parse()
-

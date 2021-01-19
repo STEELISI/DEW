@@ -212,7 +212,7 @@ class BashGenerator(Generator):
     def generateDew(self):
         self.text += "#!/usr/bin/bash\n"
         self.text += '##################################################################\n#'
-        self.text += '# '.join(self.dew.splitlines(True))
+        self.text += '# ' #.join(self.dew.splitlines(True))
         self.text += '##################################################################\n\n'
 
     def generateArgParse(self):
