@@ -9,6 +9,7 @@ export class StateService {
   behavior: BehaviorSubject<any> = new BehaviorSubject(null);
   constraints: BehaviorSubject<any> = new BehaviorSubject(null);
   bindings: BehaviorSubject<any> = new BehaviorSubject(null);
+  experimentId: BehaviorSubject<Number>= new BehaviorSubject(0);
   experimentName: BehaviorSubject<String> = new BehaviorSubject("");
   experimentDescription: BehaviorSubject<String> = new BehaviorSubject("");
   driveId: BehaviorSubject<String> = new BehaviorSubject("");
@@ -20,6 +21,7 @@ export class StateService {
   currentConstraintWord: String;
   tokenLevel: String;
   serverData: BehaviorSubject<any> = new BehaviorSubject(null);
+  slideTobeShown: BehaviorSubject<any> = new BehaviorSubject({});
   allAnyPresent = false;
 
   setAllAnyPresentFlag(val) {
@@ -138,5 +140,21 @@ export class StateService {
 
   setExperimentDescription(data: String) {
     this.experimentDescription.next(data);
+  }
+
+  getExperimentId(): Observable<any> {
+    return this.experimentId.asObservable();
+  }
+
+  setExperimentId(newId: Number) {
+    this.experimentId.next(newId);
+  }
+
+  getslideTobeShown(): Observable<any> {
+    return this.slideTobeShown.asObservable();
+  }
+
+  setslideTobeShown(slide: any){
+    this.slideTobeShown.next(slide);
   }
 }

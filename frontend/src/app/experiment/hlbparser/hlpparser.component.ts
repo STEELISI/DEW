@@ -29,6 +29,7 @@ export class HLBParserComponent implements OnInit {
 
         
         this.experimentId = params["id"];
+        this.state.setExperimentId(this.experimentId);
         this.state.enableLoader();
         this.http
           .post("api/v1/pr/persist/experiment/control", input,{withCredential:true})

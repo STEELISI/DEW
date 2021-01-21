@@ -38,7 +38,11 @@ import {
   TopologyGraphComponent,
   UpdateActorInfo
 } from "./topology/topology.component";
-import { ExperimentSlides } from "./experiment-slides/experiment-slides.component"
+import { ExperimentSlides } from "./experiment-slides/experiment-slides.component";
+import { 
+  SingleSlideComponent,
+  UpdateSlideMapping
+} from "./experiment-slides/single-slide.component";
 import { MatRadioModule } from "@angular/material/radio";
 import {
   InfoComponent,
@@ -80,6 +84,8 @@ import {DeterLabViewComponent, RunVariablePopUp} from './deterlab-view/deterlab-
     VersionsPopUp,
     UpdateActorInfo,
     ExperimentSlides,
+    SingleSlideComponent,
+    UpdateSlideMapping,
     RunVariablePopUp,
   ],
   imports: [
@@ -123,6 +129,8 @@ import {DeterLabViewComponent, RunVariablePopUp} from './deterlab-view/deterlab-
     VersionsPopUp,
     UpdateActorInfo,
     ExperimentSlides,
+    SingleSlideComponent,
+    UpdateSlideMapping,
     RunVariablePopUp
   ],
   providers: [StateService],

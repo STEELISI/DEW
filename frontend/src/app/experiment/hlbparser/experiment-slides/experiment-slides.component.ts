@@ -4,6 +4,7 @@ import { MatDialogRef, MAT_DIALOG_DATA, MatDialog, MatSnackBar } from '@angular/
 import { Subject } from 'rxjs';
 import { HttpService } from "src/app/http-service.service";
 import { StateService } from "src/app/state-service.service";
+import { SingleSlideComponent } from "./single-slide.component";
 
 
 @Component({
@@ -84,7 +85,8 @@ export class ExperimentSlides implements OnInit {
   }
 
   editSlide(slide){
-    
+    this.state.setslideTobeShown(slide);
+    this.navigate.emit(6);
   }
 
   private getSlideDetails(){
