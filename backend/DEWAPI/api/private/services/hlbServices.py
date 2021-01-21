@@ -14,8 +14,8 @@ import hlb
 import re
 from parsebash import GeneralParseBash
 from generator import Generator
-from BashGenerator import Generator as bashGenerator
-from NSGenerator import Generator as nSGenerator
+from BashGenerator import BashGenerator as bashGenerator
+from NSGenerator import NSGenerator as nSGenerator
 from hlb_parser import HLBParser, HLBHintType
 from magiparser import GeneralParseMagi
 import werkzeug
@@ -274,7 +274,7 @@ class HLBService():
             elif tn == 'magi':
                 generator = bashGenerator(scenario=scenario, constraints=constraints,bindings=[]) # TODO: Use magi generator
             generator.generate()
-            scenario_parsed, constraints_parsed = generator.scenario_parsed,generator.constraints_parsed
+            scenario_parsed, constraints_parsed = generator.run,generator.constraints_parsed
             print(scenario_parsed, constraints_parsed)
             return {"_id": str(uuid.uuid4()), "parsedScenario": scenario_parsed, "parsedConstraints": constraints_parsed}
         # else:
@@ -282,7 +282,7 @@ class HLBService():
         #     response = {"_id":str(uuid.uuid4()),"errors":errors}
         # return jsonify(response)
 
-    def HandleGraphParse(self, sceanrios):
+    def HandleGraphParse(self, scenarios):
         nodes = []
         edges = []
         t_events = defaultdict(list)
@@ -290,7 +290,7 @@ class HLBService():
         all_any_flags = defaultdict(str)
         parser = HLBParser([])
         i = 0
-        for scenario in sceanrios:
+        for scenario in scenarios:
             i += 1
             if scenario.startswith("@"):
                 continue
@@ -331,7 +331,7 @@ class HLBService():
         bindings = json_data['bindings']
         generator = nSGenerator(constraints=constraints, scenario=scenario, bindings=bindings)
         generator.generate()
-        ns_script = generator.text
+        ns_script = generator.run
         return ns_script
 
     #Handle generateBASH
@@ -345,5 +345,5 @@ class HLBService():
         generator = bashGenerator(constraints=constraints, scenario=scenario, bindings=bindings)
         generator.generate()
         # print(generator.text)
-        bash_script_list = [['run.sh',generator.text],['cleanup.sh','']]
+        bash_script_list = [['run.sh',generator.run],['cleanup.sh',generator.clear]]
         return bash_script_list, paramterlist
