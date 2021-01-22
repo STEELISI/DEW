@@ -489,7 +489,7 @@ export class HlbComponent implements OnInit {
       .put('v1/pr/hlb/parse', data, { withCredential: true })
       .subscribe((receivedData: ParseApiBean) => {
         this.extractInfo(receivedData);
-        this.suggestAll(receivedData);
+        // this.suggestAll(receivedData);
       });
   }
 
@@ -525,7 +525,7 @@ export class HlbComponent implements OnInit {
     this.http
       .put('v1/pr/hlb/parse', data, { withCredential: true })
       .subscribe((receivedData: ParseApiBean) => {
-        this.suggestAll(receivedData);
+        // this.suggestAll(receivedData);
       });
   }
 
