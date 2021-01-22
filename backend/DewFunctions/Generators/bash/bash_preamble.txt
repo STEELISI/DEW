@@ -1,56 +1,33 @@
 id=$label
 cnt=0
 
+
 execute_fork()
 {
     local node=$1
     local cmd=$2
     local cnt=$3
-    if [ ! -d ~/cmds/$id ] ; then
-	mkdir ~/cmds/$id
+    
+    if [ ! -d ~/DEW/$id ] ; then
+	mkdir ~/DEW/$id
     fi
-    echo "$cmd 2>~/cmds/$id/error.$cnt &" > ~/cmds/$id/script.$cnt.sh
-    echo "echo \"running $cmd\"" >> ~/cmds/$id/script.$cnt.sh
-    echo "pid=\"\$!\""  >> ~/cmds/$id/script.$cnt.sh
-    echo "echo \$pid > ~/cmds/$id/pid.$cnt" >> ~/cmds/$id/script.$cnt.sh
-    echo "if wait \$pid; then" >> ~/cmds/$id/script.$cnt.sh
-    echo "    echo 0 > ~/cmds/$id/status.$cnt" >> ~/cmds/$id/script.$cnt.sh	    
-    echo "else" >> ~/cmds/$id/script.$cnt.sh
-    echo "    echo 1 > ~/cmds/$id/status.$cnt" >> ~/cmds/$id/script.$cnt.sh	    
-    echo "fi" >> ~/cmds/$id/script.$cnt.sh	    
-    ssh -o StrictHostKeyChecking=no $node.$exp.$proj "bash ~/cmds/$id/script.$cnt.sh" &
+    echo "echo \"running $cmd\"" > ~/DEW/$id/script.$cnt.sh
+    echo "$cmd 2>~/DEW/$id/error.$cnt &" > ~/DEW/$id/script.$cnt.sh
+    echo "pid=\"\$!\""  >> ~/DEW/$id/script.$cnt.sh
+    echo "echo \$pid > ~/DEW/$id/pid.$cnt" >> ~/DEW/$id/script.$cnt.sh
+    echo "if wait \$pid; then" >> ~/DEW/$id/script.$cnt.sh
+    echo "    echo 0 > ~/DEW/$id/status.$cnt" >> ~/DEW/$id/script.$cnt.sh	    
+    echo "else" >> ~/DEW/$id/script.$cnt.sh
+    echo "    echo 1 > ~/DEW/$id/status.$cnt" >> ~/DEW/$id/script.$cnt.sh	    
+    echo "fi" >> ~/DEW/$id/script.$cnt.sh	    
+    ssh -o StrictHostKeyChecking=no $node.$exp.$proj "bash ~/DEW/$id/script.$cnt.sh" &
 }
 
-execute_clear()
-{
-    local node=$1
-    local cmd=$2
-    local cnt=$3
-    if [ ! -d ~/cmds/$id ] ; then
-	mkdir ~/cmds/$id
-    fi
-    for file in `ls cmds/$cnt/pid.*` ; do
-    	pid = $(echo cmds/$cnt/$file)
-    	if [ $cmd =~ /^sudo/ ] ; then
-           echo "sudo kill -9 $pid " >> ~/cmds/$cnt/clear.$cnt.sh
-	else
-	   echo "kill -9 $pid " >> ~/cmds/$cnt/clear.$cnt.sh
-	fi
-	if [ $cmd =~ /^apt/ && $cmd =~ /install/ ] ; then
-	   for word in $cmd ; do
-	       if [ word !~ /^apt/ && word !~ /install/ && word != /^\-/ ] ; then
-	       	  echo "sudo apt-get remove -y "$word >> ~/cmds/$cnt/clear.$cnt.sh
-		fi
-	   done
-	fi		  
-    done
-    ssh -o StrictHostKeyChecking=no $node.$exp.$proj "bash ~/cmds/$id/clear.$cnt.sh" &
-}
 
 psuccess()
 {
     local cnt=$1
-    while [ ! -f ~/cmds/$id/status.$cnt ] ; do
+    while [ ! -f ~/DEW/$id/status.$cnt ] ; do
 	sleep 0.1
     done
 }
@@ -58,12 +35,18 @@ psuccess()
 pexists()
 {
     local cnt=$1
-    while [ ! -f ~/cmds/$id/pid.$cnt ] ; do
+    while [ ! -f ~/DEW/$id/pid.$cnt ] ; do
 	sleep 0.1
     done
-    if [ ! -f ~/cmds/$id/status.$cnt ] ; then
+    if [ ! -f ~/DEW/$id/status.$cnt ] ; then
        echo "0"
     else
        echo "1"
     fi     
 }
+
+if [ ! -d ~/DEW ] ; then
+   mkdir ~/DEW
+fi
+
+rm -f ~/DEW/$id/*

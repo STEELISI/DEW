@@ -89,7 +89,7 @@ class BashGenerator(Generator):
                         if cond in self.conditions:
                             self.run += self.conditions[cond][0] + " " + str(count[cond]) + "\n"
                             if (self.conditions[cond][0] == "psuccess"):
-                                self.run += "status" + str(count[cond]) +"=`cat ~/cmds/$label/status."+str(count[cond])+"`\n"
+                                self.run += "status" + str(count[cond]) +"=`cat ~/DEW/$label/status."+str(count[cond])+"`\n"
                             else:
                                 self.run += "pex" + str(count[cond]) +"=$(pexists "+str(count[cond])+")\n"
                     else:
@@ -99,7 +99,7 @@ class BashGenerator(Generator):
                                 if cond in self.conditions:
                                     self.run += self.conditions[cond][0] + " " + str(count[c]) + "\n"
                                     if (self.conditions[cond][0] == "psuccess"):
-                                        self.run += "status" + str(count[c]) +"=`cat ~/cmds/$label/status."+str(count[c])+"`\n"
+                                        self.run += "status" + str(count[c]) +"=`cat ~/DEW/$label/status."+str(count[c])+"`\n"
                                     else:
                                         self.run += "pex" + str(count[c]) +"=$(pexists "+str(count[c])+")\n"
                             
@@ -225,7 +225,7 @@ class BashGenerator(Generator):
     def generateDew(self):
         self.run += "#!/usr/bin/bash\n"
         self.run += '##################################################################\n#'
-        self.run += '# ' #.join(self.dew.splitlines(True))
+        self.run += '# ' .join(self.dew.splitlines(True))
         self.run += '##################################################################\n\n'
 
     def generateArgParse(self):
@@ -263,6 +263,7 @@ class BashGenerator(Generator):
             
     def generatePreamble(self):
         self.run += open('./DewFunctions/Generators/bash/bash_preamble.txt', 'r').read()
+        self.clear += open('./DewFunctions/Generators/bash/bash_clean.txt', 'r').read()
 
 
     def parse(self):

@@ -274,7 +274,7 @@ class HLBService():
             elif tn == 'magi':
                 generator = bashGenerator(scenario=scenario, constraints=constraints,bindings=[]) # TODO: Use magi generator
             generator.generate()
-            scenario_parsed, constraints_parsed = generator.run,generator.constraints_parsed
+            scenario_parsed, constraints_parsed = generator.scenario_parsed,generator.constraints_parsed
             print(scenario_parsed, constraints_parsed)
             return {"_id": str(uuid.uuid4()), "parsedScenario": scenario_parsed, "parsedConstraints": constraints_parsed}
         # else:
@@ -337,7 +337,7 @@ class HLBService():
     #Handle generateBASH
     def HandleBASH(self,json_data):
         errors = []
-        paramterlist = [] # added for run script. 
+        parameterlist = [] # added for run script. 
         actors = json_data['actors']
         scenario = json_data['behaviors']
         constraints = json_data['constraints']
@@ -346,4 +346,5 @@ class HLBService():
         generator.generate()
         # print(generator.text)
         bash_script_list = [['run.sh',generator.run],['cleanup.sh',generator.clear]]
-        return bash_script_list, paramterlist
+        parameterlist = generator.evars
+        return bash_script_list, parameterlist
