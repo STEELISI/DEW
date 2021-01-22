@@ -28,9 +28,7 @@ class Generator(object):
         self.constraints = constraints
         self.scenario = scenario
         self.bindings = bindings
-
-        # self.dew = open(inputFileName.name, 'r').read()
-
+       
         # For debugging. Subclass should set this to something meaningful. e.g. "bash"
         self.name = name
         
@@ -54,7 +52,9 @@ class Generator(object):
         # (note, some of these can be None)
 
         # Constraints -> ['constraint type', 'target', 'value' ] (some of these can be None)
+        myc = ""
         for c in self.constraints:
+            myc += c + "\n"
             # c = co[0]
             try:
                 parsedTuple = self.ConstParser.parse_stmt(c)
@@ -74,7 +74,9 @@ class Generator(object):
             #if 'num' == parsedTuple[0]:
             self.constraints_parsed.append(parsedTuple)
 
+        mys = ""
         for s in self.scenario:
+            mys += s + "\n"
             # s = sc[0]
             try:
                 parsedTuple = self.HLBparser.parse_stmt(s)
@@ -89,9 +91,10 @@ class Generator(object):
                 #return False
             self.scenario_parsed.append(parsedTuple)
 
+        myb = ""
         for bi in self.bindings:
             b = bi['key'] + " " + bi['value']
-            print("Binding ", b)
+            myb += bi['key'] + "=" + bi['value'] + "\n"
             try:
                 key,value = self.BindParser.parse_stmt(b)
             except:
@@ -105,8 +108,9 @@ class Generator(object):
                 # return False
             self.bindings_parsed[key] = value
             print("Binding for ", key, " is ", value)
-
             
+        self.dew = "[Scenario]\n" + mys + "\n[Constraints]\n" + myc + "\n[Bindings]\n" + myb
+
     def generate(self):
         # Parse scenario, constraints and bindings
         self.parse()
