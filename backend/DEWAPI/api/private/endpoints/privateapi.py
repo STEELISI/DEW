@@ -882,8 +882,8 @@ class HandleProjectRunLog(Resource):
                 variables = []
                 if len(variable_list) != 0:
                   for x in variable_list:
-                    if x in data:
-                      variables.append(data[x])
+                    if x['variable'] in data:
+                      variables.append(data[x['variable']])
                   if len(variables) != len(variable_list):
                     result['error'] = "Parameters are missing" 
                     result['paramters'] = variable_list
