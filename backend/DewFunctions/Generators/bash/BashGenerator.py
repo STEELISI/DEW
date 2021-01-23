@@ -12,9 +12,7 @@ from generator import Generator
 class BashGenerator(Generator):
     
     def __init__(self, *args, **kwargs):
-        print("Created BASH")
         super().__init__(*args,  **kwargs)
-        print("Creating BASH")
         self.cflags = dict()
         # Dictionary of special functions with regex
         # and expansions
@@ -34,16 +32,13 @@ class BashGenerator(Generator):
 
 
     def generate(self):
-        print("In bash")
         super().generate()
-        print("Returned from super")
         self.collectNum()
         self.generateDew()
         self.generateArgParse()
         self.generatePreamble()        
         self.collectConds()        
         self.generateActions()
-        print(self.run)
 
     def collectNum(self):
         self.num = dict()
@@ -213,13 +208,11 @@ class BashGenerator(Generator):
                 for r in r1:
                     self.cflags[r[1]] |= 1;
                     self.conditions[b] = ['pexists',r[1]]
-                    print("Condition ", b)
             r1 = re.findall(r"(psuccess\()(\w+)", self.bindings_parsed[b])
             if len(r1) > 0:
                 for r in r1:
                     self.cflags[r[1]] |= 2;
                     self.conditions[b] = ['psuccess',r[1]]
-                    print("Condition ", b)
         
                 
     def generateDew(self):

@@ -24,7 +24,6 @@ class Generator(object):
     # scenario and constraints given as a list.
     def __init__(self,   constraints, scenario, bindings, inputFileName=None,name='Generic Class'):
 
-        print("Creating generator")
         self.constraints = constraints
         self.scenario = scenario
         self.bindings = bindings
@@ -43,7 +42,6 @@ class Generator(object):
         self.bindings_parsed = {}
         self.run = ""
         self.clear = ""
-        print("Creating generator DONE")
 
     def parse(self):
         # For each item in our scenario/constraints lists, make sure we can parse it and
@@ -94,7 +92,7 @@ class Generator(object):
         myb = ""
         for bi in self.bindings:
             b = bi['key'] + " " + bi['value']
-            myb += bi['key'] + "=" + bi['value'] + "\n"
+            myb += bi['key'] + " = " + bi['value'] + "\n"
             try:
                 key,value = self.BindParser.parse_stmt(b)
             except:
