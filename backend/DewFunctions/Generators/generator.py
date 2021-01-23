@@ -23,10 +23,12 @@ from hlb_parser import HLBParser, ConstraintParser, BindingParser
 class Generator(object):
     # scenario and constraints given as a list.
     def __init__(self,   constraints, scenario, bindings, inputFileName=None,name='Generic Class'):
-        
+
+        print("Creating generator")
         self.constraints = constraints
         self.scenario = scenario
         self.bindings = bindings
+
         # self.dew = open(inputFileName.name, 'r').read()
 
         # For debugging. Subclass should set this to something meaningful. e.g. "bash"
@@ -41,7 +43,9 @@ class Generator(object):
         self.scenario_parsed = []
         self.constraints_parsed = []
         self.bindings_parsed = {}
-        self.text = ""
+        self.run = ""
+        self.clear = ""
+        print("Creating generator DONE")
 
     def parse(self):
         # For each item in our scenario/constraints lists, make sure we can parse it and
@@ -85,8 +89,9 @@ class Generator(object):
                 #return False
             self.scenario_parsed.append(parsedTuple)
 
-        for b in self.bindings:
-            # b = bi[0]
+        for bi in self.bindings:
+            b = bi['key'] + " " + bi['value']
+            print("Binding ", b)
             try:
                 key,value = self.BindParser.parse_stmt(b)
             except:
@@ -99,6 +104,7 @@ class Generator(object):
                 continue
                 # return False
             self.bindings_parsed[key] = value
+            print("Binding for ", key, " is ", value)
 
             
     def generate(self):
