@@ -24,9 +24,13 @@ class Slide(db.Model):
 			'updated_at': self.updated_at
 		}
 
-	def dew_string(self):
+	def dew_string(self, t_event=None):
 		mapping = json.loads(self.actor_action_mapping)
-		dew_string = ""
+		dew_array = []
 		for actor in mapping:
-			dew_string += str(actor) + " " + str(mapping[actor]) + "\n"
-		return dew_string
+			dew_string = ""
+			if t_event != None:
+				dew_string += "when " + str(t_event) + " "
+			dew_string += str(actor) + " " + str(mapping[actor]) + " emit slideDoneEvent" + str(self.sequence_number) + "\n"
+			dew_array.append(dew_string)
+		return dew_array

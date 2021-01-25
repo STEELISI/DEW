@@ -377,4 +377,12 @@ class ExperimentManager(object):
             db.session.commit()
             return True
 
-
+    def dew_from_slides(self,user_id, experiment_id):
+        if self.user_can(experiment_id, user_id, AccessControlEnum.read) is not None:
+            slides = Slide.query.filter(Slide.experiment_id == experiment_id).order_by(Slide.sequence_number)
+            prev_event = None
+            dew_string = []
+            for slide in slides:
+                dew_string += slide.dew_string(prev_event)
+                prev_event = "slideDoneEvent"+str(slide.sequence_number)
+            return dew_string

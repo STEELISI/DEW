@@ -37,7 +37,10 @@ export class ExperimentSlides implements OnInit {
   }
 
   showDependencyGraph(){
-  	this.navigate.emit(2);
+    this.http.get("v1/pr/design/experiment/slides/"+this.experimentId + "/dew", {withCredential: true}).subscribe((response) => {
+      this.state.setBehavior(response['dew']);
+      this.navigate.emit(2);
+    })
   }
 
   createSlide(){

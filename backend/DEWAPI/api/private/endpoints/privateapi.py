@@ -958,6 +958,21 @@ class HandleGetExperimentSlides(Resource):
                 return msg, 403
         if slides:
             return {'status': "Successful", "slides": slides}
+
+@ns.route('/design/experiment/slides/<experiment_id>/dew')
+class HandleDEWforSlides(Resource):
+    def get(self, experiment_id):
+        """
+        Get dew from experiment slides
+        """
+        try:
+            userId = userObj.getUserId()
+            dew_content = em.dew_from_slides(userId, experiment_id)
+        except ValueError as e:
+            msg = {'status': 'Failure', 'message': str(e)}
+            return msg, 403
+        if dew_content:
+            return {'status': "Successful", 'dew': dew_content}
     
 
 @ns.route('/design/experiment/slides/swap')
