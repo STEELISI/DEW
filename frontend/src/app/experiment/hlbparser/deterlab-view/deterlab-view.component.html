@@ -156,8 +156,9 @@
                         </li>
                         <li>
                             <button type="button" class="btn btn-outline-success swap-dt"
+                            data-toggle="modal" data-target="#exampleModal"
                                     [disabled]="deactivateSwapOut"
-                                    (click)="run()"
+                                    (click)="activateModal('run')"
                                    >Run Experiment
                             </button>
                         </li>

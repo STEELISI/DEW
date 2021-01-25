@@ -269,6 +269,9 @@ export class DeterLabViewComponent implements OnInit {
             case 'updateNs':
                 this.modalMsg = 'Do you really want to update the NS file ?';
                 break;
+            case 'run':
+                this.modalMsg = 'Do you really want to run the experiment ?';
+                break;
             default:
                 this.modalMsg = '';
         }
@@ -288,6 +291,10 @@ export class DeterLabViewComponent implements OnInit {
                 break;
             case 'updateNs':
                 this.updateNSFile();
+                break;
+            case 'run':
+                
+                this.run();
                 break;
             default:
                 break;
@@ -341,11 +348,12 @@ export class DeterLabViewComponent implements OnInit {
         const params = {
             eid: this.experimentId,
             account_id: this.userId,
-            data
+            data: data
         };
 
         this.http.post('/api/v1/pr/deter/project/run', params, {withCredentials: true})
             .subscribe(data1 => {
+                this.showLoader = false;
                 if (data1.success) {
                     this._snackBar.open('Successfully started', 'close', {
                         duration: 2000,
@@ -359,11 +367,13 @@ export class DeterLabViewComponent implements OnInit {
 
                     dialogRef.afterClosed().subscribe((result) => {
                         if (result !== undefined) {
+                            this.showLoader = true;
                             this.run(result);
                         }
                     });
                 }
             }, error => {
+                this.showLoader = false;
                 this._snackBar.open('Something went wrong please try again later!', 'close', {
                     duration: 2000,
                 });
@@ -388,7 +398,7 @@ export class RunVariablePopUp implements OnInit {
     ngOnInit() {
         this.variableList = {};
         this.variable.forEach(element => {
-            this.variableList[element] = '';
+            this.variableList[element.variable] = '';
         });
     }
 
