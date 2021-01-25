@@ -828,7 +828,7 @@ export class AddUserPopUp implements OnInit {
   options = [{name:'Read',value:'2'},{name:'Write',value:'3'},{name:'Manage',value:'4'}]
   userOptions = [];
   ngOnInit(): void {
-    this.http.get("v1/p/user/getUserHandles/"+this.token,{withCredential:true}).subscribe(data=>{
+    this.http.get("v1/pr/user/getUserHandles/"+this.token,{withCredential:true}).subscribe(data=>{
       //console.log(data);
       this.userOptions = [];
       if(data.userList != undefined && data.userList != null)

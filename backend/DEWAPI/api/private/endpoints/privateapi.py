@@ -13,6 +13,7 @@ from ..services.profileService import ProfileService
 from ..services.sshConnectivity import SSHConnection
 from ..services.deterlab_experiment_manager import DeterLabExperimentManager
 from DEWAPI.user import userObj
+from DEWAPI.api.public.services.userinfoservice import GoogleLogin
 import globals
 
 
@@ -26,6 +27,13 @@ dew_parser = DEWParser()
 tm = TokenManager()
 ps = ProfileService()
 dm = DeterLabExperimentManager()
+login = GoogleLogin()
+
+
+@ns.route('/user/getUserHandles/')
+class HandleUserGetHandle(Resource):
+    def get(self):
+        return login.getUserHandles(userObj.getUserId())
 
 @ns.route('/hlb/translate/<string:format>')
 class HandleHLBTranslator(Resource):
