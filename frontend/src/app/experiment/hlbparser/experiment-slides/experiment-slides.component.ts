@@ -22,13 +22,22 @@ export class ExperimentSlides implements OnInit {
     protected http: HttpService,
     protected state: StateService,
     public dialog: MatDialog,
+    private _snackBar: MatSnackBar,
     private formBuilder: FormBuilder
   ) {
   }
 
   public ngOnInit(): void {
   	console.log("experimentId : ", this.experimentId)
-    this.getSlideDetails()
+    if (this.experimentId > 0) { 
+      // code...
+      this.getSlideDetails();
+    } else {
+      // code...
+      this._snackBar.open("Please save the experiment to continue!", "OK", {
+        duration: 10000,
+      });
+    }
   }
 
 
@@ -92,18 +101,30 @@ export class ExperimentSlides implements OnInit {
   }
 
   showDependencyGraph(){
-    this.http.get("v1/pr/design/experiment/slides/"+this.experimentId + "/dew", {withCredential: true}).subscribe((response) => {
-      this.state.setBehavior(response['dew']);
-      this.updateBindings();
-      this.navigate.emit(2);
-    })
+    if(this.experimentId < 1){
+      this._snackBar.open("Please save the experiment to continue!", "OK", {
+        duration: 10000,
+      });
+    } else {
+      this.http.get("v1/pr/design/experiment/slides/"+this.experimentId + "/dew", {withCredential: true}).subscribe((response) => {
+        this.state.setBehavior(response['dew']);
+        this.updateBindings();
+        this.navigate.emit(2);
+      })
+    }
   }
 
   createSlide(){
-  	this.http.post("api/v1/pr/design/experiment/slides",{"experiment_id": this.experimentId, "sequence_number": this.lastSequenceNumber + 1},{withCredential: true}).subscribe((data) => {
-  		this.slides.push(data['slide'])
-  		this.lastSequenceNumber += 1
-  	})
+    if(this.experimentId < 1){
+      this._snackBar.open("Please save the experiment to continue!", "OK", {
+        duration: 10000,
+      });
+    } else {
+    	this.http.post("api/v1/pr/design/experiment/slides",{"experiment_id": this.experimentId, "sequence_number": this.lastSequenceNumber + 1},{withCredential: true}).subscribe((data) => {
+    		this.slides.push(data['slide'])
+    		this.lastSequenceNumber += 1
+    	})
+    }
   }
 
   deleteSlide(slide){
