@@ -640,9 +640,12 @@ export class InfoComponent implements OnInit {
     if (flag) return;
     this.http.put("v1/pr/hlb/generateNs", data, {withCredential:true}).subscribe(
       (data) => {
-
+        let message = "Successfully Downloaded."
+        if(data.script != ''){
         this.downLoadFile(data.script, "nsFile.ns");
-        this._snackBar.open("Successfully Downloaded.", "close", {
+        }else
+        message = "Error in Downloading"
+        this._snackBar.open(message, "close", {
           duration: 2000,
         });
         // this.stateservice.setBindings(data.Bindings);
@@ -743,6 +746,8 @@ export class InfoComponent implements OnInit {
     this.http.put("v1/pr/hlb/generateBash", data, {withCredential:true}).subscribe(
       (data) => {
       console.log(data)
+        let message = "Error in Downloading."
+      if (Object.keys(data).length !=0){
       var keys = Object.keys(data)
       console.log(keys)
       var zip = new JSZip();
@@ -755,7 +760,10 @@ export class InfoComponent implements OnInit {
       .then(function (content) {
         FileSaver.saveAs(content, "Scripts.zip");
       });
-        this._snackBar.open("Successfully Downloaded.", "close", {
+       message = "Successfully Downloaded."
+
+    }
+        this._snackBar.open(message, "close", {
           duration: 2000,
         });
         // this.stateservice.setBindings(data.Bindings);
@@ -827,7 +835,7 @@ export class AddUserPopUp implements OnInit {
   options = [{name:'Read',value:'2'},{name:'Write',value:'3'},{name:'Manage',value:'4'}]
   userOptions = [];
   ngOnInit(): void {
-    this.http.get("v1/p/user/getUserHandles/"+this.token,{withCredential:true}).subscribe(data=>{
+    this.http.get("v1/pr/user/getUserHandles/"+this.token,{withCredential:true}).subscribe(data=>{
       //console.log(data);
       this.userOptions = [];
       if(data.userList != undefined && data.userList != null)

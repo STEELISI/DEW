@@ -92,16 +92,10 @@ class GoogleLogin():
                 return {'message':'Successfully created!'}
         else:
             return {'error':'Handle is already taken','navigate':'login'}
-    def getUserHandles(self,token):
-        result = None
-        print(token)
-        user1 = User.query.filter(User.uid == token).first()
-        if user1 == None:
-            result = {'error':'Unauthorized access','location':'logout'}
-        else:
-            u = User.query.filter(User.uid != token).all()
-            r = [{'name':i.name,'handle':i.username} for i in u]
-            result = {'userList':r}
+    def getUserHandles(self,uid):
+        u = User.query.filter(User.uid != uid).all()
+        r = [{'name':i.name,'handle':i.username} for i in u]
+        result = {'userList':r}
         return result
     def getUserAccessList(self,userId,experimentId):
         ac = AccessControl.query.filter(AccessControl.experiment_id==experimentId, AccessControl.uid==userId,AccessControl.expiry_date>datetime.utcnow(), AccessControl.access_level>=AccessControlEnum.manage.value).first()

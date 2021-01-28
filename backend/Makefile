@@ -9,7 +9,7 @@ build:
 
 create_db:
 	mkdir -p db/
-	touch database.db
+	cd db; touch database.db
 
 run:
 	docker run -m 950MB -p $(PORT):80 --env-file ./secrets.env -v $(shell pwd)/db:/app/db --name dew-api-$(shell git log -1 --format=%h) -d dew:$(shell git log -1 --format=%h)

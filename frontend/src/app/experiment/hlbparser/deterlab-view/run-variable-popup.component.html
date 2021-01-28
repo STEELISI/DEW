@@ -11,8 +11,8 @@
         <li *ngFor="let bindingItem of variable">
           <div>
             <mat-form-field style="width: 100%">
-              <mat-label>{{ bindingItem }}</mat-label>
-              <input matInput [(ngModel)]="variableList[bindingItem]" />
+              <mat-label>{{ bindingItem.message }}</mat-label>
+              <input matInput [(ngModel)]="variableList[bindingItem.variable]" />
             </mat-form-field>
 
             <span> </span>
