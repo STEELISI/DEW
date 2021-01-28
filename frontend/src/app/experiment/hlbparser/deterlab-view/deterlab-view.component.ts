@@ -2,7 +2,7 @@ import {Component, Inject, OnInit} from '@angular/core';
 import {HttpService} from 'src/app/http-service.service';
 import {Router} from '@angular/router';
 import {HttpParams} from '@angular/common/http';
-import { MatDialog, MatDialogRef, MatSnackBar, MAT_DIALOG_DATA } from '@angular/material';
+import {MatDialog, MatDialogRef, MatSnackBar, MAT_DIALOG_DATA} from '@angular/material';
 
 @Component({
     selector: 'app-deterlab',
@@ -29,14 +29,18 @@ export class DeterLabViewComponent implements OnInit {
     alertMsg = '';
     statusMessages = [];
     activityMessages = [];
-    activateSwap = true;
+    activateSwapIn = true;
+    deactivateSwapOut = false;
     userCreatedDate;
     userNamesList = [];
+    showLoader = false;
+    modalMsg = '';
+    modalFor = '';
 
-    constructor(private http: HttpService, 
-        private route: Router
-        ,private _snackBar: MatSnackBar,
-        public dialog: MatDialog) {
+    constructor(private http: HttpService,
+                private route: Router
+        , private _snackBar: MatSnackBar,
+                public dialog: MatDialog) {
     }
 
     ngOnInit() {
@@ -46,6 +50,7 @@ export class DeterLabViewComponent implements OnInit {
             return;
         }
         this.experimentId = url[url.length - 1];
+        this.showLoader = true;
         this.http.get('v1/pr/profile/accounts/deterLab/get', {withCredentials: true}).subscribe(data => {
             if (data.length > 0) {
                 this.userNamesList = data;
@@ -65,6 +70,14 @@ export class DeterLabViewComponent implements OnInit {
         this.expName = '';
     }
 
+    getRefreshedStatus() {
+        this.showLoader = true;
+        let params = new HttpParams().append('eid', this.experimentId);
+        params = params.append('account_id', this.userId);
+        this.getExperimentStatus(params);
+        this.getExperimentActivity(params);
+    }
+
     getProjectMapping(params) {
         this.http.get('v1/pr/deter/project', {params, withCredentials: true})
             .subscribe(data1 => {
@@ -81,15 +94,21 @@ export class DeterLabViewComponent implements OnInit {
             .subscribe(data2 => {
                 if (data2.error) {
                     this.showSwap = false;
+                    this.statusMessages = [data2.error];
                 } else if (data2.content === 'No information available.') {
-                    // this.experimentName = 'In transition';
                     this.experimentStatus = 'In transition';
+                    this.statusMessages = [];
+                    this.activityMessages = [];
+                    this.activateSwapIn = false;
+                    this.deactivateSwapOut = true;
                 } else {
-                    this.statusMessages =  data2.content.split('\n');
-                    // this.experimentName = lines[0].replace(' ', '').split(':')[1];
+                    this.statusMessages = data2.content.split('\n');
                     this.experimentStatus = this.statusMessages[1].replace(' ', '').split(':')[1].trim();
                     if (this.experimentStatus === 'active') {
-                        this.activateSwap = false;
+                        this.activateSwapIn = false;
+                        this.deactivateSwapOut = false;
+                    } else {
+                        this.activateSwapIn = true;
                     }
                 }
             });
@@ -100,7 +119,10 @@ export class DeterLabViewComponent implements OnInit {
             .subscribe(data3 => {
                 if (data3.content) {
                     this.activityMessages = data3.content.split('\n');
+                } else if (data3.error) {
+                    this.activityMessages = [data3.error];
                 }
+                this.showLoader = false;
             });
     }
 
@@ -165,6 +187,7 @@ export class DeterLabViewComponent implements OnInit {
         params = params.append('account_id', this.userId);
         this.http.get('v1/pr/deter/project/swap', {params, withCredentials: true})
             .subscribe(data => {
+                this.showLoader = false;
                 if (data) {
                     this.alertMsg = type === 'swapin' ? 'Successfully swapped-in experiment' :
                         'Successfully swapped-out experiment';
@@ -183,7 +206,15 @@ export class DeterLabViewComponent implements OnInit {
         params = params.append('account_id', this.userId);
         this.http.get('v1/pr/deter/update/project/nsfile', {params, withCredentials: true})
             .subscribe(data => {
-                console.log(data);
+                this.showLoader = false;
+                if (data.success) {
+                    this.alertMsg = 'Successfully updated NS file';
+                    this.alertType = 'alert-success';
+                    this.showAlert = true;
+                    setTimeout(() => {
+                        this.showAlert = false;
+                    }, 3000);
+                }
             });
     }
 
@@ -193,11 +224,17 @@ export class DeterLabViewComponent implements OnInit {
         this.isValidProjName = true;
     }
 
+    cancelClicked() {
+        this.showLinkWindow = false;
+        this.showCreateWindow = false;
+    }
+
     deleteMapping() {
         let params = new HttpParams().append('eid', this.experimentId);
         params = params.append('account_id', this.userId);
         this.http.delete('v1/pr/deter/project/mapping/delete', {params, withCredentials: true})
             .subscribe(data => {
+                this.showLoader = false;
                 if (data === 'Successful') {
                     this.alertMsg = 'Successfully deleted mapping';
                     this.alertType = 'alert-success';
@@ -215,6 +252,57 @@ export class DeterLabViewComponent implements OnInit {
                     }, 3000);
                 }
             });
+    }
+
+    activateModal(type) {
+        this.modalFor = type;
+        switch (this.modalFor) {
+            case 'delete':
+                this.modalMsg = 'Do you really want to delete the mapping ?';
+                break;
+            case 'swapin':
+                this.modalMsg = 'Do you really want to swap-in the experiment ?';
+                break;
+            case 'swapout':
+                this.modalMsg = 'Do you really want to swap-out the experiment ?';
+                break;
+            case 'updateNs':
+                this.modalMsg = 'Do you really want to update the NS file ?';
+                break;
+            case 'run':
+                this.modalMsg = 'Do you really want to run the experiment ?';
+                break;
+            default:
+                this.modalMsg = '';
+        }
+    }
+
+    executeModalAction() {
+        this.showLoader = true;
+        switch (this.modalFor) {
+            case 'delete':
+                this.deleteMapping();
+                break;
+            case 'swapin':
+                this.swapInOrSwapOutExperiment('swapin');
+                break;
+            case 'swapout':
+                this.swapInOrSwapOutExperiment('swapout');
+                break;
+            case 'updateNs':
+                this.updateNSFile();
+                break;
+            case 'run':
+                
+                this.run();
+                break;
+            default:
+                break;
+        }
+    }
+
+    closeModal() {
+        this.modalFor = '';
     }
 
     activateOnProjValidity() {
@@ -244,6 +332,10 @@ export class DeterLabViewComponent implements OnInit {
     userChanged() {
         this.userId = this.userNameObj.id;
         this.activityMessages = [];
+        this.statusMessages = [];
+        this.projName = '';
+        this.expName = '';
+        this.experimentStatus = '';
         let params = new HttpParams().append('eid', this.experimentId);
         params = params.append('account_id', this.userId);
         this.getProjectMapping(params);
@@ -251,61 +343,66 @@ export class DeterLabViewComponent implements OnInit {
         this.getExperimentActivity(params);
     }
 
-    run(data={}) {
+    run(data = {}) {
 
-        let params = {
-            "eid":this.experimentId,
-            "account_id":this.userId,
-            "data":data
-        }
-    
-        this.http.post('/api/v1/pr/deter/project/run',params,{withCredentials: true})
-        .subscribe(data => {
-            if(data['success'])
-            this._snackBar.open("Successfully started", "close", {
-                duration: 2000,
-              });
-            else {
-               
-    var dialogRef = this.dialog.open(RunVariablePopUp, {
-      width: "30%",
-     data: data['paramters'],
-    });
+        const params = {
+            eid: this.experimentId,
+            account_id: this.userId,
+            data: data
+        };
 
-    dialogRef.afterClosed().subscribe((result) => {
-    console.log(result);
-        if(result !=undefined)
-        this.run(result)
-       });
-            }
-        },error=>{
-            this._snackBar.open("Something went wrong please try again later!", "close", {
-                duration: 2000,
-              });
-        });
+        this.http.post('/api/v1/pr/deter/project/run', params, {withCredentials: true})
+            .subscribe(data1 => {
+                this.showLoader = false;
+                if (data1.success) {
+                    this._snackBar.open('Successfully started', 'close', {
+                        duration: 2000,
+                    });
+                } else {
+
+                    const dialogRef = this.dialog.open(RunVariablePopUp, {
+                        width: '30%',
+                        data: data1.paramters,
+                    });
+
+                    dialogRef.afterClosed().subscribe((result) => {
+                        if (result !== undefined) {
+                            this.showLoader = true;
+                            this.run(result);
+                        }
+                    });
+                }
+            }, error => {
+                this.showLoader = false;
+                this._snackBar.open('Something went wrong please try again later!', 'close', {
+                    duration: 2000,
+                });
+            });
     }
 }
 
 @Component({
-    selector: "run-variable-popup",
-    templateUrl: "run-variable-popup.component.html",
-    styleUrls: ["./deterlab-view.component.scss"],
-  })
-  export class RunVariablePopUp implements OnInit{
-    variableList:any
-    constructor(
-      public dialogRef: MatDialogRef<RunVariablePopUp>,
-      @Inject(MAT_DIALOG_DATA) public variable: any
-    ) {}
+    selector: 'run-variable-popup',
+    templateUrl: 'run-variable-popup.component.html',
+    styleUrls: ['./deterlab-view.component.scss'],
+})
+export class RunVariablePopUp implements OnInit {
+    variableList: any;
 
-    ngOnInit(){
-        this.variableList = {}
+    constructor(
+        public dialogRef: MatDialogRef<RunVariablePopUp>,
+        @Inject(MAT_DIALOG_DATA) public variable: any
+    ) {
+    }
+
+    ngOnInit() {
+        this.variableList = {};
         this.variable.forEach(element => {
-            this.variableList[element] =""
+            this.variableList[element.variable] = '';
         });
     }
-  
+
     onNoClick(): void {
-      this.dialogRef.close();
+        this.dialogRef.close();
     }
-  }
+}

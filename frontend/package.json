@@ -35,6 +35,7 @@
     "angular-user-idle": "^2.2.4",
     "bootstrap": "^4.4.1",
     "file-saver": "^2.0.5",
+    "fsevents": "^2.1.2",
     "httpclient": "^0.1.0",
     "jquery": "^3.4.1",
     "jszip": "^3.5.0",

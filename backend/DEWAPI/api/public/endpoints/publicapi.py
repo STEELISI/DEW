@@ -64,12 +64,5 @@ class HandleUserHandleRegister(Resource):
         # json_data = request.get_json(force=True)
         # print(token)
         json_data = request.get_json(force=True)
-
         return login.registerUserHandle(json_data["handle"],json_data["token"])
-
-@ns.route('/user/getUserHandles/<token>')
-class HandleUserGetHandle(Resource):
-    @api.doc(params={'token': 'Username of the experiment'})
-    def get(self,token):
-        print(token)
-        return login.getUserHandles(token)
+    
