@@ -326,8 +326,9 @@ class HLBService():
         actors = dict()
         lans = []
         edges = []
-        gen = bashGenerator(sceanrios,constraints=constraints)
-        parsed_scenario, parsed_constraints = gen.generate()
+        gen = bashGenerator(scenario=sceanrios,constraints=constraints,bindings=[])
+        gen.generate()
+        parsed_scenario, parsed_constraints = gen.scenario_parsed, gen.constraints_parsed
         # for line in parsed_scenario:
         #     if line[1] is not None:
         #         nodes[line[1][0]] = dict({ 'num': 1, 'os': 'default', 'type': 'actor' })

@@ -215,6 +215,8 @@ export class TopologyGraphComponent implements OnInit{
       data: node
     });
     dialogRef.afterClosed().subscribe((result) => {
+      delete this.matching[node.label]
+      this.state.setExperimentColors(this.matching)
       this.redrawGraph()
     })
   }
@@ -507,6 +509,8 @@ export class TopologyGraphComponent implements OnInit{
         constraints = constraints.filter(c => c != numConstraint && c != osConstraint)
         this.state.setConstraints(constraints)
       }
+      delete this.matching[node.label]
+      this.state.setExperimentColors(this.matching)
     }
     this.redrawGraph()
   }

@@ -1,8 +1,8 @@
 <div class="container-fluid">
   <div class="row">
-    <button mat-raised-button color="warn" class="col-md-2" (click)="showEditor()">Go back to editor</button>
+    <button mat-raised-button color="warn" class="col-md-2" (click)="showEditor()">Previous : Go back to editor</button>
     <div class="col-md-8"></div>
-    <button mat-raised-button color="accent" class="col-md-2" (click)="showSlides()">Go to Slides</button>
+    <button mat-raised-button color="accent" class="col-md-2" (click)="showSlides()">Next :Go  to Slides</button>
   </div>
   <div class="row">
     <p>This graph outlines the toplogy of the experiment.</p>
@@ -126,7 +126,7 @@
           <div class="row bottom-border">
             <div class="custom-control custom-switch">
               <input type="checkbox" class="custom-control-input" id="editmode" (click)="toggleDragging()"/>
-              <label class="custom-control-label" for="editmode">Delete Nodes and Edges</label>
+              <label class="custom-control-label" for="editmode">Edit edges and Delete nodes</label>
             </div>
 
           </div>
