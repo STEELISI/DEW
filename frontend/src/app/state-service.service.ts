@@ -23,6 +23,7 @@ export class StateService {
   serverData: BehaviorSubject<any> = new BehaviorSubject(null);
   slideTobeShown: BehaviorSubject<any> = new BehaviorSubject({});
   allAnyPresent = false;
+  currentViewId: BehaviorSubject<number>=new BehaviorSubject(1);
 
   setAllAnyPresentFlag(val) {
     this.allAnyPresent = val;
@@ -156,5 +157,13 @@ export class StateService {
 
   setslideTobeShown(slide: any){
     this.slideTobeShown.next(slide);
+  }
+
+  getCurrentViewId(): Observable<any> {
+    return this.currentViewId.asObservable();
+  }
+
+  setCurrentViewId(viewId: number){
+    this.currentViewId.next(viewId)
   }
 }

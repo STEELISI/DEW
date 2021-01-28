@@ -78,6 +78,7 @@ export class HLBParserComponent implements OnInit {
   this.viewFlag = true;
   }
   show(viewId){
+      this.state.setCurrentViewId(viewId);
       this.viewID = viewId;
   }
   isViewEnable():boolean{return this.viewFlag;}

@@ -45,7 +45,8 @@ export class InfoComponent implements OnInit {
     protected route: Router,
     protected gdrive: GoogleDriveService,
     private _snackBar: MatSnackBar,
-    private userIdle: UserIdleService
+    private userIdle: UserIdleService,
+    private changeRef: ChangeDetectorRef,
   ) {}
   // gdrive = new GoogleDriveService(this.http, this.auth);
   nameControl = new FormControl();
@@ -114,6 +115,12 @@ export class InfoComponent implements OnInit {
     this.state.monitorSaveEvent().subscribe((flag:boolean) =>{
         if(flag)
           this.save();
+    });
+
+    this.state.getCurrentViewId().subscribe((id) => {
+        console.log("Got event - ", id)
+        this.viewid = id
+        this.changeRef.detectChanges();
     });
 
     if(this.experimentControl>3){

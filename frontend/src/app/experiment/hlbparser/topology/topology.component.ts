@@ -1,4 +1,4 @@
-import { Component, OnInit, Inject, Input, ViewChild, HostListener } from '@angular/core';
+import { Component, OnInit, Inject, Input, Output, EventEmitter, ViewChild, HostListener } from '@angular/core';
 import { FormBuilder } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA, MatDialog, MatSnackBar } from '@angular/material';
 import { Edge, Node, Layout, ClusterNode, NodePosition, GraphComponent } from '@swimlane/ngx-graph';
@@ -14,6 +14,7 @@ import { StateService } from "src/app/state-service.service";
   styleUrls: ['./topology.component.scss']
 })
 export class TopologyGraphComponent implements OnInit{
+  @Output() navigate: EventEmitter<any> = new EventEmitter();
   public nodes: Node[] = [];
   public links: Edge[] = [];
   public layout: String | Layout = 'dagreCluster';
@@ -508,6 +509,13 @@ export class TopologyGraphComponent implements OnInit{
       }
     }
     this.redrawGraph()
+  }
+  showSlides(){
+    this.navigate.emit(4)
+  }
+
+  showEditor(){
+    this.navigate.emit(1)
   }
 }
 

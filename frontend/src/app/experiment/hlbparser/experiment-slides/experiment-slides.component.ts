@@ -36,9 +36,61 @@ export class ExperimentSlides implements OnInit {
   	this.navigate.emit(5);
   }
 
+  private  extractScenario(scenario) {
+    // console.log(scenario);
+    // this.bindingMap = new Map<String,any>();
+    const trigger = [];
+    scenario.forEach((element) => {
+      if (element[0] != null) {
+        element[0].map((x) => {
+          if (!trigger.includes(x)) {
+            trigger.push({key: x, category: 't_event', value: ''});
+          }
+        });
+      }
+
+      if (element[2] != null) {
+        element[2].map((x) => {
+          if (!trigger.includes(x)) {
+            trigger.push({key: x, category: 'action', value: ''});
+          }
+        });
+      }
+
+      if (element[3] != null) {
+        element[3].map((x) => {
+          if (!trigger.includes(x)) {
+            trigger.push({key: x, category: 'event', value: ''});
+          }
+        });
+      }
+    });
+    this.state.setBindings(trigger);
+  }
+
+  updateBindings(){
+    const data = {
+      ParseType: 'bash',
+      Scenario: [],
+      Constraints: [],
+    };
+    this.state.getBehavior().subscribe(d => {
+      data.Scenario = d
+    });
+    this.state.getConstraints().subscribe(d => {
+      data.Constraints = d
+    });
+    this.http
+      .put('v1/pr/hlb/parse', data, { withCredential: true })
+      .subscribe((receivedData: ParseApiBean) => {
+        this.extractScenario(receivedData.parsedScenario);
+      });
+  }
+
   showDependencyGraph(){
     this.http.get("v1/pr/design/experiment/slides/"+this.experimentId + "/dew", {withCredential: true}).subscribe((response) => {
       this.state.setBehavior(response['dew']);
+      this.updateBindings();
       this.navigate.emit(2);
     })
   }
@@ -101,6 +153,12 @@ export class ExperimentSlides implements OnInit {
 	    			this.lastSequenceNumber = num
 	    		}
 	    });
+    })
+  }
+
+  updateDEW(){
+    this.http.get("v1/pr/design/experiment/slides/"+this.experimentId + "/dew", {withCredential: true}).subscribe((response) => {
+      this.state.setBehavior(response['dew']);
     })
   }
 

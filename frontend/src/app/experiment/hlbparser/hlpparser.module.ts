@@ -43,6 +43,7 @@ import {
   SingleSlideComponent,
   UpdateSlideMapping
 } from "./experiment-slides/single-slide.component";
+import { DesignPageComponent } from "./design-page/design-page.component";
 import { MatRadioModule } from "@angular/material/radio";
 import {
   InfoComponent,
@@ -86,6 +87,7 @@ import {DeterLabViewComponent, RunVariablePopUp} from './deterlab-view/deterlab-
     ExperimentSlides,
     SingleSlideComponent,
     UpdateSlideMapping,
+    DesignPageComponent,
     RunVariablePopUp,
   ],
   imports: [
@@ -131,6 +133,7 @@ import {DeterLabViewComponent, RunVariablePopUp} from './deterlab-view/deterlab-
     ExperimentSlides,
     SingleSlideComponent,
     UpdateSlideMapping,
+    DesignPageComponent,
     RunVariablePopUp
   ],
   providers: [StateService],

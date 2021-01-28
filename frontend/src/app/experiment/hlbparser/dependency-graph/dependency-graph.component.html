@@ -1,5 +1,10 @@
 <div class="container-fluid">
   <div class="row">
+    <button mat-raised-button color="warn" class="col-md-2" (click)="showSlides()">Edit Slides</button>
+    <div class="col-md-8"></div>
+    <button mat-raised-button color="accent" class="col-md-2" (click)="showEditor()">Go to editor</button>
+  </div>
+  <div class="row">
     <p>This graph outlines the sequence of actions in your scenario. Edges denote dependencies where one action produces an event/trigger that the other action depends on.</p>
   </div>
   <div class="row">
