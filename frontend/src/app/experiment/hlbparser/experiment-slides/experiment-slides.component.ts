@@ -40,27 +40,31 @@ export class ExperimentSlides implements OnInit {
     // console.log(scenario);
     // this.bindingMap = new Map<String,any>();
     const trigger = [];
+    var parsedEvents = {};
     scenario.forEach((element) => {
       if (element[0] != null) {
         element[0].map((x) => {
-          if (!trigger.includes(x)) {
+          if (!trigger.includes(x) && !parsedEvents[x]) {
             trigger.push({key: x, category: 't_event', value: ''});
+            parsedEvents[x] = true
           }
         });
       }
 
       if (element[2] != null) {
         element[2].map((x) => {
-          if (!trigger.includes(x)) {
+          if (!trigger.includes(x)  && !parsedEvents[x]) {
             trigger.push({key: x, category: 'action', value: ''});
+            parsedEvents[x] = true
           }
         });
       }
 
       if (element[3] != null) {
         element[3].map((x) => {
-          if (!trigger.includes(x)) {
+          if (!trigger.includes(x)  && !parsedEvents[x]) {
             trigger.push({key: x, category: 'event', value: ''});
+            parsedEvents[x] = true
           }
         });
       }
