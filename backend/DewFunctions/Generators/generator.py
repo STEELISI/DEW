@@ -85,6 +85,7 @@ class Generator(object):
             # See above comment - we return all Nones if statement is un-parsable.
             if all(x == None for x in parsedTuple):
                 print("ERROR:\tUnparsable Scenario statement: %s\n" % s)
+                print("Label ", parsedTuple)
                 continue
                 #return False
             self.scenario_parsed.append(parsedTuple)
