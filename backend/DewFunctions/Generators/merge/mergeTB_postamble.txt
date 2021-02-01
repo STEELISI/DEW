@@ -1,0 +1,2 @@
+# specify the net object as the experiment topology created by this script
+mx.experiment(net)

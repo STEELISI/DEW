@@ -1,0 +1,709 @@
+syntax = "proto3";
+package xir;
+option go_package = "gitlab.com/mergetb/xir/v0.3/go;xir";
+
+// ============================================================================
+// Models and Specs
+// ----------------
+//
+//   Models and specifications come in pairs of messages that have the exact
+//   same structure and differ only in the aspect that a model has basic values  
+//   and a spec has optional constraints. For example a processor has several
+//   values associated with it such as the number of cores and base frequency.
+//   When an experimenter creates an experiment specification they may only care
+//   about some specific properties. Like I just want 4 cores and don't care
+//   about the rest.
+//
+// ============================================================================
+
+// Aggregators ................................................................
+
+message Facility {
+    string id = 1;
+    string fqdn = 2;
+    repeated Resource resources = 3;
+    repeated Cable cables = 4;
+}
+
+message Network {
+    string id = 1;
+    repeated Node nodes = 2;
+    repeated Link links = 3;
+    ExperimentParameters parameters = 4;
+}
+
+message ExperimentParameters {
+    Routing routing = 1; 
+    Addressing addressing = 2;
+    repeated string hypervisors = 3;
+    repeated string simulators = 4;
+    repeated string emulators = 5;
+}
+
+enum Routing {
+    ManualRouting = 0;
+    StaticRouting = 1;
+}
+
+enum Addressing {
+    ManualAddressing = 0;
+    AutomaticAddressing = 1;
+}
+
+// Top Level Elements .........................................................
+
+// cyber 
+
+message Node {
+    string id = 1;
+    repeated Socket sockets = 2;
+    ProcSpec proc = 3;
+    MemorySpec memory = 4;
+    NICSpec NIC = 5;
+    DiskSpec disks = 6;
+    BoolConstraint metal = 7;
+    BoolConstraint virt = 8;
+    StringConstraint image = 9;
+}
+
+
+message Ref {
+    string element = 1;
+    uint32 index = 2;
+}
+
+message Socket {
+    int32 index = 1;
+    repeated string addrs = 2;
+    Ref endpoint = 3;
+    PortSpec port = 4;
+}
+
+message Link {
+    string id = 1;
+    Uint64Constraint latency = 2;
+    Uint64Constraint capacity = 3;
+    repeated Endpoint endpoints = 4;
+}
+
+message Endpoint {
+    int32 index = 1;
+    Ref socket = 2;
+    ConnectorSpec connector = 3;
+}
+
+// physical
+
+message Phyo {
+    string id = 1;
+    repeated string eqtns = 2;
+}
+
+message Variable {
+}
+
+message Bond {
+}
+
+message Coupling {
+}
+
+// cyberphysical
+
+message Sensor {
+    string id = 1;
+    string var = 2;
+    float rate = 3;
+    string target = 4;
+    int32 tag = 5;
+}
+
+message Actuator {
+    string id = 1;
+    string var = 2;
+    Limits dynamic_limits = 3;
+    Limits static_limits = 4;
+    int32 tag = 5;
+}
+
+message Limits {
+    float lower = 1;
+    float upper = 2;
+}
+
+// resource
+
+message ProductInfo {
+    string Manufacturer = 1;
+    string Model = 2;
+    string SKU = 3;
+    bool Integrated = 4;
+    float cost = 5;
+}
+
+message Resource {
+    string id = 1;
+    string facility = 2;
+    repeated Proc procs = 3;
+    repeated Dimm memory = 4;
+    repeated NIC NICs = 5;
+    repeated Disk disks = 6;
+    repeated AllocMode alloc = 7;
+    repeated Role roles = 8;
+    Firmware firmware = 9;
+    OSConfig OS = 10;
+    ProductInfo product_info = 11;
+    uint64 TPA = 12;
+}
+
+message Firmware {
+    enum Kind {
+        Undefined = 0;
+        UEFI = 1;
+        BIOS = 2;
+    }
+    Kind kind = 1;
+}
+
+message ResourceAllocation {
+    string resource = 1;
+    string facility = 2;
+    string mzid = 3;
+    string node = 4;
+    ProcAllocation procs = 5;
+    MemoryAllocation memory = 6;
+    NICsAllocation NICs = 7;
+    DisksAllocation disks = 8;
+    Node model = 9;
+    int64 revision = 10;
+}
+
+message CableAllocation {
+    string cable = 1;
+    string facility = 2;
+    string mzid = 3;
+    string link = 4;
+    uint64 capacity = 5;
+    int64 revision = 6;
+}
+
+message OSConfig {
+    repeated BGPRouterConfig BGP = 1;
+    repeated BridgeConfig bridge = 2;
+    repeated VLANConfig VLAN = 3;
+    string append = 4;
+    string rootdev = 5;
+}
+
+message VLANConfig {
+    string device = 1;
+    uint32 vid = 2;
+    repeated string addrs = 3;
+    LinkRole role = 4;
+}
+
+message InterfaceConfig {
+    string address = 1;
+    string interface = 2;
+    LinkRole role = 3;
+}
+
+message BGPRouterConfig {
+    string name = 1;
+    uint64 ASN = 2;
+    repeated InterfaceConfig Interfaces = 3;
+    EVPNConfig EVPN = 4;
+}
+
+message EVPNConfig {
+    repeated InterfaceConfig TunnelEndpoints = 1;
+}
+
+message BridgeConfig {
+    string name = 1;
+    bool vlan_aware = 2;
+    repeated string addrs = 3;
+    LinkRole role = 4;
+}
+
+message Port {
+    string parent = 1;
+    uint32 index = 2;
+    repeated Layer1 protocols = 3;
+    uint64 capacity = 4;
+    string mac = 5;
+    ConnectorKind form_factor = 6;
+    Ref connector = 7;
+    LinkRole role = 8;
+    uint64 TPA = 9;
+    uint64 queues = 10;
+}
+
+message PortAllocation {
+    uint64 capacity = 1;
+}
+
+message PortRef {
+    string mac = 1;
+}
+
+message PortSpec {
+    repeated Layer1 protocols = 1;
+    Uint64Constraint capacity = 2;
+    ConnectorKindConstraint form_factor = 3;
+    Uint64Constraint queues = 4;
+}
+
+message Cable {
+    string id = 1;
+    string facility = 2;
+    CableKind kind = 3;
+    repeated End ends = 4;
+    ProductInfo product_info = 5;
+}
+
+message End {
+   repeated Connector connectors = 1; 
+}
+
+message Connector {
+    string parent = 1;
+    uint32 index = 2;
+    ConnectorKind kind = 3;
+    repeated Layer1 protocols = 4;
+    uint64 capacity = 5;
+    Ref Port = 6;
+}
+
+message ConnectorSpec {
+    ConnectorKindConstraint kind = 1;
+    repeated Layer1 protocols = 2;
+    uint64 capacity = 3;
+}
+
+
+// Node Components ............................................................
+
+message Proc {
+    ISA isa = 1;
+    string family = 2;
+    uint64 BaseFrequency = 3;
+    uint64 L2 = 4;
+    uint32 cores = 5;
+    uint32 threads = 6;
+    uint32 tdp = 7;
+    bool hyperthreaded = 8;
+    ProductInfo product_info = 9;
+}
+
+message SocketAllocation {
+    uint32 cores = 1;
+}
+
+message ProcAllocation {
+    map<uint32,SocketAllocation> alloc = 1;
+}
+
+
+message ProcSpec {
+    ISAConstraint isa = 1;
+    StringConstraint family = 2;
+    Uint64Constraint BaseFrequency = 3;
+    Uint64Constraint L2 = 4;
+    Uint32Constraint cores = 5;
+    Uint32Constraint threads = 6;
+    Uint32Constraint tdp = 7;
+    Uint32Constraint sockets = 8;
+    BoolConstraint hyperthreaded = 9;
+}
+
+enum ISA {
+    X86_64 = 0;
+}
+
+message Dimm {
+    MemoryType type  = 1;
+    uint64 capacity  = 2;
+    uint64 frequency = 3;
+    ProductInfo product_info = 4;
+}
+
+message DimmAllocation {
+    uint64 capacity = 1;
+}
+
+message MemoryAllocation {
+    map<uint32,DimmAllocation> alloc = 1;
+}
+
+message MemorySpec {
+    MemoryTypeConstraint type  = 1;
+    Uint64Constraint capacity = 2;
+    Uint64Constraint frequency = 3;
+    Uint64Constraint modules = 4;
+    
+}
+
+enum MemoryType {
+    DDR3 = 0;
+    DDR4 = 1;
+}
+
+enum NICKind {
+    // Ethernet
+    ETH = 0;
+
+    // Ethernet peripheral
+    ENP = 1;
+
+    // Ethernet onboard
+    ENO = 2;
+
+    // WiFi peripheral 
+    WLP = 3;
+
+    // Switch port
+    SWP = 4;
+
+    // IPMI/BMC 
+    IPMI = 5;
+
+    // IPMI/BMC + System Ethernet
+    Combo = 6;
+}
+
+message NIC {
+    repeated Port ports = 1;
+    uint32 starting_index = 2;
+    NICKind kind = 3;
+    ProductInfo product_info = 4;
+    bool DPDK = 5;
+}
+
+message NICSpec {
+    repeated PortSpec ports = 1;
+    NICKindConstraint kind = 2;
+    BoolConstraint DPDK = 3;
+}
+
+message NICAllocation {
+    map<uint32,PortAllocation> alloc = 1;
+}
+
+message NICsAllocation {
+    map<uint32,NICAllocation> alloc = 1;
+}
+
+enum Layer1 {
+	Layer1_Undefined = 0;
+
+	// 100 mbps
+	Base100T = 1;
+
+	// 1 gbps
+	Base1000T = 2;
+	Base1000X = 3;
+	Base1000CX = 4;
+	Base1000SX = 5;
+	Base1000LX = 6;
+	Base1000LX10 = 7;
+	Base1000EX = 8;
+	Base1000BX10 = 9;
+	Base1000ZX = 10;
+
+	// 10 gbps
+	GBase10T = 11;
+	GBase10CR = 12;
+	GBase10SR = 13;
+	GBase10LR = 14;
+	GBase10LRM = 15;
+	GBase10ER = 16;
+	GBase10ZR = 17;
+	GBase10LX4 = 18;
+	GBase10PR = 19;
+
+	// 25 gbps
+	GBase25CR = 20;
+	GBase25SR = 21;
+	GBase25LR = 22;
+	GBase25ER = 23;
+
+	// 40 gbps
+	GBase40CR4 = 24;
+	GBase40SR4 = 25;
+	GBase40LR4 = 26;
+	GBase40ER4 = 27;
+
+	// 100 gbps
+	GBase100CR4 = 28;
+	GBase100SR4 = 29;
+	GBase100SR10 = 30;
+	GBase100LR4 = 31;
+	GBase100ER4 = 32;
+
+	// Console
+	RS232 = 33;
+	Uart = 34;
+
+	// 50 gbps
+	GBase50SR4 = 35;
+	GBase50LR4 = 36;
+	GBase50ER4 = 37;
+	GBase50CR = 38;
+	GBase50KR = 39;
+	GBase50SR = 40;
+	GBase50LR = 41;
+	GBase50FR = 42;
+	GBase50ER = 43;
+	LAUI_2 = 44;
+	GAUI50_1 = 45;
+	GAUI50_2 = 46;
+
+	// 200 gbps
+	GBase200CR4 = 47;
+	GBase200KR4 = 48;
+	GBase200SR4 = 49;
+	GBase200DR4 = 50;
+	GBase200FR4 = 51;
+	GBase200LR4 = 52;
+	GBase200ER4 = 53;
+	GAUI200_4 = 54;
+	GAUI200_8 = 55;
+
+	// 400 gbps
+	GBase400SR16 = 56;
+	GBase400SR8 = 57;
+	GBase400SR4_2 =58;
+	GBase400DR4 = 59;
+	GBase400FR8 = 60;
+	GBase400ER8 = 61;
+	GBase400ZR = 62;
+	GAUI400_16 = 63;
+	GAUI400_8 = 64;
+
+	XBee = 65;
+	ZWave = 66;
+	Zigbee = 67;
+
+	CXP100 = 68;
+	CXP120 = 69;
+}
+
+
+enum ConnectorKind {
+	ConnectorKind_Undefined = 0;
+	RJ45 = 1;
+	SFP = 2;
+	QSFP = 3;
+	SFPP = 4;
+	QSFPP = 5;
+	SFP28 = 6;
+	QSFP28 = 7;
+	CXP = 8;
+	LC = 9;
+	MPO = 10;
+	SFP56 = 11;
+	QSFP56 = 12;
+	QSFPDD = 13;
+}
+
+message Disk {
+    uint64 capacity = 1;
+    DiskFormFactor form_factor = 2;
+    DiskInterface disk_interface = 3;
+    ProductInfo product_info = 4;
+}
+
+message DiskAllocation {
+    uint64 capacity = 1;
+}
+
+message DisksAllocation {
+    map<uint32,DiskAllocation> alloc = 1;
+}
+
+message DiskSpec {
+    Uint64Constraint capacity = 1;
+    DiskFormFactorConstraint form_factor = 2;
+    DiskInterfaceConstraint disk_interface = 3;
+    Uint64Constraint disks = 4;
+}
+
+enum DiskFormFactor {
+    DiskFormFactor_Undefined = 0;
+	HDD35 = 1;
+	HDD25 = 2;
+
+	SSD35 = 3;
+	SSD25 = 4;
+
+	MSATA = 5;
+	M2_2216 = 6;
+	M2_2226 = 7;
+	M2_2230 = 8;
+	M2_2238 = 9;
+	M2_2242 = 10;
+	M2_2260 = 11;
+	M2_2280 = 12;
+	M2_22110 = 13;
+
+	U2 = 14;
+
+	EMMC = 15;
+	EUSB = 16;
+}
+
+enum DiskInterface {
+    DiskInterface_Undefined = 0;
+	SATA1 = 1;
+	SATA2 = 2;
+	SATA3 = 3;
+
+	NVMEx2 = 4;
+	NVMEx4 = 5;
+
+	MMC = 6;
+	SD = 7;
+
+	USB = 8;
+
+	SAS = 9;
+}
+
+// Link Components ............................................................
+
+enum CableKind {
+	CableKind_Undefined = 0;
+	Cat5 = 1;
+	Cat5e = 2;
+	Cat6 = 3;
+	DAC = 4;
+	DACBreakout = 5;
+	FiberLC = 6;
+	FiberMPOTrunk = 7;
+	FiberMPOBreakout = 8;
+	AOC = 9;
+}
+
+// Resource Components ........................................................
+
+enum AllocMode {
+    AllocMode_Undefined = 0;
+    NoAlloc = 1;
+    Net = 2;
+    NetEmu = 3;
+    Filesystem = 4;
+    BlockDevice = 5;
+    Physical = 6;
+    Virtual = 7;
+    Infrapod = 8;
+    Physim = 9;
+}
+
+enum Role {
+	Role_unknown          = 0;
+	TbNode                = 1;
+	InfraServer           = 2;
+	ConsoleServer         = 3;
+	PowerController       = 4;
+	NetworkEmulator       = 5;
+	XpSwitch              = 6;
+	InfraSwitch           = 7;
+	MgmtSwitch            = 8;
+	Gateway               = 9;
+	Leaf                  = 10;
+	Fabric                = 11;
+	Spine                 = 12;
+	StorageServer         = 13;
+	InfrapodServer        = 14;
+	EtcdHost              = 15;
+	MinIOHost             = 16;
+	RexHost               = 17;
+	DriverHost            = 18;
+	ManagerHost           = 19;
+	CommanderHost         = 20;
+	SledHost              = 21;
+	RallyHost             = 22;
+	PDU                   = 23;
+	EmuSwitch             = 24;
+	Hypervisor            = 25;
+	PhysicsSimulator      = 26;
+    Stem                  = 27;
+}
+
+enum LinkRole {
+	InfraLink             = 0;
+	XpLink                = 1;
+	Tor                   = 2;
+	EmuLink               = 3;
+	MgmtLink              = 4;
+	GatewayLink           = 5;
+	SimLink               = 6;
+    HarborEndpoint        = 7;
+}
+
+// ============================================================================
+// Constraints
+// -----------
+//
+// ============================================================================
+
+enum Operator {
+    Op_Undefined = 0;
+    LT = 1;
+    LE = 2;
+    GT = 3;
+    GE = 4;
+    EQ = 5;
+    NE = 6;
+}
+
+message BoolConstraint {
+    Operator op = 1;
+    bool value = 2;
+}
+
+message StringConstraint {
+    Operator op = 1;
+    string value = 2;
+}
+
+message Uint64Constraint {
+    Operator op = 1;
+    uint64 value = 2;
+}
+
+message Uint32Constraint {
+    Operator op = 1;
+    uint64 value = 2;
+}
+
+message ISAConstraint {
+    Operator op = 1;
+    ISA value = 2;
+}
+
+message MemoryTypeConstraint {
+    Operator op = 1;
+    MemoryType value = 2;
+}
+
+message NICKindConstraint {
+    Operator op = 1;
+    NICKind value = 2;
+}
+
+message DiskFormFactorConstraint {
+    Operator op = 1;
+    DiskFormFactor value = 2;
+}
+
+message DiskInterfaceConstraint {
+    Operator op = 1;
+    DiskInterface value = 2;
+}
+
+message ConnectorKindConstraint {
+    Operator op = 1;
+    ConnectorKind value = 2;
+}
