@@ -337,7 +337,7 @@ class HLBService():
     #Handle generateBASH
     def HandleBASH(self,json_data):
         errors = []
-        parameterlist = [] # added for run script. 
+        parameterlist = dict()
         actors = json_data['actors']
         scenario = json_data['behaviors']
         constraints = json_data['constraints']
@@ -345,11 +345,15 @@ class HLBService():
         generator = bashGenerator(constraints=constraints, scenario=scenario, bindings=bindings)
         generator.generate()
         # print(generator.text)
-        bash_script_list = []
+        bash_script = dict()
         for label in generator.run.keys():
-            bash_script_list.append(['run_'+label+'.sh',generator.run[label]])
-            bash_script_list.append(['cleanup_'+label+'.sh',generator.clear[label]])
-            
-        for e in generator.evars:
-            parameterlist.append({"variable":e[0],"message":e[1]})
-        return bash_script_list, parameterlist
+            bash_script[label] = []
+            bash_script[label].append(['run_'+label+'.sh',generator.run[label]])
+            bash_script[label].append(['cleanup_'+label+'.sh',generator.clear[label]])
+
+            for e in generator.evars[label]:
+                bash_script[label].append({"variable":e[0],"message":e[1]})
+        
+        bash_json = json.dumps(bash_script)
+        print(bash_json)
+        return bash_json

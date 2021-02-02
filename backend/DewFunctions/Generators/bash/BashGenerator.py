@@ -28,7 +28,7 @@ class BashGenerator(Generator):
             '(?: |^)(exp)(?: |$)': 'pexp -e',
             '(?: |^)(node)(?: |$)': 'pexp -n',
         }
-        self.evars = [];
+        self.evars = dict();
 
 
     def generate(self):
@@ -231,36 +231,48 @@ class BashGenerator(Generator):
             self.run[label] += '##################################################################\n\n'
 
     def generateArgParse(self):
-        vars = { 1: 'proj',  2: 'exp', 3: 'label' }
-        vlong = { 1: 'project under which to run',  2: 'experiment under which to run', 3: 'label for the folder where to store results' }
-        nvar = 4
-        pos_vars = []
-        for b in self.bindings_parsed:
-            pos_vars.append(self.bindings_parsed[b])
-        for s in self.scenario_parsed:
-            if s[4] is not None:
-                pos_vars.append("wait " + s[4])
-        for stmt in pos_vars:
-            r1 = re.findall(r"\$\w+", stmt)
-            if len(r1) > 0:
-                for m in r1:                    
-                    vars[nvar] = m.replace("$", "")
-                    vlong[nvar] = "variable in command " + stmt.replace("$","")
-                    nvar += 1
-        guidance = "Usage: $0"
-        for v in vars:
-            guidance += " "+vars[v]
-        guidance += "\n"
-        for v in vars:
-            guidance += "\n\t\t"+vars[v]+" - "+vlong[v]
-            if v > 3:
-                self.evars.append((vars[v],vlong[v]))
-        guidance += "\n\n";        
-        argstring = "if [ \"$#\" -le " + str(nvar-2) + " ]; then\n\tprintf \""+guidance+"\"\n\texit 1\nfi\n\n"
-        for v in vars:
-            argstring += vars[v] + "=$" + str(v) + "\n"
-
         for label in self.labels:
+            print("Working with label ", label)
+            self.evars[label] = []
+            vars = { 1: 'proj',  2: 'exp', 3: 'label' }
+            vlong = { 1: 'project under which to run',  2: 'experiment under which to run', 3: 'label for the folder where to store results' }
+            nvar = 4
+            pos_vars = []
+            for s in self.scenario_parsed:
+                if (label != s[-1]):
+                    print("Skip statement ", s, " label ", label)
+                    continue
+                print("Work on statement ", s, " label ", label)
+                action = s[2][0]
+                clist = s[0]
+                pos_vars.append(self.bindings_parsed[action])
+                if clist is not None:
+                    for c in clist:
+                        pos_vars.append(self.bindings_parsed[c])
+                        if s[4] is not None:
+                            pos_vars.append("wait " + s[4])    
+            
+            for stmt in pos_vars:
+                r1 = re.findall(r"\$\w+", stmt)
+                if len(r1) > 0:
+                    for m in r1:                    
+                        vars[nvar] = m.replace("$", "")
+                        vlong[nvar] = "variable in command " + stmt.replace("$","")
+                        nvar += 1
+            guidance = "Usage: $0"
+            for v in vars:
+                guidance += " "+vars[v]
+            guidance += "\n"
+            for v in vars:
+                guidance += "\n\t\t"+vars[v]+" - "+vlong[v]
+                if v > 3:
+                    self.evars[label].append((vars[v],vlong[v]))
+            guidance += "\n\n";        
+            argstring = "if [ \"$#\" -le " + str(nvar-2) + " ]; then\n\tprintf \""+guidance+"\"\n\texit 1\nfi\n\n"
+            for v in vars:
+                argstring += vars[v] + "=$" + str(v) + "\n"
+
+            print("For label ", label, " evars ", self.evars[label])
             self.run[label] += argstring
         
             
