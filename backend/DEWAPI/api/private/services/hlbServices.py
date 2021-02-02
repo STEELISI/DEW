@@ -349,7 +349,6 @@ class HLBService():
         for label in generator.run.keys():
             bash_script_list.append(['run_'+label+'.sh',generator.run[label]])
             bash_script_list.append(['cleanup_'+label+'.sh',generator.clear[label]])
-            print(bash_script_list)
             
         for e in generator.evars:
             parameterlist.append({"variable":e[0],"message":e[1]})
