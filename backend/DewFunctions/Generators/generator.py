@@ -40,8 +40,8 @@ class Generator(object):
         self.scenario_parsed = []
         self.constraints_parsed = []
         self.bindings_parsed = {}
-        self.run = ""
-        self.clear = ""
+        self.run = dict()
+        self.clear = dict()
 
     def parse(self):
         # For each item in our scenario/constraints lists, make sure we can parse it and
@@ -73,6 +73,7 @@ class Generator(object):
             self.constraints_parsed.append(parsedTuple)
 
         mys = ""
+        label = "main"
         for s in self.scenario:
             mys += s + "\n"
             # s = sc[0]
@@ -85,11 +86,16 @@ class Generator(object):
             # See above comment - we return all Nones if statement is un-parsable.
             if all(x == None for x in parsedTuple):
                 print("ERROR:\tUnparsable Scenario statement: %s\n" % s)
-                print("Label ", parsedTuple)
                 continue
                 #return False
-            self.scenario_parsed.append(parsedTuple)
+            if (parsedTuple[-1] is not None):
+                label = parsedTuple[-1]
+            else:
+                newparsedTuple = (parsedTuple[0], parsedTuple[1], parsedTuple[2], parsedTuple[3], parsedTuple[4], parsedTuple[5], parsedTuple[6],  label)
+                self.scenario_parsed.append(newparsedTuple)
 
+        for s in self.scenario_parsed:
+            print("Statement ", s)
         myb = ""
         for bi in self.bindings:
             b = bi['key'] + " " + bi['value']

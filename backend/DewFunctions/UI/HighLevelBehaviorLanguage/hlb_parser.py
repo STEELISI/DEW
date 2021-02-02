@@ -96,7 +96,9 @@ class HLBParser():
     comma = Literal(",").suppress()
     newline = Literal("\n")
     wsp = White().suppress()
-    label = CaselessKeyword("@") + wsp + Word(alphanums+'_')
+    label_keywd = CaselessKeyword("@")
+    label = Word(alphanums+"_")
+    label_stmt = label_keywd + wsp + label("label")
     keyword_all = all_keyword
     keyword_any = any_keyword
     actor = (not_akeyword + Word(alphanums+'_'))
@@ -111,7 +113,7 @@ class HLBParser():
     trigger = (when_trigger + wsp + wait_trigger | when_trigger | wait_trigger)
     
     # Full complete statment.
-    hlb_statement = label | (trigger + wsp + actors("actors") + wsp + action("action") + emit_keyword + events("e_events") 
+    hlb_statement = label_stmt | (trigger + wsp + actors("actors") + wsp + action("action") + emit_keyword + events("e_events") 
        | trigger + wsp + actors("actors") + wsp + action("action") 
        | actors("actors") + wsp + action("action") + emit_keyword + events("e_events")
        | actors("actors") + wsp + action("action")) + LineEnd()
@@ -139,7 +141,7 @@ class HLBParser():
     def new_return_dict(self,all_keyword=None, any_keyword=None,  t_events=None, actors=None, action=None, e_events=None, wait_time=None, label=None):
         # Initializes all the vars we may have to report.
         # parsed.t_events, parsed.actors, parsed.action, parsed.e_events, parsed.wait_time
-        print("Init dict, label ", label)
+        
         v = {}
         v['label'] = label
         v['all_keyword'] = all_keyword
@@ -195,7 +197,7 @@ class HLBParser():
 
         try:
             parsed = self.hlb_statement.parseString(statement)
-            print("Parsed ", parsed, " label ", parsed.label)
+            #print("Parsed ", parsed, " label ", parsed.label)
         except ParseException as pe:
             print("WARNING: Could not parse HLB statement:\n\t%s" % (statement))
             #print(pe)
