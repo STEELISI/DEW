@@ -91,6 +91,22 @@
           </div>
         </li>
 
+        <li class="nav-item dropdown">
+          <a
+              class="nav-link"
+              href="#"
+              id="navbarDropdown6"
+              role="button"
+              data-toggle="dropdown"
+              aria-haspopup="true"
+              aria-expanded="false">
+              View
+            </a>
+            <div class="dropdown-menu" aria-labelledby="navbarDropdown5">
+              <a class="dropdown-item" (click)="show(2)">Dependency graph</a>
+            </div>
+        </li>
+
         <li class="nav-item dropdown" *ngIf="experimentControl > 2">
           <a
             class="nav-link"
@@ -129,7 +145,6 @@
         </li>
        
         <li class="nav-item dropdown">
-          
             <a
               class="nav-link"
               href="#"
@@ -141,10 +156,9 @@
               Design
             </a>
               <div class="dropdown-menu" aria-labelledby="navbarDropdown4">
-                <a class="dropdown-item"  (click)="show(7)">Design view</a>
+                <a class="dropdown-item"  (click)="show(7)">Graphical view</a>
                 <a class="dropdown-item" (click)="show(1)">Text view</a>
               </div>
-         
         </li>
 
         <li class="nav-item dropdown">
@@ -165,22 +179,6 @@
          
         </li>
 
-        <li class="nav-item dropdown">
-          
-            <a
-              class="nav-link"
-              href="#"
-              id="navbarDropdown6"
-              role="button"
-              data-toggle="dropdown"
-              aria-haspopup="true"
-              aria-expanded="false"
-              (click)="show(2)">
-              Dependency graph
-            </a>
-              
-         
-        </li>
         <li class="nav-item"><a class="nav-link" href="/docs">Help</a></li>
         <li class="nav-item"><a class="nav-link" href="/docs/contact_us">Contact us</a></li>
       </ul>
