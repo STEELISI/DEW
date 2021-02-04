@@ -96,6 +96,9 @@ class HLBParser():
     comma = Literal(",").suppress()
     newline = Literal("\n")
     wsp = White().suppress()
+    label_keywd = CaselessKeyword("@")
+    label = Word(alphanums+"_")
+    label_stmt = label_keywd + wsp + label("label")
     keyword_all = all_keyword
     keyword_any = any_keyword
     actor = (not_akeyword + Word(alphanums+'_'))
@@ -110,10 +113,10 @@ class HLBParser():
     trigger = (when_trigger + wsp + wait_trigger | when_trigger | wait_trigger)
     
     # Full complete statment.
-    hlb_statement = (trigger + wsp + actors("actors") + wsp + action("action") + emit_keyword + events("e_events") 
-                    |trigger + wsp + actors("actors") + wsp + action("action") 
-                    | actors("actors") + wsp + action("action") + emit_keyword + events("e_events")
-                    | actors("actors") + wsp + action("action")) + LineEnd()
+    hlb_statement = label_stmt | (trigger + wsp + actors("actors") + wsp + action("action") + emit_keyword + events("e_events") 
+       | trigger + wsp + actors("actors") + wsp + action("action") 
+       | actors("actors") + wsp + action("action") + emit_keyword + events("e_events")
+       | actors("actors") + wsp + action("action")) + LineEnd()
     
     hlb_statement.ignore(cppStyleComment)
 
@@ -135,10 +138,12 @@ class HLBParser():
         self.actors = actors
     
     #hlb = hlb_statement + newline + hlb
-    def new_return_dict(self,all_keyword=None, any_keyword=None,  t_events=None, actors=None, action=None, e_events=None, wait_time=None):
+    def new_return_dict(self,all_keyword=None, any_keyword=None,  t_events=None, actors=None, action=None, e_events=None, wait_time=None, label=None):
         # Initializes all the vars we may have to report.
         # parsed.t_events, parsed.actors, parsed.action, parsed.e_events, parsed.wait_time
+        
         v = {}
+        v['label'] = label
         v['all_keyword'] = all_keyword
         v['any_keyword'] = any_keyword
         # Should be None or list
@@ -189,16 +194,17 @@ class HLBParser():
         """Parses an HLB statement and returns a tuple: (triggers, actors, action, e_events)
         Values are returned as "None" if they cannot be extracted.
         """
+
         try:
             parsed = self.hlb_statement.parseString(statement)
-            #print(parsed)
+            #print("Parsed ", parsed, " label ", parsed.label)
         except ParseException as pe:
             print("WARNING: Could not parse HLB statement:\n\t%s" % (statement))
             #print(pe)
-            return(None, None, None, None, None, None, None)
+            return(None, None, None, None, None, None, None, None)
         if parsed.e_events == None:
             parsed.e_events = []
-        return_tuple = (list(parsed.t_events), list(parsed.actors), list(parsed.action), list(parsed.e_events), str(parsed.wait_time), parsed.all, parsed.any)
+        return_tuple = (list(parsed.t_events), list(parsed.actors), list(parsed.action), list(parsed.e_events), str(parsed.wait_time), parsed.all, parsed.any, parsed.label)
         return(tuple(r if r != [] and r != "" else None for r in return_tuple))
 
     def transitionBstate2(self, ll):
@@ -230,7 +236,7 @@ class HLBParser():
         #print("Parsing \'%s\'" % partial)
         if len(partial.strip().split()) == 0:
             return(HLBHintType.BLANK,  self.new_return_dict(), ['WHEN', 'WAIT', '<ACTOR>'])
-        t_events, actors, action, e_events, wait_time, all_keyword, any_keyword = self.parse_stmt(partial)
+        t_events, actors, action, e_events, wait_time, all_keyword, any_keyword, label = self.parse_stmt(partial)
         # In case we have a 2 word action with a <keyword string> pattern:
         try:
             action = ''.join(action)
@@ -238,16 +244,16 @@ class HLBParser():
             action = str(action)
         if actors != None and e_events != None:
             #print("Complete statement with emit.")
-            return(HLBHintType.NO_HINT, self.new_return_dict(t_events=t_events, actors=actors, action=action, e_events=e_events, wait_time=wait_time, all_keyword=all_keyword, any_keyword=any_keyword), [])
+            return(HLBHintType.NO_HINT, self.new_return_dict(t_events=t_events, actors=actors, action=action, e_events=e_events, wait_time=wait_time, all_keyword=all_keyword, any_keyword=any_keyword, label=label), [])
         elif actors != None and e_events == None:
             #print("Complete statement, with no emit.")
             hint_list = ['EMIT ' + action +'Signal', 'EMIT'] 
-            return(HLBHintType.OPT_EMIT_STMT, self.new_return_dict(t_events=t_events, actors=actors, action=action, wait_time=wait_time, all_keyword=all_keyword, any_keyword=any_keyword), hint_list)
+            return(HLBHintType.OPT_EMIT_STMT, self.new_return_dict(t_events=t_events, actors=actors, action=action, wait_time=wait_time, all_keyword=all_keyword, any_keyword=any_keyword, label=label), hint_list)
         
         
         # Our statement isn't complete or correct:
         if actors == None:
-            #print("Statement is not complete as is.")
+            print("Statement is not complete as is.")
             
             ## WARNING: The following is a longest match first:
             ## For the below to work, the order must be kept 
