@@ -273,7 +273,7 @@ class HLBService():
                 generator = bashGenerator(scenario=scenario, constraints=constraints,bindings=[])
             elif tn == 'magi':
                 generator = bashGenerator(scenario=scenario, constraints=constraints,bindings=[]) # TODO: Use magi generator
-            generator.generate()
+            generator.parse()
             scenario_parsed, constraints_parsed = generator.scenario_parsed,generator.constraints_parsed
             print(scenario_parsed, constraints_parsed)
             return {"_id": str(uuid.uuid4()), "parsedScenario": scenario_parsed, "parsedConstraints": constraints_parsed}

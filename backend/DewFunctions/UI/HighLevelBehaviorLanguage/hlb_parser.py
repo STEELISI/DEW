@@ -244,11 +244,11 @@ class HLBParser():
             action = str(action)
         if actors != None and e_events != None:
             #print("Complete statement with emit.")
-            return(HLBHintType.NO_HINT, self.new_return_dict(t_events=t_events, actors=actors, action=action, e_events=e_events, wait_time=wait_time, all_keyword=all_keyword, any_keyword=any_keyword, label=label), [])
+            return(HLBHintType.NO_HINT, self.new_return_dict(t_events=t_events, actors=actors, action=action, e_events=e_events, wait_time=wait_time, all_keyword=all_keyword, any_keyword=any_keyword), [])
         elif actors != None and e_events == None:
             #print("Complete statement, with no emit.")
             hint_list = ['EMIT ' + action +'Signal', 'EMIT'] 
-            return(HLBHintType.OPT_EMIT_STMT, self.new_return_dict(t_events=t_events, actors=actors, action=action, wait_time=wait_time, all_keyword=all_keyword, any_keyword=any_keyword, label=label), hint_list)
+            return(HLBHintType.OPT_EMIT_STMT, self.new_return_dict(t_events=t_events, actors=actors, action=action, wait_time=wait_time, all_keyword=all_keyword, any_keyword=any_keyword), hint_list)
         
         
         # Our statement isn't complete or correct:
