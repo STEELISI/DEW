@@ -17,16 +17,16 @@ class BashGenerator(Generator):
         # Dictionary of special functions with regex
         # and expansions
         self.special = {
-            '(?: |^)(expIP)(?: |$)': 'inet ip exp',
-            '(?: |^)(ctlIP)(?: |$)': 'inet ip ctl',
-            '(?: |^)(expeth)(?: |$)': 'inet eth exp',
-            '(?: |^)(expIP\((.*)\))(?: |$)': 'inet ip exp $node',
-            '(?: |^)(expeth\((.*)\))(?: |$)': 'inet eth exp $node',
-            '(?: |^)(IP\((.*)\))(?: |$)': 'inet fip exp $node',
-            '(?: |^)(epoch)(?: |$)': 'epoch',
-            '(?: |^)(proj)(?: |$)': 'pexp -p',
-            '(?: |^)(exp)(?: |$)': 'pexp -e',
-            '(?: |^)(node)(?: |$)': 'pexp -n',
+            '(?:\s|^)(expIP)(?:\s|$)': 'inet ip exp',
+            '(?:\s|^)(ctlIP)(?:\s|$)': 'inet ip ctl',
+            '(?:\s|^)(expeth)(?:\s|$)': 'inet eth exp',
+            '(?:\s|^)(expIP\((.*)\))(?:\s|$)': 'inet ip exp $node',
+            '(?:\s|^)(expeth\((.*)\))(?:\s|$)': 'inet eth exp $node',
+            '(?:\s|^)(IP\((.*)\))(?:\s|$)': 'inet fip exp $node',
+            '(?:\s|^)(epoch)(?:\s|$)': 'epoch',
+            '(?:\s|^)(proj)(?:\s|$)': 'pexp -p',
+            '(?:\s|^)(exp)(?:\s|$)': 'pexp -e',
+            '(?:\s|^)(node)(?:\s|$)': 'pexp -n',
         }
         self.evars = [];
 
@@ -162,8 +162,7 @@ class BashGenerator(Generator):
                                     count[event + "."+str(j+1)] = sid
                                 sid += 1
                     if not found:
-                        self.run += "execute_fork \"" + actor + "\" \"" + self.bindings_parsed[action] +"\" " + str(sid) + " &\n"
-                        self.clear += "execute_clear \"" + actor + "\" \"" + self.bindings_parsed[action] +"\" " + str(sid) + " &\n"
+                        self.generateCmd(actor, None, w, None, sid, action)
                         if (event is not None):
                             count[event] = sid
                         sid += 1
@@ -184,11 +183,11 @@ class BashGenerator(Generator):
                             searchtext = r[0]
                             newtext = r[1].strip("()")
                             candtext = candtext.replace("$node", r[1].strip("()"))
-                            if i is not None:
-                                self.run += "tmp=$(ssh -o StrictHostKeyChecking=no " + actor1+"-"+str(i)+".$exp.$proj \"echo \`"+candtext+"\`\")\n"
-                            else:
-                                self.run += "tmp=$(ssh -o StrictHostKeyChecking=no " + actor1+".$exp.$proj \"echo \`"+candtext+"\`\")\n"
-                            naction = naction.replace(searchtext, "$tmp")
+                    if i is not None:
+                        self.run += "tmp=$(ssh -o StrictHostKeyChecking=no " + actor1+"-"+str(i)+".$exp.$proj \"echo \`"+candtext+"\`\")\n"
+                    else:
+                        self.run += "tmp=$(ssh -o StrictHostKeyChecking=no " + actor1+".$exp.$proj \"echo \`"+candtext+"\`\")\n"
+                    naction = naction.replace(searchtext, "$tmp")
 
         if i is not None:
             self.run += "execute_fork \"" + actor1 + "-" + str(i)+ "\" \"" + naction +"\" " + str(sid) + " &\n"
