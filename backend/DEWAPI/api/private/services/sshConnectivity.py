@@ -169,12 +169,22 @@ class SSHConnection():
                 unique_name = exp + '_run_' + str(uuid.uuid4())
                 filename = unique_name + ".sh"
                 if self.createFile(gatewaySession,filename,fileContent):
-                    # run command to be added
+                    labels = ''
+                    for label in variables:
+                        labels += ' \'' + label + '\''
+                    cmd = 'bash /users/' + self.username + '/' + filename + ' ' + project + ' ' + exp + ' ' + unique_name + labels \
+                        + '> ' + unique_name + '.log &'
+                    # print(cmd)
+                    try:
+                        s2 = gatewaySession.get_cmd_output(cmd)
+                    except RunCmdError as e:
+                        result['command_status_message']= "command executed with exception"
                     result['success'] = True
                     result['filename'] = unique_name
                 else:
                     result['error']= "unable to upload file to server."    
             except RunCmdError as e:
+                # print(e)
                 result['error']= "project '" + project + "' doesn't exist"
             finally:
                 gatewaySession.close()
@@ -182,3 +192,91 @@ class SSHConnection():
             result['error'] = "Unable to connect to 'deterlab' with user '" + self.username + "'"
         
         return result
+
+    
+    def cleanFile(self,project,exp,fileContent):
+        result = {}
+        try:
+            gatewaySession = SSHSession(self.sshURL, self.username, password=self.password).open()
+            if not gatewaySession.exists('/proj/' + project):
+                result['error'] = "project '" + project + "' doesn't exist"
+                return result
+            if not gatewaySession.exists('/proj/' + project + '/exp/' + exp):
+                result['error']= "experiment '" + exp + "' doesn't exist"
+                return result
+            # status_log = gatewaySession.get_cmd_output('/usr/testbed/bin/expinfo -a ' + project + ' ' + exp )
+            # if 'State: swapped' in status_log:
+            #     result['error']= "experiment '" + exp + "' is not active."
+            #     return result     
+            # if 'No information available.' in status_log:
+            #     result['error']= "experiment '" + exp + "' is in transition."
+            #     return result 
+            try:
+                unique_name = exp + '_cleanup_' + str(uuid.uuid4())
+                filename = unique_name + ".sh"
+                if self.createFile(gatewaySession,filename,fileContent):
+                    
+                    cmd = 'bash /users/' + self.username + '/' + filename + '> ' + unique_name + '.log &'
+                    print(cmd)
+                    try:
+                        s2 = gatewaySession.get_cmd_output(cmd)
+                    except RunCmdError as e:
+                        result['command_status_message']= "command executed with exception"
+                    result['success'] = True
+                    result['filename'] = unique_name
+                else:
+                    result['error']= "unable to upload file to server."    
+            except RunCmdError as e:
+                # print(e)
+                result['error']= "project '" + project + "' doesn't exist"
+            finally:
+                gatewaySession.close()
+        except ConnectionError as e:
+            result['error'] = "Unable to connect to 'deterlab' with user '" + self.username + "'"
+        
+        return result
+    
+    def getRunFile(self, unique_name, s, b):
+        
+        result = {}
+        try:
+            gatewaySession = SSHSession(self.sshURL, self.username, password=self.password).open()
+            directory  = '/users/' + self.username + "/DEW"
+            try:
+                if not gatewaySession.exists(directory) or not gatewaySession.exists(directory+ "/" + unique_name):
+                    result['error'] = "No run information available."
+                    return result
+                directory = directory+ "/" + unique_name
+                cmd = "ls " + directory + ' | wc -l'
+                numberOfFiles = int(gatewaySession.get_cmd_output(cmd)) //4
+                
+                results = []
+                for i in range(s,min(s+b,numberOfFiles)):
+                    r = {}
+                    script = '/script.'+str(i)+'.sh'
+                    error = '/error.'+str(i)
+                    status = '/status.'+str(i)
+                    cmd = 'cat ' + directory 
+                    try:
+                        r['script'] = gatewaySession.get_cmd_output(cmd + script)
+                        r['error'] = gatewaySession.get_cmd_output(cmd + error)
+                        r['status'] = gatewaySession.get_cmd_output(cmd + status)
+                        results.append(r)
+                    except RunCmdError as e:
+                        result['command_status_message']= "command executed with exception"
+                        break
+                result['startIndex'] = s
+                result['batchSize'] = b
+                result['totalFiles'] = numberOfFiles
+                result['data'] = results
+                    # result['filename'] = unique_name
+                  
+            except RunCmdError as e:
+                result['error']= "command executed with exception"
+            finally:
+                gatewaySession.close()
+        except ConnectionError as e:
+            result['error'] = "Unable to connect to 'deterlab' with user '" + self.username + "'"
+        
+        return result
+

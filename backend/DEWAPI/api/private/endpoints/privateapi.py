@@ -868,6 +868,10 @@ class HandleProfileDeterLabDeleteMapping(Resource):
 class HandleProjectRunLog(Resource):
     def post(self):
         content = request.get_json(force=True)
+        if 'eid' not in content:
+          return {"error":"eid is missing"} , 200
+        if 'account_id' not in content:
+          return {"error":"account_id is missing"}, 200
         eid = content['eid']
         daid = content['account_id']
         data = dict()
@@ -910,6 +914,79 @@ class HandleProjectRunLog(Resource):
                     result = result_log
               else:
                 result = mapping
+            else:
+              result = {'error':'username or password doesnot exists'}
+          return result, 200
+        except ValueError as e:
+            if str(e) == "Forbidden":
+                return {}, 403
+
+@ns.route('/deter/project/clean')
+class HandleProjectRunLog(Resource):
+    def post(self):
+        content = request.get_json(force=True)
+        if 'rid' not in content:
+          return {"error":"rid is missing"} , 200
+        if 'account_id' not in content:
+          return {"error":"account_id is missing"}, 200
+        rid = content['rid']
+        daid = content['account_id']
+        
+        uid = userObj.getUserId()
+        try:
+          result = {}
+          version_id = dm.getVersion(rid,uid,daid)
+          if version_id is None:
+            result['error'] = 'User doesnot have access to this script'
+          else:
+            details = ps.get(uid,daid)
+            if str(details['username']).strip() !='' and str(details['password']).strip() !='':
+              experiment = next(item for item in list(em.get_experiment(version_id.eid, uid).versions) if item.transaction_id == version_id.version_id)
+              script,variable_list = hlb.HandleBASH(json.loads(experiment.content))
+              mapping = dm.getMapping(details['id'],version_id.eid)
+              if 'error' not in mapping:
+                cleanup_content = script[1][1]
+                ssh = SSHConnection(details['username'],details['password'])
+                result = ssh.cleanFile(mapping['project_name'],mapping['experiment_name'],cleanup_content)
+              else:
+                result = mapping
+            else:
+              result = {'error':'username or password doesnot exists'}
+          return result, 200
+        except ValueError as e:
+            if str(e) == "Forbidden":
+                return {}, 403
+
+@ns.route('/deter/project/run/get')
+class HandleProjectRunLog(Resource):
+    def post(self):
+        content = request.get_json(force=True)
+        if 'rid' not in content:
+          return {"error":"rid is missing"} , 200
+        if 'account_id' not in content:
+          return {"error":"account_id is missing"}, 200
+        rid = content['rid']
+        daid = content['account_id']
+        # start index
+        s = 0
+        if 's' in content:
+          s = int(content['s'])
+        # batch size
+        b = 5
+        if 'b' in content:
+          b = int(content['b'])
+          
+        uid = userObj.getUserId()
+        try:
+          result = {}
+          version_id = dm.getVersion(rid,uid,daid)
+          if version_id is None:
+            result['error'] = 'User doesnot have access to this script'
+          else:
+            details = ps.get(uid,daid)
+            if str(details['username']).strip() !='' and str(details['password']).strip() !='':
+              ssh = SSHConnection(details['username'],details['password'])
+              result = ssh.getRunFile(version_id.unique_name,s,b)
             else:
               result = {'error':'username or password doesnot exists'}
           return result, 200
