@@ -94,8 +94,6 @@ class Generator(object):
                 newparsedTuple = (parsedTuple[0], parsedTuple[1], parsedTuple[2], parsedTuple[3], parsedTuple[4], parsedTuple[5], parsedTuple[6],  label)
                 self.scenario_parsed.append(newparsedTuple)
 
-        for s in self.scenario_parsed:
-            print("Statement ", s)
         myb = ""
         for bi in self.bindings:
             b = bi['key'] + " " + bi['value']
@@ -112,7 +110,6 @@ class Generator(object):
                 continue
                 # return False
             self.bindings_parsed[key] = value
-            print("Binding for ", key, " is ", value)
             
         self.dew = "[Scenario]\n" + mys + "\n[Constraints]\n" + myc + "\n[Bindings]\n" + myb
 
