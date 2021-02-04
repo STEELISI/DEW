@@ -344,16 +344,21 @@ class HLBService():
         bindings = json_data['bindings']
         generator = bashGenerator(constraints=constraints, scenario=scenario, bindings=bindings)
         generator.generate()
-        # print(generator.text)
-        bash_script = dict()
+        bash_script = []
         for label in generator.run.keys():
-            bash_script[label] = []
-            bash_script[label].append(['run_'+label+'.sh',generator.run[label]])
-            bash_script[label].append(['cleanup_'+label+'.sh',generator.clear[label]])
-
+            labelDetail = dict()
+            labelDetail['label'] = label
+            labelDetail['run'] = dict()
+            labelDetail['run']['fileName'] = 'run_'+label+'.sh'
+            labelDetail['run']['content'] = generator.run[label]
+            labelDetail['clean'] = dict()
+            labelDetail['clean']['fileName'] = 'cleanup_'+label+'.sh'
+            labelDetail['clean']['content'] = generator.clear[label]
+            variables = []
             for e in generator.evars[label]:
-                bash_script[label].append({"variable":e[0],"message":e[1]})
+                variables.append({"variable":e[0],"message":e[1]})
+            labelDetail['variables'] = variables
+            
+            bash_script.append(labelDetail)
         
-        bash_json = json.dumps(bash_script)
-        print(bash_json)
-        return bash_json
+        return bash_script
