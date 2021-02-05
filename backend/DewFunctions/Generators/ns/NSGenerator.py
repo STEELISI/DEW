@@ -89,9 +89,11 @@ class NSGenerator(Generator):
             else:
                 self.run[label] += "set "+a+" [$ns node]\n"
                 if (a in os.keys()):
+
                     self.run[label] += "tb-set-node-os "+a+" "+ os[a] + "\n"
                 else:
                     self.run[label] += "tb-set-node-os "+a+" Ubuntu-DEW\n"
+
 
         # Generate links 
         cnt = 1

@@ -169,9 +169,11 @@ class BashGenerator(Generator):
                                     count[event + "."+str(j+1)] = sid
                                 sid += 1
                     if not found:
+
                         self.generateCmd(actor, None, w, None, sid, action, label)
                         #self.run[label] += "execute_fork \"" + actor + "\" \"" + self.bindings_parsed[action] +"\" " + str(sid) + " &\n"
                         #self.clear[label] += "execute_clear \"" + actor + "\" \"" + self.bindings_parsed[action] +"\" " + str(sid) + " &\n"
+
                         if (event is not None):
                             count[event] = sid
                         sid += 1
