@@ -83,17 +83,9 @@ class HandleHLBGeneratorBash(Resource):
           Generates BASH file for given behaviors, actors, and constraints
         """
         json_data = request.get_json(force=True)
-        scriptList, paramterlist = hlb.HandleBASH(json_data)
+        scriptList = hlb.HandleBASH(json_data)
         bashScriptDict = {}
-        for i in range(len(scriptList)):
-            if scriptList[i][0] not in bashScriptDict:
-                if scriptList[i][1]:
-                    bashScriptDict[scriptList[i][0]] = scriptList[i][1]
-            else:
-                if scriptList[i][1]:
-                    bashScriptDict[scriptList[i][0]] += scriptList[i][1]
-
-        return bashScriptDict
+        return scriptList
 
 @ns.route('/hlb/suggestions')
 class HandleHLBSuggestions(Resource):
@@ -872,6 +864,9 @@ class HandleProjectRunLog(Resource):
           return {"error":"eid is missing"} , 200
         if 'account_id' not in content:
           return {"error":"account_id is missing"}, 200
+        label = None
+        if 'label' in content:
+          label = content['label']
         eid = content['eid']
         daid = content['account_id']
         data = dict()
@@ -890,8 +885,27 @@ class HandleProjectRunLog(Resource):
               if 'error' not in mapping:
                 experiment = list(em.get_experiment(eid, uid).versions)[-1]
                 transaction_id = experiment.transaction_id
-                script,variable_list = hlb.HandleBASH(json.loads(experiment.content))
+                script = hlb.HandleBASH(json.loads(experiment.content))
                 variables = []
+                variable_list = []
+                flag = True
+                if label is not None:
+                  for x in script:
+                    if x.label == label:
+                      variable_list += x.variables
+                      run_content = x.run.content
+                      flag = False
+                      break
+                else:
+                  r = []
+                  for x in script:
+                    r.append(x.label)
+                  return {"error":"Please select label","labels":r}, 200
+                
+                if flag:
+                  return {"error":"label doesn't exist"}, 200
+
+
                 if len(variable_list) != 0:
                   for x in variable_list:
                     if x['variable'] in data:
@@ -929,6 +943,10 @@ class HandleProjectRunLog(Resource):
           return {"error":"rid is missing"} , 200
         if 'account_id' not in content:
           return {"error":"account_id is missing"}, 200
+        
+        label = None
+        if 'label' in content:
+          label = content['label']
         rid = content['rid']
         daid = content['account_id']
         
@@ -942,10 +960,27 @@ class HandleProjectRunLog(Resource):
             details = ps.get(uid,daid)
             if str(details['username']).strip() !='' and str(details['password']).strip() !='':
               experiment = next(item for item in list(em.get_experiment(version_id.eid, uid).versions) if item.transaction_id == version_id.version_id)
-              script,variable_list = hlb.HandleBASH(json.loads(experiment.content))
+              script = hlb.HandleBASH(json.loads(experiment.content))
+
+              script = hlb.HandleBASH(json.loads(experiment.content))
+              flag = True
+
+              if label is not None:
+                for x in script:
+                  if x.label == label:
+                    cleanup_content = x.clean.content
+                    flag = False
+                    break
+              else:
+                  r = []
+                  for x in script:
+                    r.append(x.label)
+                  return {"error":"Please select label","labels":r}, 200
+              if flag:
+                return {"error":"label doesn't exist"}, 200
               mapping = dm.getMapping(details['id'],version_id.eid)
               if 'error' not in mapping:
-                cleanup_content = script[1][1]
+                
                 ssh = SSHConnection(details['username'],details['password'])
                 result = ssh.cleanFile(mapping['project_name'],mapping['experiment_name'],cleanup_content)
               else:

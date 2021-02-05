@@ -737,9 +737,16 @@ export class InfoComponent implements OnInit {
 
     if (flag) return;
     this.http.put("v1/pr/hlb/generateBash", data, {withCredential:true}).subscribe(
-      (data) => {
-      console.log(data)
+      (result) => {
+      console.log(result)
         let message = "Error in Downloading."
+      let data = {}
+      for(let x of result){
+          console.log(x)
+          data[x.run.fileName] = x.run.content
+          data[x.clean.fileName] = x.clean.content
+      }
+      
       if (Object.keys(data).length !=0){
       var keys = Object.keys(data)
       console.log(keys)

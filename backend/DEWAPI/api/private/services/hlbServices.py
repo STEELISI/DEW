@@ -273,7 +273,7 @@ class HLBService():
                 generator = bashGenerator(scenario=scenario, constraints=constraints,bindings=[])
             elif tn == 'magi':
                 generator = bashGenerator(scenario=scenario, constraints=constraints,bindings=[]) # TODO: Use magi generator
-            generator.generate()
+            generator.parse()
             scenario_parsed, constraints_parsed = generator.scenario_parsed,generator.constraints_parsed
             print(scenario_parsed, constraints_parsed)
             return {"_id": str(uuid.uuid4()), "parsedScenario": scenario_parsed, "parsedConstraints": constraints_parsed}
@@ -331,21 +331,34 @@ class HLBService():
         bindings = json_data['bindings']
         generator = nSGenerator(constraints=constraints, scenario=scenario, bindings=bindings)
         generator.generate()
-        ns_script = generator.run
+        ns_script = generator.run['main']
         return ns_script
 
     #Handle generateBASH
     def HandleBASH(self,json_data):
         errors = []
-        parameterlist = [] # added for run script. 
+        parameterlist = dict()
         actors = json_data['actors']
         scenario = json_data['behaviors']
         constraints = json_data['constraints']
         bindings = json_data['bindings']
         generator = bashGenerator(constraints=constraints, scenario=scenario, bindings=bindings)
         generator.generate()
-        # print(generator.text)
-        bash_script_list = [['run.sh',generator.run],['cleanup.sh',generator.clear]]
-        for e in generator.evars:
-            parameterlist.append({"variable":e[0],"message":e[1]})
-        return bash_script_list, parameterlist
+        bash_script = []
+        for label in generator.run.keys():
+            labelDetail = dict()
+            labelDetail['label'] = label
+            labelDetail['run'] = dict()
+            labelDetail['run']['fileName'] = 'run_'+label+'.sh'
+            labelDetail['run']['content'] = generator.run[label]
+            labelDetail['clean'] = dict()
+            labelDetail['clean']['fileName'] = 'cleanup_'+label+'.sh'
+            labelDetail['clean']['content'] = generator.clear[label]
+            variables = []
+            for e in generator.evars[label]:
+                variables.append({"variable":e[0],"message":e[1]})
+            labelDetail['variables'] = variables
+            
+            bash_script.append(labelDetail)
+        
+        return bash_script
