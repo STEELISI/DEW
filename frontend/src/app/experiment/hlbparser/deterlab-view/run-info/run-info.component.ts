@@ -19,6 +19,7 @@ export class RunInfoComponent implements OnInit, OnChanges {
     logid:String
     executionScript = []
     loader = false
+    panelOpenState = false
     constructor(private http:HttpService
         , private _snackBar: MatSnackBar
     
