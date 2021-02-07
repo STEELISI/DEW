@@ -17,12 +17,12 @@ class BashGenerator(Generator):
         # Dictionary of special functions with regex
         # and expansions
         self.special = {
-            '(?:\s|^)(expIP)(?:\s|$)': 'inet ip exp',
-            '(?:\s|^)(ctlIP)(?:\s|$)': 'inet ip ctl',
-            '(?:\s|^)(expeth)(?:\s|$)': 'inet eth exp',
-            '(?:\s|^)(expIP\((.*)\))(?:\s|$)': 'inet ip exp $node',
-            '(?:\s|^)(expeth\((.*)\))(?:\s|$)': 'inet eth exp $node',
-            '(?:\s|^)(IP\((.*)\))(?:\s|$)': 'inet fip exp $node',
+            '(?:\s|^)(expIP)(?:\s|$|\:)': 'inet ip exp',
+            '(?:\s|^)(ctlIP)(?:\s|$|\:)': 'inet ip ctl',
+            '(?:\s|^)(expeth)(?:\s|$|\:)': 'inet eth exp',
+            '(?:\s|^)(expIP\((.*)\))(?:\s|$|\:)': 'inet ip exp $node',
+            '(?:\s|^)(expeth\((.*)\))(?:\s|$|\:)': 'inet eth exp $node',
+            '(?:\s|^)(IP\((.*)\))(?:\s|$|\:)': 'inet fip exp $node',
             '(?:\s|^)(epoch)(?:\s|$)': 'epoch',
             '(?:\s|^)(proj)(?:\s|$)': 'pexp -p',
             '(?:\s|^)(exp)(?:\s|$)': 'pexp -e',
@@ -170,16 +170,16 @@ class BashGenerator(Generator):
                                 sid += 1
                     if not found:
                         self.generateCmd(actor, None, w, None, sid, action, label)
-                        #self.run[label] += "execute_fork \"" + actor + "\" \"" + self.bindings_parsed[action] +"\" " + str(sid) + " &\n"
-                        #self.clear[label] += "execute_clear \"" + actor + "\" \"" + self.bindings_parsed[action] +"\" " + str(sid) + " &\n"
                         if (event is not None):
                             count[event] = sid
                         sid += 1
 
     def generateCmd(self, actor1, i, actor2 , j, sid, action, label):
+        print("Generate command ", action)
         naction = self.bindings_parsed[action]
         if (j is not None):
-            naction = naction.replace(actor2, actor2 + "-" + str(j))
+            print("In ", naction, " replace ", actor2, " with ", actor2+"-"+str(j))
+            naction = re.sub(r'(\s|^|\()'+actor2+'(\s|$|:|\))', r'\1'+actor2+"-"+str(j)+r'\2', naction)#naction.replace(actor2, actor2 + "-" + str(j))
 
         for exp in self.special:
             re_exp = r'{}'.format(exp)
