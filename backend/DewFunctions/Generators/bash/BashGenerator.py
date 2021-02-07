@@ -169,6 +169,7 @@ class BashGenerator(Generator):
                                     count[event + "."+str(j+1)] = sid
                                 sid += 1
                     if not found:
+
                         self.generateCmd(actor, None, w, None, sid, action, label)
                         if (event is not None):
                             count[event] = sid
@@ -178,14 +179,12 @@ class BashGenerator(Generator):
         print("Generate command ", action)
         naction = self.bindings_parsed[action]
         if (j is not None):
-            print("In ", naction, " replace ", actor2, " with ", actor2+"-"+str(j))
-            naction = re.sub(r'(\s|^|\()'+actor2+'(\s|$|:|\))', r'\1'+actor2+"-"+str(j)+r'\2', naction)#naction.replace(actor2, actor2 + "-" + str(j))
+            naction = re.sub(r'(\s|^|\()'+actor2+'(\s|$|:|\))', r'\1'+actor2+"-"+str(j)+r'\2', naction)
 
         for exp in self.special:
             re_exp = r'{}'.format(exp)
             r1 = re.findall(re_exp,naction)
             if len(r1) > 0:
-                print("Matched ", r1)
                 for r in r1:
                     searchtext = r
                     candtext = self.special[exp]
