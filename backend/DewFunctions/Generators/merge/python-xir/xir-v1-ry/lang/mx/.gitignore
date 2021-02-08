@@ -1,0 +1,6 @@
+dist
+mergexp.egg-info
+mx.egg-info
+.python-version
+.pylintrc
+*.xir
