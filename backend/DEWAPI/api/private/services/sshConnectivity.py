@@ -171,7 +171,7 @@ class SSHConnection():
                 if self.createFile(gatewaySession,filename,fileContent):
                     labels = ''
                     for label in variables:
-                        labels += ' \'' + label + '\''
+                        labels += ' \'' + str(label) + '\''
                     cmd = 'bash /users/' + self.username + '/' + filename + ' ' + project + ' ' + exp + ' ' + unique_name + labels \
                         + '> ' + unique_name + '.log &'
                     # print(cmd)
