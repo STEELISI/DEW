@@ -9,7 +9,7 @@ parentDir = os.path.abspath(os.path.join(cwd, os.pardir))
 sys.path.insert(0, parentDir)
 from generator import Generator
 
-class MergeTBGenerator(Generator):
+class NSGenerator(Generator):
     
     def __init__(self, *args, **kwargs):
         super().__init__(*args, name="ns", **kwargs)
@@ -29,14 +29,24 @@ class MergeTBGenerator(Generator):
             if c[0] == 'num':
                 self.num[c[1][0]] = int(c[2][0])
             
-    def generateMergeTB(self):
+    def generateNS(self):
+        
         # Collect all actors
         actors = dict()
+        os = dict()
+        links = dict()
         for s in self.scenario_parsed:
             actors[s[1][0]] = 1
 
+        # Collect OS constraints
+        for c in self.constraints_parsed:
+            if c[0] == 'os':
+                os[c[1][0]] = c[2][0]
+
         # Collect link constraints
         cl = 0
+        lans = dict()
+        links = dict()
         for c in self.constraints_parsed:
             r1 = re.findall("link", c[0])
             if len(r1) > 0:
@@ -63,15 +73,71 @@ class MergeTBGenerator(Generator):
                         else:
                             lans[cl].append(n)
                     cl += 1
-                    
+
+        if (os.keys()):
+            self.run += "from mergexp.machine import image\n"
+
+        self.run += "# create a topology named '" + experimentName + "'\n"
+        self.run += "net = mx.Topology('" + experimentName + "')\n\n"
+        # Generate nodes
+        for a in actors:
+            '''if a in self.num.keys():
+                self.run += "for {set i 1} {$i <= $NODES} {incr i} {\n"
+                self.run += "\t set "+a+"($i) [$ns node]\n"
+                if (a in os.keys()):
+                    self.run += "\t tb-set-node-os [set "+a+"($i)] " + os[a] + "\n"
+                else:
+                    self.run += "\t tb-set-node-os [set "+a+"($i)] Ubuntu-DEW\n"
+                self.run += "}\n"
+            else:'''
+                self.run += a+" = net.device('" + a + "')\n"
+                if (a in os.keys()):
+                    self.run += "net.device("+a+", image == \""+ os[a] + "\"\n"
+
         # Generate links 
         cnt = 1
+        for a in links.keys():
+            self.run += "[net.device(name) for name in ["
+            if a in self.num.keys():
+                for i in range (1, self.num[a]+1):
+                    for b in links[a].keys():
+                        '''if b in self.num.keys():
+                            for j in range (1,self.num[b]+1):
+                                self.run += "set link"+str(cnt)+" [$ns duplex-link "+a+"-"+str(i)+" "+b+"-"+str(j)+" 100Mb 0ms DropTail]\n"
+                                cnt += 1
+                        else:
+                            self.run += "set link"+str(cnt)+" [$ns duplex-link "+a+"-"+str(i)+" "+b+" 100Mb 0ms DropTail]\n"'''
+                        self.run += "'" + a "',"
+                            cnt += 1
+            else:
+                 for b in links[a].keys():
+                     '''if b in self.num.keys():
+                         for j in range (1,self.num[b]+1):
+                               self.run += "set link"+str(cnt)+" [$ns duplex\
+-link "+a+" "+b+"-"+str(j)+" 100Mb 0ms DropTail]\n"
+                               cnt += 1
+                     else:
+                         self.run += "set link"+str(cnt)+" [$ns duplex-link "+a+" "+b+" 100Mb 0ms DropTail]\n"'''
+                    self.run += "'" + b "',"
+                         cnt += 1
+            self.run += "]]\n"
+        # Generate lans
+        for l in lans.keys():
+            self.run += "set lan"+str(l)+" [$ns make-lan \""
+            for n in lans[l]:
+                self.run += n+ " "
+            self.run += "\" 100Mb 0.0ms]\n"
             
     def generatePreamble(self):
-        self.run += 'import mergexp as mx\nfrom mergexp.net import capacity\n'
+        self.run += "import mergexp as mx\n"
+        self.run += "from mergexp.net import capacity\n\n"
 
     def generatePostamble(self):
-        self.run += '\n# specify the net object as the experiment topology created by this script\nmx.experiment(net)\n'
+        self.run += "# specify the net object as the experiment topology created by this script\n"
+        self.run += "mx.experiment(net)\n"
 
     def parse(self):
         super().parse()
+
+
+
