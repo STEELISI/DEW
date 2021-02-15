@@ -123,6 +123,7 @@ export class ExperimentSlides implements OnInit {
     	this.http.post("api/v1/pr/design/experiment/slides",{"experiment_id": this.experimentId, "sequence_number": this.lastSequenceNumber + 1},{withCredential: true}).subscribe((data) => {
     		this.slides.push(data['slide'])
     		this.lastSequenceNumber += 1
+        this.editSlide(data['slide'])
     	})
     }
   }
@@ -131,6 +132,11 @@ export class ExperimentSlides implements OnInit {
   	this.http.delete("v1/pr/design/experiment/slides/"+this.experimentId+"/"+slide['slide_id'], {withCredential: true}).subscribe((data) => {
   		this.slides = this.slides.filter(s => s['slide_id'] != slide['slide_id'])
   	})
+  }
+
+  dateView(timestamp){
+    var d = new Date(timestamp*1000);
+    return d.toLocaleString();
   }
 
   moveUpSlide(slide, index){

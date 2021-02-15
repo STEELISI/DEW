@@ -1,11 +1,13 @@
 
 <div class="container-fluid">
-	<div class="row">
+	<div class="row sticky-top">
+    <mat-toolbar>
 		<button mat-raised-button color="warn" class="col-md-2" (click)="showTopology()">Previous : Edit topology</button>
 		<div class="col-md-2"></div>
 		<button mat-raised-button color="primary" class="col-md-4" (click)="createSlide()">Create new slide</button>
 		<div class="col-md-2"></div>
 		<button mat-raised-button color="accent" class="col-md-2" (click)="showDependencyGraph()">Next : Update dependencies</button>
+  </mat-toolbar>
 	</div>
 	<div class="row table">
 		<div class="col-md-12">
@@ -17,8 +19,8 @@
           </div>
           
           <br />
-          <span><b>Created Date:</b> {{ slide.created_at }}</span> |
-          <span><b>Updated Date:</b> {{ slide.updated_at }}</span>
+          <span><b>Created Date:</b> {{ dateView(slide.created_at) }}</span> |
+          <span><b>Updated Date:</b> {{ dateView(slide.updated_at) }}</span>
         </div>
         <div class="col-md-4">
           
