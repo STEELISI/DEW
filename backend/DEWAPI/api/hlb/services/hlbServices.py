@@ -319,3 +319,28 @@ class HLBService():
         #    ns_script += "$" + a + " "
         #ns_script += "\" 100000.0kb 0.0ms]\n\n$ns rtproto Static\n$ns run"
         #return ns_script
+
+    def HandleMergeTB(self,json_data):
+
+        # EXPECTED = {
+        #     "Actors":{"min":1,"max":500},
+        #     "Scenario":{"min":1,"max":500},
+        #     "Constraints":{"min":0,"max":500},
+        #     "Bindings":{"min":0,"max":500}
+        # }
+        errors = []
+        tn = json_data['ParseType']
+        scenario = json_data['Scenario']
+        constraints = json_data['Constraints']
+        actors = json_data['actors']
+
+        if tn == 'bash':
+            generator = bashGenerator(scenario, constraints=constraints)
+        elif tn == 'magi':
+            generator = bashGenerator(scenario, constraints=constraints) # TODO: Use magi generator
+
+
+        scenario_parsed, constraints_parsed = generator.generate()
+        mergeTB_script = generator.generateMergeTB(constraints_parsed, actors)
+        return mergeTB_script
+        

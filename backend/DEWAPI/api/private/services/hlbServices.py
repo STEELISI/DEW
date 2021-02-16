@@ -4,6 +4,7 @@ from collections import defaultdict
 sys.path.append('./DewFunctions/Generators/')
 sys.path.append('./DewFunctions/Generators/ns')
 sys.path.append('./DewFunctions/Generators/bash')
+sys.path.append('./DewFunctions/Generators/mergeTB')
 sys.path.append('./DewFunctions/UI/HighLevelBehaviorLanguage/')
 sys.path.append('./DewFunctions/UI/')
 sys.path.append('./DewFunctions/Translators/bash')
@@ -349,3 +350,16 @@ class HLBService():
         for e in generator.evars:
             parameterlist.append({"variable":e[0],"message":e[1]})
         return bash_script_list, parameterlist
+
+    #Handle generateMergeTB
+    def HandleMergeTB(self,json_data):
+        errors = []
+        parameterlist = [] # added for run script. 
+        actors = json_data['actors']
+        scenario = json_data['behaviors']
+        constraints = json_data['constraints']
+        bindings = json_data['bindings']
+        generator = mergeTBGenerator(constraints=constraints, scenario=scenario, bindings=bindings)
+        generator.generate()
+        mergeTB_script = generator.run
+        return mergeTB_script
