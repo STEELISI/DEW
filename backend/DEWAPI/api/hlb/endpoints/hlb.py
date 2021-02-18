@@ -47,6 +47,19 @@ class HandleGeneratorNs(Resource):
         script = obj.HandleNS(json_data)
         return {'script': script}
 
+@ns.route('/generateMergeTB')
+class HandleGeneratorMergeTB(Resource):
+
+    @api.expect(ns_object)
+    @api.representation('text/plain')
+    def put(self):
+        """
+          Generates Merge TB file for given behaviors, actors, and constraints
+        """
+        json_data = request.get_json(force=True)
+        script = obj.HandleMergeTB(json_data)
+        return {'script': script}
+
 
 @ns.route('/suggestions')
 class HandleSuggestions(Resource):

@@ -708,6 +708,62 @@ export class InfoComponent implements OnInit {
     )
   }
 
+  mergeTBGen() {
+    //console.log(this.bindingList);
+
+    // var dialogRef = this.dialog.open(NSFilePopUp, {
+    //   width: "70%",
+    //   data: this.experiment.bindings,
+    // });
+
+    // dialogRef.afterClosed().subscribe((result) => {
+      //console.log('The dialog was closed');
+      this.generateMergeTB();
+    // });
+  }
+  generateMergeTB() {
+    var data = {
+      actors: this.experiment.actors,
+      behaviors: this.experiment.behaviors,
+      constraints: this.experiment.constraints,
+      bindings: this.experiment.bindings,
+    };
+    var flag = false;
+    this.experiment.behaviors.forEach((element) => {
+      if (element == null || element.trim() == "") {
+        flag = true;
+        return;
+      }
+    });
+
+    if (flag) return;
+    this.http.put("v1/pr/hlb/generateMergeTB", data, {withCredential:true}).subscribe(
+      (data) => {
+        let message = "Successfully Downloaded."
+        if(data.script != ''){
+        this.downLoadFile(data.script, "mergeTB.txt");
+        }else
+        message = "Error in Downloading"
+        this._snackBar.open(message, "close", {
+          duration: 2000,
+        });
+        // this.stateservice.setBindings(data.Bindings);
+      },
+      (error) => {
+        if(error.status == 401){
+          this._snackBar.open("You have been logged out. Please login in another tab or window and try again.", "close", {
+            duration: 2000,
+          });
+        } else {
+          this._snackBar.open(error.message, "close", {
+            duration: 2000,
+          });
+        }
+      }
+    );
+  }
+
+
   bashGen() {
     //console.log(this.bindingList);
     // var dialogRef = this.dialog.open(BASHFilePopUp, {
