@@ -4,6 +4,7 @@ from collections import defaultdict
 sys.path.append('./DewFunctions/Generators/')
 sys.path.append('./DewFunctions/Generators/ns')
 sys.path.append('./DewFunctions/Generators/bash')
+sys.path.append('./DewFunctions/Generators/mergeTB')
 sys.path.append('./DewFunctions/UI/HighLevelBehaviorLanguage/')
 sys.path.append('./DewFunctions/UI/')
 sys.path.append('./DewFunctions/Translators/bash')
@@ -16,6 +17,7 @@ from parsebash import GeneralParseBash
 from generator import Generator
 from BashGenerator import BashGenerator as bashGenerator
 from NSGenerator import NSGenerator as nSGenerator
+from MergeTBGenerator import MergeTBGenerator as mergeTBGenerator
 from hlb_parser import HLBParser, HLBHintType
 from magiparser import GeneralParseMagi
 import werkzeug
@@ -329,10 +331,24 @@ class HLBService():
         scenario = json_data['behaviors']
         constraints = json_data['constraints']
         bindings = json_data['bindings']
-        generator = nSGenerator(constraints=constraints, scenario=scenario, bindings=bindings)
+        experiment_name = json_data['name']
+        generator = nSGenerator(constraints=constraints, scenario=scenario, bindings=bindings, experimentName=experiment_name)
         generator.generate()
         ns_script = generator.run['main']
         return ns_script
+
+    #Handle generateMergeTB
+    def HandleMergeTB(self,json_data):
+        errors = []
+        actors = json_data['actors']
+        scenario = json_data['behaviors']
+        constraints = json_data['constraints']
+        bindings = json_data['bindings']
+        experiment_name = json_data['name']
+        generator = mergeTBGenerator(constraints=constraints, scenario=scenario, bindings=bindings, experimentName=experiment_name)
+        generator.generate()
+        mergeTB_script = generator.run['main']
+        return mergeTB_script
 
     #Handle generateBASH
     def HandleBASH(self,json_data):
@@ -342,7 +358,8 @@ class HLBService():
         scenario = json_data['behaviors']
         constraints = json_data['constraints']
         bindings = json_data['bindings']
-        generator = bashGenerator(constraints=constraints, scenario=scenario, bindings=bindings)
+        experiment_name = json_data['name']
+        generator = bashGenerator(constraints=constraints, scenario=scenario, bindings=bindings, experimentName=experiment_name)
         generator.generate()
         bash_script = []
         for label in generator.run.keys():
