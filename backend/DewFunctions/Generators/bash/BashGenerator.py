@@ -23,10 +23,10 @@ class BashGenerator(Generator):
             '(?:\s|^)(expIP\(([a-zA-Z0-9_\-]+)\))(?:\s|$|\:)': 'inet ip exp $node',
             '(?:\s|^)(expeth\(([a-zA-Z0-9_\-]+)\))(?:\s|$|\:)': 'inet eth exp $node',
             '(?:\s|^)(IP\(([a-zA-Z0-9_\-]+)\))(?:\s|$|\:)': 'inet fip exp $node',
-            '(?:\s|^)(epoch)(?:\s|$)': 'epoch',
-            '(?:\s|^)(proj)(?:\s|$)': 'pexp -p',
-            '(?:\s|^)(exp)(?:\s|$)': 'pexp -e',
-            '(?:\s|^)(node)(?:\s|$)': 'pexp -n',
+            '(?:\s|^|\/)(epoch)(?:\s|$|\/|\.)': 'epoch',
+            '(?:\s|^|\/)(pid)(?:\s|$|\/|\.)': 'pexp -p',
+            '(?:\s|^|\/)(eid)(?:\s|$|\/|\.)': 'pexp -e',
+            '(?:\s|^|\/)(nid)(?:\s|$|\/|\.)': 'pexp -n',
         }
         self.evars = dict();
 
@@ -181,11 +181,11 @@ class BashGenerator(Generator):
         if (j is not None):
             naction = re.sub(r'(\s|^|\()'+actor2+'(\s|$|:|\))', r'\1'+actor2+"-"+str(j)+r'\2', naction)
 
+        rcnt = 1
         for exp in self.special:
             re_exp = r'{}'.format(exp)
             r1 = re.findall(re_exp,naction)
             if len(r1) > 0:
-                rcnt = 1
                 for r in r1:
                     print("Found ", r, " in ", naction)
                     searchtext = r
