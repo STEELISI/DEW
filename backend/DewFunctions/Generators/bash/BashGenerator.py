@@ -20,9 +20,9 @@ class BashGenerator(Generator):
             '(?:\s|^)(expIP)(?:\s|$|\:)': 'inet ip exp',
             '(?:\s|^)(ctlIP)(?:\s|$|\:)': 'inet ip ctl',
             '(?:\s|^)(expeth)(?:\s|$|\:)': 'inet eth exp',
-            '(?:\s|^)(expIP\((.*)\))(?:\s|$|\:)': 'inet ip exp $node',
-            '(?:\s|^)(expeth\((.*)\))(?:\s|$|\:)': 'inet eth exp $node',
-            '(?:\s|^)(IP\((.*)\))(?:\s|$|\:)': 'inet fip exp $node',
+            '(?:\s|^)(expIP\(([a-zA-Z0-9_\-]+)\))(?:\s|$|\:)': 'inet ip exp $node',
+            '(?:\s|^)(expeth\(([a-zA-Z0-9_\-]+)\))(?:\s|$|\:)': 'inet eth exp $node',
+            '(?:\s|^)(IP\(([a-zA-Z0-9_\-]+)\))(?:\s|$|\:)': 'inet fip exp $node',
             '(?:\s|^)(epoch)(?:\s|$)': 'epoch',
             '(?:\s|^)(proj)(?:\s|$)': 'pexp -p',
             '(?:\s|^)(exp)(?:\s|$)': 'pexp -e',
@@ -185,7 +185,9 @@ class BashGenerator(Generator):
             re_exp = r'{}'.format(exp)
             r1 = re.findall(re_exp,naction)
             if len(r1) > 0:
+                rcnt = 1
                 for r in r1:
+                    print("Found ", r, " in ", naction)
                     searchtext = r
                     candtext = self.special[exp]
                     if not isinstance(r,str):
@@ -193,10 +195,11 @@ class BashGenerator(Generator):
                         newtext = r[1].strip("()")
                         candtext = candtext.replace("$node", r[1].strip("()"))
                     if i is not None:
-                        self.run[label] += "tmp=$(ssh -o StrictHostKeyChecking=no " + actor1+"-"+str(i)+".$exp.$proj \"echo \`"+candtext+"\`\")\n"
+                        self.run[label] += "tmp"+str(rcnt)+"=$(ssh -o StrictHostKeyChecking=no " + actor1+"-"+str(i)+".$exp.$proj \"echo \`"+candtext+"\`\")\n"
                     else:
-                        self.run[label] += "tmp=$(ssh -o StrictHostKeyChecking=no " + actor1+".$exp.$proj \"echo \`"+candtext+"\`\")\n"
-                    naction = naction.replace(searchtext, "$tmp")
+                        self.run[label] += "tmp"+str(rcnt)+"=$(ssh -o StrictHostKeyChecking=no " + actor1+".$exp.$proj \"echo \`"+candtext+"\`\")\n"
+                    naction = naction.replace(searchtext, "$tmp"+str(rcnt))
+                    rcnt += 1
 
         if i is not None:
             self.run[label] += "execute_fork \"" + actor1 + "-" + str(i)+ "\" \"" + naction +"\" " + str(sid) + " &\n"
