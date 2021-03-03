@@ -1,4 +1,4 @@
-# eth=$(ssh b.cmimic.trafgen "echo \`inet eth exp\`"); echo $eth
+# Bash generator
 
 import os.path
 import sys
