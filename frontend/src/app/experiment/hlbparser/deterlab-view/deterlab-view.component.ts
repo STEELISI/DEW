@@ -369,12 +369,18 @@ export class DeterLabViewComponent implements OnInit {
     }
 
     run(data = {}) {
-
+        
         const params = {
             eid: this.experimentId,
             account_id: this.userId,
+            
             data: data
         };
+
+        if(data['label']!=undefined){
+        params['label'] = data['label']
+        delete data['label']
+        }
 
         this.http.post('/api/v1/pr/deter/project/run', params, {withCredentials: true})
             .subscribe(data1 => {
@@ -387,12 +393,13 @@ export class DeterLabViewComponent implements OnInit {
 
                     const dialogRef = this.dialog.open(RunVariablePopUp, {
                         width: '30%',
-                        data: data1.paramters,
+                        data: data1.labels,
                     });
 
                     dialogRef.afterClosed().subscribe((result) => {
                         if (result !== undefined) {
                             this.showLoader = true;
+                            console.log(result)
                             this.run(result);
                         }
                     });
@@ -424,19 +431,30 @@ export class DeterLabViewComponent implements OnInit {
     styleUrls: ['./deterlab-view.component.scss'],
 })
 export class RunVariablePopUp implements OnInit {
-    variableList: any;
+    variableList: any
+    variable:any
+    selectedLabelIndex = ''
 
     constructor(
         public dialogRef: MatDialogRef<RunVariablePopUp>,
-        @Inject(MAT_DIALOG_DATA) public variable: any
+        @Inject(MAT_DIALOG_DATA) public labels: any
     ) {
     }
+    ngOnInit(): void {
+        this.selectedLabelIndex = ''
+    }
 
-    ngOnInit() {
+    onSelectChange() {
         this.variableList = {};
-        this.variable.forEach(element => {
+        this.variable = []
+        console.log(this.selectedLabelIndex)
+        if(this.selectedLabelIndex!='' && this.selectedLabelIndex!=undefined && this.selectedLabelIndex!=null){
+        this.variableList['label'] = this.labels[this.selectedLabelIndex].label
+        this.labels[this.selectedLabelIndex].variable.forEach(element => {
             this.variableList[element.variable] = '';
+            this.variable.push(element)
         });
+    }
     }
 
     onNoClick(): void {

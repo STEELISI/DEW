@@ -886,25 +886,27 @@ class HandleProjectRunLog(Resource):
                 experiment = list(em.get_experiment(eid, uid).versions)[-1]
                 transaction_id = experiment.transaction_id
                 script = hlb.HandleBASH(json.loads(experiment.content))
+                
                 variables = []
                 variable_list = []
                 flag = True
                 if label is not None:
                   for x in script:
-                    if x.label == label:
-                      variable_list += x.variables
-                      run_content = x.run.content
+                    if x['label'] == label:
+                      variable_list += x['variables']
+                      run_content = x['run']['content']
                       flag = False
                       break
-                else:
+                if flag:
                   r = []
                   for x in script:
-                    r.append(x.label)
+                    l = {}
+                    v = []
+                    l['label'] = x['label']
+                    v = v+x['variables']
+                    l['variable'] = v
+                    r.append(l)
                   return {"error":"Please select label","labels":r}, 200
-                
-                if flag:
-                  return {"error":"label doesn't exist"}, 200
-
 
                 if len(variable_list) != 0:
                   for x in variable_list:
@@ -912,9 +914,8 @@ class HandleProjectRunLog(Resource):
                       variables.append(data[x['variable']])
                   if len(variables) != len(variable_list):
                     result['error'] = "Parameters are missing" 
-                    result['paramters'] = variable_list
+                    result['label'] = {'label':label,'variable':variable_list}
                 if 'error' not in result:
-                  run_content = script[0][1]
                   ssh = SSHConnection(details['username'],details['password'])
                   result_log = ssh.runFile(mapping['project_name'],mapping['experiment_name'],run_content,variables)
                   if 'error' not in result_log:
@@ -967,14 +968,14 @@ class HandleProjectRunLog(Resource):
 
               if label is not None:
                 for x in script:
-                  if x.label == label:
-                    cleanup_content = x.clean.content
+                  if x['label'] == label:
+                    cleanup_content = x['clean']['content']
                     flag = False
                     break
               else:
                   r = []
                   for x in script:
-                    r.append(x.label)
+                    r.append(x['label'])
                   return {"error":"Please select label","labels":r}, 200
               if flag:
                 return {"error":"label doesn't exist"}, 200

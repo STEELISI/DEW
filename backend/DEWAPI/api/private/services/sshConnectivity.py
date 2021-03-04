@@ -1,6 +1,7 @@
 from jumpssh import SSHSession, RunCmdError, ConnectionError
 from DEWAPI import settings
 import uuid
+import time
 
 class SSHConnection():
     def __init__(self,username,password):
@@ -171,13 +172,16 @@ class SSHConnection():
                 if self.createFile(gatewaySession,filename,fileContent):
                     labels = ''
                     for label in variables:
-                        labels += ' \'' + label + '\''
-                    cmd = 'bash /users/' + self.username + '/' + filename + ' ' + project + ' ' + exp + ' ' + unique_name + labels \
-                        + '> ' + unique_name + '.log &'
-                    # print(cmd)
+                        labels += ' \'' + str(label) + '\''
+
+                    cmd = '/usr/bin/nohup /usr/local/bin/bash /users/' + self.username + '/' + filename + ' ' + project + ' ' + exp + ' ' + unique_name + labels \
+                        + '>' + unique_name + '.log' 
+
+                    print(cmd)
                     try:
-                        s2 = gatewaySession.get_cmd_output(cmd)
+                        gatewaySession.get_cmd_output(cmd)
                     except RunCmdError as e:
+                        print(e)
                         result['command_status_message']= "command executed with exception"
                     result['success'] = True
                     result['filename'] = unique_name
@@ -216,7 +220,7 @@ class SSHConnection():
                 filename = unique_name + ".sh"
                 if self.createFile(gatewaySession,filename,fileContent):
                     
-                    cmd = 'bash /users/' + self.username + '/' + filename + '> ' + unique_name + '.log &'
+                    cmd = 'nohup bash /users/' + self.username + '/' + filename+ ' > ' + unique_name + '.log '
                     print(cmd)
                     try:
                         s2 = gatewaySession.get_cmd_output(cmd)
