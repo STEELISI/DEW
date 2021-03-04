@@ -123,6 +123,7 @@ export class ExperimentSlides implements OnInit {
     	this.http.post("api/v1/pr/design/experiment/slides",{"experiment_id": this.experimentId, "sequence_number": this.lastSequenceNumber + 1},{withCredential: true}).subscribe((data) => {
     		this.slides.push(data['slide'])
     		this.lastSequenceNumber += 1
+        this.state.setlastSlideSeqNum(this.lastSequenceNumber);
         this.editSlide(data['slide'])
     	})
     }
@@ -182,6 +183,7 @@ export class ExperimentSlides implements OnInit {
 	    		var num = parseInt(slide['sequence_number'])
 	    		if(this.lastSequenceNumber < num){
 	    			this.lastSequenceNumber = num
+            this.state.setlastSlideSeqNum(num);
 	    		}
 	    });
     })

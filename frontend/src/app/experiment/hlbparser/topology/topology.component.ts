@@ -227,8 +227,12 @@ export class TopologyGraphComponent implements OnInit{
        this.addLanDEW(node)
     } else {
       var str = []
-      str.push("num " + node.label + " " + node.data.num)
-      str.push("os " + node.label + " " + node.data.os)
+      if(node.data.num != 1){
+        str.push("num " + node.label + " " + node.data.num)
+      }
+      if(node.data.os != "default"){
+        str.push("os " + node.label + " " + node.data.os)
+      }
       return str
     }
   }

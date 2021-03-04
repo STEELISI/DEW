@@ -154,7 +154,8 @@ delete_slide_object = api.model('Delete Experiment slide', {
 update_slide_dew_object = api.model('Update Experiment slide dew', {
   'slide_id': fields.String(description="Slide id", required=True),
   'experiment_id': fields.String(description="Experiment id", required=True),
-  'actor_action_mapping': fields.String(description="Actor action mapping", required=True)
+  'actor_action_mapping': fields.String(description="Actor action mapping", required=True),
+  'action_binding_mapping': fields.String(description="Action to binding mapping", required=True)
   })
 
 move_slides_object = api.model('Swap slide positions', {

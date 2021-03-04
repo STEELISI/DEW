@@ -926,7 +926,8 @@ class HandleExperimentSlides(Resource):
             experiment_id = json_data['experiment_id']
             slide_id = json_data['slide_id']
             actor_action_mapping = json_data['actor_action_mapping']
-            slide = em.update_experiment_slide_mapping(userId, experiment_id,slide_id,actor_action_mapping)
+            action_binding_mapping = json_data['action_binding_mapping']
+            slide = em.update_experiment_slide_mapping(userId, experiment_id,slide_id,actor_action_mapping, action_binding_mapping)
         except ValueError as e:
                 msg = {'saved': False, 'message': str(e)}
                 return msg, 403

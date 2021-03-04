@@ -46,6 +46,7 @@ export class SingleSlideComponent implements OnInit{
   maxZoomLevel: number = 4.0;
   panOnZoom: boolean = true;
 
+  experimentId : number = -1;
     customColors = [
     "#bf9d76",
     "#f2dfa7",
@@ -86,6 +87,7 @@ export class SingleSlideComponent implements OnInit{
     protected http: HttpService,
     protected state: StateService,
     public dialog: MatDialog,
+    private _snackBar: MatSnackBar,
     private formBuilder: FormBuilder
   ) {
   }
@@ -100,6 +102,10 @@ export class SingleSlideComponent implements OnInit{
 
     this.state.getslideTobeShown().subscribe((slide) => {
       this.slide = slide;
+    })
+
+    this.state.getExperimentId().subscribe((id) => {
+      this.experimentId = id;
     })
 
   }
@@ -143,6 +149,27 @@ export class SingleSlideComponent implements OnInit{
       return ""
     }
   }
+
+  createSlide(){
+    var lastSequenceNumber;
+      this.state.getlastSlideSeqNum().subscribe((n) => 
+        {lastSequenceNumber = n;}
+      )
+    if(this.experimentId < 1){
+      this._snackBar.open("Please save the experiment to continue!", "OK", {
+        duration: 10000,
+      });
+    } else {
+      this.http.post("api/v1/pr/design/experiment/slides",
+        {"experiment_id": this.experimentId,
+         "sequence_number": lastSequenceNumber + 1},{withCredential: true}).subscribe((data) => {
+        this.slide = data['slide']
+        this.state.setlastSlideSeqNum(lastSequenceNumber+1);
+        this._snackBar.open("Created new slide successfully!", "OK", {duration: 4000,});
+      })
+    }
+  }
+
 
   public getSubText(node){
     if(node.data.type == "actor"){
@@ -256,6 +283,8 @@ export class UpdateSlideMapping implements OnInit {
   slide: any;
   action: string;
   mapping: any;
+  bindingMapping: any;
+  binding: string = undefined;
 
   constructor(public dialogRef: MatDialogRef<UpdateSlideMapping>,
     protected http: HttpService,
@@ -268,7 +297,9 @@ export class UpdateSlideMapping implements OnInit {
     this.slide = this.input.slide;
     this.state.getExperimentId().subscribe(data => this.experimentId = data);
     this.mapping = JSON.parse(this.slide['actor_action_mapping']);
+    this.bindingMapping = JSON.parse(this.slide['action_binding_mapping']) || {};
     this.action = this.mapping[this.actor];
+    this.binding = this.bindingMapping[this.action];
   }
 
   onNoClick(): void {
@@ -278,12 +309,17 @@ export class UpdateSlideMapping implements OnInit {
   updateActorActionMapping() {
     console.log("action: ", this.action);
     this.mapping[this.actor] = this.action;
+    if(this.binding != undefined){
+      this.bindingMapping[this.action] = this.binding;
+    }
     this.slide['actor_action_mapping'] = JSON.stringify(this.mapping);
+    this.slide['action_binding_mapping'] = JSON.stringify(this.bindingMapping);
     console.log("mapping: ", this.mapping);
     var requestData = {
       "experiment_id": this.experimentId.toString(),
       "slide_id": this.slide['slide_id'].toString(),
-      "actor_action_mapping": this.slide['actor_action_mapping']
+      "actor_action_mapping": this.slide['actor_action_mapping'],
+      "action_binding_mapping": this.slide['action_binding_mapping']
     }
     this.http.put("v1/pr/design/experiment/slides", requestData, {withCredential: true}).subscribe((response)=> {
       this.state.setslideTobeShown(this.slide);

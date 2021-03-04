@@ -10,6 +10,7 @@ class Slide(db.Model):
 	experiment_id = db.Column(db.Integer,db.ForeignKey('experiment.experiment_id'))
 	sequence_number = db.Column(db.Integer,default=1,nullable=False)
 	actor_action_mapping = db.Column(db.Text)
+	action_binding_mapping = db.Column(db.Text)
 	created_at = db.Column(db.DateTime,nullable=False,default=datetime.utcnow)
 	updated_at = db.Column(db.DateTime,onupdate=datetime.utcnow, default=datetime.utcnow)
 	
@@ -20,6 +21,7 @@ class Slide(db.Model):
 			'experiment_id': self.experiment_id,
 			'sequence_number': self.sequence_number,
 			'actor_action_mapping': self.actor_action_mapping,
+			'action_binding_mapping': self.action_binding_mapping,
 			'created_at': self.created_at,
 			'updated_at': self.updated_at
 		}

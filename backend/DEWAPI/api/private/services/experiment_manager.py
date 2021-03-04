@@ -358,10 +358,11 @@ class ExperimentManager(object):
             db.session.commit()
             return True
 
-    def update_experiment_slide_mapping(self, user_id, experiment_id, slide_id, actor_action_mapping):
+    def update_experiment_slide_mapping(self, user_id, experiment_id, slide_id, actor_action_mapping, action_binding_mapping):
         if self.user_can(experiment_id, user_id, AccessControlEnum.write) is not None:
             s = Slide.query.filter(Slide.slide_id == slide_id).first()
             s.actor_action_mapping = actor_action_mapping
+            s.action_binding_mapping = action_binding_mapping
             db.session.commit()
             return s
 

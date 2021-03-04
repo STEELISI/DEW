@@ -22,6 +22,7 @@ export class StateService {
   tokenLevel: String;
   serverData: BehaviorSubject<any> = new BehaviorSubject(null);
   slideTobeShown: BehaviorSubject<any> = new BehaviorSubject({});
+  lastSlideSeqNum: BehaviorSubject<number> = new BehaviorSubject(0);
   allAnyPresent = false;
   currentViewId: BehaviorSubject<number>=new BehaviorSubject(1);
 
@@ -165,5 +166,13 @@ export class StateService {
 
   setCurrentViewId(viewId: number){
     this.currentViewId.next(viewId)
+  }
+
+  getlastSlideSeqNum(): Observable<any>{
+    return this.lastSlideSeqNum;
+  }
+
+  setlastSlideSeqNum(snum: number){
+    this.lastSlideSeqNum.next(snum);
   }
 }
