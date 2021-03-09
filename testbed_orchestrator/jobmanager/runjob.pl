@@ -24,9 +24,12 @@ sub pstree
 	    $pid = $items[0];
 	    $cmd = $items[1];
 	    $i = 2;
-	    while ($cmd !~ /\)$/)
+	    if ($cmd =~ /^\(/)
 	    {
-		$cmd = $cmd . " " . $items[$i++];
+		while ($cmd !~ /\)$/)
+		{
+		    $cmd = $cmd . " " . $items[$i++];
+		}
 	    }
 	    $state = $items[$i++];
 	    $ppid = $items[$i++];
@@ -38,13 +41,29 @@ sub pstree
     }
 }
 
+sub recursivekill
+{
+    my $pid = shift;
+    for my $g (@{$children{$pid}})
+    {
+	print "Should kill $g\n";
+	recursivekill($g);
+    }
+    kill HUP, $pid;
+    print "Killed $pid\n";
+}
+
 #Main program
 
 my ($socket,$received_data);
 my ($peeraddress,$peerport);
 
+open(my $hn, "/bin/hostname|") || die "Cannot run hostname";
+$myname = <$hn>;
+$myname =~ s/\n//;
+print "Name $myname\n";
 $socket = new IO::Socket::INET (
-    LocalHost => 'controller.multi.dew.isi.deterlab.net',
+    LocalHost => $myname,
     LocalPort => '17711',
     Proto => 'udp',
     ) or die "ERROR in Socket Creation : $\n";
@@ -58,6 +77,7 @@ while(1)
     #start scriptfile num or
     #stop scriptfile num
     @elems = split /\s+/, $received_data;
+    print "Received $received_data\n";
     if ($#elems != 2)
     {
 	#wrong format
@@ -82,16 +102,16 @@ while(1)
 	if (exists($childpids{$script . "-" . $num}))
 	{
 	    my $pid =  $childpids{$script . "-" . $num};
-	    while(exists($children{$pid}))
-	    {
-		print "Should kill $pid\n";
+	    if(exists($children{$pid}))
+	    {		
 		for $c (@{$children{$pid}})
 		{
-		    print "$c ";
+		    recursivekill($c);
 		}
-		# should do this recursively		
+		#kill HUP, $pid;
+		# should do this recursively
+		$children{$pid} = "";
 	    }
-	    $children{$pid} = "";
 	}	
     }
     pstree();
