@@ -117,11 +117,11 @@ while(1)
     pstree();
     for $p (keys %children)
     {
-	print "$p ($tree{$p}{'cmd'}): ";
+	#print "$p ($tree{$p}{'cmd'}): ";
 	for $c (@{$children{$p}})
 	{
-	    print "$c ";
+	 #   print "$c ";
 	}
-	print "\n";
+	#print "\n";
     }
 }

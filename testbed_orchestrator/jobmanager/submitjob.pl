@@ -1,3 +1,5 @@
+#!/usr/bin/perl
+
 use IO::Socket::INET;
 
 for ($i=0; $i <= $#ARGV; $i++)
