@@ -15,8 +15,8 @@ class NSGenerator(Generator):
         super().__init__(*args, name="ns", **kwargs)
         self.evars = [];
 
-    def generate(self):
-        super().generate()
+    def generate(self, mode=None):
+        super().generate(mode)
 
         self.collectNum()
         self.generatePreamble("main")        
@@ -131,8 +131,8 @@ class NSGenerator(Generator):
     def generatePostamble(self, label):
         self.run[label] += '\n$ns rtproto Static\n$ns run\n\n'
 
-    def parse(self):
-        super().parse()
+    def parse(self, mode=None):
+        super().parse(mode)
 
 
 

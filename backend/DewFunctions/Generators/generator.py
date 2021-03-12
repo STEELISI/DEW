@@ -43,7 +43,7 @@ class Generator(object):
         self.run = dict()
         self.clear = dict()
 
-    def parse(self):
+    def parse(self, mode=None):
         # For each item in our scenario/constraints lists, make sure we can parse it and
         # turn it into tuplets.
         # Scenario -> ['trigger events', 'actors', 'action', 'emit events', 'wait time']
@@ -113,6 +113,6 @@ class Generator(object):
             
         self.dew = "[Scenario]\n" + mys + "\n[Constraints]\n" + myc + "\n[Bindings]\n" + myb
 
-    def generate(self):
+    def generate(self, mode=None):
         # Parse scenario, constraints and bindings
-        self.parse()
+        self.parse(mode)
