@@ -1,4 +1,6 @@
+#!/usr/bin/perl
 # Listen on socket for start and kill events
+
 
 use IO::Socket::INET;
 
