@@ -1,4 +1,4 @@
-PATH=$PATH:/share/shared/DEW/
+
 if [ "$#" -le 2 ]; then
 	printf "Usage: $0 proj exp label
 
@@ -30,7 +30,7 @@ execute_clear()
 	    fi
 	done	
     fi
-    submitjob $node $exp $proj "stop ~/DEW/$id/script.$cnt.sh $cnt" &
+    /share/shared/dew/submitjob $node $exp $proj "stop ~/DEW/$id/script.$cnt.sh $cnt" &
 }
 
 rm -f ~/DEW/$id

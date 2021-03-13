@@ -1,4 +1,4 @@
-PATH=$PATH:/share/shared/DEW/
+
 id=$label
 cnt=0
 
@@ -21,7 +21,7 @@ execute_fork()
     echo "else" >> ~/DEW/$id/script.$cnt.sh
     echo "    echo 1 > ~/DEW/$id/status.$cnt" >> ~/DEW/$id/script.$cnt.sh	    
     echo "fi" >> ~/DEW/$id/script.$cnt.sh
-    submitjob $node $exp $proj "start ~/DEW/$id/script.$cnt.sh $cnt" &
+    /share/shared/dew/submitjob $node $exp $proj "start ~/DEW/$id/script.$cnt.sh $cnt" &
 }
 
 
