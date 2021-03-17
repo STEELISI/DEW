@@ -135,6 +135,14 @@
                                    >Run Experiment
                             </button>
                         </li>
+			<li>
+                            <button type="button" class="btn btn-outline-success swap-dt"
+                            data-toggle="modal" data-target="#exampleModal"
+                                    [disabled]="deactivateSwapOut"
+                                    (click)="activateModal('stop')"
+                                   >Stop Experiment
+                            </button>
+                        </li>
                     </ul>
                 </ng-template>
                 <br/>

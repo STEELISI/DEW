@@ -936,7 +936,7 @@ class HandleProjectRunLog(Resource):
             if str(e) == "Forbidden":
                 return {}, 403
 
-@ns.route('/deter/project/clean')
+@ns.route('/deter/project/stop')
 class HandleProjectRunLog(Resource):
     def post(self):
         content = request.get_json(force=True)
@@ -944,6 +944,7 @@ class HandleProjectRunLog(Resource):
           return {"error":"rid is missing"} , 200
         if 'account_id' not in content:
           return {"error":"account_id is missing"}, 200
+        return {"error":"nothing is missing"}, 200
         
         label = None
         if 'label' in content:
@@ -956,14 +957,12 @@ class HandleProjectRunLog(Resource):
           result = {}
           version_id = dm.getVersion(rid,uid,daid)
           if version_id is None:
-            result['error'] = 'User doesnot have access to this script'
+            result['error'] = 'User does not have access to this script'
           else:
             details = ps.get(uid,daid)
             if str(details['username']).strip() !='' and str(details['password']).strip() !='':
               experiment = next(item for item in list(em.get_experiment(version_id.eid, uid).versions) if item.transaction_id == version_id.version_id)
-              script = hlb.HandleBASH(json.loads(experiment.content))
-
-              script = hlb.HandleBASH(json.loads(experiment.content))
+              script = hlb.HandleBASH(json.loads(experiment.content), "job")
               flag = True
 
               if label is not None:

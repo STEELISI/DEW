@@ -174,7 +174,7 @@ class SSHConnection():
                     for label in variables:
                         labels += ' \'' + str(label) + '\''
 
-                    cmd = '/usr/bin/nohup /share/shared/dew/manager /users/' + self.username + '/' + filename + ' ' + project + ' ' + exp + ' ' + unique_name + labels + " start" \
+                    cmd = '/share/shared/dew/manager /users/' + self.username + '/' + filename + ' ' + project + ' ' + exp + ' ' + unique_name + labels + ' start' \
                         + '>' + unique_name + '.log' 
 
                     print(cmd)
