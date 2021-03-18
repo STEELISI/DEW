@@ -22,7 +22,7 @@ from hlb_parser import HLBParser, ConstraintParser, BindingParser
 
 class Generator(object):
     # scenario and constraints given as a list.
-    def __init__(self,   constraints, scenario, bindings, experimentName, inputFileName=None,name='Generic Class'):
+    def __init__(self,   constraints, scenario, bindings, experimentName=None, inputFileName=None,name='Generic Class'):
 
         self.constraints = constraints
         self.scenario = scenario

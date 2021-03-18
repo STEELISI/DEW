@@ -46,6 +46,7 @@ class MergeTBGenerator(Generator):
         # Collect link constraints
         cl = 0
         lans = dict()
+        lansMergeTB = dict()
         links = dict()
         for c in self.constraints_parsed:
             r1 = re.findall("link", c[0])
@@ -65,13 +66,17 @@ class MergeTBGenerator(Generator):
                 r1 = re.findall("lan", c[0])
                 if len(r1) > 0:
                     lans[cl] = []
+                    lansMergeTB[cl] = []
                     for n in c[1]:
                         actors[n] = 1
                         if n in self.num.keys():
                             for i in range (1, self.num[n]+1):
                                 lans[cl].append(n+"-"+str(i))
+                                if n not in lansMergeTB[cl]:
+                                    lansMergeTB[cl].append(n)
                         else:
                             lans[cl].append(n)
+                            lansMergeTB[cl].append(n)
                     cl += 1
         label = "main"
 
@@ -83,18 +88,21 @@ class MergeTBGenerator(Generator):
         self.run[label] += "# create a topology named '" + experimentName + "'\n"
         self.run[label] += "net = mx.Topology('" + experimentName + "')\n\n"
         # Generate nodes
+        nodesList = []
         status = 1
         for a in actors:
             if a not in self.num.keys():
                 self.run[label] += a +" = net.device('" + a + "')\n"
+                nodesList.append(a)
                 if (a in os.keys()):
                     self.run[label] += "net.device("+a+", image == \""+ os[a] + "\"\n"
             else:
                 status = 0
-        if status == 0:
-            self.run[label] += "nodes = [net.device(name) for name in ["
         count = 0
         for a in actors:
+            if status == 0:
+                self.run[label] += a + " = [net.device(name) for name in ["
+                nodesList.append(a)
             count += 1
             if a in self.num.keys():
                 for i in range(1,self.num[a]+1):
@@ -102,8 +110,8 @@ class MergeTBGenerator(Generator):
                     #if i != self.num[a]:
                 if count != len(actors):
                     self.run[label] += ","
-        if status == 0:
-            self.run[label] += "]]\n"
+            if status == 0:
+                self.run[label] += "]]\n"
 
         # Generate links 
         cnt = 1
@@ -135,17 +143,24 @@ class MergeTBGenerator(Generator):
                  cnt += 1
             #self.run[label] += "]]\n"
         # Generate lans
-        for l in lans.keys():
+        for l in lansMergeTB.keys():
             #self.run[label] += "set lan"+str(l)+" [$ns make-lan \""
-            self.run[label] += "nodes" + str(l) + " = [net.device(name) for name in ["
+            '''self.run[label] += "nodes" + str(l) + " = [net.device(name) for name in ["
             for n in lans[l]:
                 #self.run[label] += n+ " "
                 self.run[label] += "'" + n + "'"
                 if n != lans[l][len(lans[l])-1]:
                     self.run[label] += ", "
                 print("hi")
-            self.run[label] += "]]\n"
-            self.run[label] += "lan" + str(l) + " net.connect(nodes" + str(l) + ")\n"
+            self.run[label] += "]]\n"'''
+            
+            self.run[label] += "lan" + str(l) + " = net.connect(["
+            for i in range(len(lansMergeTB[l])):
+                if i != len(lansMergeTB[l]) - 1:
+                    self.run[label] += lansMergeTB[l][i]+","
+                else:
+                    self.run[label] += lansMergeTB[l][i]
+            self.run[label] +=  "])\n"
             
     def generatePreamble(self, label):
         self.run[label] = "import mergexp as mx\n"
