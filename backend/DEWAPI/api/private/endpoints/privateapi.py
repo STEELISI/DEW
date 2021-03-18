@@ -73,6 +73,19 @@ class HandleHLBGeneratorNs(Resource):
         script = hlb.HandleNS(json_data)
         return {'script': script}
 
+@ns.route('/hlb/generateMergeTB')
+class HandleHLBGeneratorMergeTB(Resource):
+
+    @api.expect(ns_object)
+    @api.representation('text/plain')
+    def put(self):
+        """
+          Generates MergeTB file for given behaviors, actors, and constraints
+        """
+        json_data = request.get_json(force=True)
+        script = hlb.HandleMergeTB(json_data)
+        return {'script': script}
+
 @ns.route('/hlb/generateBash')
 class HandleHLBGeneratorBash(Resource):
 
