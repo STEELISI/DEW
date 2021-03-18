@@ -107,9 +107,8 @@ class MergeTBGenerator(Generator):
             if a in self.num.keys():
                 for i in range(1,self.num[a]+1):
                     self.run[label] += " '"+ str(a) + "-" + str(i) + "'"
-                    #if i != self.num[a]:
-                if count != len(actors):
-                    self.run[label] += ","
+                    if i != self.num[a]:
+                        self.run[label] += ","
             if status == 0:
                 self.run[label] += "]]\n"
 
