@@ -121,23 +121,23 @@ class MergeTBGenerator(Generator):
                     for b in links[a].keys():
                         if b in self.num.keys():
                             for j in range (1,self.num[b]+1):
-                                self.run[label] += "link" + str(cnt) + " = " + "net.connect([" + "a" + "-"+str(i)+","+b+"-"+str(j)+"])\n"
+                                self.run[label] += "link" + str(cnt) + " = " + "net.connect([" + a + "-"+str(i)+","+b+"-"+str(j)+"])\n"
                                 cnt += 1
                         else:
                             #self.run[label] += "set link"+str(cnt)+" [$ns duplex-link "+a+"-"+str(i)+" "+b+" 100Mb 0ms DropTail]\n"'''
                         #self.run[label] += "'" + a + "'," +"'" + b + "'"
-                            self.run[label] += "link" + str(cnt) + " = " + "net.connect([" + "a" + "-"+str(i)+","+b+"])\n"
+                            self.run[label] += "link" + str(cnt) + " = " + "net.connect([" + a + "-"+str(i)+","+b+"])\n"
                         cnt += 1
             else:
                  for b in links[a].keys():
                      if b in self.num.keys():
                          for j in range (1,self.num[b]+1):
                                #self.run[label] += "set link"+str(cnt)+" [$ns duplex\-link "+a+" "+b+"-"+str(j)+" 100Mb 0ms DropTail]\n"
-                            self.run[label] += "link" + str(cnt) + " = " + "net.connect([" + "a" +","+b+"-"+str(j)+"])\n"
+                            self.run[label] += "link" + str(cnt) + " = " + "net.connect([" + a +","+b+"-"+str(j)+"])\n"
                             cnt += 1
                      else:
                          #self.run[label] += "set link"+str(cnt)+" [$ns duplex-link "+a+" "+b+" 100Mb 0ms DropTail]\n"'''
-                         self.run[label] += "link" + str(cnt) + " = " + "net.connect([" + "a" +","+b+"])\n"
+                         self.run[label] += "link" + str(cnt) + " = " + "net.connect([" + a +","+b+"])\n"
                  #self.run[label] += "'" + a + "'," +"'" + b + "'"
                  cnt += 1
             #self.run[label] += "]]\n"
