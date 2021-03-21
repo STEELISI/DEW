@@ -366,11 +366,37 @@ class ExperimentManager(object):
             db.session.commit()
             return s
 
+    def delete_all_slides(self, user_id, experiment_id):
+        if self.user_can(experiment_id, user_id, AccessControlEnum.read) is not None:
+
+            Slide.query.filter(Slide.experiment_id == experiment_id).delete()
+
+            db.session.commit()
+
+
+    def prepare_slides_from_dew(self, user_id, experiment_id):
+        if self.user_can(experiment_id, user_id, AccessControlEnum.write) is not None:
+            self.delete_all_slides(user_id, experiment_id)
+            dew_content = json.loads(
+                self.get_experiment(experiment_id, user_id).content)
+            seq = 0
+            for behavior in dew_content['behaviors']:
+                s = Slide.get_from_dew(experiment_id, seq, behavior, dew_content['bindings'])
+                db.session.add(s)
+                seq += 1
+            db.session.commit()
+        return Slide.query.filter(Slide.experiment_id == experiment_id).order_by(Slide.sequence_number)
 
     def slides_of_experiment(self, user_id, experiment_id):
         if self.user_can(experiment_id, user_id, AccessControlEnum.read) is not None:
+            experiment = self.get_experiment(experiment_id, user_id)
             slides = Slide.query.filter(Slide.experiment_id == experiment_id).order_by(Slide.sequence_number)
-            return [s.to_dict() for s in slides]
+            s2 = [s.to_dict() for s in slides] or []
+            if(len(s2) > 0 and experiment.updated_at > s2[-1]['updated_at']):
+                slides = self.prepare_slides_from_dew(user_id, experiment_id)
+                return [s.to_dict() for s in slides]
+
+            return s2
 
     def delete_slide(self, user_id, experiment_id, slide_id):
         if self.user_can(experiment_id, user_id, AccessControlEnum.write) is not None:
@@ -383,7 +409,9 @@ class ExperimentManager(object):
             slides = Slide.query.filter(Slide.experiment_id == experiment_id).order_by(Slide.sequence_number)
             prev_event = None
             dew_string = []
+            bindings = []
             for slide in slides:
-                dew_string += slide.dew_string(prev_event)
+                dew_string += slide.behavior_string(prev_event)
+                bindings += slide.bindings()
                 prev_event = "slideDoneEvent"+str(slide.sequence_number)
-            return dew_string
+            return [dew_string, bindings]

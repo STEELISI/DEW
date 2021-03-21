@@ -107,8 +107,9 @@ export class ExperimentSlides implements OnInit {
       });
     } else {
       this.http.get("v1/pr/design/experiment/slides/"+this.experimentId + "/dew", {withCredential: true}).subscribe((response) => {
-        this.state.setBehavior(response['dew']);
-        this.updateBindings();
+        this.state.setBehavior(response['behaviors']);
+        this.state.setBindings(response['bindings']);
+        // this.updateBindings();
         this.navigate.emit(2);
       })
     }
@@ -191,7 +192,8 @@ export class ExperimentSlides implements OnInit {
 
   updateDEW(){
     this.http.get("v1/pr/design/experiment/slides/"+this.experimentId + "/dew", {withCredential: true}).subscribe((response) => {
-      this.state.setBehavior(response['dew']);
+      this.state.setBehavior(response['behaviors']);
+      this.state.setBindings(response['bindings']);
     })
   }
 

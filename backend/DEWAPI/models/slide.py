@@ -1,5 +1,6 @@
 from extensions import db
 from datetime import datetime
+from hlb_parser import HLBParser
 
 import json
 
@@ -26,7 +27,7 @@ class Slide(db.Model):
 			'updated_at': self.updated_at
 		}
 
-	def dew_string(self, t_event=None):
+	def behavior_string(self, t_event=None):
 		mapping = json.loads(self.actor_action_mapping)
 		dew_array = []
 		for actor in mapping:
@@ -36,3 +37,33 @@ class Slide(db.Model):
 			dew_string += str(actor) + " " + str(mapping[actor]) + " emit slideDoneEvent" + str(self.sequence_number) + "\n"
 			dew_array.append(dew_string)
 		return dew_array
+
+	def bindings(self):
+		if(self.action_binding_mapping is None):
+			self.action_binding_mapping = "{}"
+		mapping = json.loads(self.action_binding_mapping)
+		binding_arr = []
+		for action in mapping:
+			binding_arr.append({
+				"key": action,
+				"category": "action",
+				"value": mapping[action]
+			})
+		return binding_arr
+
+	@classmethod
+	def get_from_dew(self, experiment_id, sequence_number, scenario, binding):
+		parser = HLBParser([])
+		_t, v, _h = parser.extract_partial(scenario)
+		print("scenario is ", v)
+		actor_action_mapping = {}
+		action_binding_mapping = {}
+ 
+		actor_action_mapping[v['actors'][0]] = v['action']
+
+		action_binding_mapping[v['action']] = [b['value'] for b in binding if b['key'] == v['action'] and b['category'] == 'action'][0]
+		return Slide(experiment_id=experiment_id,
+			sequence_number=sequence_number,
+			actor_action_mapping=json.dumps(actor_action_mapping),
+			action_binding_mapping=json.dumps(action_binding_mapping))
+		

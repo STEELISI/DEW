@@ -976,12 +976,16 @@ class HandleDEWforSlides(Resource):
         """
         try:
             userId = userObj.getUserId()
-            dew_content = em.dew_from_slides(userId, experiment_id)
+            behaviors, bindings = em.dew_from_slides(userId, experiment_id)
         except ValueError as e:
             msg = {'status': 'Failure', 'message': str(e)}
             return msg, 403
-        if dew_content:
-            return {'status': "Successful", 'dew': dew_content}
+        if behaviors and bindings:
+            return {
+                        "status": "Successful", 
+                        "behaviors": behaviors,
+                        "bindings": bindings
+                    }
     
 
 @ns.route('/design/experiment/slides/swap')
