@@ -392,7 +392,10 @@ class ExperimentManager(object):
             experiment = self.get_experiment(experiment_id, user_id)
             slides = Slide.query.filter(Slide.experiment_id == experiment_id).order_by(Slide.sequence_number)
             s2 = [s.to_dict() for s in slides] or []
-            if(len(s2) > 0 and experiment.updated_at > s2[-1]['updated_at']):
+            last_max_updated = 0
+            if(len(s2) > 0):
+                last_max_updated = max([s['updated_at'] for s in s2])
+            if(experiment.updated_at > last_max_updated):
                 slides = self.prepare_slides_from_dew(user_id, experiment_id)
                 return [s.to_dict() for s in slides]
 
