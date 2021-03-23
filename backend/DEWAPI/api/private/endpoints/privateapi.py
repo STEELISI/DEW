@@ -940,11 +940,11 @@ class HandleProjectRunLog(Resource):
 class HandleProjectRunLog(Resource):
     def post(self):
         content = request.get_json(force=True)
+        print("Content is ", content)
         if 'rid' not in content:
           return {"error":"rid is missing"} , 200
         if 'account_id' not in content:
           return {"error":"account_id is missing"}, 200
-        return {"error":"nothing is missing"}, 200
         
         label = None
         if 'label' in content:
