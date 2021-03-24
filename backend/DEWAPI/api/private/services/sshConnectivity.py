@@ -167,14 +167,14 @@ class SSHConnection():
                 result['error']= "experiment '" + exp + "' is in transition."
                 return result 
             try:
-                unique_name = exp + '_run_' + str(uuid.uuid4())
+                unique_name = exp + '_run'# + str(uuid.uuid4())
                 filename = unique_name + ".sh"
                 if self.createFile(gatewaySession,filename,fileContent):
                     labels = ''
                     for label in variables:
                         labels += ' \'' + str(label) + '\''
 
-                    cmd = '/usr/bin/nohup /usr/local/bin/bash /users/' + self.username + '/' + filename + ' ' + project + ' ' + exp + ' ' + unique_name + labels \
+                    cmd = '/share/shared/dew/manager /users/' + self.username + '/' + filename + ' ' + project + ' ' + exp + ' ' + unique_name + labels + ' start' \
                         + '>' + unique_name + '.log' 
 
                     print(cmd)
@@ -216,7 +216,7 @@ class SSHConnection():
             #     result['error']= "experiment '" + exp + "' is in transition."
             #     return result 
             try:
-                unique_name = exp + '_cleanup_' + str(uuid.uuid4())
+                unique_name = exp + '_cleanup'# + str(uuid.uuid4())
                 filename = unique_name + ".sh"
                 if self.createFile(gatewaySession,filename,fileContent):
                     
@@ -246,6 +246,8 @@ class SSHConnection():
         try:
             gatewaySession = SSHSession(self.sshURL, self.username, password=self.password).open()
             directory  = '/users/' + self.username + "/DEW"
+            print("Getting logs for "+directory+"/"+unique_name);
+
             try:
                 if not gatewaySession.exists(directory) or not gatewaySession.exists(directory+ "/" + unique_name):
                     result['error'] = "No run information available."
