@@ -80,94 +80,63 @@ class MergeTBGenerator(Generator):
                     cl += 1
         label = "main"
 
-        if (os.keys()):
-            self.run[label] += "from mergexp.machine import image\n"
         experimentName = self.experimentName
         sampleList = experimentName.split()
         experimentName = "-".join(sampleList)
         self.run[label] += "# create a topology named '" + experimentName + "'\n"
-        self.run[label] += "net = mx.Topology('" + experimentName + "')\n\n"
+        self.run[label] += "net = Network('" + experimentName + "')\n\n"
+        self.run[label] += "def px(name):\n"
+        self.run[label] += "\treturn net.node(name)\n\n"
+
         # Generate nodes
         nodesList = []
-        status = 1
+
         for a in actors:
-            if a not in self.num.keys():
-                self.run[label] += a +" = net.device('" + a + "')\n"
-                nodesList.append(a)
-                if (a in os.keys()):
-                    self.run[label] += "net.device("+a+", image == \""+ os[a] + "\"\n"
-            else:
-                status = 0
-        count = 0
-        for a in actors:
-            if status == 0:
-                self.run[label] += a + " = [net.device(name) for name in ["
-                nodesList.append(a)
-            count += 1
+            nodesList.append(a)
             if a in self.num.keys():
-                for i in range(1,self.num[a]+1):
-                    self.run[label] += " '"+ str(a) + "-" + str(i) + "'"
-                    if i != self.num[a]:
-                        self.run[label] += ","
-            if status == 0:
-                self.run[label] += "]]\n"
+                self.run[label] += a + " = [px('" + a + "%d'%i) for i in range(" + str(self.num[a]) + ")]\n"
+            else:
+                self.run[label] += a + " = [px('" + a + "%d'%i) for i in range(1)]\n"
 
         # Generate links 
-        cnt = 1
+        cnt = 0
         for a in links.keys():
-            #self.run[label] += "[net.device(name) for name in ["
             if a in self.num.keys():
-                for i in range (1, self.num[a]+1):
-                    for b in links[a].keys():
-                        if b in self.num.keys():
-                            for j in range (1,self.num[b]+1):
-                                self.run[label] += "link" + str(cnt) + " = " + "net.connect([" + a + "-"+str(i)+","+b+"-"+str(j)+"])\n"
-                                cnt += 1
-                        else:
-                            #self.run[label] += "set link"+str(cnt)+" [$ns duplex-link "+a+"-"+str(i)+" "+b+" 100Mb 0ms DropTail]\n"'''
-                        #self.run[label] += "'" + a + "'," +"'" + b + "'"
-                            self.run[label] += "link" + str(cnt) + " = " + "net.connect([" + a + "-"+str(i)+","+b+"])\n"
+                for b in links[a].keys():
+                    if b in self.num.keys():
+                        self.run[label] += "link" + str(cnt) + " = [net.connect(["+a+"[i],"+b+"[j]]) for i in range(" + str(self.num[a])  + ") for j in range("+ str(self.num[b])  +")]\n"
                         cnt += 1
+                        break
+                    else:
+                        self.run[label] += "link" + str(cnt) + " = [net.connect(["+a+"[i],"+b+"[j]]) for i in range(" + str(self.num[a])  + ") for j in range(1)]\n"
+                        cnt += 1
+                        break
             else:
                  for b in links[a].keys():
-                     if b in self.num.keys():
-                         for j in range (1,self.num[b]+1):
-                               #self.run[label] += "set link"+str(cnt)+" [$ns duplex\-link "+a+" "+b+"-"+str(j)+" 100Mb 0ms DropTail]\n"
-                            self.run[label] += "link" + str(cnt) + " = " + "net.connect([" + a +","+b+"-"+str(j)+"])\n"
-                            cnt += 1
-                     else:
-                         #self.run[label] += "set link"+str(cnt)+" [$ns duplex-link "+a+" "+b+" 100Mb 0ms DropTail]\n"'''
-                         self.run[label] += "link" + str(cnt) + " = " + "net.connect([" + a +","+b+"])\n"
-                 #self.run[label] += "'" + a + "'," +"'" + b + "'"
-                 cnt += 1
-            #self.run[label] += "]]\n"
+                    if b in self.num.keys():
+                        self.run[label] += "link" + str(cnt) + " = [net.connect(["+a+"[i],"+b+"[j]]) for i in range(1) for j in range("+ str(self.num[b])  +")]\n"
+                        cnt += 1
+                        break
+                    else:
+                        self.run[label] += "link" + str(cnt) + " = [net.connect(["+a+"[i],"+b+"[j]]) for i in range(1) for j in range(1)]\n"
+                        cnt += 1
+                        break
+                
         # Generate lans
         for l in lansMergeTB.keys():
-            #self.run[label] += "set lan"+str(l)+" [$ns make-lan \""
-            '''self.run[label] += "nodes" + str(l) + " = [net.device(name) for name in ["
-            for n in lans[l]:
-                #self.run[label] += n+ " "
-                self.run[label] += "'" + n + "'"
-                if n != lans[l][len(lans[l])-1]:
-                    self.run[label] += ", "
-                print("hi")
-            self.run[label] += "]]\n"'''
-            
-            self.run[label] += "lan" + str(l) + " = net.connect(["
+            self.run[label] += "lan" + str(l) + " = net.connect("
             for i in range(len(lansMergeTB[l])):
                 if i != len(lansMergeTB[l]) - 1:
-                    self.run[label] += lansMergeTB[l][i]+","
+                    self.run[label] += lansMergeTB[l][i]+" + "
                 else:
                     self.run[label] += lansMergeTB[l][i]
-            self.run[label] +=  "])\n"
-            
+            self.run[label] +=  ")\n"
+
     def generatePreamble(self, label):
-        self.run[label] = "import mergexp as mx\n"
-        self.run[label] += "from mergexp.net import capacity\n\n"
+        self.run[label] = "from mergexp import *\n"
 
     def generatePostamble(self, label):
-        #self.run[label] += "# specify the net object as the experiment topology created by this script\n"
-        self.run[label] += "mx.experiment(net)\n"
+        self.run[label] += "experiment(net)\n"
 
     def parse(self):
         super().parse()
