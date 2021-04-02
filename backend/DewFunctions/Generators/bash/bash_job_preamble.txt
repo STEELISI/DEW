@@ -8,20 +8,21 @@ execute_fork()
     local node=$1
     local cmd=$2
     local cnt=$3
+    local aname=$4
     
     if [ ! -d ~/DEW/$id ] ; then
 	mkdir ~/DEW/$id
     fi
-    echo "echo \"running $cmd\"" > ~/DEW/$id/script.$cnt.sh
-    echo "$cmd 2>~/DEW/$id/error.$cnt &" > ~/DEW/$id/script.$cnt.sh
-    echo "pid=\"\$!\""  >> ~/DEW/$id/script.$cnt.sh
-    echo "echo \$pid > ~/DEW/$id/pid.$cnt" >> ~/DEW/$id/script.$cnt.sh
-    echo "if wait \$pid; then" >> ~/DEW/$id/script.$cnt.sh
-    echo "    echo 0 > ~/DEW/$id/status.$cnt" >> ~/DEW/$id/script.$cnt.sh	    
-    echo "else" >> ~/DEW/$id/script.$cnt.sh
-    echo "    echo 1 > ~/DEW/$id/status.$cnt" >> ~/DEW/$id/script.$cnt.sh	    
-    echo "fi" >> ~/DEW/$id/script.$cnt.sh
-    /share/shared/dew/submitjob $node $exp $proj "start ~/DEW/$id/script.$cnt.sh $cnt" &
+    echo "echo \"running $cmd\"" > ~/DEW/$id/script.$cnt.$aname.$node.sh
+    echo "$cmd 2>~/DEW/$id/error.$cnt &" > ~/DEW/$id/script.$cnt.$aname.$node.sh
+    echo "pid=\"\$!\""  >> ~/DEW/$id/script.$cnt.$aname.$node.sh
+    echo "echo \$pid > ~/DEW/$id/pid.$cnt" >> ~/DEW/$id/script.$cnt.$aname.$node.sh
+    echo "if wait \$pid; then" >> ~/DEW/$id/script.$cnt.$aname.$node.sh
+    echo "    echo 0 > ~/DEW/$id/status.$cnt" >> ~/DEW/$id/script.$cnt.$aname.$node.sh	    
+    echo "else" >> ~/DEW/$id/script.$cnt.$aname.$node.sh
+    echo "    echo 1 > ~/DEW/$id/status.$cnt" >> ~/DEW/$id/script.$cnt.$aname.$node.sh	    
+    echo "fi" >> ~/DEW/$id/script.$cnt.$aname.$node.sh
+    /share/shared/dew/submitjob $node $exp $proj "start ~/DEW/$id/script.$cnt.$aname.$node.sh $cnt" &
 }
 
 

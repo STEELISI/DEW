@@ -58,11 +58,19 @@ class DeterLabExperimentManager(object):
         
         return "Successful"
 
-    def addLog(self, eid, daid, uid, transaction_id, unique_name, variables):
-        d = DeterlabRunScriptLogs(daid=daid, eid=eid, uid=uid, version_id=transaction_id,unique_name=unique_name,isdeleted=False, run_variable_value=variables)
+    def addLog(self, eid, daid, uid, transaction_id, unique_name, variables,action):
+        d = DeterlabRunScriptLogs(daid=daid, eid=eid, uid=uid, version_id=transaction_id,unique_name=unique_name,isdeleted=False, run_variable_value=variables, action=action)
         db.session.add(d)
         db.session.commit()
-    
+
+    def getStatus(self, eid, uid, unique_name):
+        d = DeterlabRunScriptLogs.query.filter(DeterlabRunScriptLogs.unique_name == unique_name, DeterlabRunScriptLogs.eid == eid, DeterlabRunScriptLogs.uid == uid,DeterlabRunScriptLogs.isdeleted == False)
+        result = ""
+        if d is not None:
+            for x in d:
+                result = x.action
+        return result
+                  
     def getLogs(self, eid, daid, uid):
         d = DeterlabRunScriptLogs.query.filter(DeterlabRunScriptLogs.daid == daid, DeterlabRunScriptLogs.eid == eid, DeterlabRunScriptLogs.uid == uid,DeterlabRunScriptLogs.isdeleted == False)
         result = []

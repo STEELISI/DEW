@@ -149,7 +149,7 @@ class SSHConnection():
             result['error'] = "Unable to connect to 'deterlab' with user '" + self.username + "'"
         return result
 
-    def runFile(self,project,exp,fileContent,variables):
+    def runFile(self,project,exp,fileContent,variables, unique_name, action):
         result = {}
         try:
             gatewaySession = SSHSession(self.sshURL, self.username, password=self.password).open()
@@ -167,16 +167,18 @@ class SSHConnection():
                 result['error']= "experiment '" + exp + "' is in transition."
                 return result 
             try:
-                unique_name = exp + '_run'# + str(uuid.uuid4())
+                unique_name = exp + '_run'
                 filename = unique_name + ".sh"
+                print("Unique name ", unique_name, " file name ", filename, " action ", action)    
                 if self.createFile(gatewaySession,filename,fileContent):
+                    print("Created file")
                     labels = ''
                     for label in variables:
                         labels += ' \'' + str(label) + '\''
-
-                    cmd = '/share/shared/dew/manager /users/' + self.username + '/' + filename + ' ' + project + ' ' + exp + ' ' + unique_name + labels + ' start' \
+                        
+                    cmd = '/share/shared/dew/manager /users/' + self.username + '/' + filename + ' ' + project + ' ' + exp + ' ' + unique_name + labels + ' ' + action \
                         + '>' + unique_name + '.log' 
-
+                    
                     print(cmd)
                     try:
                         gatewaySession.get_cmd_output(cmd)
@@ -186,7 +188,8 @@ class SSHConnection():
                     result['success'] = True
                     result['filename'] = unique_name
                 else:
-                    result['error']= "unable to upload file to server."    
+                    print("Could not create file")
+                    result['error']= "unable to upload file to server."
             except RunCmdError as e:
                 # print(e)
                 result['error']= "project '" + project + "' doesn't exist"
@@ -252,30 +255,33 @@ class SSHConnection():
                 if not gatewaySession.exists(directory) or not gatewaySession.exists(directory+ "/" + unique_name):
                     result['error'] = "No run information available."
                     return result
-                directory = directory+ "/" + unique_name
-                cmd = "ls " + directory + ' | wc -l'
-                numberOfFiles = int(gatewaySession.get_cmd_output(cmd)) //4
-                
                 results = []
-                for i in range(s,min(s+b,numberOfFiles)):
-                    r = {}
-                    script = '/script.'+str(i)+'.sh'
-                    error = '/error.'+str(i)
-                    status = '/status.'+str(i)
-                    cmd = 'cat ' + directory 
-                    try:
-                        r['script'] = gatewaySession.get_cmd_output(cmd + script)
-                        r['error'] = gatewaySession.get_cmd_output(cmd + error)
-                        r['status'] = gatewaySession.get_cmd_output(cmd + status)
-                        results.append(r)
-                    except RunCmdError as e:
-                        result['command_status_message']= "command executed with exception"
-                        break
-                result['startIndex'] = s
-                result['batchSize'] = b
-                result['totalFiles'] = numberOfFiles
+                directory = directory+ "/" + unique_name
+                cmd = "/share/shared/dew/jobstatus " + unique_name
+                output = gatewaySession.get_cmd_output(cmd)
+                print("Found ",output)
+                lines = output.split("\n")
+                for l in lines:
+                    r={}
+                    #$id, $tasks{$id}{'node'}, $tasks{$id}{'action'}, $tasks{$id}{'cmd'}, $tasks{$id}{'ran'}, $tasks{$id}{'status'}, $tasks{$id}{'error'}
+                    elems = l.split(",")
+                    print("Line ",l," elems ",len(elems))
+                    r['node'] = elems[2]
+                    r['action'] = elems[1]
+                    r['script'] = elems[3]
+                    r['started'] = elems[4]
+                    r['status'] = "0" #str(int(elems[5]))
+                    if len(elems) == 7:
+                        r['error'] = 'blah' #elems[6]
+                    else:
+                        r['error'] = 'truc'
+                    print("Status for ",r['node']," action ", r['action'], " is ", r['status'])
+                    results.append(r)
+                    
                 result['data'] = results
-                    # result['filename'] = unique_name
+                result['startIndex'] = 0
+                result['batchSize'] = len(lines)
+                result['totalFiles'] = len(lines)
                   
             except RunCmdError as e:
                 result['error']= "command executed with exception"

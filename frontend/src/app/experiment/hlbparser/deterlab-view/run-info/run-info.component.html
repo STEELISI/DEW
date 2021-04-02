@@ -32,9 +32,10 @@
                             <mat-panel-description>
                                 
                             <span style="color:green" *ngIf="(s.status=='0')">
-                                Status: Successfull <span style="color:red" *ngIf="(s.error!='')">
+                              Status: Successful
+			      <!-- <span style="color:red" *ngIf="(s.error!='')">
                                     {{' (with Error)'}}
-                                </span>
+                                </span>-->
                             </span>
                             <span style="color:green" *ngIf="( s.status!='0')">
                                 Status: Un Successfull <span style="color:red" *ngIf="(s.error!='')">

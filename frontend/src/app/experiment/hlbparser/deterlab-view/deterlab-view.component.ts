@@ -378,7 +378,6 @@ export class DeterLabViewComponent implements OnInit {
         const params = {
             eid: this.experimentId,
             account_id: this.userId,
-            
             data: data
         };
 
@@ -388,17 +387,20 @@ export class DeterLabViewComponent implements OnInit {
         }
 
         this.http.post('/api/v1/pr/deter/project/run', params, {withCredentials: true})
+
             .subscribe(data1 => {
                 this.showLoader = false;
+
                 if (data1.success) {
+
                     this._snackBar.open('Successfully started', 'close', {
                         duration: 2000,
                     });
                 } else {
-
-                    const dialogRef = this.dialog.open(RunVariablePopUp, {
-                        width: '30%',
-                        data: data1.labels,
+		
+	          const dialogRef = this.dialog.open(RunVariablePopUp, {
+                     width: '30%',
+                     data: data1.labels,
                     });
 
                     dialogRef.afterClosed().subscribe((result) => {
@@ -408,7 +410,7 @@ export class DeterLabViewComponent implements OnInit {
                             this.run(result);
                         }
                     });
-                }
+		}
             }, error => {
                 this.showLoader = false;
                 this._snackBar.open('Something went wrong please try again later!', 'close', {
@@ -424,7 +426,6 @@ export class DeterLabViewComponent implements OnInit {
        const params = {
             eid: this.experimentId,
             account_id: this.userId,
-            
             data: data
         };
 
