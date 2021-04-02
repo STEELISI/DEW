@@ -27,7 +27,7 @@
                                              *ngFor="let s of executionScript;let i=index" >
                           <mat-expansion-panel-header>
                             <mat-panel-title>
-                              {{'script '+(i+1) }}
+                              {{s.node+' '+s.action }}
                             </mat-panel-title>
                             <mat-panel-description>
                                 

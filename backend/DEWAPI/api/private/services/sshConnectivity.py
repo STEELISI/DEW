@@ -270,7 +270,10 @@ class SSHConnection():
                     r['action'] = elems[1]
                     r['script'] = elems[3]
                     r['started'] = elems[4]
-                    r['status'] = "0" #str(int(elems[5]))
+                    if elems[5].strip() != "":
+                        r['status'] = str(int(elems[5]))
+                    else:
+                        r['status'] = 0
                     if len(elems) == 7:
                         r['error'] = 'blah' #elems[6]
                     else:
