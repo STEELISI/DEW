@@ -27,7 +27,7 @@
                                              *ngFor="let s of executionScript;let i=index" >
                           <mat-expansion-panel-header>
                             <mat-panel-title>
-                              {{s.node+' '+s.action }}
+                              {{s.node}} : <span style="color:blue">{{s.action}}</span>
                             </mat-panel-title>
                             <mat-panel-description>
                                 
@@ -38,7 +38,7 @@
                                 </span>-->
                             </span>
                             <span style="color:green" *ngIf="( s.status!='0')">
-                                Status: Un Successfull <span style="color:red" *ngIf="(s.error!='')">
+                                Status: Unsuccessfull <span style="color:red" *ngIf="(s.error!='')">
                                     {{' (with Error)'}}
                                 </span>
                             </span>
@@ -46,7 +46,7 @@
                           </mat-expansion-panel-header>
                           <div class="col-md-12" >
                             <span style="color:red" *ngIf="(s.error!='')">
-                                {{'Error: '+s.error }}
+                                {{'Error: *'+s.error+'*' }}
                             </span>
                             <div class="col-md-12" style="background-color: black;color: white;">
                             <p 

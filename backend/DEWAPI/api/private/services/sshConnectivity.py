@@ -275,9 +275,9 @@ class SSHConnection():
                     else:
                         r['status'] = 0
                     if len(elems) == 7:
-                        r['error'] = 'blah' #elems[6]
+                        r['error'] = elems[6].strip()
                     else:
-                        r['error'] = 'truc'
+                        r['error'] = ''
                     print("Status for ",r['node']," action ", r['action'], " is ", r['status'])
                     results.append(r)
                     

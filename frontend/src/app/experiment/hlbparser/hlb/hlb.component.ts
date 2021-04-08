@@ -42,8 +42,6 @@ export class HlbComponent implements OnInit {
     "sudo service bind9 start"
   ];
   filterBindingOptionsForEvent = [
-    'fexists($file) - file exists',
-    'fmod($file) - file was modified',
     'pexists($action) - process exists that performs action in the binding',
     'psuccess($action) - process completed w success for the given action'
   ];
@@ -224,11 +222,18 @@ export class HlbComponent implements OnInit {
     this.stateservice.getBindings().subscribe((data) => {
       if (data != null) {
         this.bindingList = [];
+	this.filterBindingOptionsForEvent=[];
         this.bindingMap = new Map<String, any>();
 
         data.forEach((element) => {
           this.bindingMap.set(element.key, element);
           this.bindingList.push(element);
+	  if (element.category != 'event' && element.category != 't_event')
+	  {
+	  	// Jelena
+		this.filterBindingOptionsForEvent.push('pexists('+element.key+')')
+		this.filterBindingOptionsForEvent.push('psuccess('+element.key+')')	
+	  };
         });
       }
     });
