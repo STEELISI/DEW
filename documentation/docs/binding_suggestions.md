@@ -24,8 +24,6 @@ Currently supported built-in functions for event bindings are:
 
 |Suggestion| Description|
 |:---:|:---|
-|`fexists($file) `| file exists|
-|`fmod($file) `| file was modified|
 |`pexists($action) `| process exists that performs action in the binding|
 |`psuccess($action) `| process completed w success for the given action|
 
@@ -43,7 +41,7 @@ We have also provided some built-in functions in `Ubuntu-DEW` OS image on Deterl
 |`expIP(A)` | experimental IP on the given node, leading |to node A
 |`expeth(A)` | experimental iface on the given node, |leading to node A
 |`IP(A)` | IP address of node A |
-|`proj` | project name|
-|`exp` | experiment name|
-|`node` | node name|
+|`pid` | project name|
+|`eid` | experiment name|
+|`nid` | node name|
 |`epoch` | epoch time|

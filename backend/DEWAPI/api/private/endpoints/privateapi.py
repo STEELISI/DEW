@@ -83,17 +83,9 @@ class HandleHLBGeneratorBash(Resource):
           Generates BASH file for given behaviors, actors, and constraints
         """
         json_data = request.get_json(force=True)
-        scriptList, paramterlist = hlb.HandleBASH(json_data)
+        scriptList = hlb.HandleBASH(json_data)
         bashScriptDict = {}
-        for i in range(len(scriptList)):
-            if scriptList[i][0] not in bashScriptDict:
-                if scriptList[i][1]:
-                    bashScriptDict[scriptList[i][0]] = scriptList[i][1]
-            else:
-                if scriptList[i][1]:
-                    bashScriptDict[scriptList[i][0]] += scriptList[i][1]
-
-        return bashScriptDict
+        return scriptList
 
 @ns.route('/hlb/suggestions')
 class HandleHLBSuggestions(Resource):
@@ -1018,6 +1010,13 @@ class HandleExperimentSlideMovement(Resource):
 class HandleProjectRunLog(Resource):
     def post(self):
         content = request.get_json(force=True)
+        if 'eid' not in content:
+          return {"error":"eid is missing"} , 200
+        if 'account_id' not in content:
+          return {"error":"account_id is missing"}, 200
+        label = None
+        if 'label' in content:
+          label = content['label']
         eid = content['eid']
         daid = content['account_id']
         data = dict()
@@ -1036,17 +1035,37 @@ class HandleProjectRunLog(Resource):
               if 'error' not in mapping:
                 experiment = list(em.get_experiment(eid, uid).versions)[-1]
                 transaction_id = experiment.transaction_id
-                script,variable_list = hlb.HandleBASH(json.loads(experiment.content))
+                script = hlb.HandleBASH(json.loads(experiment.content), "job")
+                
                 variables = []
+                variable_list = []
+                flag = True
+                if label is not None:
+                  for x in script:
+                    if x['label'] == label:
+                      variable_list += x['variables']
+                      run_content = x['run']['content']
+                      flag = False
+                      break
+                if flag:
+                  r = []
+                  for x in script:
+                    l = {}
+                    v = []
+                    l['label'] = x['label']
+                    v = v+x['variables']
+                    l['variable'] = v
+                    r.append(l)
+                  return {"error":"Please select label","labels":r}, 200
+
                 if len(variable_list) != 0:
                   for x in variable_list:
                     if x['variable'] in data:
                       variables.append(data[x['variable']])
                   if len(variables) != len(variable_list):
                     result['error'] = "Parameters are missing" 
-                    result['paramters'] = variable_list
+                    result['label'] = {'label':label,'variable':variable_list}
                 if 'error' not in result:
-                  run_content = script[0][1]
                   ssh = SSHConnection(details['username'],details['password'])
                   result_log = ssh.runFile(mapping['project_name'],mapping['experiment_name'],run_content,variables)
                   if 'error' not in result_log:
@@ -1060,6 +1079,99 @@ class HandleProjectRunLog(Resource):
                     result = result_log
               else:
                 result = mapping
+            else:
+              result = {'error':'username or password doesnot exists'}
+          return result, 200
+        except ValueError as e:
+            if str(e) == "Forbidden":
+                return {}, 403
+
+@ns.route('/deter/project/stop')
+class HandleProjectRunLog(Resource):
+    def post(self):
+        content = request.get_json(force=True)
+        print("Content is ", content)
+        if 'rid' not in content:
+          return {"error":"rid is missing"} , 200
+        if 'account_id' not in content:
+          return {"error":"account_id is missing"}, 200
+        
+        label = None
+        if 'label' in content:
+          label = content['label']
+        rid = content['rid']
+        daid = content['account_id']
+        
+        uid = userObj.getUserId()
+        try:
+          result = {}
+          version_id = dm.getVersion(rid,uid,daid)
+          if version_id is None:
+            result['error'] = 'User does not have access to this script'
+          else:
+            details = ps.get(uid,daid)
+            if str(details['username']).strip() !='' and str(details['password']).strip() !='':
+              experiment = next(item for item in list(em.get_experiment(version_id.eid, uid).versions) if item.transaction_id == version_id.version_id)
+              script = hlb.HandleBASH(json.loads(experiment.content), "job")
+              flag = True
+
+              if label is not None:
+                for x in script:
+                  if x['label'] == label:
+                    cleanup_content = x['clean']['content']
+                    flag = False
+                    break
+              else:
+                  r = []
+                  for x in script:
+                    r.append(x['label'])
+                  return {"error":"Please select label","labels":r}, 200
+              if flag:
+                return {"error":"label doesn't exist"}, 200
+              mapping = dm.getMapping(details['id'],version_id.eid)
+              if 'error' not in mapping:
+                
+                ssh = SSHConnection(details['username'],details['password'])
+                result = ssh.cleanFile(mapping['project_name'],mapping['experiment_name'],cleanup_content)
+              else:
+                result = mapping
+            else:
+              result = {'error':'username or password doesnot exists'}
+          return result, 200
+        except ValueError as e:
+            if str(e) == "Forbidden":
+                return {}, 403
+
+@ns.route('/deter/project/run/get')
+class HandleProjectRunLog(Resource):
+    def post(self):
+        content = request.get_json(force=True)
+        if 'rid' not in content:
+          return {"error":"rid is missing"} , 200
+        if 'account_id' not in content:
+          return {"error":"account_id is missing"}, 200
+        rid = content['rid']
+        daid = content['account_id']
+        # start index
+        s = 0
+        if 's' in content:
+          s = int(content['s'])
+        # batch size
+        b = 5
+        if 'b' in content:
+          b = int(content['b'])
+          
+        uid = userObj.getUserId()
+        try:
+          result = {}
+          version_id = dm.getVersion(rid,uid,daid)
+          if version_id is None:
+            result['error'] = 'User doesnot have access to this script'
+          else:
+            details = ps.get(uid,daid)
+            if str(details['username']).strip() !='' and str(details['password']).strip() !='':
+              ssh = SSHConnection(details['username'],details['password'])
+              result = ssh.getRunFile(version_id.unique_name,s,b)
             else:
               result = {'error':'username or password doesnot exists'}
           return result, 200

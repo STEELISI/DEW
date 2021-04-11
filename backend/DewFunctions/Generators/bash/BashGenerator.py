@@ -1,4 +1,4 @@
-# eth=$(ssh b.cmimic.trafgen "echo \`inet eth exp\`"); echo $eth
+# Bash generator
 
 import os.path
 import sys
@@ -17,28 +17,34 @@ class BashGenerator(Generator):
         # Dictionary of special functions with regex
         # and expansions
         self.special = {
-            '(?: |^)(expIP)(?: |$)': 'inet ip exp',
-            '(?: |^)(ctlIP)(?: |$)': 'inet ip ctl',
-            '(?: |^)(expeth)(?: |$)': 'inet eth exp',
-            '(?: |^)(expIP\((.*)\))(?: |$)': 'inet ip exp $node',
-            '(?: |^)(expeth\((.*)\))(?: |$)': 'inet eth exp $node',
-            '(?: |^)(IP\((.*)\))(?: |$)': 'inet fip exp $node',
-            '(?: |^)(epoch)(?: |$)': 'epoch',
-            '(?: |^)(proj)(?: |$)': 'pexp -p',
-            '(?: |^)(exp)(?: |$)': 'pexp -e',
-            '(?: |^)(node)(?: |$)': 'pexp -n',
+            '(?:\s|^)(expIP)(?:\s|$|\:)': 'inet ip exp',
+            '(?:\s|^)(ctlIP)(?:\s|$|\:)': 'inet ip ctl',
+            '(?:\s|^)(expeth)(?:\s|$|\:)': 'inet eth exp',
+            '(?:\s|^)(expIP\(([a-zA-Z0-9_\-]+)\))(?:\s|$|\:)': 'inet ip exp $node',
+            '(?:\s|^)(expeth\(([a-zA-Z0-9_\-]+)\))(?:\s|$|\:)': 'inet eth exp $node',
+            '(?:\s|^)(IP\(([a-zA-Z0-9_\-]+)\))(?:\s|$|\:)': 'inet fip exp $node',
+            '(?:\s|^|\/)(epoch)(?:\s|$|\/|\.)': 'epoch',
+            '(?:\s|^|\/)(pid)(?:\s|$|\/|\.)': 'pexp -p',
+            '(?:\s|^|\/)(eid)(?:\s|$|\/|\.)': 'pexp -e',
+            '(?:\s|^|\/)(nid)(?:\s|$|\/|\.)': 'pexp -n',
         }
-        self.evars = [];
+        self.evars = dict();
 
 
-    def generate(self):
-        super().generate()
+    def generate(self, mode=None):
+        super().generate(mode)
+        self.collectLabels()
         self.collectNum()
         self.generateDew()
         self.generateArgParse()
-        self.generatePreamble()        
+        self.generatePreamble(mode)        
         self.collectConds()        
         self.generateActions()
+
+    def collectLabels(self):
+        self.labels = dict()
+        for s in self.scenario_parsed:
+            self.labels[s[-1]] = 1
 
     def collectNum(self):
         self.num = dict()
@@ -55,6 +61,7 @@ class BashGenerator(Generator):
             actors[s[1][0]] = 1
             
         for s in self.scenario_parsed:
+            label = s[-1]
             clist = s[0]
 
             # only one actor and one action
@@ -82,21 +89,21 @@ class BashGenerator(Generator):
                 for cond in clist:
                     if cond in count.keys():
                         if cond in self.conditions:
-                            self.run += self.conditions[cond][0] + " " + str(count[cond]) + "\n"
+                            self.run[label] += self.conditions[cond][0] + " " + str(count[cond]) + "\n"
                             if (self.conditions[cond][0] == "psuccess"):
-                                self.run += "status" + str(count[cond]) +"=`cat ~/DEW/$label/status."+str(count[cond])+"`\n"
+                                self.run[label] += "status" + str(count[cond]) +"=`cat ~/DEW/$label/status."+str(count[cond])+"`\n"
                             else:
-                                self.run += "pex" + str(count[cond]) +"=$(pexists "+str(count[cond])+")\n"
+                                self.run[label] += "pex" + str(count[cond]) +"=$(pexists "+str(count[cond])+")\n"
                     else:
                         for c in count:
                             r1 = re.findall(cond+'\.\d+',c)
                             if len(r1) > 0:
                                 if cond in self.conditions:
-                                    self.run += self.conditions[cond][0] + " " + str(count[c]) + "\n"
+                                    self.run[label] += self.conditions[cond][0] + " " + str(count[c]) + "\n"
                                     if (self.conditions[cond][0] == "psuccess"):
-                                        self.run += "status" + str(count[c]) +"=`cat ~/DEW/$label/status."+str(count[c])+"`\n"
+                                        self.run[label] += "status" + str(count[c]) +"=`cat ~/DEW/$label/status."+str(count[c])+"`\n"
                                     else:
-                                        self.run += "pex" + str(count[c]) +"=$(pexists "+str(count[c])+")\n"
+                                        self.run[label] += "pex" + str(count[c]) +"=$(pexists "+str(count[c])+")\n"
                             
             
             if clist is not None and len(clist)>0: # Jelena
@@ -128,10 +135,10 @@ class BashGenerator(Generator):
                                     else:
                                         ctext +=  "if [ $pex" + str(count[c])+" -ne 0 ] "
                 if ctext != "":
-                    self.run += ctext + " ; then \n\t exit 1\nfi\n"
+                    self.run[label] += ctext + " ; then \n\t exit 1\nfi\n"
                                 
             if wait is not None:
-                self.run += "sleep "+str(wait)+"\n";
+                self.run[label] += "sleep "+str(wait)+"\n";
 
             if action in self.bindings_parsed:                
                 words = re.split(' |\(|\)', self.bindings_parsed[action])
@@ -142,12 +149,12 @@ class BashGenerator(Generator):
                             if w in actors and w in self.num.keys():
                                 found = True
                                 for j in range(0,self.num[w]):
-                                    self.generateCmd(actor,i+1,w,j+1,sid, action)
+                                    self.generateCmd(actor,i+1,w,j+1,sid, action, label)
                                     if (event is not None):
                                         count[event + "." + str(i+1)+"."+str(j+1)] = sid
                                     sid += 1
                         if not found:
-                            self.generateCmd(actor,i+1,None,None,sid,action)
+                            self.generateCmd(actor,i+1,None,None,sid,action, label)
                             if (event is not None):
                                 count[event+"."+str(i+1)] = sid
                             sid += 1
@@ -157,45 +164,49 @@ class BashGenerator(Generator):
                         if w in actors and w in self.num.keys():
                             found = True
                             for j in range(0,self.num[w]):
-                                self.generateCmd(actor, None , w, j+1, sid, action)
+                                self.generateCmd(actor, None , w, j+1, sid, action, label)
                                 if (event is not None):
                                     count[event + "."+str(j+1)] = sid
                                 sid += 1
                     if not found:
-                        self.run += "execute_fork \"" + actor + "\" \"" + self.bindings_parsed[action] +"\" " + str(sid) + " &\n"
-                        self.clear += "execute_clear \"" + actor + "\" \"" + self.bindings_parsed[action] +"\" " + str(sid) + " &\n"
+
+                        self.generateCmd(actor, None, w, None, sid, action, label)
                         if (event is not None):
                             count[event] = sid
                         sid += 1
 
-    def generateCmd(self, actor1, i, actor2 , j, sid, action):                                        
+    def generateCmd(self, actor1, i, actor2 , j, sid, action, label):
+        print("Generate command ", action)
         naction = self.bindings_parsed[action]
         if (j is not None):
-            naction = naction.replace(actor2, actor2 + "-" + str(j))
+            naction = re.sub(r'(\s|^|\()'+actor2+'(\s|$|:|\))', r'\1'+actor2+"-"+str(j)+r'\2', naction)
 
+        rcnt = 1
         for exp in self.special:
-                re_exp = r'{}'.format(exp)
-                r1 = re.findall(re_exp,naction)
-                if len(r1) > 0:
-                    for r in r1:
-                        searchtext = r
-                        candtext = self.special[exp]
-                        if not isinstance(r,str):
-                            searchtext = r[0]
-                            newtext = r[1].strip("()")
-                            candtext = candtext.replace("$node", r[1].strip("()"))
-                            if i is not None:
-                                self.run += "tmp=$(ssh -o StrictHostKeyChecking=no " + actor1+"-"+str(i)+".$exp.$proj \"echo \`"+candtext+"\`\")\n"
-                            else:
-                                self.run += "tmp=$(ssh -o StrictHostKeyChecking=no " + actor1+".$exp.$proj \"echo \`"+candtext+"\`\")\n"
-                            naction = naction.replace(searchtext, "$tmp")
+            re_exp = r'{}'.format(exp)
+            r1 = re.findall(re_exp,naction)
+            if len(r1) > 0:
+                for r in r1:
+                    print("Found ", r, " in ", naction)
+                    searchtext = r
+                    candtext = self.special[exp]
+                    if not isinstance(r,str):
+                        searchtext = r[0]
+                        newtext = r[1].strip("()")
+                        candtext = candtext.replace("$node", r[1].strip("()"))
+                    if i is not None:
+                        self.run[label] += "tmp"+str(rcnt)+"=$(ssh -o StrictHostKeyChecking=no " + actor1+"-"+str(i)+".$exp.$proj \"echo \`"+candtext+"\`\")\n"
+                    else:
+                        self.run[label] += "tmp"+str(rcnt)+"=$(ssh -o StrictHostKeyChecking=no " + actor1+".$exp.$proj \"echo \`"+candtext+"\`\")\n"
+                    naction = naction.replace(searchtext, "$tmp"+str(rcnt))
+                    rcnt += 1
 
         if i is not None:
-            self.run += "execute_fork \"" + actor1 + "-" + str(i)+ "\" \"" + naction +"\" " + str(sid) + " &\n"
-            self.clear += "execute_clear \"" + actor1 + "-" + str(i)+ "\" \"" + naction +"\" " + str(sid) + " &\n"
+            self.run[label] += "execute_fork \"" + actor1 + "-" + str(i)+ "\" \"" + naction +"\" " + str(sid) + " &\n"
+            self.clear[label] += "execute_clear \"" + actor1 + "-" + str(i)+ "\" \"" + naction +"\" " + str(sid) + " &\n"
         else:
-            self.run += "execute_fork \"" + actor1 + "\" \"" + naction +"\" " + str(sid) + " &\n"
-            self.clear += "execute_clear \"" + actor1 + "\" \"" + naction +"\" " + str(sid) + " &\n"
+            self.run[label] += "execute_fork \"" + actor1 + "\" \"" + naction +"\" " + str(sid) + " &\n"
+            self.clear[label] += "execute_clear \"" + actor1 + "\" \"" + naction +"\" " + str(sid) + " &\n"
 
     def collectConds(self):
         self.conditions = dict()
@@ -216,51 +227,68 @@ class BashGenerator(Generator):
         
                 
     def generateDew(self):
-        self.run += "#!/usr/bin/bash\n"
-        self.run += '##################################################################\n#'
-        self.run += '# ' .join(self.dew.splitlines(True))
-        self.run += '##################################################################\n\n'
+        for label in self.labels:
+            self.clear[label] = ""
+            self.run[label] = "#!/usr/bin/bash\n"
+            self.run[label] += '##################################################################\n#'
+            self.run[label] += '# ' .join(self.dew.splitlines(True))
+            self.run[label] += '##################################################################\n\n'
 
     def generateArgParse(self):
-        vars = { 1: 'proj',  2: 'exp', 3: 'label' }
-        vlong = { 1: 'project under which to run',  2: 'experiment under which to run', 3: 'label for the folder where to store results' }
-        nvar = 4
-        pos_vars = []
-        for b in self.bindings_parsed:
-            pos_vars.append(self.bindings_parsed[b])
-        for s in self.scenario_parsed:
-            if s[4] is not None:
-                pos_vars.append("wait " + s[4])
-        for stmt in pos_vars:
-            r1 = re.findall(r"\$\w+", stmt)
-            if len(r1) > 0:
-                for m in r1:                    
-                    vars[nvar] = m.replace("$", "")
-                    vlong[nvar] = "variable in command " + stmt.replace("$","")
-                    nvar += 1
-        guidance = "Usage: $0"
-        for v in vars:
-            guidance += " "+vars[v]
-        guidance += "\n"
-        for v in vars:
-            guidance += "\n\t\t"+vars[v]+" - "+vlong[v]
-            if v > 3:
-                self.evars.append((vars[v],vlong[v]))
-        guidance += "\n\n";        
-        argstring = "if [ \"$#\" -le " + str(nvar-2) + " ]; then\n\tprintf \""+guidance+"\"\n\texit 1\nfi\n\n"
-        for v in vars:
-            argstring += vars[v] + "=$" + str(v) + "\n"
+        for label in self.labels:
+            self.evars[label] = []
+            vars = { 1: 'proj',  2: 'exp', 3: 'label' }
+            vlong = { 1: 'project under which to run',  2: 'experiment under which to run', 3: 'label for the folder where to store results' }
+            nvar = 4
+            pos_vars = []
+            for s in self.scenario_parsed:
+                if (label != s[-1]):
+                    continue
+                action = s[2][0]
+                clist = s[0]
+                pos_vars.append(self.bindings_parsed[action])
+                if clist is not None:
+                    for c in clist:
+                        pos_vars.append(self.bindings_parsed[c])
+                        if s[4] is not None:
+                            pos_vars.append("wait " + s[4])    
             
-        self.run += argstring
+            for stmt in pos_vars:
+                r1 = re.findall(r"\$\w+", stmt)
+                if len(r1) > 0:
+                    for m in r1:                    
+                        vars[nvar] = m.replace("$", "")
+                        vlong[nvar] = "variable in command " + stmt.replace("$","")
+                        nvar += 1
+            guidance = "Usage: $0"
+            for v in vars:
+                guidance += " "+vars[v]
+            guidance += "\n"
+            for v in vars:
+                guidance += "\n\t\t"+vars[v]+" - "+vlong[v]
+                if v > 3:
+                    self.evars[label].append((vars[v],vlong[v]))
+            guidance += "\n\n";        
+            argstring = "if [ \"$#\" -le " + str(nvar-2) + " ]; then\n\tprintf \""+guidance+"\"\n\texit 1\nfi\n\n"
+            for v in vars:
+                argstring += vars[v] + "=$" + str(v) + "\n"
+
+            self.run[label] += argstring
         
             
-    def generatePreamble(self):
-        self.run += open('./DewFunctions/Generators/bash/bash_preamble.txt', 'r').read()
-        self.clear += open('./DewFunctions/Generators/bash/bash_clean.txt', 'r').read()
+    def generatePreamble(self, mode=None):
+        for label in self.labels:
+            if mode == "job":
+                self.run[label] += open('./DewFunctions/Generators/bash/bash_job_preamble.txt', 'r').read()
+                self.clear[label] += open('./DewFunctions/Generators/bash/bash_job_clean.txt', 'r').read()
+            else:
+                self.run[label] += open('./DewFunctions/Generators/bash/bash_preamble.txt', 'r').read()
+                self.clear[label] += open('./DewFunctions/Generators/bash/bash_clean.txt', 'r').read()            
 
 
-    def parse(self):
-        super().parse()
+
+    def parse(self, mode=None):
+        super().parse(mode)
 
 
 

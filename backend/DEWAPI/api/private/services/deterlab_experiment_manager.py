@@ -65,9 +65,7 @@ class DeterLabExperimentManager(object):
     
     def getLogs(self, eid, daid, uid):
         d = DeterlabRunScriptLogs.query.filter(DeterlabRunScriptLogs.daid == daid, DeterlabRunScriptLogs.eid == eid, DeterlabRunScriptLogs.uid == uid,DeterlabRunScriptLogs.isdeleted == False)
-
         result = []
-
         if d is not None:
             for x in d:
                 r = {}
@@ -75,5 +73,11 @@ class DeterLabExperimentManager(object):
                 r['started_at'] = x.created_at.strftime("%d %B, %Y")
                 r['filename'] = x.unique_name
                 result.append(r)
-        
         return result
+    def getVersion(self, rsid, uid,daid):
+        d = DeterlabRunScriptLogs.query.filter(DeterlabRunScriptLogs.rsid == rsid, DeterlabRunScriptLogs.uid == uid, DeterlabRunScriptLogs.daid == daid,DeterlabRunScriptLogs.isdeleted == False).first()
+        if d is None:
+            return None
+        else:
+            return d
+            

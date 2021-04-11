@@ -40,10 +40,10 @@ class Generator(object):
         self.scenario_parsed = []
         self.constraints_parsed = []
         self.bindings_parsed = {}
-        self.run = ""
-        self.clear = ""
+        self.run = dict()
+        self.clear = dict()
 
-    def parse(self):
+    def parse(self, mode=None):
         # For each item in our scenario/constraints lists, make sure we can parse it and
         # turn it into tuplets.
         # Scenario -> ['trigger events', 'actors', 'action', 'emit events', 'wait time']
@@ -73,6 +73,7 @@ class Generator(object):
             self.constraints_parsed.append(parsedTuple)
 
         mys = ""
+        label = "main"
         for s in self.scenario:
             mys += s + "\n"
             # s = sc[0]
@@ -87,7 +88,11 @@ class Generator(object):
                 print("ERROR:\tUnparsable Scenario statement: %s\n" % s)
                 continue
                 #return False
-            self.scenario_parsed.append(parsedTuple)
+            if (parsedTuple[-1] is not None):
+                label = parsedTuple[-1]
+            else:
+                newparsedTuple = (parsedTuple[0], parsedTuple[1], parsedTuple[2], parsedTuple[3], parsedTuple[4], parsedTuple[5], parsedTuple[6],  label)
+                self.scenario_parsed.append(newparsedTuple)
 
         myb = ""
         for bi in self.bindings:
@@ -105,10 +110,9 @@ class Generator(object):
                 continue
                 # return False
             self.bindings_parsed[key] = value
-            print("Binding for ", key, " is ", value)
             
         self.dew = "[Scenario]\n" + mys + "\n[Constraints]\n" + myc + "\n[Bindings]\n" + myb
 
-    def generate(self):
+    def generate(self, mode=None):
         # Parse scenario, constraints and bindings
-        self.parse()
+        self.parse(mode)

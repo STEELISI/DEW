@@ -54,9 +54,9 @@ export class HlbComponent implements OnInit {
     {name: 'expIP(A)', value: 'experimental IP on this node leading to A'},
     {name: 'expeth(A)', value: 'experimental interface on this node leading to A'},
     {name: 'IP(A)', value: 'IP address of node A'},
-    {name: 'proj', value: 'project name'},
-    {name: 'exp', value: 'experiment name'},
-    {name: 'node', value: 'node name'},
+    {name: 'pid', value: 'project name'},
+    {name: 'eid', value: 'experiment name'},
+    {name: 'nid', value: 'node name'},
     {name: 'epoch', value: 'epoch time'}
   ];
 
