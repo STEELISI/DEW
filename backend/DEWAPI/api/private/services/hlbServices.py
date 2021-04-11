@@ -329,9 +329,8 @@ class HLBService():
         gen = bashGenerator(scenario=sceanrios,constraints=constraints,bindings=[])
         gen.generate()
         parsed_scenario, parsed_constraints = gen.scenario_parsed, gen.constraints_parsed
-        # for line in parsed_scenario:
-        #     if line[1] is not None:
-        #         nodes[line[1][0]] = dict({ 'num': 1, 'os': 'default', 'type': 'actor' })
+        for s in parsed_scenario:
+            actors[s[1][0]] = dict({ 'num': 1, 'os': 'default', 'type': 'actor' })
         for i, const in enumerate(parsed_constraints):
             if const[0] is not None:
                 if const[1][0] not in actors:

@@ -341,7 +341,9 @@ class ExperimentManager(object):
             if existing_slide:
                 raise ValueError("Slide with same sequence number exists")
 
-            slide = Slide(experiment_id=experiment_id, actor_action_mapping=actor_action_mapping,sequence_number=sequence_number)
+            slide = Slide(experiment_id=experiment_id, actor_action_mapping=actor_action_mapping,
+                action_events_mapping="{}",
+                sequence_number=sequence_number)
 
             db.session.add(slide)
             db.session.commit()
@@ -410,11 +412,9 @@ class ExperimentManager(object):
     def dew_from_slides(self,user_id, experiment_id):
         if self.user_can(experiment_id, user_id, AccessControlEnum.read) is not None:
             slides = Slide.query.filter(Slide.experiment_id == experiment_id).order_by(Slide.sequence_number)
-            prev_event = None
             dew_string = []
             bindings = []
             for slide in slides:
-                dew_string += slide.behavior_string(prev_event)
+                dew_string += slide.behavior_string()
                 bindings += slide.bindings()
-                prev_event = "slideDoneEvent"+str(slide.sequence_number)
             return [dew_string, bindings]

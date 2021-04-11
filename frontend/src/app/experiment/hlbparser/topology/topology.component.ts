@@ -227,9 +227,7 @@ export class TopologyGraphComponent implements OnInit{
        this.addLanDEW(node)
     } else {
       var str = []
-      if(node.data.num != 1){
-        str.push("num " + node.label + " " + node.data.num)
-      }
+      str.push("num " + node.label + " " + node.data.num)
       if(node.data.os != "default"){
         str.push("os " + node.label + " " + node.data.os)
       }
@@ -512,6 +510,13 @@ export class TopologyGraphComponent implements OnInit{
         })
         constraints = constraints.filter(c => c != numConstraint && c != osConstraint)
         this.state.setConstraints(constraints)
+
+        var behaviors = [];
+        this.state.getBehavior().subscribe(b => {
+          behaviors = b
+        });
+        behaviors = behaviors.filter(b => !b.includes(node.label));
+        this.state.setBehavior(behaviors);
       }
       delete this.matching[node.label]
       this.state.setExperimentColors(this.matching)

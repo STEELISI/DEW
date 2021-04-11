@@ -425,6 +425,7 @@ export class HlbComponent implements OnInit {
         });
         break;
     }
+    this.updateActors();
   }
 
   getScenariosFromEditor() {
