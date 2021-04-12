@@ -31,13 +31,13 @@ class BashGenerator(Generator):
         self.evars = dict();
 
 
-    def generate(self):
-        super().generate()
+    def generate(self, mode=None):
+        super().generate(mode)
         self.collectLabels()
         self.collectNum()
         self.generateDew()
         self.generateArgParse()
-        self.generatePreamble()        
+        self.generatePreamble(mode)        
         self.collectConds()        
         self.generateActions()
 
@@ -276,14 +276,19 @@ class BashGenerator(Generator):
             self.run[label] += argstring
         
             
-    def generatePreamble(self):
+    def generatePreamble(self, mode=None):
         for label in self.labels:
-            self.run[label] += open('./DewFunctions/Generators/bash/bash_preamble.txt', 'r').read()
-            self.clear[label] += open('./DewFunctions/Generators/bash/bash_clean.txt', 'r').read()
+            if mode == "job":
+                self.run[label] += open('./DewFunctions/Generators/bash/bash_job_preamble.txt', 'r').read()
+                self.clear[label] += open('./DewFunctions/Generators/bash/bash_job_clean.txt', 'r').read()
+            else:
+                self.run[label] += open('./DewFunctions/Generators/bash/bash_preamble.txt', 'r').read()
+                self.clear[label] += open('./DewFunctions/Generators/bash/bash_clean.txt', 'r').read()            
 
 
-    def parse(self):
-        super().parse()
+
+    def parse(self, mode=None):
+        super().parse(mode)
 
 
 

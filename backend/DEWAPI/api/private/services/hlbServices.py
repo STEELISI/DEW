@@ -335,7 +335,7 @@ class HLBService():
         return ns_script
 
     #Handle generateBASH
-    def HandleBASH(self,json_data):
+    def HandleBASH(self,json_data,mode=None):
         errors = []
         parameterlist = dict()
         actors = json_data['actors']
@@ -343,7 +343,7 @@ class HLBService():
         constraints = json_data['constraints']
         bindings = json_data['bindings']
         generator = bashGenerator(constraints=constraints, scenario=scenario, bindings=bindings)
-        generator.generate()
+        generator.generate(mode)
         bash_script = []
         for label in generator.run.keys():
             labelDetail = dict()
@@ -362,3 +362,5 @@ class HLBService():
             bash_script.append(labelDetail)
         
         return bash_script
+
+    
