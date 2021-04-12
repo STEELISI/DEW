@@ -246,7 +246,8 @@ class BashGenerator(Generator):
                     continue
                 action = s[2][0]
                 clist = s[0]
-                pos_vars.append(self.bindings_parsed[action])
+                if action in self.bindings_parsed:
+                    pos_vars.append(self.bindings_parsed[action])
                 if clist is not None:
                     for c in clist:
                         pos_vars.append(self.bindings_parsed[c])
