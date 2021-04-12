@@ -1,0 +1,75 @@
+#!/usr/bin/perl
+
+# Provide a label and return summary of job status
+# as CSV. Look for this in ~/DEW/label
+# id, node, action, cmd, ran, status, error
+
+$usage = "$0 job label\n";
+%tasks=();
+if ($#ARGV < 0)
+{
+    print $usage;
+    exit 1;
+}
+$label = $ARGV[0];
+if (! -d glob("~/DEW/$label"))
+{
+	exit 1;
+}
+opendir(my $dh, glob("~/DEW/$label"));
+@files = readdir($dh);
+for $f (@files)
+{
+    if ($f =~ /^\./)
+    {
+	next;
+    }
+    @items = split /\./, $f;
+    $id = $items[1];
+    if ($items[0] eq "script")
+    {
+	$node = $items[2];
+	$action = $items[3];
+	$tasks{$id}{'node'} = $node;
+	$tasks{$id}{'action'} = $action;
+	$fh = new IO::File(glob("~/DEW/$label/$f"));
+	$cmd = <$fh>;
+	close($fh);
+	@elems = split /2\>/, $cmd;
+	$cmd = $elems[0];
+	$tasks{$id}{'cmd'} = $cmd;
+	$tasks{$id}{'status'} = "";
+	$tasks{$id}{'ran'} = "";
+	$tasks{$id}{'error'} = "";	    
+    }
+    elsif($items[0] eq "status")
+    {
+	$fh = new IO::File(glob("~/DEW/$label/$f"));
+	$status = <$fh>;
+	$status =~ s/\n//;
+	close($fh);
+	$tasks{$id}{'status'} = $status;
+    }
+    elsif($items[0] eq "pid")
+    {
+	$fh = new IO::File(glob("~/DEW/$label/$f"));
+	$ran = <$fh>;
+	$ran =~ s/\n//;
+	close($fh);
+	$tasks{$id}{'ran'} = $ran;	
+    }
+    elsif($items[0] eq "error")
+    {
+	$fh = new IO::File(glob("~/DEW/$label/$f"));
+	$error = <$fh>;
+	$error =~ s/\n//;
+	close($fh);
+	$tasks{$id}{'error'} = $error;
+    }
+}
+for $id (sort {$a <=> $b} keys %tasks)
+{
+    # id, node, action, cmd, ran, status, error
+    print "$id, $tasks{$id}{'node'}, $tasks{$id}{'action'}, $tasks{$id}{'cmd'}, $tasks{$id}{'ran'}, $tasks{$id}{'status'}, $tasks{$id}{'error'}\n";
+}
+

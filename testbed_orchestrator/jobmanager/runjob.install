@@ -1,0 +1,4 @@
+sudo cp /share/shared/dew/runjob.service /etc/systemd/user
+systemctl --user daemon-reload
+systemctl --user enable runjob
+systemctl --user start runjob
