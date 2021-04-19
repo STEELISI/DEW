@@ -1,6 +1,6 @@
 #!/bin/bash
 
 echo "Starting runjob "
-/share/shared/dew/runjob
+python3 /share/shared/dew/runjob.py
     
     
