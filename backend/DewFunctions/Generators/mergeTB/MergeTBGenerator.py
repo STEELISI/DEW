@@ -28,6 +28,10 @@ class MergeTBGenerator(Generator):
         for c in self.constraints_parsed:
             if c[0] == 'num':
                 self.num[c[1][0]] = int(c[2][0])
+
+    def ipAssign(self, linkName, nodeName, Count, ipList):
+       self.run[label] +=  "for i in range(" + Count + "):\n"
+       self.run[label] += "\t" + linkName + "[" + nodeName + "[" + "i" + "].ip.addrs = " + "[" + ipList[i] + "]\n"
             
     def generateMergeTB(self):
         
@@ -35,6 +39,8 @@ class MergeTBGenerator(Generator):
         actors = dict()
         os = dict()
         links = dict()
+        latency = dict()
+        capacity = dict()
         for s in self.scenario_parsed:
             actors[s[1][0]] = 1
 
@@ -104,21 +110,61 @@ class MergeTBGenerator(Generator):
             if a in self.num.keys():
                 for b in links[a].keys():
                     if b in self.num.keys():
-                        self.run[label] += "link" + str(cnt) + " = [net.connect(["+a+"[i],"+b+"[j]]) for i in range(" + str(self.num[a])  + ") for j in range("+ str(self.num[b])  +")]\n"
+                        if (a,b) in latency and (a,b) in capacity:
+                            self.run[label] += "link" + str(cnt) + " = [net.connect(["+a+"[i],"+b+"[j]],latency == ms("+ latency[(a,b)] + "), capacity == mbps("+ capacity[(a,b)] + ")) for i in range(" + str(self.num[a])  + ") for j in range(1)]\n"
+                        else:
+                            if (a,b) in latency:
+                                self.run[label] += "link" + str(cnt) + " = [net.connect(["+a+"[i],"+b+"[j]],latency == ms("+ latency[(a,b)] + ")) for i in range(" + str(self.num[a])  + ") for j in range("+ str(self.num[b])  +")]\n"
+                            else:
+                                self.run[label] += "link" + str(cnt) + " = [net.connect(["+a+"[i],"+b+"[j]]) for i in range(" + str(self.num[a])  + ") for j in range("+ str(self.num[b])  +")]\n"
+                            if (a,b) in capcity:
+                                self.run[label] += "link" + str(cnt) + " = [net.connect(["+a+"[i],"+b+"[j]],capacity == mbps("+ capacity[(a,b)] + ")) for i in range(" + str(self.num[a])  + ") for j in range("+ str(self.num[b])  +")]\n"
+                            else:
+                                self.run[label] += "link" + str(cnt) + " = [net.connect(["+a+"[i],"+b+"[j]]) for i in range(" + str(self.num[a])  + ") for j in range("+ str(self.num[b])  +")]\n"
                         cnt += 1
                         break
                     else:
-                        self.run[label] += "link" + str(cnt) + " = [net.connect(["+a+"[i],"+b+"[j]]) for i in range(" + str(self.num[a])  + ") for j in range(1)]\n"
+                        if (a,b) in latency and (a,b) in capacity:
+                            self.run[label] += "link" + str(cnt) + " = [net.connect(["+a+"[i],"+b+"[j]],latency == ms("+ latency[(a,b)] + "), capacity == mbps("+ capacity[(a,b)] + ")) for i in range(" + str(self.num[a])  + ") for j in range(1)]\n"
+                        else:
+                            if (a,b) in latency:
+                                self.run[label] += "link" + str(cnt) + " = [net.connect(["+a+"[i],"+b+"[j]],latency == ms("+ latency[(a,b)] + ")) for i in range(" + str(self.num[a])  + ") for j in range(1)]\n"
+                            else:
+                                self.run[label] += "link" + str(cnt) + " = [net.connect(["+a+"[i],"+b+"[j]]) for i in range(" + str(self.num[a])  + ") for j in range(1)]\n"
+                            if (a,b) in capcity:
+                                self.run[label] += "link" + str(cnt) + " = [net.connect(["+a+"[i],"+b+"[j]],capacity == mbps("+ capacity[(a,b)] + ")) for i in range(" + str(self.num[a])  + ") for j in range(1)]\n"
+                            else:
+                                self.run[label] += "link" + str(cnt) + " = [net.connect(["+a+"[i],"+b+"[j]]) for i in range(" + str(self.num[a])  + ") for j in range(1)]\n"
                         cnt += 1
                         break
             else:
                  for b in links[a].keys():
                     if b in self.num.keys():
-                        self.run[label] += "link" + str(cnt) + " = [net.connect(["+a+"[i],"+b+"[j]]) for i in range(1) for j in range("+ str(self.num[b])  +")]\n"
+                        if (a,b) in latency and (a,b) in capacity:
+                            self.run[label] += "link" + str(cnt) + " = [net.connect(["+a+"[i],"+b+"[j]],latency == ms("+ latency[(a,b)] + "), capacity == mbps("+ capacity[(a,b)] + ")) for i in range(1) for j in range("+ str(self.num[b])  +")]\n"
+                        else:
+                            if (a,b) in latency:
+                                self.run[label] += "link" + str(cnt) + " = [net.connect(["+a+"[i],"+b+"[j]],latency == ms("+ latency[(a,b)] + ")) for i in range(1) for j in range("+ str(self.num[b])  +")]\n"
+                            else:
+                                self.run[label] += "link" + str(cnt) + " = [net.connect(["+a+"[i],"+b+"[j]]) for i in range(1) for j in range("+ str(self.num[b])  +")]\n"
+                            if (a,b) in capacity:
+                                self.run[label] += "link" + str(cnt) + " = [net.connect(["+a+"[i],"+b+"[j]],capacity == mbps("+ capacity[(a,b)] + ")) for i in range(1) for j in range("+ str(self.num[b])  +")]\n"
+                            else:
+                                self.run[label] += "link" + str(cnt) + " = [net.connect(["+a+"[i],"+b+"[j]]) for i in range(1) for j in range("+ str(self.num[b])  +")]\n"
                         cnt += 1
                         break
                     else:
-                        self.run[label] += "link" + str(cnt) + " = [net.connect(["+a+"[i],"+b+"[j]]) for i in range(1) for j in range(1)]\n"
+                        if (a,b) in latency and (a,b) in capacity:
+                            self.run[label] += "link" + str(cnt) + " = [net.connect(["+a+"[i],"+b+"[j]],latency == ms("+ latency[(a,b)] + "),capacity == ms("+ capacity[(a,b)] + ")) for i in range(1) for j in range(1)]\n"
+                        else:
+                            if (a,b) in latency:
+                                self.run[label] += "link" + str(cnt) + " = [net.connect(["+a+"[i],"+b+"[j]],latency == ms("+ latency[(a,b)] + ")) for i in range(1) for j in range(1)]\n"
+                            else:
+                                self.run[label] += "link" + str(cnt) + " = [net.connect(["+a+"[i],"+b+"[j]]) for i in range(1) for j in range(1)]\n"
+                            if (a,b) in capacity:
+                                self.run[label] += "link" + str(cnt) + " = [net.connect(["+a+"[i],"+b+"[j]],capacity == ms("+ capacity[(a,b)] + ")) for i in range(1) for j in range(1)]\n"
+                            else:
+                                self.run[label] += "link" + str(cnt) + " = [net.connect(["+a+"[i],"+b+"[j]]) for i in range(1) for j in range(1)]\n"
                         cnt += 1
                         break
                 
