@@ -24,6 +24,7 @@ class ConstraintParser():
     any_keyword = CaselessKeyword("any")
     num_keyword  = CaselessKeyword("num")
     os_keyword   = CaselessKeyword("os")
+    hw_keyword   = CaselessKeyword("hw")
     link_keyword = CaselessKeyword("link")
     link_all_keyword = link_keyword + wsp + all_keyword
     link_any_keyword = link_keyword + wsp + any_keyword
@@ -33,7 +34,7 @@ class ConstraintParser():
     interfaces_keyword = CaselessKeyword("interfaces")
     location_keyword = CaselessKeyword("location")
     nodetype_keyword = CaselessKeyword("nodetype")
-    not_akeyword = (NotAny(all_keyword) + NotAny(any_keyword) + NotAny(num_keyword) + NotAny(os_keyword) + NotAny(link_keyword) + NotAny(lan_keyword) + NotAny(interfaces_keyword) + NotAny(location_keyword) + NotAny(nodetype_keyword))
+    not_akeyword = (NotAny(all_keyword) + NotAny(any_keyword) + NotAny(num_keyword) + NotAny(os_keyword) + NotAny(hw_keyword) + NotAny(link_keyword) + NotAny(lan_keyword) + NotAny(interfaces_keyword) + NotAny(location_keyword) + NotAny(nodetype_keyword))
     
     actor = (not_akeyword + Word(alphanums+'_'))
     actors = actor + ZeroOrMore(wsp + actor)
@@ -42,7 +43,7 @@ class ConstraintParser():
     numValue = (not_akeyword + Word(nums))
     
     single_entity_num_constraint = num_keyword
-    single_entity_constraint = os_keyword | interfaces_keyword | location_keyword | nodetype_keyword
+    single_entity_constraint = os_keyword | hw_keyword | interfaces_keyword | location_keyword | nodetype_keyword
     
     single_entity_num_stmt = (single_entity_num_constraint("constraint") + wsp + actor("target") + wsp + numValue("value"))
     single_entity_str_stmt = (single_entity_constraint("constraint") + wsp + actor("target") + wsp + strValue("value"))
