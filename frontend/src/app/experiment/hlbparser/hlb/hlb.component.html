@@ -35,7 +35,6 @@
                 | slice: 0:3
                 | textfilter: behaviorTextFilter
             "
-            (click)="insertValue(word.value)"
             [disabled]="word.flag"
           >
             {{ word.value }}
@@ -91,7 +90,6 @@
                 | slice: 0:4
                 | textfilter: constraintTextFilter
             "
-            (click)="insertValueInConstraint(word.value)"
             [disabled]="word.flag"
           >
             {{ word.value }}

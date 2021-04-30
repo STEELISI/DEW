@@ -951,8 +951,11 @@ class HandleProjectStopLog(Resource):
     def post(self):
         print("In deter project stop")
         content = request.get_json(force=True)
-        if 'eid' not in content:
-          return {"error":"eid is missing"} , 200
+
+        print("Content is ", content)
+        if 'rid' not in content:
+          return {"error":"rid is missing"} , 200
+
         if 'account_id' not in content:
           return {"error":"account_id is missing"}, 200
         label = None
@@ -967,6 +970,7 @@ class HandleProjectStopLog(Resource):
         uid = userObj.getUserId()
         try:
           result = {}
+
           if not dm.user_can(uid,eid):
             result['error'] = "User does not have access to this experiment"
           else: 

@@ -33,6 +33,8 @@ execute_clear()
     fi
     /share/shared/dew/submitjob $node $exp $proj "stop ~/DEW/$id/script.$cnt.$aname.$node.sh $cnt" &
 }
+# This should be done conditionally if everything is stopped
+rm -f ~/DEW/$id
 
 
 

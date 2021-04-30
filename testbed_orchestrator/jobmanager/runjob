@@ -1,4 +1,6 @@
+#!/usr/bin/perl
 # Listen on socket for start and kill events
+
 
 use IO::Socket::INET;
 
@@ -41,6 +43,30 @@ sub pstree
     }
 }
 
+sub clean
+{
+    my ($s,$num) = @_;
+    print "Argument $s\n";
+    my @el = glob($s);
+    $s = $el[0];
+    my @items = split /\//, $s;
+    if ($#items > 1)
+    {
+	my $folder = "$items[0]/$items[1]/$items[2]/$items[3]/$items[4]";
+	$s = $el[0];
+	my $pidfile = "$folder/pid.$num";
+	print "Script is $s look for $pidfile folder $folder num $num\n";
+	if (-e $s && -e $pidfile)
+	{
+	    print "Found script $s\n";
+	}
+	else
+	{
+	    print "no script $s\n";
+	}
+    }
+}
+  
 sub recursivekill
 {
     my $pid = shift;
@@ -112,7 +138,13 @@ while(1)
 		# should do this recursively
 		$children{$pid} = "";
 	    }
-	}	
+	    system("rm $script");
+	}
+	else
+	{
+	    print("No active script $script\n");
+	    clean($script, $num);
+	}
     }
     pstree();
     for $p (keys %children)

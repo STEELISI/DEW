@@ -277,7 +277,6 @@ class BashGenerator(Generator):
             self.run[label] += argstring
         
 
-
     def generatePostamble(self, mode=None):
         for label in self.labels:
             if mode == "job":
