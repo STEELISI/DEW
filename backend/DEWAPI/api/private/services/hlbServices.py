@@ -137,19 +137,11 @@ class HLBService():
                 globals.actions[v['action']] = 1
         items = re.split("[\s,]",last_constraint.strip())
         item = items.pop(0)
-        if item in ["num", "os", "hw", "latency", "bandwidth", "loss", "nodetype", "interfaces", "location", "link", "lan"] and len(items) == 0:
+        if item in ["num", "os","nodetype", "interfaces", "location", "link","lan"] and len(items) == 0:
             return self.addSuggestions(["actors_only"])
         elif len(items) >= 1:
             if (item == "num" or item == "interfaces") and items[-1] in globals.actors:
                 return self.addSuggestions(["enter digit"])
-            elif (item == "hw") and items[-1] in globals.actors:
-                return self.addSuggestions(["enter HW Type"])
-            elif (item == "latency") and items[-1] in globals.actors:
-                return self.addSuggestions(["enter value"])
-            elif (item == "bandwidth") and items[-1] in globals.actors:
-                return self.addSuggestions(["enter value"])
-            elif (item == "loss") and items[-1] in globals.actors:
-                return self.addSuggestions(["enter value"])
             elif item == "os" and (items[-1] in globals.actors):
                 # for os in globals.deploy_handler.getSuggestions(type='os'):
                     #addSuggestions(os, Centry)

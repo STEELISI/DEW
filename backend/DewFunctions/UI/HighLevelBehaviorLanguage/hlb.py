@@ -351,7 +351,7 @@ def getSuggestionsForEvent(evtype):
             print("adding: ", s)
             suggestions.append(s)
     elif evtype == "constraints_enter":
-        suggestions = suggestions + ["num", "os", "hw","link","lan","interfaces","location","nodetype"]
+        suggestions = suggestions + ["num", "os","link","lan","interfaces","location","nodetype"]
     elif evtype == "emit":
         suggestions.append("emit")
         # globals.sbuttons["emit"] = 1
@@ -452,7 +452,7 @@ def processConstraints():
             item = items.pop(0)
             # parse out constraints
             if len(items) >= 2:
-                if (item == "num" or item == "os" or item == "hw" or item == "latency" or item == "bandwidth" or item == "loss" or item == "location" or item == "interfaces" or item == "nodetype"):
+                if (item == "num" or item == "os" or item == "location" or item == "interfaces" or item == "nodetype"):
                     if items[0] in globals.nodes:
                         if items[0] not in globals.constraints:
                             globals.constraints[items[0]] = dict()
@@ -533,7 +533,7 @@ def processConstraints():
         ll = chs.pop()
         items = re.split("[\s,]",ll.strip())
         item = items.pop(0)
-        if item in ["num", "os", "hw", "latency", "bandwidth", "loss", "nodetype", "interfaces", "location", "link","lan"] and len(items) == 0:
+        if item in ["num", "os","nodetype", "interfaces", "location", "link","lan"] and len(items) == 0:
             addSuggestions("actors_only", Centry)
         elif len(items) >= 1:
             if (item == "num" or item == "interfaces") and items[-1] in globals.actors:
@@ -545,34 +545,6 @@ def processConstraints():
                     globals.app.addButton(os,Centry)
                     globals.sbuttons[os]=1
                 addSuggestions("enter OS", Centry)
-            elif item == "hw" and (items[-1] in globals.actors 
-                                   or items[-1] in globals.nodes):
-                for hw in globals.deploy_handler.getSuggestions(type='os'):
-                    #addSuggestions(hw, Centry)
-                    globals.app.addButton(hw,Centry)
-                    globals.sbuttons[hw]=1
-                addSuggestions("enter HardWareType", Centry)
-            elif item == "latency" and (items[-1] in globals.actors 
-                                   or items[-1] in globals.nodes):
-                for latency in globals.deploy_handler.getSuggestions(type='os'):
-                    #addSuggestions(latency, Centry)
-                    globals.app.addButton(latency,Centry)
-                    globals.sbuttons[latency]=1
-                addSuggestions("enter Latency", Centry)
-            elif item == "bandwidth" and (items[-1] in globals.actors 
-                                   or items[-1] in globals.nodes):
-                for bandwidth in globals.deploy_handler.getSuggestions(type='os'):
-                    #addSuggestions(bandwidth, Centry)
-                    globals.app.addButton(bandwidth,Centry)
-                    globals.sbuttons[bandwidth]=1
-                addSuggestions("enter Bandwidth", Centry)
-            elif item == "loss" and (items[-1] in globals.actors 
-                                   or items[-1] in globals.nodes):
-                for loss in globals.deploy_handler.getSuggestions(type='os'):
-                    #addSuggestions(loss, Centry)
-                    globals.app.addButton(loss,Centry)
-                    globals.sbuttons[loss]=1
-                addSuggestions("enter Loss", Centry)
             elif item == "nodetype" and (items[-1] in globals.actors 
                                         or items[-1] in globals.nodes):
                 for nodetype in globals.deploy_handler.getSuggestions(type='nodetype'):
