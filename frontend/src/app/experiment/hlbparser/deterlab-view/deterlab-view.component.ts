@@ -421,50 +421,6 @@ export class DeterLabViewComponent implements OnInit {
 
 
 
-    stop(data = {}) {
-
-       const params = {
-            eid: this.experimentId,
-            account_id: this.userId,
-            data: data
-        };
-
-        if(data['label']!=undefined){
-        params['label'] = data['label']
-        delete data['label']
-        }
-
-        this.http.post('/api/v1/pr/deter/project/stop', params, {withCredentials: true})
-            .subscribe(data1 => {
-		    
-                this.showLoader = false;
-                if (data1.success) {
-                    this._snackBar.open('Successfully stopped', 'close', {
-                        duration: 2000,
-                    });
-                } else {
-
-                    const dialogRef = this.dialog.open(RunVariablePopUp, {
-                        width: '30%',
-                        data: data1.labels,
-                    });
-
-                    dialogRef.afterClosed().subscribe((result) => {
-                        if (result !== undefined) {
-                            this.showLoader = true;
-                            console.log(result)
-                            this.stop(result);
-                        }
-                    });
-                }
-            }, error => {
-                this.showLoader = false;
-                this._snackBar.open('Something went wrong please try again later!', 'close', {
-                    duration: 2000,
-                });
-            });
-    }
-
 
 
     stop(data = {}) {
