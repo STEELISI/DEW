@@ -1,17 +1,18 @@
 from pyparsing import ParseException, NotAny, Empty, Group, Word, CaselessKeyword, Literal, alphas, alphanums, nums, White, ZeroOrMore, OneOrMore, Optional, LineEnd, cppStyleComment
 from enum import Enum
 import sys
+import itertools
 sys.path.append('../')
 
 class HLBHintType(Enum):
     OPT_EMIT_STMT  = 0 # Statement
     REQ_EMIT_LIST  = 1 # The statement has an 'emit' keyword, but not list of emitted events.
-    REQ_ACTION	   = 2 # The statement has actors, possibly a wait and/or when, but no action.
-    REQ_ACTORS	   = 3 # The statement may have a wait and/or when statement, but no actors.
+    REQ_ACTION     = 2 # The statement has actors, possibly a wait and/or when, but no action.
+    REQ_ACTORS     = 3 # The statement may have a wait and/or when statement, but no actors.
     REQ_WAIT_TIME  = 4 # The statement has a 'wait' keyword, but no variable for the wait.
     REQ_WHEN_LIST  = 5 # The statement has a 'when' keyword, but not a list of events.   
-    NO_HINT	   = 6 # The statement is fully complete and has an emit list.
-    BLANK	   = 7 # There's no text in the statement yet.
+    NO_HINT    = 6 # The statement is fully complete and has an emit list.
+    BLANK      = 7 # There's no text in the statement yet.
     REQ_ACTORS_HAVEWHEN = 8 # We need actors, but we have a 'when xxx' statement (and no wait), so we can suggest a 'wait' as well.
     REQ_ACTORS_HAVEWAIT = 9 # We need actors, but we have a 'wait xxx' or 'when xxx wait xxx'
     UNKNOWN_ERROR  = 10 # Catch all
@@ -25,6 +26,10 @@ class ConstraintParser():
     num_keyword  = CaselessKeyword("num")
     os_keyword   = CaselessKeyword("os")
     link_keyword = CaselessKeyword("link")
+    bw_keyword = CaselessKeyword("bw")
+    delay_keyword = CaselessKeyword("delay")
+    loss_keyword = CaselessKeyword("loss")
+    ip_keyword = CaselessKeyword("ip")
     link_all_keyword = link_keyword + wsp + all_keyword
     link_any_keyword = link_keyword + wsp + any_keyword
     lan_keyword  = CaselessKeyword("lan")
@@ -33,22 +38,69 @@ class ConstraintParser():
     interfaces_keyword = CaselessKeyword("interfaces")
     location_keyword = CaselessKeyword("location")
     nodetype_keyword = CaselessKeyword("nodetype")
+    bw_stmt = bw_keyword + wsp + Word(nums)
+    delay_stmt = delay_keyword + wsp + Word(nums)
+    loss_stmt = loss_keyword + wsp + Word(nums)
+    ip_stmt = ip_keyword + wsp + Word(nums+".") + wsp + Word(nums+".")
+    lan_ip_stmt = ip_keyword + wsp + Word(nums+".") + wsp + Word(nums+".") + wsp + Word(nums+".")
+
     not_akeyword = (NotAny(all_keyword) + NotAny(any_keyword) + NotAny(num_keyword) + NotAny(os_keyword) + NotAny(link_keyword) + NotAny(lan_keyword) + NotAny(interfaces_keyword) + NotAny(location_keyword) + NotAny(nodetype_keyword))
     
     actor = (not_akeyword + Word(alphanums+'_'))
     actors = actor + ZeroOrMore(wsp + actor)
     actor_pair = actor + wsp + actor
     strValue = (not_akeyword + Word(alphanums+'_'))
+    ipValue = (not_akeyword + Word(nums+"."))
     numValue = (not_akeyword + Word(nums))
+
+    optionalFeatures = [bw_stmt("bw"), delay_stmt("delay"), loss_stmt("loss"), ip_stmt("ip")]
+    lan_optionalFeatures = [bw_stmt("bw"), delay_stmt("delay"), loss_stmt("loss"), lan_ip_stmt("ip")]
     
     single_entity_num_constraint = num_keyword
     single_entity_constraint = os_keyword | interfaces_keyword | location_keyword | nodetype_keyword
     
     single_entity_num_stmt = (single_entity_num_constraint("constraint") + wsp + actor("target") + wsp + numValue("value"))
     single_entity_str_stmt = (single_entity_constraint("constraint") + wsp + actor("target") + wsp + strValue("value"))
-    link_stmt = (link_keyword("constraint") + wsp + actor_pair("target")) | (link_all_keyword("constraint") + wsp + actor_pair("target")) | (link_any_keyword("constraint") + wsp + actor_pair("target"))
-    lan_stmt = (lan_keyword("constraint") + wsp + actors("target")) | (lan_all_keyword("constraint") + wsp + actors("target")) | (lan_any_keyword("constraint") + wsp + actors("target"))
-    
+
+    link_stmt = (link_all_keyword("constraint") + wsp + actor_pair("target")) | (link_any_keyword("constraint") + wsp + actor_pair("target")) 
+    #print("bw_keyword(target):",bw_keyword("target"))
+    #print("bw_keyword(constraint):",bw_keyword("constraint"))
+    lan_stmt = (lan_all_keyword("constraint") + wsp + actors("target")) | (lan_any_keyword("constraint") + wsp + actors("target"))
+
+    all_combinations = []
+    for r in range(len(optionalFeatures) + 1):
+        combinations_object = itertools.combinations(optionalFeatures, r)
+        combinations_list = list(combinations_object)
+        all_combinations += combinations_list
+
+    for i in range(len(all_combinations)-1,-1,-1):
+        stmts = link_keyword("constraint") + wsp + actor_pair("target")
+        for j in all_combinations[i]:
+            stmts += wsp
+            stmts += j
+        if all_combinations[i]:
+            link_stmt |= stmts
+
+    link_stmt |= (link_keyword("constraint") + wsp + actor_pair("target"))
+    #print("Link_stmt after:",link_stmt)
+
+    all_combinations = []
+    for r in range(len(lan_optionalFeatures) + 1):
+        combinations_object = itertools.combinations(lan_optionalFeatures, r)
+        combinations_list = list(combinations_object)
+        all_combinations += combinations_list
+
+    for i in range(len(all_combinations)-1,-1,-1):
+        stmts = lan_keyword("constraint") + wsp + actor_pair("target")
+        for j in all_combinations[i]:
+            stmts += wsp
+            stmts += j
+        if all_combinations[i]:
+           lan_stmt |= stmts
+
+    lan_stmt |= (lan_keyword("constraint") + wsp + actors("target"))
+    #print("Lan_stmt after:",lan_stmt)
+
     constraint_statement = (single_entity_num_stmt | single_entity_str_stmt | link_stmt | lan_stmt) + LineEnd()
     
     def parse_stmt(self, statement):
@@ -62,7 +114,7 @@ class ConstraintParser():
             return(None, None, None)
         if parsed.e_events == None:
             parsed.e_events = []
-        return_tuple = (str(parsed.constraint), list(parsed.target), list(parsed.value))
+        return_tuple = (str(parsed.constraint), list(parsed.target), list(parsed.value), list(parsed.bw), list(parsed.delay), list(parsed.loss), list(parsed.ip))
         return(tuple(r if r != [] and r != "" else None for r in return_tuple))
 
 class BindingParser():
@@ -103,7 +155,7 @@ class HLBParser():
     keyword_any = any_keyword
     actor = (not_akeyword + Word(alphanums+'_'))
     actors = actor + ZeroOrMore((comma + wsp + actor | comma + actor))
-    #action = (Optional(CaselessKeyword("start") | CaselessKeyword("stop") | CaselessKeyword("restart") | CaselessKeyword("check")) + (not_akeyword + Word(alphanums)))	
+    #action = (Optional(CaselessKeyword("start") | CaselessKeyword("stop") | CaselessKeyword("restart") | CaselessKeyword("check")) + (not_akeyword + Word(alphanums))) 
     action = (not_akeyword + Word(alphanums+'_'))
     event = (not_akeyword + Word(alphanums+'_'))
     events = event + ZeroOrMore((comma + wsp + event | comma + event))
@@ -151,7 +203,7 @@ class HLBParser():
         # Should be None or list
         v['actors'] = self.if_not_none_return_list(actors)
         # Should be None or str
-        try:	
+        try:    
             v['action'] = ''.join(action)
         except TypeError:
             v['action'] = str(action)

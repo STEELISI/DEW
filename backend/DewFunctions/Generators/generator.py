@@ -63,8 +63,12 @@ class Generator(object):
                 # return False
             # Because we use parsing for UI suggestions, we don't throw exceptions
             # when we can't parse a statement, instead the parser returns a tuplet of Nones.
+            print(parsedTuple)
+            print("DARSH")
             if all(x == None for x in parsedTuple):
                 print("ERROR:\tUnparsable constraint: %s\n" % c)
+                print(parsedTuple)
+                print("DARSH")
                 continue
                 #return False
 
@@ -72,6 +76,7 @@ class Generator(object):
             # XXX At some point we may care about others, like 'os'.
             #if 'num' == parsedTuple[0]:
             self.constraints_parsed.append(parsedTuple)
+            print("self.constraints_parsed:",self.constraints_parsed)
 
         mys = ""
         label = "main"
