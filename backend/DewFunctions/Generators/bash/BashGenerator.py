@@ -204,10 +204,10 @@ class BashGenerator(Generator):
 
         if i is not None:
             self.run[label] += "execute_fork \"" + actor1 + "-" + str(i)+ "\" \"" + naction +"\" " + str(sid) + " " + action +" &\n"
-            self.clear[label] += "execute_clear \"" + actor1 + "-" + str(i)+ "\" \"" + naction +"\" " + str(sid) + " " + action + " &\n"
+            self.clear[label] += "execute_stop \"" + actor1 + "-" + str(i)+ "\" \" \"all\" 0 all &\n"
         else:
             self.run[label] += "execute_fork \"" + actor1 + "\" \"" + naction +"\" " + str(sid) + " " + action + " &\n"
-            self.clear[label] += "execute_clear \"" + actor1 + "\" \"" + naction +"\" " + str(sid) + " " + action + " &\n"
+            self.clear[label] += "execute_stop \"" + actor1 + "\" \"all\" 0 all &\n"
 
     def collectConds(self):
         self.conditions = dict()

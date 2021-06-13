@@ -428,7 +428,6 @@ export class DeterLabViewComponent implements OnInit {
        const params = {
             eid: this.experimentId,
             account_id: this.userId,
-            
             data: data
         };
 
@@ -446,7 +445,7 @@ export class DeterLabViewComponent implements OnInit {
                         duration: 2000,
                     });
                 } else {
-
+		    alert("Will stop")
                     const dialogRef = this.dialog.open(RunVariablePopUp, {
                         width: '30%',
                         data: data1.labels,
@@ -517,3 +516,4 @@ export class RunVariablePopUp implements OnInit {
         this.dialogRef.close();
     }
 }
+

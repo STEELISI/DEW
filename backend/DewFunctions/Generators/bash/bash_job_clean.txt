@@ -15,26 +15,23 @@ exp=$2
 label=$3
 id=$label
 cnt=0
+path=`pwd`
 
-
-execute_clear()
+execute_stop()
 {
     local node=$1
     local cmd=$2
     local cnt=$3
     local aname=$4
 
-    if [[ $cmd =~ apt && $cmd =~ install ]] ; then
-	for word in $cmd ; do
-	    if ! [[ $word =~ sudo || $word =~ ^apt || $word =~ install || $word =~ ^\- ]] ; then
-	       	echo "sudo apt-get remove -y "$word >> ~/DEW/$id/clear.$cnt.$aname.$node.sh
-	    fi
-	done	
+    if [ ! -d $path/DEW/$id ] ; then
+        mkdir $path/DEW/$id
     fi
-    /share/shared/dew/submitjob $node $exp $proj "stop ~/DEW/$id/script.$cnt.$aname.$node.sh $cnt" &
+    python3 /share/shared/dew/submitjob.py $node "stop all all" &
 }
+
 # This should be done conditionally if everything is stopped
-rm -f ~/DEW/$id
+# rm -f $path/DEW/$id/*
 
 
 

@@ -953,11 +953,12 @@ class HandleProjectStopLog(Resource):
         content = request.get_json(force=True)
 
         print("Content is ", content)
-        if 'rid' not in content:
-          return {"error":"rid is missing"} , 200
+        if 'eid' not in content:
+          return {"error":"eid is missing"} , 200
 
         if 'account_id' not in content:
           return {"error":"account_id is missing"}, 200
+
         label = None
         if 'label' in content:
           label = content['label']
@@ -1025,7 +1026,7 @@ class HandleProjectStopLog(Resource):
                   else:
                       result = result_log
             else:
-              result = {'error':'username or password doesnot exists'}
+              result = {'error':'username or password does not exists'}
           return result, 200
         except ValueError as e:
             if str(e) == "Forbidden":

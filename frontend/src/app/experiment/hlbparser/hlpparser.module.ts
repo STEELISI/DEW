@@ -116,7 +116,7 @@ import { RunInfoComponent } from "./deterlab-view/run-info/run-info.component";
     UserListPopUp,
     VersionsPopUp,
     RunVariablePopUp
-  ],
+    ],
   providers: [StateService],
   bootstrap: [HLBParserComponent],
 })

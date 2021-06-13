@@ -178,7 +178,6 @@ class SSHConnection():
                         
                     cmd = '/share/shared/dew/manager /users/' + self.username + '/' + filename + ' ' + project + ' ' + exp + ' ' + unique_name + labels + ' ' + action \
                         + '>' + unique_name + '.log' 
-                    
                     print(cmd)
                     try:
                         gatewaySession.get_cmd_output(cmd)
