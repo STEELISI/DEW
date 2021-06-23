@@ -13,8 +13,8 @@ execute_fork()
     if [ ! -d ~/DEW/$id ] ; then
 	mkdir ~/DEW/$id
     fi
-    echo "echo \"running $cmd\"" > ~/DEW/$id/script.$cnt.$aname.$node.sh
-    echo "$cmd 2>~/DEW/$id/error.$cnt &" > ~/DEW/$id/script.$cnt.$aname.$node.sh
+    echo "date +\"%s\" > ~/DEW/$id/time.$cnt " > ~/DEW/$id/script.$cnt.$aname.$node.sh
+    echo "$cmd 2>~/DEW/$id/error.$cnt 1>~/DEW/$id/output.$cnt &" >> ~/DEW/$id/script.$cnt.$aname.$node.sh
     echo "pid=\"\$!\""  >> ~/DEW/$id/script.$cnt.$aname.$node.sh
     echo "echo \$pid > ~/DEW/$id/pid.$cnt" >> ~/DEW/$id/script.$cnt.$aname.$node.sh
     echo "if wait \$pid; then" >> ~/DEW/$id/script.$cnt.$aname.$node.sh

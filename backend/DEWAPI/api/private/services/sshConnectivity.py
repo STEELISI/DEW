@@ -2,6 +2,7 @@ from jumpssh import SSHSession, RunCmdError, ConnectionError
 from DEWAPI import settings
 import uuid
 import time
+import json
 
 class SSHConnection():
     def __init__(self,username,password):
@@ -258,32 +259,18 @@ class SSHConnection():
                 directory = directory+ "/" + unique_name
                 cmd = "/share/shared/dew/jobstatus " + unique_name
                 output = gatewaySession.get_cmd_output(cmd)
-                print("Found ",output)
-                lines = output.split("\n")
-                for l in lines:
-                    r={}
-                    #$id, $tasks{$id}{'node'}, $tasks{$id}{'action'}, $tasks{$id}{'cmd'}, $tasks{$id}{'ran'}, $tasks{$id}{'status'}, $tasks{$id}{'error'}
-                    elems = l.split(",")
-                    print("Line ",l," elems ",len(elems))
-                    r['node'] = elems[2]
-                    r['action'] = elems[1]
-                    r['script'] = elems[3]
-                    r['started'] = elems[4]
-                    if elems[5].strip() != "":
-                        r['status'] = str(int(elems[5]))
-                    else:
-                        r['status'] = 0
-                    if len(elems) == 7:
-                        r['error'] = elems[6].strip()
-                    else:
-                        r['error'] = ''
-                    print("Status for ",r['node']," action ", r['action'], " is ", r['status'])
-                    results.append(r)
-                    
+                print("output ", output)
+                jo = json.loads(output)
+                cnt = 0
+                for data in jo:
+                    for id in data:
+                        if (id == 'data'):
+                            results.append(data[id])
+                            cnt += 1
                 result['data'] = results
                 result['startIndex'] = 0
-                result['batchSize'] = len(lines)
-                result['totalFiles'] = len(lines)
+                result['batchSize'] = cnt
+                result['totalFiles'] = cnt
                   
             except RunCmdError as e:
                 result['error']= "command executed with exception"
