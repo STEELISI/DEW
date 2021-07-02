@@ -80,6 +80,7 @@ def callback(ch, method, properties, body):
     f.write(timenow + " received %r\n" % body.decode())
     print(" [x] Received msg %r" % body.decode())
     f.close()
+    
     elems = received_data.split()
     if (len(elems) != 3):
         return
@@ -92,8 +93,13 @@ def callback(ch, method, properties, body):
     if cmd == "start":
         childpid = os.fork()
         if childpid == 0:
+            print("Starting child /bin/bash ", script)
             process = subprocess.Popen(["/bin/bash",  script])
-            print("Started child")
+            f = open("/tmp/runjob.log", "a") 
+            epoch=time.time()
+            timenow=time.strftime("%d %b %Y %H:%M:%S", time.localtime(epoch)) 
+            f.write(timenow + " started child /bin/bash %s\n" % script)
+            f.close()
             return
         else:
             con = sqlite3.connect('/tmp/dew.db')

@@ -41,7 +41,7 @@ if (!-e $script)
     exit 1;
 }
 $node=get_node($proj, $exp);
-system("ssh $node.$exp.$proj \"bash /share/shared/dew/runscript $script $proj $exp $label $action > manager.out &\"");
+system("ssh $node.$exp.$proj \"/share/shared/dew/runscript $script $proj $exp $label $action > manager.out &\"");
 sleep(10);
 print("ran the script");
 exit 0;
