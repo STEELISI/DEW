@@ -1,0 +1,36 @@
+<div *ngIf="isViewEnable()" (keydown)="onKeyDown($event)" tabindex="-1" style="outline:none;">
+
+  <experiment-info [id]="experimentId" (viewId)="show($event)"></experiment-info>
+
+  <div class="main container-fluid">
+    <div class="row" style="font-size: 12px; font-family: Arial, Helvetica, sans-serif;">
+      <div class="col-md-12">
+        <div class="alert alert-success" style="font-family: cursive;">
+          In DEW, an experiment consists of a behavior (who does what and when), constraints (how experiment should be
+          materialized on a testbed) and bindings (specific commands to run on nodes for each action). Click on <span
+            class="fa fa-question-circle" matTooltip="Information"></span> to learn more about each component or explore
+          our <a href="/docs/experiment_page">documentation</a> and <a href="/docs/examples/">examples</a>.
+        </div>
+      </div>
+    </div>
+    <div class="row pb-4">
+      <div class="col-md-3">
+        <hlb *ngIf="viewID == 1"></hlb>
+      </div>
+      <div class="col-md-9">
+        <dependency-graph *ngIf="viewID == 1"></dependency-graph>
+      </div>
+    </div>
+    <!-- <hlb *ngIf="viewID == 1"></hlb>
+    <dependency-graph *ngIf="viewID == 1" (navigate)="handleSlideNavigation($event)"></dependency-graph> -->
+
+
+
+    <topology-graph *ngIf="viewID == 5" (navigate)="handleSlideNavigation($event)"></topology-graph>
+    <experiment-slides *ngIf="viewID == 4" [experimentId]="experimentId" (navigate)="handleSlideNavigation($event)">
+    </experiment-slides>
+    <app-deterlab *ngIf="viewID == 3"></app-deterlab>
+    <single-experiment-slide *ngIf="viewID == 6" (navigate)="handleSlideNavigation($event)"></single-experiment-slide>
+    <design-page *ngIf="viewID==7" (navigate)="handleSlideNavigation($event)"></design-page>
+  </div>
+</div>

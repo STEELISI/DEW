@@ -1,0 +1,7 @@
+.vscode/
+*.DS_Store
+*.pyc
+backend/venv/
+frontend/node_modules
+.idea/
+backend/db/database.db
