@@ -1,4 +1,7 @@
-from app import app
+from app import app, db
+
+# with app.app_context():
+#     db.create_all()
 
 PORT=8800
 HOST='0.0.0.0'

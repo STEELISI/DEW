@@ -22,7 +22,7 @@ class AuthFilter():
         if origin in url:
             return True, None
         else:
-            return True, "Unauthorized ussage."
+            return True, "Unauthorized usage."
     def isUrlPathPrivate(self):
         path = request.path
         privateUrlProgPattern = re.compile(privateUrlpattern)
