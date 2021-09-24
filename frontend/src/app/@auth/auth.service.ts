@@ -28,21 +28,27 @@ export class AuthService {
      return this.http.post('/api/v1/p/user/validateUser/',param,{withCredential:true});
 
   }
-  authenticate(arg0: string):Observable<any> {
+  authenticate(userData: any):Observable<any> {
    // //console.log(window.location.hash.substr(1));
-    var params = {}
-    console.log(window.location.href)
-    console.log(window.location.href.split('&')[0].split('code=')[1]);
-    window.location.hash.substr(1).split('&').map(hk => { 
-      let temp = hk.split('='); 
-        params[temp[0]] = temp[1] 
-    });
-   // //console.log(params);
-  
-    
-    this.token = params["access_token"];
-    this.expiry = Number(params["expires_in"]);
-    return this.startSession(params["access_token"]);
+    // console.log(window.location.href)
+    // console.log(window.location.href.split('&')[0].split('code=')[1]);
+    // window.location.hash.substr(1).split('&').map(hk => { 
+    //   let temp = hk.split('='); 
+    //     params[temp[0]] = temp[1] 
+    // });
+   // //console.log(params);  
+    this.token = userData.authToken;
+    this.expiry = Number(3500);
+    setInterval(this.refreshUserToken, 5000);
+    return this.startSession(this.token);
+  }
+
+  refreshUserToken() {
+    // this.socialAuthService.refreshAuthToken(GoogleLoginProvider.PROVIDER_ID).then(() => {
+    //   this.token = this.user.authToken;
+    //   this.expiry = Number(3500);
+    //   this.setCookie("token", this.token, this.expiry);
+    // });
   }
 
   enableAuthentication(){
@@ -109,8 +115,8 @@ export class AuthService {
           this.login = (user != null);
         });
         this.socialAuthService.signIn(GoogleLoginProvider.PROVIDER_ID).then(()=> {
-          console.log(this.user)
-          resolve(false);
+          
+          resolve(this.user);
         }).catch(()=> {
           reject(false);
         });
@@ -163,6 +169,7 @@ export class AuthService {
 
   logout() {
    //this.socialAuthService.signOut();
+   this.socialAuthService.signOut();
    this.isAuthenticate.next(false);
    this.login = false;
    this.token="";
