@@ -9,6 +9,7 @@ import { Router } from '@angular/router';
 import { AuthService } from '../../auth.service';
 import { takeWhile } from 'rxjs/operators';
 import { AuthResult } from '../../auth-result';
+import * as $ from 'jquery';
 
 @Component({
   selector: 'login',
@@ -19,7 +20,6 @@ import { AuthResult } from '../../auth-result';
 
 export class LoginComponent implements OnInit {
 
- 
   alive: boolean = true;
   emailId:string="";
   password:string="";
@@ -40,8 +40,13 @@ export class LoginComponent implements OnInit {
   
   }
 
-  login(){
-    this.authService.loginWithGoogle();
+login(){
+    $('.SignInOrContent').toggleClass('hide');
+    this.authService.loginWithGoogle().then((result)=> {
+      $('.SignInOrContent').toggleClass('hide');
+    }).catch((result)=> {
+      $('.SignInOrContent').toggleClass('hide');
+    });
   }
 
   enablePassword(){

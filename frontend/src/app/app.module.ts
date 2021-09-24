@@ -8,6 +8,17 @@ import { RouterModule } from '@angular/router';
 import { HttpService } from './http-service.service';
 import { AuthModule } from './@auth/auth.module';
 import { StateService } from './state-service.service';
+import { SocialLoginModule, AuthServiceConfig } from 'angularx-social-login';
+import { GoogleLoginProvider } from 'angularx-social-login';
+import google_oauth_credentials from '../../google_oauth_credentials.json';
+
+//Auth service config
+let config = new AuthServiceConfig([
+  {
+    id: GoogleLoginProvider.PROVIDER_ID,
+    provider: new GoogleLoginProvider(google_oauth_credentials.web.client_id)
+  }
+]);
 
 @NgModule({
   declarations: [
@@ -21,9 +32,12 @@ import { StateService } from './state-service.service';
     BrowserAnimationsModule,
     RouterModule,
     AppRoutingModule,
-    HttpClientModule
+    HttpClientModule,
+    SocialLoginModule.initialize(config)
   ],
-  providers: [HttpService, StateService
+  providers: [
+    HttpService, 
+    StateService  
   ],
   bootstrap: [AppComponent]
 })

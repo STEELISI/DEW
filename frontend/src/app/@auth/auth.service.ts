@@ -1,7 +1,11 @@
 import { BehaviorSubject, Observable, of } from 'rxjs';
 import { Injectable } from '@angular/core';
 import { HttpService } from '../http-service.service';
-import { environment } from '../../environments/environment'
+import { environment } from '../../environments/environment';
+import { AuthService as SocialAuthService } from "angularx-social-login";
+//Import angular social login providers
+import { GoogleLoginProvider, SocialUser } from "angularx-social-login";
+import google_oauth_credentials from '../../../google_oauth_credentials.json';
 
 @Injectable({
     providedIn: 'root'
@@ -9,11 +13,12 @@ import { environment } from '../../environments/environment'
 export class AuthService {
  
  
-  constructor(protected http:HttpService){}
+  constructor(protected http:HttpService, protected socialAuthService: SocialAuthService){ }
 
   login:boolean=false;
   token:String;
   expiry:Number;
+  user: SocialUser;
 
   startSession(id): Observable<any> {
     
@@ -26,6 +31,8 @@ export class AuthService {
   authenticate(arg0: string):Observable<any> {
    // //console.log(window.location.hash.substr(1));
     var params = {}
+    console.log(window.location.href)
+    console.log(window.location.href.split('&')[0].split('code=')[1]);
     window.location.hash.substr(1).split('&').map(hk => { 
       let temp = hk.split('='); 
         params[temp[0]] = temp[1] 
@@ -94,23 +101,44 @@ export class AuthService {
     return "";
   }
 
-  loginWithGoogle(){
-    //  var redirect = 'http://dew.isi.edu/auth/googleoauth2callback';
-    // var redirect = 'http://localhost:4200/auth/googleoauth2callback';
-    var redirect = environment.authRedirectUrl
-    var client_id = '789341153375-qeeo9deuouq9ea3ke4ou0ipqr2gjd0vr.apps.googleusercontent.com';
-    var url = [];
-  //  var apuUrl = "https://accounts.google.com/o/oauth2/v2/auth";
-    var apiurl = "https://accounts.google.com/o/oauth2/auth";
-    url.push(apiurl);
-    url.push("?redirect_uri="+encodeURIComponent( redirect));
-    url.push("&response_type=token");
-    url.push("&scope=email%20profile%20openid%20"+encodeURIComponent("https://www.googleapis.com/auth/userinfo.profile")+"&fetch_basic_profile=true");
-    url.push("&client_id="+client_id);
-   // url.push("&ss_domain=https%3A%2F%2Fdevelopers-dot-devsite-v2-prod.appspot.com&gsiwebsdk=2");
-    //console.log(url.join(""));
-    window.location.href = url.join("");
+  loginWithGoogle() {
+    return new Promise((resolve, reject) => {
+      try {
+        this.socialAuthService.authState.subscribe((user) => {
+          this.user = user;
+          this.login = (user != null);
+        });
+        this.socialAuthService.signIn(GoogleLoginProvider.PROVIDER_ID).then(()=> {
+          console.log(this.user)
+          resolve(false);
+        }).catch(()=> {
+          reject(false);
+        });
+      } catch(exception) {
+        reject(false);
+      }
+    });
+    
   }
+
+  // loginWithGoogleOldVersion(){
+  //   var redirect = environment.authRedirectUrl
+  //   var client_id = google_oauth_credentials.web.client_id;
+  //   var client_secret = google_oauth_credentials.web.client_secret;
+  //   var url = [];
+  //   var apiurl = "https://accounts.google.com/o/oauth2/auth";
+  //   url.push(apiurl);
+  //   url.push("?redirect_uri="+encodeURIComponent( redirect));
+  //   url.push("&access_type=offline&prompt=consent");
+  //   url.push("&response_type=code");
+  //   url.push("&scope=email%20profile%20openid%20"+encodeURIComponent("https://www.googleapis.com/auth/userinfo.profile")+"&fetch_basic_profile=true");
+  //   url.push("&client_id="+client_id);
+  //   //url.push("&client_secret="+client_secret);
+  //   //url.push('&grant_type=authorization_code');
+  //  // url.push("&ss_domain=https%3A%2F%2Fdevelopers-dot-devsite-v2-prod.appspot.com&gsiwebsdk=2");
+  //   //console.log(url.join(""));
+  //   window.location.href = url.join("");
+  // }
 
   authorizeGoogleDrive(experiment_id){
     const scopes = [
@@ -134,7 +162,7 @@ export class AuthService {
   }
 
   logout() {
-   //console.log("logout");
+   //this.socialAuthService.signOut();
    this.isAuthenticate.next(false);
    this.login = false;
    this.token="";
