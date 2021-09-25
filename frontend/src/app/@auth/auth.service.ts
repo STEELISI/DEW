@@ -29,26 +29,16 @@ export class AuthService {
 
   }
   authenticate(userData: any):Observable<any> {
-   // //console.log(window.location.hash.substr(1));
-    // console.log(window.location.href)
-    // console.log(window.location.href.split('&')[0].split('code=')[1]);
-    // window.location.hash.substr(1).split('&').map(hk => { 
-    //   let temp = hk.split('='); 
-    //     params[temp[0]] = temp[1] 
-    // });
-   // //console.log(params);  
     this.token = userData.authToken;
     this.expiry = Number(3500);
-    setInterval(this.refreshUserToken, 5000);
+    setInterval(()=> {
+      this.socialAuthService.refreshAuthToken(GoogleLoginProvider.PROVIDER_ID).then(() => {
+        this.token = this.user.authToken;
+        this.expiry = 3500;
+        this.setCookie("token", this.token, this.expiry);
+      });
+    }, (Number(this.expiry) * 1000));
     return this.startSession(this.token);
-  }
-
-  refreshUserToken() {
-    this.socialAuthService.refreshAuthToken(GoogleLoginProvider.PROVIDER_ID).then(() => {
-      this.token = this.user.authToken;
-      this.expiry = Number(3500);
-      this.setCookie("token", this.token, this.expiry);
-    });
   }
 
   enableAuthentication(){

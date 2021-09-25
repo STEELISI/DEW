@@ -31,7 +31,7 @@
     "@swimlane/ngx-graph": "^6.2.0",
     "angular-material-fileupload": "^2.0.0",
     "angular-user-idle": "^2.2.4",
-    "angularx-social-login": "^2.2.1",
+    "angularx-social-login": "^3.5.7",
     "bootstrap": "^4.4.1",
     "file-saver": "^2.0.5",
     "fsevents": "^2.1.2",
