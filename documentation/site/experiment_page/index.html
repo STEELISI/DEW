@@ -14,7 +14,7 @@
 
   <link rel="stylesheet" href="../css/theme.css" />
   <link rel="stylesheet" href="../css/theme_extra.css" />
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.5.0/styles/github.min.css" />
   <link href="../css/style.css" rel="stylesheet" />
   
   <script>
@@ -26,9 +26,8 @@
   
   <script src="../js/jquery-2.1.1.min.js" defer></script>
   <script src="../js/modernizr-2.8.3.min.js" defer></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.5.0/highlight.min.js"></script>
   <script>hljs.initHighlightingOnLoad();</script> 
-  
 </head>
 
 <body class="wy-body-for-nav" role="document">
@@ -42,7 +41,7 @@
         <a href=".." class="icon icon-home"> Distributed Experiment Workflows</a>
         <div role="search">
   <form id ="rtd-search-form" class="wy-form" action="../search.html" method="get">
-    <input type="text" name="q" placeholder="Search docs" title="Type search term here" />
+      <input type="text" name="q" placeholder="Search docs" title="Type search term here" />
   </form>
 </div>
       </div>
@@ -185,14 +184,16 @@
   
   <hr/>
 </div>
+
           <div role="main">
             <div class="section">
               
                 <h1 id="experiment-page">Experiment page</h1>
 <p>This is the main page used to create new or edit existing experiments.</p>
 <p><img alt="Experiment page" src="../img/experiment_page_main.png" /></p>
-<p>View video tutorials on using the experiment page below - 
-<iframe width="560" height="315" src="https://www.youtube.com/embed/JNOLuf4gwUc" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe></p>
+<p>View video tutorials on using the experiment page below - </p>
+<iframe width="560" height="315" src="https://www.youtube.com/embed/JNOLuf4gwUc" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+
 <iframe width="560" height="315" src="https://www.youtube.com/embed/5q8fAJtRyUA" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
 
 <h2 id="experiment-name">Experiment name</h2>
@@ -316,19 +317,16 @@
 </ul>
 <pre><code>[when &lt;event&gt;][wait &lt;time&gt;] actor action [emit &lt;event&gt;]
 </code></pre>
-
 <ul>
 <li>For example, if you want to express the following behavior <strong>"A pings B, after that B waits 5 sec and pings A"</strong> you would write:</li>
 </ul>
 <pre><code>A start_ping1 emit ping1_done
 when ping1_done wait 5 B start_ping2
 </code></pre>
-
 <p>Conversely if you wanted <strong>A and B to ping each other in parallel</strong> you would write:</p>
 <pre><code>A start_ping1
 B start_ping2
 </code></pre>
-
 <p>Names of actors will eventually correspond to names of nodes in your experiments. Names of actions are chosen by you. You will get to define what they mean in the bindings section.</p>
 <ul>
 <li>As you start typing there will be auto-suggestion displayed near the top of the text area.</li>
@@ -342,7 +340,6 @@ B start_ping2
 </ul>
 <pre><code>constraint_type actor1 [actor2|value]
 </code></pre>
-
 <ul>
 <li>The allowed constraint types are<ul>
 <li>os</li>
@@ -361,7 +358,6 @@ num attacker 3
 lan client attacker
 link router server 
 </code></pre>
-
 <ul>
 <li>As you start typing there will be auto-suggestion displayed near the top of the text area.</li>
 <li>Press tab to use the first auto suggested word. It will append the word near the cursor in the textarea.</li>
@@ -378,7 +374,6 @@ run_tcpdump tcpdump -i expIP -w $file
 install_flooder /scripts/common/install_flooder.sh
 start_server iperf -s 
 </code></pre>
-
 <ul>
 <li>As you start typing behavior above this area will be populated with the terms which require definition for the experiment to execute. </li>
 </ul>
@@ -416,17 +411,18 @@ start_server iperf -s
   </div>
 
   <div class="rst-versions" role="note" aria-label="versions">
-    <span class="rst-current-version" data-toggle="rst-current-version">
-      
-      
-        <span><a href="../dashboard/" style="color: #fcfcfc;">&laquo; Previous</a></span>
-      
-      
-        <span style="margin-left: 15px"><a href="../basics/" style="color: #fcfcfc">Next &raquo;</a></span>
-      
-    </span>
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    
+    
+      <span><a href="../dashboard/" style="color: #fcfcfc">&laquo; Previous</a></span>
+    
+    
+      <span><a href="../basics/" style="color: #fcfcfc">Next &raquo;</a></span>
+    
+  </span>
 </div>
     <script>var base_url = '..';</script>
+    <script src="../js/theme_extra.js" defer></script>
     <script src="../js/theme.js" defer></script>
       <script src="../search/main.js" defer></script>
     <script defer>
