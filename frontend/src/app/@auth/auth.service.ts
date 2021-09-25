@@ -2,7 +2,7 @@ import { BehaviorSubject, Observable, of } from 'rxjs';
 import { Injectable } from '@angular/core';
 import { HttpService } from '../http-service.service';
 import { environment } from '../../environments/environment';
-import { AuthService as SocialAuthService } from "angularx-social-login";
+import { SocialAuthService } from "angularx-social-login";
 //Import angular social login providers
 import { GoogleLoginProvider, SocialUser } from "angularx-social-login";
 import google_oauth_credentials from '../../../google_oauth_credentials.json';
@@ -44,11 +44,11 @@ export class AuthService {
   }
 
   refreshUserToken() {
-    // this.socialAuthService.refreshAuthToken(GoogleLoginProvider.PROVIDER_ID).then(() => {
-    //   this.token = this.user.authToken;
-    //   this.expiry = Number(3500);
-    //   this.setCookie("token", this.token, this.expiry);
-    // });
+    this.socialAuthService.refreshAuthToken(GoogleLoginProvider.PROVIDER_ID).then(() => {
+      this.token = this.user.authToken;
+      this.expiry = Number(3500);
+      this.setCookie("token", this.token, this.expiry);
+    });
   }
 
   enableAuthentication(){

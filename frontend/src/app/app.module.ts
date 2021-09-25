@@ -8,17 +8,17 @@ import { RouterModule } from '@angular/router';
 import { HttpService } from './http-service.service';
 import { AuthModule } from './@auth/auth.module';
 import { StateService } from './state-service.service';
-import { SocialLoginModule, AuthServiceConfig } from 'angularx-social-login';
+import { SocialLoginModule, SocialAuthServiceConfig } from 'angularx-social-login';
 import { GoogleLoginProvider } from 'angularx-social-login';
 import google_oauth_credentials from '../../google_oauth_credentials.json';
 
 //Auth service config
-let config = new AuthServiceConfig([
-  {
-    id: GoogleLoginProvider.PROVIDER_ID,
-    provider: new GoogleLoginProvider(google_oauth_credentials.web.client_id)
-  }
-]);
+// let config = new AuthServiceConfig([
+//   {
+//     id: GoogleLoginProvider.PROVIDER_ID,
+//     provider: new GoogleLoginProvider(google_oauth_credentials.web.client_id)
+//   }
+// ]);
 
 @NgModule({
   declarations: [
@@ -33,11 +33,25 @@ let config = new AuthServiceConfig([
     RouterModule,
     AppRoutingModule,
     HttpClientModule,
-    SocialLoginModule.initialize(config)
+    SocialLoginModule
   ],
   providers: [
     HttpService, 
-    StateService  
+    StateService,
+    {
+      provide: "SocialAuthServiceConfig",
+      useValue: {
+        autoLogin: true,
+        providers: [
+          {
+            id: GoogleLoginProvider.PROVIDER_ID,
+            provider: new GoogleLoginProvider(
+              google_oauth_credentials.web.client_id
+            )
+          }
+        ]
+      } as SocialAuthServiceConfig
+    }
   ],
   bootstrap: [AppComponent]
 })
