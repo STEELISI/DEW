@@ -24,12 +24,6 @@ class SessionUser():
     
     def getEmailId(self):
         return self.EmailId
-
-    def setRefreshToken(self, refreshToken):
-        self.refreshToken = refreshToken
-    
-    def getRefreshToken(self):
-        return self.refreshToken
     
 
 userObj = SessionUser()
