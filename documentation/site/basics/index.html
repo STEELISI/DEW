@@ -14,7 +14,7 @@
 
   <link rel="stylesheet" href="../css/theme.css" />
   <link rel="stylesheet" href="../css/theme_extra.css" />
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.5.0/styles/github.min.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css" />
   <link href="../css/style.css" rel="stylesheet" />
   
   <script>
@@ -26,8 +26,9 @@
   
   <script src="../js/jquery-2.1.1.min.js" defer></script>
   <script src="../js/modernizr-2.8.3.min.js" defer></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.5.0/highlight.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
   <script>hljs.initHighlightingOnLoad();</script> 
+  
 </head>
 
 <body class="wy-body-for-nav" role="document">
@@ -41,7 +42,7 @@
         <a href=".." class="icon icon-home"> Distributed Experiment Workflows</a>
         <div role="search">
   <form id ="rtd-search-form" class="wy-form" action="../search.html" method="get">
-      <input type="text" name="q" placeholder="Search docs" title="Type search term here" />
+    <input type="text" name="q" placeholder="Search docs" title="Type search term here" />
   </form>
 </div>
       </div>
@@ -148,7 +149,6 @@
   
   <hr/>
 </div>
-
           <div role="main">
             <div class="section">
               
@@ -165,6 +165,7 @@
 The syntax of a DEW statement looks like:</p>
 <pre><code>[when [ALL/ANY] &lt;events&gt;][wait &lt;time&gt;] actor action [emit &lt;events&gt;]
 </code></pre>
+
 <p>(The parts enclosed in square brackets are optional.)</p>
 <p>It is also possible to provide labels by starting the line with <code>@</code>. With multiple labels, each label will have its own script when exported. We also support C++ style line comments <code>//</code> as well.</p>
 <h3 id="labels">Labels</h3>
@@ -177,6 +178,7 @@ server install_wget
 @ test
 server run_wget_script
 </code></pre>
+
 <p>Upon exporting to bash, you get two scripts - <code>install.sh</code> and <code>test.sh</code> 
 Now, the user can run <code>install.sh</code> once and focus on the execution of <code>test.sh</code>. If it was a single script, the user must wait till the installation is finished everytime it is run.</p>
 <h2 id="constraints">Constraints</h2>
@@ -185,19 +187,23 @@ Now, the user can run <code>install.sh</code> once and focus on the execution of
 <p>OS Constraint defines the operating system of the actor. The format of the constraint is </p>
 <pre><code>os actor os_name
 </code></pre>
+
 <h3 id="num">num</h3>
 <p>num constraint defines the number of instances of an actor. The format of the constraint is</p>
 <pre><code>num actor number_of_instances
 </code></pre>
+
 <h3 id="link">link</h3>
 <p>Link constraint denotes that there is a link between two actors. If there are multiple number of instances, you need to define the keyword <code>ALL</code> or <code>ANY</code> to indicate whether all instances need to be linked or any instance needs to be linked.
  The format of the constraint is</p>
 <pre><code>link [ALL/ANY] actor1 [ALL/ANY] actor2
 </code></pre>
+
 <h3 id="lan">lan</h3>
 <p>LAN constraint creates a LAN between specified actors. The format of the statement is</p>
 <pre><code>lan actor [actor] ...
 </code></pre>
+
 <h2 id="bindings">Bindings</h2>
 <p>Bindings provide the actual commands to be run on the nodes in the experiment to achieve actions and to detect events. </p>
 <h2 id="dew-file-format">DEW file format</h2>
@@ -211,6 +217,7 @@ Now, the user can run <code>install.sh</code> once and focus on the execution of
 [Constraints]
 &lt;constraint_statements&gt;
 </code></pre>
+
 <p>We also support inner labels in the scenario section. These labels will correspond to separate BASH scripts if you export your DEW specification as BASH scripts. The inner labels start with <code>@</code> character.</p>
 <pre><code>[Scenario]
 @setup
@@ -220,6 +227,7 @@ Now, the user can run <code>install.sh</code> once and focus on the execution of
 @cleanup
 &lt;cleanup_scenario_statements&gt;
 </code></pre>
+
 <h2 id="benefits">Benefits</h2>
 <ul>
 <li>Robust design - DEW format helps testbed users design an experiment at a high level, and in a flexible manner. It is easy to replace some pieces (e.g., which traffic generator to use) with others, and to scale the experiment up. </li>
@@ -259,18 +267,17 @@ Now, the user can run <code>install.sh</code> once and focus on the execution of
   </div>
 
   <div class="rst-versions" role="note" aria-label="versions">
-  <span class="rst-current-version" data-toggle="rst-current-version">
-    
-    
-      <span><a href="../experiment_page/" style="color: #fcfcfc">&laquo; Previous</a></span>
-    
-    
-      <span><a href="../sharing_and_collaboration/" style="color: #fcfcfc">Next &raquo;</a></span>
-    
-  </span>
+    <span class="rst-current-version" data-toggle="rst-current-version">
+      
+      
+        <span><a href="../experiment_page/" style="color: #fcfcfc;">&laquo; Previous</a></span>
+      
+      
+        <span style="margin-left: 15px"><a href="../sharing_and_collaboration/" style="color: #fcfcfc">Next &raquo;</a></span>
+      
+    </span>
 </div>
     <script>var base_url = '..';</script>
-    <script src="../js/theme_extra.js" defer></script>
     <script src="../js/theme.js" defer></script>
       <script src="../search/main.js" defer></script>
     <script defer>
