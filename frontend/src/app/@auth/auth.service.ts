@@ -19,6 +19,8 @@ export class AuthService {
   token:String;
   expiry:Number;
   user: SocialUser;
+  lastTime: number;
+  currentTime: number;
 
   startSession(id): Observable<any> {
     
@@ -34,6 +36,18 @@ export class AuthService {
     setInterval(()=> {
       this.refreshToken();
     }, (Number(this.expiry) * 1000));
+
+    //Code to detect if the Computer woke up
+    this.lastTime = (new Date()).getTime();
+    setInterval(() => {
+      this.currentTime = (new Date()).getTime();
+      if (this.currentTime > (this.lastTime + (60*15*1000) + (60*2*1000))) { //Check if the computer is awake every 15 mins. Ignore small delays.
+        // Probably just woke up!
+        this.refreshToken();
+      }
+      this.lastTime = this.currentTime;
+    }, (60*15*1000));
+
     return this.startSession(this.token);
   }
 
