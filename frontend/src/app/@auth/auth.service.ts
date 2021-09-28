@@ -32,14 +32,19 @@ export class AuthService {
     this.token = userData.authToken;
     this.expiry = Number(3500);
     setInterval(()=> {
-      this.socialAuthService.refreshAuthToken(GoogleLoginProvider.PROVIDER_ID).then(() => {
-        this.token = this.user.authToken;
-        this.expiry = 3500;
-        this.setCookie("token", this.token, this.expiry);
-      });
+      this.refreshToken();
     }, (Number(this.expiry) * 1000));
     return this.startSession(this.token);
   }
+
+  refreshToken() {
+    this.socialAuthService.refreshAuthToken(GoogleLoginProvider.PROVIDER_ID).then(() => {
+      this.token = this.user.authToken;
+      this.expiry = 3500;
+      this.setCookie("token", this.token, this.expiry);
+    });
+  }
+  
 
   enableAuthentication(){
     this.isAuthenticate.next(true);
