@@ -41,7 +41,7 @@ import google_oauth_credentials from '../../google_oauth_credentials.json';
     {
       provide: "SocialAuthServiceConfig",
       useValue: {
-        autoLogin: true,
+        autoLogin: false,
         providers: [
           {
             id: GoogleLoginProvider.PROVIDER_ID,

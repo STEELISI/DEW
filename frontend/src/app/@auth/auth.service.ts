@@ -177,8 +177,7 @@ export class AuthService {
   }
 
   logout() {
-   //this.socialAuthService.signOut();
-   this.socialAuthService.signOut();
+   this.socialAuthService.signOut(true);
    this.isAuthenticate.next(false);
    this.login = false;
    this.token="";
@@ -189,7 +188,5 @@ export class AuthService {
    this.setCookie("lastName","",0);
    this.setCookie("img","",0);
    this.setCookie("userHandle","",0);
-   
-
   }
 }
