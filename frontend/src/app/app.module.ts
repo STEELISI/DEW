@@ -10,15 +10,7 @@ import { AuthModule } from './@auth/auth.module';
 import { StateService } from './state-service.service';
 import { SocialLoginModule, SocialAuthServiceConfig } from 'angularx-social-login';
 import { GoogleLoginProvider } from 'angularx-social-login';
-import google_oauth_credentials from '../../google_oauth_credentials.json';
-
-//Auth service config
-// let config = new AuthServiceConfig([
-//   {
-//     id: GoogleLoginProvider.PROVIDER_ID,
-//     provider: new GoogleLoginProvider(google_oauth_credentials.web.client_id)
-//   }
-// ]);
+import { environment } from "environments/environment.prod";
 
 @NgModule({
   declarations: [
@@ -46,7 +38,7 @@ import google_oauth_credentials from '../../google_oauth_credentials.json';
           {
             id: GoogleLoginProvider.PROVIDER_ID,
             provider: new GoogleLoginProvider(
-              google_oauth_credentials.web.client_id
+              environment.googleClientId
             )
           }
         ]

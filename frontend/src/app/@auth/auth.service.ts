@@ -5,7 +5,6 @@ import { environment } from '../../environments/environment';
 import { SocialAuthService } from "angularx-social-login";
 //Import angular social login providers
 import { GoogleLoginProvider, SocialUser } from "angularx-social-login";
-import google_oauth_credentials from '../../../google_oauth_credentials.json';
 
 @Injectable({
     providedIn: 'root'
