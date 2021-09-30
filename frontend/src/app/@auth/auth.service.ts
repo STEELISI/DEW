@@ -194,6 +194,10 @@ export class AuthService {
   }
 
   logout() {
+    this.socialAuthService.authState.subscribe((user) => {
+      this.user = user;
+      this.login = (user != null);
+    });
    this.socialAuthService.signOut(true);
    this.isAuthenticate.next(false);
    this.login = false;
