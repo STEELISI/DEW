@@ -34,18 +34,18 @@ export class AuthService {
     this.expiry = Number(3500);
     setInterval(()=> {
       this.refreshToken();
-    }, (Number(this.expiry) * 1000));
+    }, (60 * 5 * 1000)); //Refresh Token every 5 mins
 
     //Code to detect if the Computer woke up
     this.lastTime = (new Date()).getTime();
     setInterval(() => {
       this.currentTime = (new Date()).getTime();
-      if (this.currentTime > (this.lastTime + (60*15*1000) + (60*2*1000))) { //Check if the computer is awake every 15 mins. Ignore small delays.
+      if (this.currentTime > (this.lastTime + (60*10*1000) + (60*2*1000))) { //Check if the computer is awake every 10 mins. Ignore small delays.
         // Probably just woke up!
         this.refreshToken();
       }
       this.lastTime = this.currentTime;
-    }, (60*15*1000));
+    }, (60*10*1000));
 
     return this.startSession(this.token);
   }
@@ -54,14 +54,14 @@ export class AuthService {
     this.socialAuthService.refreshAuthToken(GoogleLoginProvider.PROVIDER_ID).then(() => {
       this.token = this.user.authToken;
       this.expiry = 3500;
-      this.setCookie("token", this.token, this.expiry);
+      this.setCookie("token", this.token, this.expiry, false);
     });
   }
   
 
   enableAuthentication(){
     this.isAuthenticate.next(true);
-    this.setCookie("token",this.token,this.expiry);
+    this.setCookie("token",this.token,this.expiry, false);
   }
   getToken() {
     return this.token;
@@ -91,12 +91,13 @@ export class AuthService {
   }
 }
 
-   setCookie(key, value, seconds) {
+   setCookie(key, value, seconds, withExpiry) {
      //console.log(key+"::"+value);
     var date = new Date();
-    date.setTime(date.getTime() + (seconds *1000));
-    var expires = "expires="+ date.toUTCString();
-    document.cookie = key + "=" + value + ";" + expires + ";path=/";
+    var expires;
+    withExpiry && date.setTime(date.getTime() + (seconds *1000));
+    withExpiry && (expires = "expires="+ date.toUTCString());
+    document.cookie = key + "=" + value + ";" + (withExpiry ? expires + ";" : "") + "path=/";
   }
 
   getCookie(key) {
@@ -180,12 +181,12 @@ export class AuthService {
    this.isAuthenticate.next(false);
    this.login = false;
    this.token="";
-   this.setCookie("token","",0);
-   this.setCookie("emailId","",0);
-   this.setCookie("fullName","",0);
-   this.setCookie("givenName","",0);
-   this.setCookie("lastName","",0);
-   this.setCookie("img","",0);
-   this.setCookie("userHandle","",0);
+   this.setCookie("token","",0, true);
+   this.setCookie("emailId","",0, true);
+   this.setCookie("fullName","",0, true);
+   this.setCookie("givenName","",0, true);
+   this.setCookie("lastName","",0, true);
+   this.setCookie("img","",0, true);
+   this.setCookie("userHandle","",0, true);
   }
 }
