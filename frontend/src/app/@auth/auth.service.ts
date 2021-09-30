@@ -55,7 +55,6 @@ export class AuthService {
       this.token = this.user.authToken;
       this.expiry = 3500;
       this.setCookie("token", this.token, this.expiry, false);
-      this.setCookie("drive_token", this.token, this.expiry, false);
     });
   }
   
