@@ -194,20 +194,24 @@ export class AuthService {
   }
 
   logout() {
-    this.socialAuthService.authState.subscribe((user) => {
-      this.user = user;
-      this.login = (user != null);
-    });
-   this.socialAuthService.signOut(true);
-   this.isAuthenticate.next(false);
-   this.login = false;
-   this.token="";
-   this.setCookie("token","",0, true);
-   this.setCookie("emailId","",0, true);
-   this.setCookie("fullName","",0, true);
-   this.setCookie("givenName","",0, true);
-   this.setCookie("lastName","",0, true);
-   this.setCookie("img","",0, true);
-   this.setCookie("userHandle","",0, true);
+    try {
+      this.isAuthenticate.next(false);
+      this.login = false;
+      this.token="";
+      this.setCookie("token","",0, true);
+      this.setCookie("emailId","",0, true);
+      this.setCookie("fullName","",0, true);
+      this.setCookie("givenName","",0, true);
+      this.setCookie("lastName","",0, true);
+      this.setCookie("img","",0, true);
+      this.setCookie("userHandle","",0, true);
+      this.socialAuthService.authState.subscribe((user) => {
+        this.user = user;
+        this.login = (user != null);
+      });
+      this.socialAuthService.signOut(true);
+    } catch (ex) {
+      //Do nothing
+    }
   }
 }
