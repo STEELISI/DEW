@@ -32,6 +32,12 @@ export class AuthService {
   authenticate(userData: any):Observable<any> {
     this.token = userData.authToken;
     this.expiry = Number(3500);
+    return this.startSession(this.token);
+  }
+
+  setRefreshTokenIntervals() {
+  
+    //Code to Refresh Access Tokens
     setInterval(()=> {
       this.refreshToken();
     }, (60 * 5 * 1000)); //Refresh Token every 5 mins
@@ -47,15 +53,26 @@ export class AuthService {
       this.lastTime = this.currentTime;
     }, (60*10*1000));
 
-    return this.startSession(this.token);
   }
 
   refreshToken() {
-    this.socialAuthService.refreshAuthToken(GoogleLoginProvider.PROVIDER_ID).then(() => {
-      this.token = this.user.authToken;
-      this.expiry = 3500;
-      this.setCookie("token", this.token, this.expiry, false);
-    });
+    try {
+      this.socialAuthService.authState.subscribe((user) => {
+        this.user = user;
+        this.login = (user != null);
+      });
+      this.socialAuthService.refreshAuthToken(GoogleLoginProvider.PROVIDER_ID).then(() => {
+        try {
+          this.token = this.user.authToken;
+          this.expiry = 3500;
+          this.setCookie("token", this.token, this.expiry, false);
+        } catch (ex) {
+          //Do nothing
+        }
+      });
+    } catch (ex) {
+      //Do nothing
+    }
   }
   
 
