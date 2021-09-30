@@ -2,6 +2,6 @@ export const environment = {
   production: true,
   authRedirectUrl: 'https://dew-test3.isi.edu/auth/googleoauth2callback',
   apiUrl: 'https://dew-test3.isi.edu/api',
-  googleClientId: '888460802291-l1rajoib39cr6l8mmi6c9rp3v4clfcc4.apps.googleusercontent.com',
+  googleClientId: '789341153375-qeeo9deuouq9ea3ke4ou0ipqr2gjd0vr.apps.googleusercontent.com',
   googleDriveRedirectUrl: 'https://dew-test3.isi.edu/auth/googledrivecallback'
 };
