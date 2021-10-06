@@ -1,208 +1,222 @@
-<div
-  class="row"
-  style="font-size: 12px; font-family: Arial, Helvetica, sans-serif;"
->
-<div class="col-md-12">
-  In DEW, an experiment consists of a behavior (who does what and when), constraints (how experiment should be materialized on a testbed) and bindings (specific commands to run on nodes for each action). Click on <span class="fa fa-question-circle" matTooltip="Information"></span>  to learn more about each component or explore our <a href="/docs/experiment_page">documentation</a> and <a href="/docs/examples/">examples</a>.
-</div>
-</div>
-<div
-  class="d-flex flex-column"
-  style="font-size: 12px; font-family: Arial, Helvetica, sans-serif; min-height: 500px;margin-top: 1em;"
->
-<div class="d-flex align-items-stretch">
-<div style="width: 50%;" class="p-2">
-  <div>
-    <div style="text-align: center; word-wrap: break-word;">
-      <i class="fa fa-question-circle info" matTooltip="Information" (click)="showInfo(1)"></i> 
-      <h2>Scenario</h2> 
-    </div>
-    <hr />
-    <pre class="code-snippet">[when &#60;event>][wait &#60;time>] actor action [emit &#60;event>]</pre>
-    <hr />
-    
-    <div class="row">
-      <div class="col-md-12" (click)="selectTextBox(2)">
-        <div
-          style="margin: 0.6em; border-bottom: 1px solid #eee;"
-       
-        >
-          <span>Suggestions:</span>
-
-          <button
-            type="button"
-            class="btn btn-outline-primary word-bubble-button"
-            *ngFor="
-              let word of behaviorWordList
-                | slice: 0:3
-                | textfilter: behaviorTextFilter
-            "
-            (click)="insertValue(word.value, true)"
-            [disabled]="word.flag"
-          >
-            {{ word.value }}
-          </button>
-          <button
-            type="button"
-            *ngIf="suggestionbehaviorMessage != null"
-            class="btn btn-outline-primary word-bubble-button"
-            [disabled]="true"
-          >
-            {{ suggestionbehaviorMessage }}
-          </button>
-        </div>
-        <div class="flex-container">
-          <quill-editor
-            [styles]="{  border: 'none', 'font-size':'12px' }"
-            [modules]="{
-              counter: { container: '#editor1' },
-              toolbar: false
-            }"
-            placeholder="Enter Steps to be executed during the experiment. For example: Actor0 start_log"
-            format="object"
-            [(ngModel)]="scenariosObjFormat"
-            [disabled]="isExperimentDisabled()"
-            (onContentChanged)="logChangeBehavior($event)"
-            (onEditorCreated)="created($event, 2)"
-            (focusout)="updateActors()"
-          ></quill-editor>
-        </div>
+<div style="height: 1000px">
+<!-- Creates a layout with a left-positioned sidenav and explicit content. -->
+<mat-drawer-container class="drawer-container" autosize>
+  <mat-drawer #drawer class="drawer-sidenav" mode="side">
+    <div>
+      <div
+        class="row"
+        style="font-size: 12px; font-family: Arial, Helvetica, sans-serif;"
+      >
+      <div class="col-md-12">
+        In DEW, an experiment consists of a behavior (who does what and when), constraints (how experiment should be materialized on a testbed) and bindings (specific commands to run on nodes for each action). Click on <span class="fa fa-question-circle" matTooltip="Information"></span>  to learn more about each component or explore our <a href="/docs/experiment_page">documentation</a> and <a href="/docs/examples/">examples</a>.
       </div>
-    </div>
-  </div>
-  </div>
-  <div style="border-left: 1px dashed #ccc; border-right: 1px dashed #ccc;">
-  </div>
-  <div style="width: 50%;" class="p-2">
-  <div>
-    <div style="text-align: center; word-wrap: break-word;">
-      <i class="fa fa-question-circle info" matTooltip="Information" (click)="showInfo(2)"></i> 
-      <h2>Constraints</h2> 
-    </div>
-  
-    <hr />
-    <pre class="code-snippet">constraint node1 [value | node2]</pre>
-    <hr />
-    <div class="row">
-      <div class="col-md-12" (click)="selectTextBox(3)">
-        <div
-          style="margin: 0.6em; border-bottom: 1px solid #eee;"
-      
-        >
-          <span>Suggestions:</span>
-          <button
-            type="button"
-            class="btn btn-outline-primary word-bubble-button"
-            *ngFor="
-              let word of constraintWordList
-                | slice: 0:4
-                | textfilter: constraintTextFilter
-            "
-            (click)="insertValueInConstraint(word.value, true)"
-            [disabled]="word.flag"
-          >
-            {{ word.value }}
-          </button>
-          <button
-            type="button"
-            *ngIf="suggestionConstraintMessage != null"
-            class="btn btn-outline-primary word-bubble-button"
-            [disabled]="true"
-          >
-            {{ suggestionConstraintMessage }}
-          </button>
-        </div>
-        <div class="flex-container">
-          <quill-editor
-            [styles]="{  border: 'none', 'font-size':'12px' }"
-            [modules]="{
-              counter: { container: '#editor1' },
-              toolbar: false
-            }"
-            format="object"
-            [disabled]="isExperimentDisabled()"
-            [(ngModel)]="constraintsObjFormat"
-            (onContentChanged)="logChangeConstraints($event)"
-            (onEditorCreated)="created($event, 3)"
-            (focusout)="updateActorsConstraint()"
-          ></quill-editor>
-        </div>
       </div>
-    </div>
-  </div>
-</div>
-</div>
-<div style="border-top: 1px dashed #ccc; border-bottom: 1px dashed #ccc;">
-</div>
-  <div class="p-2">
-    <div style="text-align: center; word-wrap: break-word;">
-      <i class="fa fa-question-circle info" matTooltip="Information" (click)="showInfo(3)"></i> <h2>Bindings</h2> 
-    </div>
-    
-    <hr />
-    <p class="code-snippet">Choose an option from drop-down boxes or input your own commands. Variables are preceded by $ to indicate that their values should be replaced by constants in the design stage, or specified by user at run-time on the command line.</p>
-    <hr />
-    <div
-      *ngIf="bindingList.length == 0"
-      style="font-size: 0.8em; text-align: center;"
-    >
-      <span><i>No Bindings Needed</i></span>
-    </div>
-    <div class="d-flex justify-content-center">
-      <button type="button" class="btn btn-light special-func-btn" (click)="toggleSpecialFuncDialog()"
-              *ngIf="!showSpecialFuncDialog; else elseBlock">Show Special Functions</button>
-      <ng-template #elseBlock>
-        <button type="button" class="btn btn-light special-func-btn"
-                                      (click)="toggleSpecialFuncDialog()" >Hide Special Functions</button>
-      </ng-template>
-    </div>
-    <div *ngIf="bindingList.length != 0">
-      <ul class="behavior-list">
-        <li *ngFor="let item of bindingList; let index = index">
-          <div>
-            <mat-form-field style="width: 100%;" appearance="outline">
-              <mat-label>{{ item.key + " represents: " }}</mat-label>
-              <input type="text"
-                     [disabled]="isExperimentDisabled()"
-                     [(ngModel)]="item.value"
-                     (change)="storeBinding(index)"
-                     aria-label="string"
-                     matInput
-                     (focus)="searchFilter(item.value, item.category)"
-                     (keyup)="searchFilter(item.value, item.category)"
-                     [matAutocomplete]="UserInfo">
-
-              <mat-autocomplete #UserInfo="matAutocomplete" (optionSelected)="storeBinding(index)">
-                <mat-option *ngFor="let option of
-                (item.category ==='event' ?
-                (filteredBindingHandleForEvent | async) :
-                 (filteredBindingHandle | async))" [value]="option">
-                  {{option}}
-                </mat-option>
-              </mat-autocomplete>
-            </mat-form-field>
+      <div
+        class="d-flex flex-column"
+        style="font-size: 12px; font-family: Arial, Helvetica, sans-serif; min-height: 500px;margin-top: 1em;"
+      >
+      <div class="d-flex align-items-stretch">
+      <div style="width: 50%;" class="p-2">
+        <div>
+          <div style="text-align: center; word-wrap: break-word;">
+            <i class="fa fa-question-circle info" matTooltip="Information" (click)="showInfo(1)"></i> 
+            <h2>Scenario</h2> 
           </div>
-        </li>
-      </ul>
+          <hr />
+          <pre class="code-snippet">[when &#60;event>][wait &#60;time>] actor action [emit &#60;event>]</pre>
+          <hr />
+          
+          <div class="row">
+            <div class="col-md-12" (click)="selectTextBox(2)">
+              <div
+                style="margin: 0.6em; border-bottom: 1px solid #eee;"
+            
+              >
+                <span>Suggestions:</span>
+  
+                <button
+                  type="button"
+                  class="btn btn-outline-primary word-bubble-button"
+                  *ngFor="
+                    let word of behaviorWordList
+                      | slice: 0:3
+                      | textfilter: behaviorTextFilter
+                  "
+                  (click)="insertValue(word.value, true)"
+                  [disabled]="word.flag"
+                >
+                  {{ word.value }}
+                </button>
+                <button
+                  type="button"
+                  *ngIf="suggestionbehaviorMessage != null"
+                  class="btn btn-outline-primary word-bubble-button"
+                  [disabled]="true"
+                >
+                  {{ suggestionbehaviorMessage }}
+                </button>
+              </div>
+              <div class="flex-container">
+                <quill-editor
+                  [styles]="{  border: 'none', 'font-size':'12px' }"
+                  [modules]="{
+                    counter: { container: '#editor1' },
+                    toolbar: false
+                  }"
+                  placeholder="Enter Steps to be executed during the experiment. For example: Actor0 start_log"
+                  format="object"
+                  [(ngModel)]="scenariosObjFormat"
+                  [disabled]="isExperimentDisabled()"
+                  (onContentChanged)="logChangeBehavior($event)"
+                  (onEditorCreated)="created($event, 2)"
+                  (focusout)="updateActors()"
+                ></quill-editor>
+              </div>
+            </div>
+          </div>
+        </div>
+        </div>
+        <div style="border-left: 1px dashed #ccc; border-right: 1px dashed #ccc;">
+        </div>
+        <div style="width: 50%;" class="p-2">
+        <div>
+          <div style="text-align: center; word-wrap: break-word;">
+            <i class="fa fa-question-circle info" matTooltip="Information" (click)="showInfo(2)"></i> 
+            <h2>Constraints</h2> 
+          </div>
+        
+          <hr />
+          <pre class="code-snippet">constraint node1 [value | node2]</pre>
+          <hr />
+          <div class="row">
+            <div class="col-md-12" (click)="selectTextBox(3)">
+              <div
+                style="margin: 0.6em; border-bottom: 1px solid #eee;"
+            
+              >
+                <span>Suggestions:</span>
+                <button
+                  type="button"
+                  class="btn btn-outline-primary word-bubble-button"
+                  *ngFor="
+                    let word of constraintWordList
+                      | slice: 0:4
+                      | textfilter: constraintTextFilter
+                  "
+                  (click)="insertValueInConstraint(word.value, true)"
+                  [disabled]="word.flag"
+                >
+                  {{ word.value }}
+                </button>
+                <button
+                  type="button"
+                  *ngIf="suggestionConstraintMessage != null"
+                  class="btn btn-outline-primary word-bubble-button"
+                  [disabled]="true"
+                >
+                  {{ suggestionConstraintMessage }}
+                </button>
+              </div>
+              <div class="flex-container">
+                <quill-editor
+                  [styles]="{  border: 'none', 'font-size':'12px' }"
+                  [modules]="{
+                    counter: { container: '#editor1' },
+                    toolbar: false
+                  }"
+                  format="object"
+                  [disabled]="isExperimentDisabled()"
+                  [(ngModel)]="constraintsObjFormat"
+                  (onContentChanged)="logChangeConstraints($event)"
+                  (onEditorCreated)="created($event, 3)"
+                  (focusout)="updateActorsConstraint()"
+                ></quill-editor>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      </div>
+      <div style="border-top: 1px dashed #ccc; border-bottom: 1px dashed #ccc;">
+      </div>
+        <div class="p-2">
+          <div style="text-align: center; word-wrap: break-word;">
+            <i class="fa fa-question-circle info" matTooltip="Information" (click)="showInfo(3)"></i> <h2>Bindings</h2> 
+          </div>
+          
+          <hr />
+          <p class="code-snippet">Choose an option from drop-down boxes or input your own commands. Variables are preceded by $ to indicate that their values should be replaced by constants in the design stage, or specified by user at run-time on the command line.</p>
+          <hr />
+          <div
+            *ngIf="bindingList.length == 0"
+            style="font-size: 0.8em; text-align: center;"
+          >
+            <span><i>No Bindings Needed</i></span>
+          </div>
+          <div class="d-flex justify-content-center">
+            <button type="button" class="btn btn-light special-func-btn" (click)="toggleSpecialFuncDialog()"
+                    *ngIf="!showSpecialFuncDialog; else elseBlock">Show Special Functions</button>
+            <ng-template #elseBlock>
+              <button type="button" class="btn btn-light special-func-btn"
+                                            (click)="toggleSpecialFuncDialog()" >Hide Special Functions</button>
+            </ng-template>
+          </div>
+          <div *ngIf="bindingList.length != 0">
+            <ul class="behavior-list">
+              <li *ngFor="let item of bindingList; let index = index">
+                <div>
+                  <mat-form-field style="width: 100%;" appearance="outline">
+                    <mat-label>{{ item.key + " represents: " }}</mat-label>
+                    <input type="text"
+                          [disabled]="isExperimentDisabled()"
+                          [(ngModel)]="item.value"
+                          (change)="storeBinding(index)"
+                          aria-label="string"
+                          matInput
+                          (focus)="searchFilter(item.value, item.category)"
+                          (keyup)="searchFilter(item.value, item.category)"
+                          [matAutocomplete]="UserInfo">
+  
+                    <mat-autocomplete #UserInfo="matAutocomplete" (optionSelected)="storeBinding(index)">
+                      <mat-option *ngFor="let option of
+                      (item.category ==='event' ?
+                      (filteredBindingHandleForEvent | async) :
+                      (filteredBindingHandle | async))" [value]="option">
+                        {{option}}
+                      </mat-option>
+                    </mat-autocomplete>
+                  </mat-form-field>
+                </div>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+  
+      <div class="special-func-div" cdkDrag *ngIf="showSpecialFuncDialog">
+        <table class="table table-bordered">
+          <thead>
+          <tr>
+            <th scope="col">Special Functions</th>
+            <th scope="col">What they do</th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr *ngFor="let func of specialFunctions">
+            <th scope="row">{{func.name}}</th>
+            <td>{{func.value}}</td>
+          </tr>
+          </tbody>
+        </table>
+      </div>
     </div>
-  </div>
-</div>
+  </mat-drawer>
 
-<div class="special-func-div" cdkDrag *ngIf="showSpecialFuncDialog">
-  <table class="table table-bordered">
-    <thead>
-    <tr>
-      <th scope="col">Special Functions</th>
-      <th scope="col">What they do</th>
-    </tr>
-    </thead>
-    <tbody>
-    <tr *ngFor="let func of specialFunctions">
-      <th scope="row">{{func.name}}</th>
-      <td>{{func.value}}</td>
-    </tr>
-    </tbody>
-  </table>
+  <div (click)="drawer.toggle()">
+    Dummy Content
+  </div>
+
+</mat-drawer-container>
 </div>
 
 <div class="alert alert-warning alert-dismissible fade show" role="alert" *ngIf="showAlertMsg">
