@@ -17,6 +17,7 @@ import {
   MatSelectModule,
   MatTooltipModule,
   MatIconModule,
+  MatSidenavModule
 } from "@angular/material";
 import { NgxFileDropModule } from "ngx-file-drop";
 import { HLBParserComponent } from "./hlpparser.component";
@@ -108,6 +109,7 @@ import { RunInfoComponent } from "./deterlab-view/run-info/run-info.component";
     MatSnackBarModule,
     FontAwesomeModule,
     MatTabsModule,
+    MatSidenavModule,
     DragDropModule,
     FormsModule,
     MatTableModule,

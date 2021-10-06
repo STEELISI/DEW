@@ -26,7 +26,6 @@ export class HLBParserComponent implements OnInit {
         var input = {
           id: params["id"],
         };
-
         
         this.experimentId = params["id"];
         this.state.setExperimentId(this.experimentId);
