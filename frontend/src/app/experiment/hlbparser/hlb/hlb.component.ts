@@ -134,7 +134,6 @@ export class HlbComponent implements OnInit {
     return result;
   }
 
-
   convertTextToMap(textJson) {
     const map: Map<string, {}> = new Map<string, {}>();
     console.log(textJson)
@@ -143,6 +142,12 @@ export class HlbComponent implements OnInit {
     });
 
     return map;
+  }
+
+  openSideNavBar() {
+    
+    console.log("Here")
+
   }
 
   addColor(stringArray, row, map) {

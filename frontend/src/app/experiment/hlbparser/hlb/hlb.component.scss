@@ -160,4 +160,24 @@ ul {
     width: 80%;
     height: 100%;
   }
+
+  .side-nav-container {
+    margin-top: 10px;
+  }
   
+  .side-nav-icon {
+    background-color: rgb(245, 190, 8);
+    padding: 10px;
+    align-items: center;
+    float: left;
+    width: fit-content;
+  }
+
+  .side-nav-icon > img {
+    width: 20px;
+  }
+
+  .side-nav-icon > span {
+    padding: 10px;
+    font-weight: bolder;
+  }

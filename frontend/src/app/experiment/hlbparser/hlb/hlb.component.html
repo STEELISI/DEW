@@ -7,7 +7,7 @@
         class="row"
         style="font-size: 12px; font-family: Arial, Helvetica, sans-serif;"
       >
-      <div class="col-md-12">
+      <div class="col-md-12 text-center p-2">
         In DEW, an experiment consists of a behavior (who does what and when), constraints (how experiment should be materialized on a testbed) and bindings (specific commands to run on nodes for each action). Click on <span class="fa fa-question-circle" matTooltip="Information"></span>  to learn more about each component or explore our <a href="/docs/experiment_page">documentation</a> and <a href="/docs/examples/">examples</a>.
       </div>
       </div>
@@ -15,7 +15,7 @@
         class="d-flex flex-column"
         style="font-size: 12px; font-family: Arial, Helvetica, sans-serif; min-height: 500px;margin-top: 1em;"
       >
-      <div class="d-flex align-items-stretch">
+      <div class="d-flex align-items-stretch side-nav-container">
       <div style="width: 50%;" class="p-2">
         <div>
           <div style="text-align: center; word-wrap: break-word;">
@@ -56,7 +56,7 @@
                   {{ suggestionbehaviorMessage }}
                 </button>
               </div>
-              <div class="flex-container">
+              <div class="flex-container" style="min-height: 200px;">
                 <quill-editor
                   [styles]="{  border: 'none', 'font-size':'12px' }"
                   [modules]="{
@@ -117,7 +117,7 @@
                   {{ suggestionConstraintMessage }}
                 </button>
               </div>
-              <div class="flex-container">
+              <div class="flex-container" style="min-height: 200px;">
                 <quill-editor
                   [styles]="{  border: 'none', 'font-size':'12px' }"
                   [modules]="{
@@ -139,7 +139,7 @@
       </div>
       <div style="border-top: 1px dashed #ccc; border-bottom: 1px dashed #ccc;">
       </div>
-        <div class="p-2">
+        <div class="p-2 side-nav-container">
           <div style="text-align: center; word-wrap: break-word;">
             <i class="fa fa-question-circle info" matTooltip="Information" (click)="showInfo(3)"></i> <h2>Bindings</h2> 
           </div>
@@ -212,8 +212,9 @@
     </div>
   </mat-drawer>
 
-  <div (click)="drawer.toggle()">
-    Dummy Content
+  <div (click)="drawer.toggle(); openSideNavBar()" class="side-nav-icon">
+    <img src="../../../../assets/icons/svg/arrow-circle-right.svg">
+    <span class="text-left font-weight-bold">Textual Representation</span>
   </div>
 
 </mat-drawer-container>
