@@ -17,6 +17,7 @@ import {
 import { HttpService } from "src/app/http-service.service";
 import { Observable, of } from "rxjs";
 import * as _ from 'lodash';
+import * as $ from 'jquery';
 
 Quill.register("modules/counter", EditorService);
 
@@ -145,9 +146,7 @@ export class HlbComponent implements OnInit {
   }
 
   openSideNavBar() {
-    
-    console.log("Here")
-
+    $('.side-nav-icon > img').toggleClass('hide');
   }
 
   addColor(stringArray, row, map) {
