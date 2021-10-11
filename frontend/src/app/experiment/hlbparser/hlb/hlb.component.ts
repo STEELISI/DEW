@@ -293,7 +293,26 @@ export class HlbComponent implements OnInit, AfterViewInit {
     const data = { nodes, edges };
  
     const container = this.visNetwork;
-    this.networkInstance = new Network(container.nativeElement, data, {});
+    this.networkInstance = new Network(container.nativeElement, data, {
+      height: '100%',
+      width: '100%',
+      nodes: {
+        shape: 'oval',
+        font: {
+          color: 'black',
+        },
+      },
+      edges: {
+        smooth: true,
+        arrows: {
+          to: {
+            enabled: true,
+            type: 'vee',
+          },
+        },
+      },
+    });
+    //this.loadAll();
   }
 
 
