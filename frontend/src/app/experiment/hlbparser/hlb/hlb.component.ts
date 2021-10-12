@@ -297,7 +297,7 @@ export class HlbComponent implements OnInit, AfterViewInit {
       height: '100%',
       width: '100%',
       nodes: {
-        shape: 'oval',
+        shape: 'ellipse',
         font: {
           color: 'black',
         },
@@ -313,6 +313,15 @@ export class HlbComponent implements OnInit, AfterViewInit {
       },
     });
     //this.loadAll();
+    this.networkInstance.on( 'click', function(properties) {
+      var ids = properties.nodes;
+      var clickedNodes = nodes.get(ids);
+      console.log('clicked nodes:', clickedNodes);
+      var $dialogBox = $('.dialogBox');
+      $dialogBox.hasClass('hide') && $dialogBox.toggleClass('hide');
+      clickedNodes.length || $dialogBox.toggleClass('hide');
+      clickedNodes.length && $('#dialogBoxTitle').html(clickedNodes[0].label);
+    });
   }
 
 
