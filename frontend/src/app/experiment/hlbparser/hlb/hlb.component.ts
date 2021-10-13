@@ -321,7 +321,26 @@ export class HlbComponent implements OnInit, AfterViewInit {
       $dialogBox.hasClass('hide') && $dialogBox.toggleClass('hide');
       clickedNodes.length || $dialogBox.toggleClass('hide');
       clickedNodes.length && $('#dialogBoxTitle').html(clickedNodes[0].label);
+      $(".custom-menu").is(':visible') && $(".custom-menu").finish().toggle(100);;
     });
+
+    this.networkInstance.on('oncontext', function (properties) {
+      properties.event.preventDefault();
+      if(!properties.nodes.length) {
+        $('.toastBox').fadeIn(200);
+        setTimeout(()=> {
+          $('.toastBox').fadeOut(500);
+        }, 4000);
+      } else {
+        $(".custom-menu").is(':visible') && $(".custom-menu").finish().toggle();;
+        $(".custom-menu").finish().toggle(100);
+        $(".custom-menu").css({
+            top: properties.event.pageY - 100 + "px",
+            left: properties.event.pageX + "px"
+        });
+    }
+    });
+
   }
 
 
