@@ -220,7 +220,13 @@
     </div>
 
     <div class="dialogBox hide">
-        <span id="dialogBoxTitle"></span>
+      <div class="dialogBoxContent d-flex flex-column">
+        <span id="dialogBoxTitle" class="p-2"></span>
+        <mat-form-field class="flex-grow-1" appearance="outline">
+          <mat-label>IP Address</mat-label>
+          <input type="text" aria-label="string" matInput>
+        </mat-form-field>
+      </div>
     </div>
 
     <div class="graph-box">
