@@ -102,10 +102,19 @@ ul ul a {
 }
 
 #content {
-    position: fixed;
+    position: absolute;
     top: 0;
     width: 100%;
     z-index: 50;
-    background-color: white;
   }
+
+.navbar-heading {
+    font-family: serif; 
+    font-style: italic; 
+    margin-left: 3px; 
+    align-items: center;
+    text-align: left; 
+    color: #900;
+    margin-bottom: 0 !important;
+}
 

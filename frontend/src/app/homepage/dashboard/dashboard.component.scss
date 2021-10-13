@@ -8,17 +8,19 @@ mat-toolbar {
   }
 
   mat-toolbar[color="primary"] {
-    position: fixed; 
     height: 45px;
     color: black;
     font-size: 14px;
     background-color: #eee;
     top:var(--default-height);
+    position: relative;
+    margin-top: 22px;
   }
 
   .main {
+    margin-top: 60px;
+    position: relative;
     padding-left: 16px;
-    margin-top: 90px;
     font-size: 12px;
     margin-bottom: 10px;
   }
