@@ -617,7 +617,10 @@ export class HlbComponent implements OnInit, AfterViewInit {
         shape: 'ellipse',
         font: {
           color: 'black',
+          bold: 'true',
+          size: 20
         },
+        size: 40
       },
       edges: {
         smooth: true,
