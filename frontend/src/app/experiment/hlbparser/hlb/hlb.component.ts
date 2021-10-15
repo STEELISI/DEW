@@ -40,6 +40,10 @@ export class HlbComponent implements OnInit, AfterViewInit {
   behaviorService: EditorService;
   filteredBindingHandle: Observable<string[]>;
   filteredBindingHandleForEvent: Observable<string[]>;
+  graph_nodes: DataSet<any>;
+  graph_edges: DataSet<any>;
+  graph_data: any;
+  graph_container: any;
   filterBindingOptions = [
     "tcpdump -i expeth($node) -w $file",
     "ping $node",
@@ -273,73 +277,8 @@ export class HlbComponent implements OnInit, AfterViewInit {
   }
 
   ngAfterViewInit(): void {
-    // create an array with nodes
-    const nodes = new DataSet<any>([
-      { id: 1, label: 'Node 1' },
-      { id: 2, label: 'Node 2' },
-      { id: 3, label: 'Node 3' },
-      { id: 4, label: 'Node 4' },
-      { id: 5, label: 'Node 5' },
-    ]);
- 
-    // create an array with edges
-    const edges = new DataSet<any>([
-      { from: '1', to: '3' },
-      { from: '1', to: '2' },
-      { from: '2', to: '4' },
-      { from: '2', to: '5' },
-    ]);
- 
-    const data = { nodes, edges };
- 
-    const container = this.visNetwork;
-    this.networkInstance = new Network(container.nativeElement, data, {
-      height: '100%',
-      width: '100%',
-      nodes: {
-        shape: 'ellipse',
-        font: {
-          color: 'black',
-        },
-      },
-      edges: {
-        smooth: true,
-        arrows: {
-          to: {
-            enabled: true,
-            type: 'vee',
-          },
-        },
-      },
-    });
-    //this.loadAll();
-    this.networkInstance.on( 'click', function(properties) {
-      var ids = properties.nodes;
-      var clickedNodes = nodes.get(ids);
-      console.log('clicked nodes:', clickedNodes);
-      var $dialogBox = $('.dialogBox');
-      $dialogBox.hasClass('hide') && $dialogBox.toggleClass('hide');
-      clickedNodes.length || $dialogBox.toggleClass('hide');
-      clickedNodes.length && $('#dialogBoxTitle').html(clickedNodes[0].label);
-      $(".custom-menu").is(':visible') && $(".custom-menu").finish().toggle(100);;
-    });
 
-    this.networkInstance.on('oncontext', function (properties) {
-      properties.event.preventDefault();
-      if(!properties.nodes.length) {
-        $('.toastBox').fadeIn(200);
-        setTimeout(()=> {
-          $('.toastBox').fadeOut(500);
-        }, 4000);
-      } else {
-        $(".custom-menu").is(':visible') && $(".custom-menu").finish().toggle();;
-        $(".custom-menu").finish().toggle(100);
-        $(".custom-menu").css({
-            top: properties.event.pageY - 100 + "px",
-            left: properties.event.pageX + "px"
-        });
-    }
-    });
+    //Do Nothing
 
   }
 
@@ -613,12 +552,111 @@ export class HlbComponent implements OnInit, AfterViewInit {
       .put('v1/pr/hlb/parse', data, { withCredential: true })
       .subscribe((receivedData: ParseApiBean) => {
          //this.suggestAll(receivedData);
+         this.extractInfo(receivedData);
       });
   }
 
   extractInfo(data: ParseApiBean) {
+    this.updateGraph(data);
     this.extractScenario(data.parsedScenario);
     this.storeBinding(undefined);
+  }
+
+  updateGraph(data) { //Update the Graph View
+    console.log(data);
+    var temp_nodes = [];
+    var temp_edges = [];
+    var id_of_node = {};
+    var id_count = 0;
+    var temp;
+    //Populate the Nodes in the Graph
+    data.parsedScenario.forEach(element => {
+      id_of_node[element[2]] = id_count;
+      temp = {
+        id: id_count++,
+        label: element[1] + " " + element[2]
+      }
+      temp_nodes.push(temp);
+    });
+
+    //Populate the Edges in the Graph
+    data.parsedConstraints.forEach(element => {
+      switch(element[0]) {
+        case 'link':
+          temp = {
+            from: id_of_node[element[1][0]],
+            to: id_of_node[element[1][1]]
+          }
+          temp_edges.push(temp);
+          break;
+        default:
+          //Do nothing
+      }
+    });
+
+    // Create an array with nodes
+    this.graph_nodes = new DataSet<any>(
+      temp_nodes
+    );
+ 
+    // Create an array with edges
+    this.graph_edges = new DataSet<any>(
+      temp_edges
+    );
+
+    var nodes = this.graph_nodes;
+    var edges = this.graph_edges;
+ 
+    this.graph_data = { nodes, edges };
+ 
+    this.graph_container = this.visNetwork;
+    this.networkInstance = new Network(this.graph_container.nativeElement, this.graph_data, {
+      height: '100%',
+      width: '100%',
+      nodes: {
+        shape: 'ellipse',
+        font: {
+          color: 'black',
+        },
+      },
+      edges: {
+        smooth: true,
+        arrows: {
+          to: {
+            enabled: true,
+            type: 'vee',
+          },
+        },
+      },
+    });
+    
+    this.networkInstance.on( 'click', function(properties) {
+      var ids = properties.nodes;
+      var clickedNodes = nodes.get(ids);
+      console.log('clicked nodes:', clickedNodes);
+      var $dialogBox = $('.dialogBox');
+      $dialogBox.hasClass('hide') && $dialogBox.toggleClass('hide');
+      clickedNodes.length || $dialogBox.toggleClass('hide');
+      clickedNodes.length && $('#dialogBoxTitle').html(clickedNodes[0].label);
+      $(".custom-menu").is(':visible') && $(".custom-menu").finish().toggle(100);;
+    });
+
+    this.networkInstance.on('oncontext', function (properties) {
+      properties.event.preventDefault();
+      if(!properties.nodes.length) {
+        $('.toastBox').fadeIn(200);
+        setTimeout(()=> {
+          $('.toastBox').fadeOut(500);
+        }, 4000);
+      } else {
+        $(".custom-menu").is(':visible') && $(".custom-menu").finish().toggle();;
+        $(".custom-menu").finish().toggle(100);
+        $(".custom-menu").css({
+            top: properties.event.pageY - 100 + "px",
+            left: properties.event.pageX + "px"
+        });
+    }
+    });
   }
 
   checkIfEmittedEventIsATriggerEvent(emittedEvents, scenario) {
