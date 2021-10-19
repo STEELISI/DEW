@@ -51,7 +51,7 @@ export class InitUserService {
     this.http.post("api/v1/p/user/registerUser/", params,{withCredential:true}).subscribe(data=>{
 
       if(data.message!=undefined && data.message!=null){
-        this.authService.setCookie("token",params.token, 3599);   t.next(true);
+        this.authService.setCookie("token",params.token, 3599, false);   t.next(true);
       }else{
         t.next(false);
       }

@@ -24,7 +24,7 @@ export class GoogleDriveCallbackComponent implements OnDestroy {
       let temp = hk.split('='); 
         params[temp[0]] = temp[1] 
     });
-    this.authService.setCookie("drive_token",params["access_token"],3600)
+    this.authService.setCookie("drive_token",params["access_token"],3600, true)
     window.close()
   }
 

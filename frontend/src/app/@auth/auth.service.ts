@@ -1,7 +1,10 @@
 import { BehaviorSubject, Observable, of } from 'rxjs';
 import { Injectable } from '@angular/core';
 import { HttpService } from '../http-service.service';
-import { environment } from '../../environments/environment'
+import { environment } from '../../environments/environment';
+import { SocialAuthService } from "angularx-social-login";
+//Import angular social login providers
+import { GoogleLoginProvider, SocialUser } from "angularx-social-login";
 
 @Injectable({
     providedIn: 'root'
@@ -9,11 +12,14 @@ import { environment } from '../../environments/environment'
 export class AuthService {
  
  
-  constructor(protected http:HttpService){}
+  constructor(protected http:HttpService, protected socialAuthService: SocialAuthService){ }
 
   login:boolean=false;
   token:String;
   expiry:Number;
+  user: SocialUser;
+  lastTime: number;
+  currentTime: number;
 
   startSession(id): Observable<any> {
     
@@ -23,24 +29,56 @@ export class AuthService {
      return this.http.post('/api/v1/p/user/validateUser/',param,{withCredential:true});
 
   }
-  authenticate(arg0: string):Observable<any> {
-   // //console.log(window.location.hash.substr(1));
-    var params = {}
-    window.location.hash.substr(1).split('&').map(hk => { 
-      let temp = hk.split('='); 
-        params[temp[0]] = temp[1] 
-    });
-   // //console.log(params);
-  
-    
-    this.token = params["access_token"];
-    this.expiry = Number(params["expires_in"]);
-    return this.startSession(params["access_token"]);
+  authenticate(userData: any):Observable<any> {
+    this.token = userData.authToken;
+    this.expiry = Number(3500);
+    return this.startSession(this.token);
   }
+
+  setRefreshTokenIntervals() {
+  
+    //Code to Refresh Access Tokens
+    setInterval(()=> {
+      this.refreshToken();
+    }, (60 * 5 * 1000)); //Refresh Token every 5 mins
+
+    //Code to detect if the Computer woke up
+    this.lastTime = (new Date()).getTime();
+    setInterval(() => {
+      this.currentTime = (new Date()).getTime();
+      if (this.currentTime > (this.lastTime + (60*10*1000) + (60*2*1000))) { //Check if the computer is awake every 10 mins. Ignore small delays.
+        // Probably just woke up!
+        this.refreshToken();
+      }
+      this.lastTime = this.currentTime;
+    }, (60*10*1000));
+
+  }
+
+  refreshToken() {
+    try {
+      this.socialAuthService.authState.subscribe((user) => {
+        this.user = user;
+        this.login = (user != null);
+      });
+      this.socialAuthService.refreshAuthToken(GoogleLoginProvider.PROVIDER_ID).then(() => {
+        try {
+          this.token = this.user.authToken;
+          this.expiry = 3500;
+          this.setCookie("token", this.token, this.expiry, false);
+        } catch (ex) {
+          //Do nothing
+        }
+      });
+    } catch (ex) {
+      //Do nothing
+    }
+  }
+  
 
   enableAuthentication(){
     this.isAuthenticate.next(true);
-    this.setCookie("token",this.token,this.expiry);
+    this.setCookie("token",this.token,this.expiry, false);
   }
   getToken() {
     return this.token;
@@ -70,12 +108,13 @@ export class AuthService {
   }
 }
 
-   setCookie(key, value, seconds) {
+   setCookie(key, value, seconds, withExpiry) {
      //console.log(key+"::"+value);
     var date = new Date();
-    date.setTime(date.getTime() + (seconds *1000));
-    var expires = "expires="+ date.toUTCString();
-    document.cookie = key + "=" + value + ";" + expires + ";path=/";
+    var expires;
+    withExpiry && date.setTime(date.getTime() + (seconds *1000));
+    withExpiry && (expires = "expires="+ date.toUTCString());
+    document.cookie = key + "=" + value + ";" + (withExpiry ? expires + ";" : "") + "path=/";
   }
 
   getCookie(key) {
@@ -94,23 +133,44 @@ export class AuthService {
     return "";
   }
 
-  loginWithGoogle(){
-    //  var redirect = 'http://dew.isi.edu/auth/googleoauth2callback';
-    // var redirect = 'http://localhost:4200/auth/googleoauth2callback';
-    var redirect = environment.authRedirectUrl
-    var client_id = '789341153375-qeeo9deuouq9ea3ke4ou0ipqr2gjd0vr.apps.googleusercontent.com';
-    var url = [];
-  //  var apuUrl = "https://accounts.google.com/o/oauth2/v2/auth";
-    var apiurl = "https://accounts.google.com/o/oauth2/auth";
-    url.push(apiurl);
-    url.push("?redirect_uri="+encodeURIComponent( redirect));
-    url.push("&response_type=token");
-    url.push("&scope=email%20profile%20openid%20"+encodeURIComponent("https://www.googleapis.com/auth/userinfo.profile")+"&fetch_basic_profile=true");
-    url.push("&client_id="+client_id);
-   // url.push("&ss_domain=https%3A%2F%2Fdevelopers-dot-devsite-v2-prod.appspot.com&gsiwebsdk=2");
-    //console.log(url.join(""));
-    window.location.href = url.join("");
+  loginWithGoogle() {
+    return new Promise((resolve, reject) => {
+      try {
+        this.socialAuthService.authState.subscribe((user) => {
+          this.user = user;
+          this.login = (user != null);
+        });
+        this.socialAuthService.signIn(GoogleLoginProvider.PROVIDER_ID).then(()=> {
+          
+          resolve(this.user);
+        }).catch(()=> {
+          reject(false);
+        });
+      } catch(exception) {
+        reject(false);
+      }
+    });
+    
   }
+
+  // loginWithGoogleOldVersion(){
+  //   var redirect = environment.authRedirectUrl
+  //   var client_id = google_oauth_credentials.web.client_id;
+  //   var client_secret = google_oauth_credentials.web.client_secret;
+  //   var url = [];
+  //   var apiurl = "https://accounts.google.com/o/oauth2/auth";
+  //   url.push(apiurl);
+  //   url.push("?redirect_uri="+encodeURIComponent( redirect));
+  //   url.push("&access_type=offline&prompt=consent");
+  //   url.push("&response_type=code");
+  //   url.push("&scope=email%20profile%20openid%20"+encodeURIComponent("https://www.googleapis.com/auth/userinfo.profile")+"&fetch_basic_profile=true");
+  //   url.push("&client_id="+client_id);
+  //   //url.push("&client_secret="+client_secret);
+  //   //url.push('&grant_type=authorization_code');
+  //  // url.push("&ss_domain=https%3A%2F%2Fdevelopers-dot-devsite-v2-prod.appspot.com&gsiwebsdk=2");
+  //   //console.log(url.join(""));
+  //   window.location.href = url.join("");
+  // }
 
   authorizeGoogleDrive(experiment_id){
     const scopes = [
@@ -134,18 +194,24 @@ export class AuthService {
   }
 
   logout() {
-   //console.log("logout");
-   this.isAuthenticate.next(false);
-   this.login = false;
-   this.token="";
-   this.setCookie("token","",0);
-   this.setCookie("emailId","",0);
-   this.setCookie("fullName","",0);
-   this.setCookie("givenName","",0);
-   this.setCookie("lastName","",0);
-   this.setCookie("img","",0);
-   this.setCookie("userHandle","",0);
-   
-
+    try {
+      this.isAuthenticate.next(false);
+      this.login = false;
+      this.token="";
+      this.setCookie("token","",0, true);
+      this.setCookie("emailId","",0, true);
+      this.setCookie("fullName","",0, true);
+      this.setCookie("givenName","",0, true);
+      this.setCookie("lastName","",0, true);
+      this.setCookie("img","",0, true);
+      this.setCookie("userHandle","",0, true);
+      this.socialAuthService.authState.subscribe((user) => {
+        this.user = user;
+        this.login = (user != null);
+      });
+      this.socialAuthService.signOut(true);
+    } catch (ex) {
+      //Do nothing
+    }
   }
 }
