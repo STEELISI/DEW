@@ -659,8 +659,8 @@ export class HlbComponent implements OnInit, AfterViewInit {
         $('.dialog-box-fields.is-node').removeClass('hide');
       }
       console.log(properties)
-      //Hide dialogBox
-      $(".custom-menu").is(':visible') && $(".custom-menu").finish().toggle(100);;
+      //Hide dialogBox and customMenu
+      $(".custom-menu").is(':visible') && $(".custom-menu").finish().toggle(100);
     });
 
     this.networkInstance.on('oncontext', function (properties) {
@@ -679,6 +679,26 @@ export class HlbComponent implements OnInit, AfterViewInit {
         });
     }
     });
+  }
+
+  toggleTopologyView() {
+    $('.dependency-topology-toggle-icon-topology').css('z-index', 50);
+    $('.dependency-topology-toggle-icon-dependency').css('z-index', 0);
+    $('.graph-box').removeClass('hide');
+    $('.graph-box-dependency').addClass('hide');
+    $(".custom-menu").is(':visible') && $(".custom-menu").finish().toggle(100);
+    var $dialogBox = $('.dialog-box');
+    !$dialogBox.hasClass('hide') && $dialogBox.addClass('hide');
+  }
+
+  toggleDependencyView() {
+    $('.dependency-topology-toggle-icon-topology').css('z-index', 0);
+    $('.dependency-topology-toggle-icon-dependency').css('z-index', 50);
+    $('.graph-box').addClass('hide');
+    $('.graph-box-dependency').removeClass('hide');
+    $(".custom-menu").is(':visible') && $(".custom-menu").finish().toggle(100);
+    var $dialogBox = $('.dialog-box');
+    !$dialogBox.hasClass('hide') && $dialogBox.addClass('hide');
   }
 
   checkIfEmittedEventIsATriggerEvent(emittedEvents, scenario) {

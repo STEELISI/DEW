@@ -211,12 +211,24 @@
       </div>
     </div>
   </mat-drawer>
+  
   <div>
+    <div class="d-flex flex-row justify-content-between toggle-icons">
+      <div (click)="drawer.toggle(); openSideNavBar()" class="side-nav-icon">
+        <img src="../../../../assets/icons/svg/arrow-circle-right.svg">
+        <img src="../../../../assets/icons/svg/arrow-circle-left.svg" class="hide">
+        <span class="text-left font-weight-bold">Textual Representation</span>
+      </div>
 
-    <div (click)="drawer.toggle(); openSideNavBar()" class="side-nav-icon">
-      <img src="../../../../assets/icons/svg/arrow-circle-right.svg">
-      <img src="../../../../assets/icons/svg/arrow-circle-left.svg" class="hide">
-      <span class="text-left font-weight-bold">Textual Representation</span>
+      <div>
+        <div (click)="toggleTopologyView()" class="dependency-topology-toggle-icon-topology">
+          <span class="text-left font-weight-bold">Topology</span>
+        </div>
+        
+        <div (click)="toggleDependencyView()" class="dependency-topology-toggle-icon-dependency">
+          <span class="text-left font-weight-bold">Dependency</span>
+        </div>
+      </div>
     </div>
 
     <div class="dialog-box hide">
@@ -268,6 +280,14 @@
         <li data-action="third">Third thing</li>
       </ul>
       <div id="visNetwork" #visNetwork></div>
+    </div>
+    <div class="graph-box-dependency">
+      <ul class='custom-menu dependency'>
+        <li data-action="first">First thing</li>
+        <li data-action="second">Second thing</li>
+        <li data-action="third">Third thing</li>
+      </ul>
+      <div id="visNetwork-dependency" #visNetworkDependency></div>
     </div>
   </div>
 

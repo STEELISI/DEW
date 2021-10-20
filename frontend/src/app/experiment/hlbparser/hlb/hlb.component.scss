@@ -172,6 +172,7 @@ ul {
     float: left;
     width: fit-content;
     cursor: pointer;
+    border-bottom-right-radius: 10px;
   }
 
   .side-nav-icon > img {
@@ -192,7 +193,7 @@ ul {
     padding-bottom: 20px;
   }
 
-  .graph-box {
+  .graph-box, .graph-box-dependency {
     position: absolute; 
     border: rgb(175, 175, 175); 
     border-style: dashed;
@@ -203,6 +204,10 @@ ul {
     overflow-x: hidden;
   }
 
+  .graph-box-dependency {
+    z-index: -20;
+  }
+
   .drawer-content {
     overflow-x: hidden;
   }
@@ -210,14 +215,16 @@ ul {
   .dialog-box {
     position: absolute;
     border: rgb(153, 153, 153);
-    height: 40%;
-    width: 40%;
+    height: 50%;
+    width: 30%;
     z-index: 100;
     border-style: solid;
     border-radius: 10px;
     padding: 10px;
     margin: 10px;
-    margin-left: calc(60% - 10px);
+    margin-top: 50px;
+    right: 0px;
+    top: 0px;
     box-shadow: 2px 2px rgb(129, 129, 129);
     background: white;
   }
@@ -259,6 +266,49 @@ ul {
 
   #visNetwork {
     height: 100%;
+  }
+
+  /* Toggle between Dependency and Topology Icons */
+
+  .toggle-icons {
+    position: absolute;
+    width: 100%;
+  }
+
+  .dependency-topology-toggle-icon-topology, .dependency-topology-toggle-icon-dependency {
+    color: white;
+    font-weight: bolder;
+    position: absolute;
+    border-bottom-right-radius: 10px;
+    border-bottom-left-radius: 10px;
+  }
+
+  .dependency-topology-toggle-icon-dependency {
+    background-color: rgb(219, 69, 0);
+    padding: 10px;
+    align-items: center;
+    text-align: center;
+    float: right;
+    width: fit-content;
+    cursor: pointer;
+    z-index: 0;
+    margin-right: 10px;
+    right: 0px;
+    width: 130px;
+  }
+
+  .dependency-topology-toggle-icon-topology {
+    background-color: rgb(49, 209, 0);
+    padding: 10px;
+    align-items: center;
+    text-align: center;
+    float: right;
+    width: fit-content;
+    cursor: pointer;
+    z-index: 50;
+    right: 0px;
+    margin-right: 90px;
+    width: 130px;
   }
 
   /* Custom Context Menu */
