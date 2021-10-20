@@ -571,10 +571,10 @@ export class HlbComponent implements OnInit, AfterViewInit {
     var temp;
     //Populate the Nodes in the Graph
     data.parsedScenario.forEach(element => {
-      id_of_node[element[2]] = id_count;
+      id_of_node[element[1]] = id_count;
       temp = {
         id: id_count++,
-        label: element[1] + " " + element[2]
+        label: element[1].toString()
       }
       temp_nodes.push(temp);
     });
@@ -583,6 +583,13 @@ export class HlbComponent implements OnInit, AfterViewInit {
     data.parsedConstraints.forEach(element => {
       switch(element[0]) {
         case 'link':
+          temp = {
+            from: id_of_node[element[1][0]],
+            to: id_of_node[element[1][1]]
+          }
+          temp_edges.push(temp);
+          break;
+        case 'lan':
           temp = {
             from: id_of_node[element[1][0]],
             to: id_of_node[element[1][1]]
