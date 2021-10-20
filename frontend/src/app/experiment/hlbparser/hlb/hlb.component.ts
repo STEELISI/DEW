@@ -643,11 +643,23 @@ export class HlbComponent implements OnInit, AfterViewInit {
     this.networkInstance.on( 'click', function(properties) {
       var ids = properties.nodes;
       var clickedNodes = nodes.get(ids);
-      console.log('clicked nodes:', clickedNodes);
-      var $dialogBox = $('.dialogBox');
+      var items = properties.items;
+      //Show Dialog Box
+      var $dialogBox = $('.dialog-box');
       $dialogBox.hasClass('hide') && $dialogBox.toggleClass('hide');
-      clickedNodes.length || $dialogBox.toggleClass('hide');
-      clickedNodes.length && $('#dialogBoxTitle').html(clickedNodes[0].label);
+      clickedNodes.length || items.length || $dialogBox.toggleClass('hide');
+      //Show Node/Link Content
+      clickedNodes.length && $('#dialog-box-title').html(clickedNodes[0].label);
+      items.length && (clickedNodes.length==0) && $('#dialog-box-title').html('Link');
+      if(items.length && clickedNodes.length==0) {
+        $('.dialog-box-fields:not(is-node)').removeClass('hide');
+        $('.dialog-box-fields.is-node').addClass('hide');
+      } else if(clickedNodes.length) {
+        $('.dialog-box-fields:not(is-node)').addClass('hide');
+        $('.dialog-box-fields.is-node').removeClass('hide');
+      }
+      console.log(properties)
+      //Hide dialogBox
       $(".custom-menu").is(':visible') && $(".custom-menu").finish().toggle(100);;
     });
 

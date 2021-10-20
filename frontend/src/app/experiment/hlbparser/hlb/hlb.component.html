@@ -219,13 +219,41 @@
       <span class="text-left font-weight-bold">Textual Representation</span>
     </div>
 
-    <div class="dialogBox hide">
-      <div class="dialogBoxContent d-flex flex-column">
-        <span id="dialogBoxTitle" class="p-2"></span>
-        <mat-form-field class="flex-grow-1" appearance="outline">
-          <mat-label>IP Address</mat-label>
-          <input type="text" aria-label="string" matInput>
-        </mat-form-field>
+    <div class="dialog-box hide">
+      <div class="dialog-box-content d-flex flex-column">
+        <span id="dialog-box-title" class="p-2"></span>
+        <hr>
+        <div class="dialog-box-fields d-flex flex-column is-node">
+
+          <!--Node Fields-->
+
+          <mat-form-field class="flex-grow-1" appearance="outline">
+            <mat-label>IP Address</mat-label>
+            <input type="text" aria-label="string" matInput>
+          </mat-form-field>
+          <mat-form-field class="flex-grow-1" appearance="outline">
+            <mat-label>Operating System</mat-label>
+            <input type="text" aria-label="string" matInput>
+          </mat-form-field>
+          <mat-form-field class="flex-grow-1" appearance="outline">
+            <mat-label>Hardware Type</mat-label>
+            <input type="text" aria-label="string" matInput>
+          </mat-form-field>
+        </div>
+
+        <!--Link/LAN Fields-->
+
+        <div class="dialog-box-fields d-flex flex-column">
+          <mat-form-field class="flex-grow-1" appearance="outline">
+            <mat-label>BandWidth</mat-label>
+            <input type="text" aria-label="string" matInput>
+          </mat-form-field>
+          <mat-form-field class="flex-grow-1" appearance="outline">
+            <mat-label>Delay</mat-label>
+            <input type="text" aria-label="string" matInput>
+          </mat-form-field>
+        </div>
+
       </div>
     </div>
 
