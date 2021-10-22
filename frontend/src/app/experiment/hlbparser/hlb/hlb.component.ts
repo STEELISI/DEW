@@ -23,6 +23,8 @@ import * as _ from 'lodash';
 import * as $ from 'jquery';
 import { DataSet } from 'vis-data';
 import { Network } from 'vis-network';
+import { GRAPH_ITEM_PARAMETERS_LIST } from '../../graph-data/graph-item-parameters-list';
+import { GraphItemParameters, GraphItemType } from '../../graph-data/graph-item-parameters-interface';
 
 Quill.register("modules/counter", EditorService);
 
@@ -35,7 +37,7 @@ export class HlbComponent implements OnInit, AfterViewInit {
 
   @ViewChild('visNetwork', { static: false }) visNetwork!: ElementRef;
   private networkInstance: any;
-
+  graphItemParametersList: Map<any, GraphItemParameters>;
   actorService: EditorService;
   behaviorService: EditorService;
   filteredBindingHandle: Observable<string[]>;
@@ -116,7 +118,9 @@ export class HlbComponent implements OnInit, AfterViewInit {
     private stateservice: StateService,
     private _snackBar: MatSnackBar,
     private changeDetection: ChangeDetectorRef
-  ) {}
+  ) {
+    this.graphItemParametersList = GRAPH_ITEM_PARAMETERS_LIST;
+  }
 
   resetFilterList() {
     this.filteredBindingHandle = of(this.filterBindingOptions);
@@ -563,7 +567,6 @@ export class HlbComponent implements OnInit, AfterViewInit {
   }
 
   updateGraph(data) { //Update the Graph View
-    console.log(data);
     var temp_nodes = [];
     var temp_edges = [];
     var id_of_node = {};
@@ -649,8 +652,8 @@ export class HlbComponent implements OnInit, AfterViewInit {
       $dialogBox.hasClass('hide') && $dialogBox.toggleClass('hide');
       clickedNodes.length || items.length || $dialogBox.toggleClass('hide');
       //Show Node/Link Content
-      clickedNodes.length && $('#dialog-box-title').html(clickedNodes[0].label);
-      items.length && (clickedNodes.length==0) && $('#dialog-box-title').html('Link');
+      clickedNodes.length && $('#dialog-box-title').html(clickedNodes[0].label) && (currentGraphItemSelection['id'] = clickedNodes[0].id) && (currentGraphItemSelection['type'] = 'node');
+      items.length && (clickedNodes.length==0) && $('#dialog-box-title').html('Link') && (currentGraphItemSelection['id'] = items[0].edgeId) && (currentGraphItemSelection['type'] = 'link');
       if(items.length && clickedNodes.length==0) {
         $('.dialog-box-fields:not(is-node)').removeClass('hide');
         $('.dialog-box-fields.is-node').addClass('hide');
@@ -658,7 +661,7 @@ export class HlbComponent implements OnInit, AfterViewInit {
         $('.dialog-box-fields:not(is-node)').addClass('hide');
         $('.dialog-box-fields.is-node').removeClass('hide');
       }
-      console.log(properties)
+      
       //Hide dialogBox and customMenu
       $(".custom-menu").is(':visible') && $(".custom-menu").finish().toggle(100);
     });
@@ -699,6 +702,34 @@ export class HlbComponent implements OnInit, AfterViewInit {
     $(".custom-menu").is(':visible') && $(".custom-menu").finish().toggle(100);
     var $dialogBox = $('.dialog-box');
     !$dialogBox.hasClass('hide') && $dialogBox.addClass('hide');
+  }
+
+  onTopologyParametersChange(event: any) {
+    //TODO: Get the object parameters correct
+    // type: GraphItemType,
+    // bandwidth: string,
+    // delay: string,
+    // ipAddress: string,
+    // operatingSystem: string,
+    // hardwareType: string
+    //TODO: Figure out a way to override the parameters without overwriting the previous values
+    var temp = {};
+    var currentValue = event.target.value;
+    var currentField = $(event.target).attr('id');
+    switch(currentField) {
+      case 'node-ip-address':
+        temp['type'] = GraphItemType.NODE;
+        break;
+    }
+    switch(currentGraphItemSelection['type']) {
+      case 'node':
+        temp['type'] = GraphItemType.NODE;
+        break;
+      case 'link':
+        temp['type'] = GraphItemType.LINK;
+        break;
+    }
+    this.graphItemParametersList[currentGraphItemSelection['id']] = {};
   }
 
   checkIfEmittedEventIsATriggerEvent(emittedEvents, scenario) {
@@ -1177,4 +1208,6 @@ export class HLBInforPopUp {
     this.dialogRef.close();
   }
 }
+
+var currentGraphItemSelection = {};
 

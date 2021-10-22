@@ -241,15 +241,15 @@
 
           <mat-form-field class="flex-grow-1" appearance="outline">
             <mat-label>IP Address</mat-label>
-            <input type="text" aria-label="string" matInput>
+            <input type="text" id="node-ip-address" aria-label="string" (change)="onTopologyParametersChange($event)" matInput>
           </mat-form-field>
           <mat-form-field class="flex-grow-1" appearance="outline">
             <mat-label>Operating System</mat-label>
-            <input type="text" aria-label="string" matInput>
+            <input type="text" id="node-operating-system" aria-label="string" (change)="onTopologyParametersChange($event)" matInput>
           </mat-form-field>
           <mat-form-field class="flex-grow-1" appearance="outline">
             <mat-label>Hardware Type</mat-label>
-            <input type="text" aria-label="string" matInput>
+            <input type="text" id="node-hardware-type" aria-label="string" (change)="onTopologyParametersChange($event)" matInput>
           </mat-form-field>
         </div>
 
@@ -258,11 +258,11 @@
         <div class="dialog-box-fields d-flex flex-column">
           <mat-form-field class="flex-grow-1" appearance="outline">
             <mat-label>BandWidth</mat-label>
-            <input type="text" aria-label="string" matInput>
+            <input type="text" id="link-bandwidth"  aria-label="string" (change)="onTopologyParametersChange($event)" matInput>
           </mat-form-field>
           <mat-form-field class="flex-grow-1" appearance="outline">
             <mat-label>Delay</mat-label>
-            <input type="text" aria-label="string" matInput>
+            <input type="text" id="link-delay" aria-label="string" (change)="onTopologyParametersChange($event)" matInput>
           </mat-form-field>
         </div>
 
