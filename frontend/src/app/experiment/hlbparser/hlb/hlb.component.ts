@@ -715,7 +715,6 @@ export class HlbComponent implements OnInit, AfterViewInit {
     // hardwareType: string
     //TODO: Figure out a way to override the parameters without overwriting the previous values
     var temp = this.graphItemParametersList[currentGraphItemSelection['id']] ? this.graphItemParametersList[currentGraphItemSelection['id']] : null;
-    console.log(temp);
     if(!temp) {
       temp = {};
       temp['bandwidth'] = '0.1'; //Default Value
