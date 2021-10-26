@@ -25,6 +25,7 @@ import { DataSet } from 'vis-data';
 import { Network } from 'vis-network';
 import { GRAPH_ITEM_PARAMETERS_LIST } from '../../graph-data/graph-item-parameters-list';
 import { GraphItemParameters, GraphItemType } from '../../graph-data/graph-item-parameters-interface';
+import { NULL_EXPR } from "@angular/compiler/src/output/output_ast";
 
 Quill.register("modules/counter", EditorService);
 
@@ -661,7 +662,7 @@ export class HlbComponent implements OnInit, AfterViewInit {
         $('.dialog-box-fields:not(is-node)').addClass('hide');
         $('.dialog-box-fields.is-node').removeClass('hide');
       }
-      
+      showRelevantContentInDialogBox(); //Content to Display on the Context Menu
       //Hide dialogBox and customMenu
       $(".custom-menu").is(':visible') && $(".custom-menu").finish().toggle(100);
     });
@@ -713,23 +714,57 @@ export class HlbComponent implements OnInit, AfterViewInit {
     // operatingSystem: string,
     // hardwareType: string
     //TODO: Figure out a way to override the parameters without overwriting the previous values
-    var temp = {};
+    var temp = this.graphItemParametersList[currentGraphItemSelection['id']] ? this.graphItemParametersList[currentGraphItemSelection['id']] : null;
+    console.log(temp);
+    if(!temp) {
+      temp = {};
+      temp['bandwidth'] = '0.1'; //Default Value
+      temp['delay'] = '0'; //Default Value
+      temp['ipAddress'] = '';
+      temp['operatingSystem'] = '';
+      temp['hardwareType'] = '';
+      switch(currentGraphItemSelection['type']) {
+        case 'node':
+          temp['type'] = GraphItemType.NODE;
+          break;
+        case 'link':
+          temp['type'] = GraphItemType.LINK;
+          break;
+      }
+    } else {
+      switch(temp.type) {
+        case 'node':
+          $('#node-ip-address').val(temp.ipAddress);
+          $('#node-operating-system').val(temp.operatingSystem);
+          $('#node-hardware-type').val(temp.hardwareType);
+          break;
+        case 'link':
+          $('#link-bandwidth').val(temp.bandwidth);
+          $('#link-delay').val(temp.delay);
+          break;
+      }
+    }
     var currentValue = event.target.value;
     var currentField = $(event.target).attr('id');
     switch(currentField) {
       case 'node-ip-address':
-        temp['type'] = GraphItemType.NODE;
+        temp['ipAddress'] = currentValue;
+        break;
+      case 'node-operating-system':
+        temp['operatingSystem'] = currentValue;
+        break;
+      case 'node-hardware-type':
+        temp['hardwareType'] = currentValue;
+        break;
+      case 'link-bandwidth':
+        temp['bandwidth'] = currentValue;
+        break;
+      case 'link-delay':
+        temp['delay'] = currentValue;
         break;
     }
-    switch(currentGraphItemSelection['type']) {
-      case 'node':
-        temp['type'] = GraphItemType.NODE;
-        break;
-      case 'link':
-        temp['type'] = GraphItemType.LINK;
-        break;
-    }
-    this.graphItemParametersList[currentGraphItemSelection['id']] = {};
+    this.graphItemParametersList[currentGraphItemSelection['id']] = temp;
+    globalGraphItemParametersList = this.graphItemParametersList;
   }
 
   checkIfEmittedEventIsATriggerEvent(emittedEvents, scenario) {
@@ -1210,4 +1245,25 @@ export class HLBInforPopUp {
 }
 
 var currentGraphItemSelection = {};
+var globalGraphItemParametersList;
 
+function showRelevantContentInDialogBox() {
+  try {
+    var temp = globalGraphItemParametersList[currentGraphItemSelection['id']];
+    if(!temp) { 
+      $('#node-ip-address').val('');
+      $('#node-operating-system').val('');
+      $('#node-hardware-type').val('');
+      $('#link-bandwidth').val('');
+      $('#link-delay').val('');
+    } else {
+      $('#node-ip-address').val(temp.ipAddress);
+      $('#node-operating-system').val(temp.operatingSystem);
+      $('#node-hardware-type').val(temp.hardwareType);
+      $('#link-bandwidth').val(temp.bandwidth);
+      $('#link-delay').val(temp.delay);
+    }
+  } catch(ex) {
+    //Do nothing
+  }
+}

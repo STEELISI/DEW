@@ -258,11 +258,21 @@
         <div class="dialog-box-fields d-flex flex-column">
           <mat-form-field class="flex-grow-1" appearance="outline">
             <mat-label>BandWidth</mat-label>
-            <input type="text" id="link-bandwidth"  aria-label="string" (change)="onTopologyParametersChange($event)" matInput>
+            <div class="d-flex flex-row">
+              <input type="text" value="0.1" class="flex-grow-1 align-self-center" id="link-bandwidth"  aria-label="string" (change)="onTopologyParametersChange($event)" matInput>
+              <div class="field-units align-self-center">
+                <span>Gbps</span>
+              </div>
+            </div>
           </mat-form-field>
           <mat-form-field class="flex-grow-1" appearance="outline">
             <mat-label>Delay</mat-label>
-            <input type="text" id="link-delay" aria-label="string" (change)="onTopologyParametersChange($event)" matInput>
+            <div class="d-flex flex-row">
+              <input type="text" value="0" class="flex-grow-1 align-self-center" id="link-delay" aria-label="string" (change)="onTopologyParametersChange($event)" matInput>
+              <div class="field-units align-self-center">
+                <span>ms</span>
+              </div>
+            </div>
           </mat-form-field>
         </div>
 
