@@ -717,7 +717,7 @@ export class HlbComponent implements OnInit, AfterViewInit {
     var temp = this.graphItemParametersList[currentGraphItemSelection['id']] ? this.graphItemParametersList[currentGraphItemSelection['id']] : null;
     if(!temp) {
       temp = {};
-      temp['bandwidth'] = '0.1'; //Default Value
+      temp['bandwidth'] = '1'; //Default Value
       temp['delay'] = '0'; //Default Value
       temp['ipAddress'] = '';
       temp['operatingSystem'] = '';
