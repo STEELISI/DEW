@@ -4,7 +4,8 @@ export interface GraphItemParameters {
     delay: string,
     ipAddress: string,
     operatingSystem: string,
-    hardwareType: string
+    hardwareType: string,
+    nodeName: string
 }
 
 export enum GraphItemType {

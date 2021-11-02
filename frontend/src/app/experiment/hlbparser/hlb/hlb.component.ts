@@ -26,6 +26,7 @@ import { Network } from 'vis-network';
 import { GRAPH_ITEM_PARAMETERS_LIST } from '../../graph-data/graph-item-parameters-list';
 import { GraphItemParameters, GraphItemType } from '../../graph-data/graph-item-parameters-interface';
 import { NULL_EXPR } from "@angular/compiler/src/output/output_ast";
+import { type } from "os";
 
 Quill.register("modules/counter", EditorService);
 
@@ -565,6 +566,7 @@ export class HlbComponent implements OnInit, AfterViewInit {
     this.updateGraph(data);
     this.extractScenario(data.parsedScenario);
     this.storeBinding(undefined);
+    console.log(globalGraphItemParametersList);
   }
 
   updateGraph(data) { //Update the Graph View
@@ -723,9 +725,11 @@ export class HlbComponent implements OnInit, AfterViewInit {
       temp['ipAddress'] = '';
       temp['operatingSystem'] = '';
       temp['hardwareType'] = '';
+      temp['nodeName'] = '';
       switch(currentGraphItemSelection['type']) {
         case 'node':
           temp['type'] = GraphItemType.NODE;
+          temp['nodeName'] = $('#dialog-box-title').html();
           break;
         case 'link':
           temp['type'] = GraphItemType.LINK;
@@ -765,6 +769,87 @@ export class HlbComponent implements OnInit, AfterViewInit {
     }
     this.graphItemParametersList[currentGraphItemSelection['id']] = temp;
     globalGraphItemParametersList = this.graphItemParametersList;
+    this.updateConstraintsOnTopologyParameterChange();
+  }
+
+  updateConstraintsOnTopologyParameterChange() {
+    console.log($('#constraint-quill-box').find('p'));
+    var $constraints = $('#constraint-quill-box').find('p');
+    var constraintHTML = $('#constraint-quill-box .ql-editor').html();
+    for(var i = 0; i<$constraints.length; i++) {
+      console.log($constraints[i]);
+    }
+    for(var key in globalGraphItemParametersList) {
+      var temp = globalGraphItemParametersList[key];
+      console.log(temp);
+      switch(temp.type) {
+        case GraphItemType.NODE:
+          if(temp.operatingSystem) {
+            var sentence = 'os ' + temp.nodeName + ' ' + temp.operatingSystem;
+            constraintHTML = this.addToEditorHTML(constraintHTML, sentence);
+          }
+          if(temp.hardwareType) {
+            var sentence = 'nodetype ' + temp.nodeName + ' ' + temp.hardwareType;
+            constraintHTML = this.addToEditorHTML(constraintHTML, sentence);
+          }
+          if(temp.ipAddress) {
+            var sentence = 'location ' + temp.nodeName + ' ' + temp.ipAddress;
+            constraintHTML = this.addToEditorHTML(constraintHTML, sentence);
+          }
+          break;
+        case GraphItemType.LINK:
+          break;
+        case GraphItemType.LAN:
+          break;
+      }
+    }
+    constraintHTML = this.removeDuplicatesFromEditorHTML(constraintHTML);
+    $('#constraint-quill-box .ql-editor').html(constraintHTML);
+    //$('#constraint-quill-box .ql-editor').html('');
+  }
+
+  removeDuplicatesFromEditorHTML(html) {
+    html = html.split('<p>');
+    var osDict = {};
+    var nodetypeDict = {};
+    var locationDict = {};
+    var newHTML = "";
+    for(var i = html.length - 1; i>=0; i--) {
+      try {
+        var temp = html[i].split(' ');
+        switch(temp[0]) {
+          case 'os':
+            if(osDict[temp[1]]) {
+              continue;
+            } else {
+              osDict[temp[1]] = temp[2];
+            }
+            break;
+          case 'nodetype':
+            if(nodetypeDict[temp[1]]) {
+              continue;
+            } else {
+              nodetypeDict[temp[1]] = temp[2];
+            }
+            break;
+          case 'location':
+            if(locationDict[temp[1]]) {
+              continue;
+            } else {
+              locationDict[temp[1]] = temp[2];
+            }
+            break;
+        } 
+        !html[i].includes('<br>') && (newHTML = newHTML + '<p>' + html[i]);
+      } catch (ex) {
+        //Do nothing
+      }
+    }
+    return newHTML;
+  }
+
+  addToEditorHTML(html, sentence) {
+    return (html + '<p>' + sentence + '</p>');
   }
 
   checkIfEmittedEventIsATriggerEvent(emittedEvents, scenario) {
