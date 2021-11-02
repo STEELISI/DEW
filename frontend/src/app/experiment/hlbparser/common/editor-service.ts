@@ -1,4 +1,5 @@
 import * as Quill from "quill";
+import * as $ from 'jquery';
 import { Observable, BehaviorSubject } from "rxjs";
 //var Keyboard = Quill.import('modules/keyboard'); 
 export interface QuillInstance {
@@ -64,6 +65,7 @@ export default class EditorService {
     });
     this.quill.on("text-change", function(delta, oldDelta, source) {
        //console.log(delta);
+       $('.ql-editor').css('white-space', 'nowrap');
        var position =0;
        var tabFlag=false;
        var delFlag=false;

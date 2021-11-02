@@ -28,7 +28,7 @@ class BashGenerator(Generator):
             '(?:\s|^|\/)(eid)(?:\s|$|\/|\.)': 'pexp -e',
             '(?:\s|^|\/)(nid)(?:\s|$|\/|\.)': 'pexp -n',
         }
-        self.evars = dict();
+        self.evars = dict()
 
 
     def generate(self, mode=None):
@@ -217,12 +217,12 @@ class BashGenerator(Generator):
             r1 = re.findall(r"(pexists\()(\w+)", self.bindings_parsed[b])
             if len(r1) > 0:
                 for r in r1:
-                    self.cflags[r[1]] |= 1;
+                    self.cflags[r[1]] |= 1
                     self.conditions[b] = ['pexists',r[1]]
             r1 = re.findall(r"(psuccess\()(\w+)", self.bindings_parsed[b])
             if len(r1) > 0:
                 for r in r1:
-                    self.cflags[r[1]] |= 2;
+                    self.cflags[r[1]] |= 2
                     self.conditions[b] = ['psuccess',r[1]]
         
                 

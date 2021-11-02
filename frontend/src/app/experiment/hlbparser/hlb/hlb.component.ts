@@ -568,6 +568,7 @@ export class HlbComponent implements OnInit, AfterViewInit {
   }
 
   updateGraph(data) { //Update the Graph View
+    console.log(data);
     var temp_nodes = [];
     var temp_edges = [];
     var id_of_node = {};
