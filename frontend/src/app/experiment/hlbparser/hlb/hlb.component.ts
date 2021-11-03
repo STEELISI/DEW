@@ -564,16 +564,16 @@ export class HlbComponent implements OnInit, AfterViewInit {
 
   extractInfo(data: ParseApiBean) {
     this.updateGraph(data);
+    this.populateGraphParameters();
     this.extractScenario(data.parsedScenario);
     this.storeBinding(undefined);
     console.log(globalGraphItemParametersList);
   }
 
   updateGraph(data) { //Update the Graph View
-    console.log(data);
     var temp_nodes = [];
     var temp_edges = [];
-    var id_of_node = {};
+    id_of_node = {};
     var id_count = 0;
     var temp;
     //Populate the Nodes in the Graph
@@ -708,6 +708,39 @@ export class HlbComponent implements OnInit, AfterViewInit {
     !$dialogBox.hasClass('hide') && $dialogBox.addClass('hide');
   }
 
+  populateGraphParameters() {
+    var data = this.stateservice.getConstraints().source['_value'];
+    data.forEach(element => {
+      if(['os', 'nodetype', 'location'].includes(element.split(' ')[0])) {
+        var temp = {};
+        temp['bandwidth'] = '1'; //Default Value
+        temp['delay'] = '0'; //Default Value
+        temp['ipAddress'] = '';
+        temp['operatingSystem'] = '';
+        temp['hardwareType'] = '';
+        temp['nodeName'] = '';
+        temp['type'] = GraphItemType.NODE;
+        var selection = element.split(' ');
+        switch(selection[0]) {
+          case 'os':
+            temp['nodeName'] = selection[1];
+            temp['operatingSystem'] = selection[2];
+            break;
+          case 'nodetype':
+            temp['nodeName'] = selection[1];
+            temp['hardwareType'] = selection[2];
+            break;
+          case 'location':
+            temp['nodeName'] = selection[1];
+            temp['ipAddress'] = selection[2];
+            break;
+        }
+        this.graphItemParametersList[id_of_node[temp['nodeName']]] = temp;
+        globalGraphItemParametersList = this.graphItemParametersList;
+      }
+    });
+  }
+
   onTopologyParametersChange(event: any) {
     //TODO: Get the object parameters correct
     // type: GraphItemType,
@@ -773,28 +806,24 @@ export class HlbComponent implements OnInit, AfterViewInit {
   }
 
   updateConstraintsOnTopologyParameterChange() {
-    console.log($('#constraint-quill-box').find('p'));
-    var $constraints = $('#constraint-quill-box').find('p');
-    var constraintHTML = $('#constraint-quill-box .ql-editor').html();
-    for(var i = 0; i<$constraints.length; i++) {
-      console.log($constraints[i]);
-    }
+    var data = this.stateservice.getConstraints().source['_value'];
+    data = this.removeConstraintSentences(data);
     for(var key in globalGraphItemParametersList) {
       var temp = globalGraphItemParametersList[key];
-      console.log(temp);
+      var sentence = '';
       switch(temp.type) {
         case GraphItemType.NODE:
           if(temp.operatingSystem) {
-            var sentence = 'os ' + temp.nodeName + ' ' + temp.operatingSystem;
-            constraintHTML = this.addToEditorHTML(constraintHTML, sentence);
+            sentence = 'os ' + temp.nodeName + ' ' + temp.operatingSystem;
+            data.push(sentence);
           }
           if(temp.hardwareType) {
-            var sentence = 'nodetype ' + temp.nodeName + ' ' + temp.hardwareType;
-            constraintHTML = this.addToEditorHTML(constraintHTML, sentence);
+            sentence = 'nodetype ' + temp.nodeName + ' ' + temp.hardwareType;
+            data.push(sentence);
           }
           if(temp.ipAddress) {
-            var sentence = 'location ' + temp.nodeName + ' ' + temp.ipAddress;
-            constraintHTML = this.addToEditorHTML(constraintHTML, sentence);
+            sentence = 'location ' + temp.nodeName + ' ' + temp.ipAddress;
+            data.push(sentence);
           }
           break;
         case GraphItemType.LINK:
@@ -803,53 +832,17 @@ export class HlbComponent implements OnInit, AfterViewInit {
           break;
       }
     }
-    constraintHTML = this.removeDuplicatesFromEditorHTML(constraintHTML);
-    $('#constraint-quill-box .ql-editor').html(constraintHTML);
-    //$('#constraint-quill-box .ql-editor').html('');
+    this.stateservice.setConstraints(data);
   }
 
-  removeDuplicatesFromEditorHTML(html) {
-    html = html.split('<p>');
-    var osDict = {};
-    var nodetypeDict = {};
-    var locationDict = {};
-    var newHTML = "";
-    for(var i = html.length - 1; i>=0; i--) {
-      try {
-        var temp = html[i].split(' ');
-        switch(temp[0]) {
-          case 'os':
-            if(osDict[temp[1]]) {
-              continue;
-            } else {
-              osDict[temp[1]] = temp[2];
-            }
-            break;
-          case 'nodetype':
-            if(nodetypeDict[temp[1]]) {
-              continue;
-            } else {
-              nodetypeDict[temp[1]] = temp[2];
-            }
-            break;
-          case 'location':
-            if(locationDict[temp[1]]) {
-              continue;
-            } else {
-              locationDict[temp[1]] = temp[2];
-            }
-            break;
-        } 
-        !html[i].includes('<br>') && (newHTML = newHTML + '<p>' + html[i]);
-      } catch (ex) {
-        //Do nothing
+  removeConstraintSentences(data) {
+    var temp = [];
+    data.forEach(element => {
+      if(!['os', 'nodetype', 'location'].includes(element.split(' ')[0])) {
+        temp.push(element);
       }
-    }
-    return newHTML;
-  }
-
-  addToEditorHTML(html, sentence) {
-    return (html + '<p>' + sentence + '</p>');
+    });
+    return temp;
   }
 
   checkIfEmittedEventIsATriggerEvent(emittedEvents, scenario) {
@@ -1331,6 +1324,7 @@ export class HLBInforPopUp {
 
 var currentGraphItemSelection = {};
 var globalGraphItemParametersList;
+var id_of_node = {};
 
 function showRelevantContentInDialogBox() {
   try {
