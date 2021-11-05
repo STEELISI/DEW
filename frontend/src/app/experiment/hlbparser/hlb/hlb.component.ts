@@ -709,18 +709,25 @@ export class HlbComponent implements OnInit, AfterViewInit {
   }
 
   populateGraphParameters() {
+    this.graphItemParametersList = new Map<any, GraphItemParameters>();
+    globalGraphItemParametersList = this.graphItemParametersList;
     var data = this.stateservice.getConstraints().source['_value'];
     data.forEach(element => {
-      if(['os', 'nodetype', 'location'].includes(element.split(' ')[0])) {
-        var temp = {};
-        temp['bandwidth'] = '1'; //Default Value
-        temp['delay'] = '0'; //Default Value
-        temp['ipAddress'] = '';
-        temp['operatingSystem'] = '';
-        temp['hardwareType'] = '';
-        temp['nodeName'] = '';
-        temp['type'] = GraphItemType.NODE;
-        var selection = element.split(' ');
+      var selection = element.split(' ');
+      if(['os', 'nodetype', 'location'].includes(selection[0])) {
+        var temp;
+        if(!this.graphItemParametersList[id_of_node[selection[1]]]) {
+          temp = {};
+          temp['bandwidth'] = '1'; //Default Value
+          temp['delay'] = '0'; //Default Value
+          temp['ipAddress'] = '';
+          temp['operatingSystem'] = '';
+          temp['hardwareType'] = '';
+          temp['nodeName'] = '';
+          temp['type'] = GraphItemType.NODE;
+        } else {
+          temp = this.graphItemParametersList[id_of_node[selection[1]]];
+        }
         switch(selection[0]) {
           case 'os':
             temp['nodeName'] = selection[1];
@@ -737,6 +744,15 @@ export class HlbComponent implements OnInit, AfterViewInit {
         }
         this.graphItemParametersList[id_of_node[temp['nodeName']]] = temp;
         globalGraphItemParametersList = this.graphItemParametersList;
+      }
+      try {
+        //console.log(currentGraphItemSelection['id']);
+        //console.log(id_of_node[selection[2]]);
+        if(currentGraphItemSelection['id'] == id_of_node[selection[1]]) {
+          showRelevantContentInDialogBox();
+        }
+      } catch (ex) {
+        //Do nothing
       }
     });
   }
