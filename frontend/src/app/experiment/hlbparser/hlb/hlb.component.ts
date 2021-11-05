@@ -746,8 +746,6 @@ export class HlbComponent implements OnInit, AfterViewInit {
         globalGraphItemParametersList = this.graphItemParametersList;
       }
       try {
-        //console.log(currentGraphItemSelection['id']);
-        //console.log(id_of_node[selection[2]]);
         if(currentGraphItemSelection['id'] == id_of_node[selection[1]]) {
           showRelevantContentInDialogBox();
         }
