@@ -567,23 +567,26 @@ export class HlbComponent implements OnInit, AfterViewInit {
     this.populateGraphParameters();
     this.extractScenario(data.parsedScenario);
     this.storeBinding(undefined);
-    console.log(globalGraphItemParametersList);
+    //console.log(data);
   }
 
   updateGraph(data) { //Update the Graph View
     var temp_nodes = [];
     var temp_edges = [];
     id_of_node = {};
-    var id_count = 0;
+    var id_count = 1;
     var temp;
     //Populate the Nodes in the Graph
     data.parsedScenario.forEach(element => {
-      id_of_node[element[1]] = id_count;
-      temp = {
-        id: id_count++,
-        label: element[1].toString()
+      //console.log(element[1], id_of_node[element[1]])
+      if(!id_of_node[element[1]]) {
+        id_of_node[element[1]] = id_count;
+        temp = {
+          id: id_count++,
+          label: element[1].toString()
+        }
+        temp_nodes.push(temp);
       }
-      temp_nodes.push(temp);
     });
 
     //Populate the Edges in the Graph
