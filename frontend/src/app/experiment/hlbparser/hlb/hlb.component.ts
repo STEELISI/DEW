@@ -563,11 +563,11 @@ export class HlbComponent implements OnInit, AfterViewInit {
   }
 
   extractInfo(data: ParseApiBean) {
+    console.log(data);
     this.updateGraph(data);
     this.populateGraphParameters();
     this.extractScenario(data.parsedScenario);
     this.storeBinding(undefined);
-    //console.log(data);
   }
 
   updateGraph(data) { //Update the Graph View
@@ -594,15 +594,15 @@ export class HlbComponent implements OnInit, AfterViewInit {
       switch(element[0]) {
         case 'link':
           temp = {
-            from: id_of_node[element[1][0]],
-            to: id_of_node[element[1][1]]
+            from: id_of_node[element[2][0]],
+            to: id_of_node[element[2][1]]
           }
           temp_edges.push(temp);
           break;
         case 'lan':
           temp = {
-            from: id_of_node[element[1][0]],
-            to: id_of_node[element[1][1]]
+            from: id_of_node[element[2][0]],
+            to: id_of_node[element[2][1]]
           }
           temp_edges.push(temp);
           break;
@@ -717,9 +717,9 @@ export class HlbComponent implements OnInit, AfterViewInit {
     var data = this.stateservice.getConstraints().source['_value'];
     data.forEach(element => {
       var selection = element.split(' ');
-      if(['os', 'nodetype', 'location'].includes(selection[0])) {
+      if(['os', 'nodetype', 'location'].includes(selection[1])) {
         var temp;
-        if(!this.graphItemParametersList[id_of_node[selection[1]]]) {
+        if(!this.graphItemParametersList[id_of_node[selection[2]]]) {
           temp = {};
           temp['bandwidth'] = '1'; //Default Value
           temp['delay'] = '0'; //Default Value
@@ -729,27 +729,27 @@ export class HlbComponent implements OnInit, AfterViewInit {
           temp['nodeName'] = '';
           temp['type'] = GraphItemType.NODE;
         } else {
-          temp = this.graphItemParametersList[id_of_node[selection[1]]];
+          temp = this.graphItemParametersList[id_of_node[selection[2]]];
         }
-        switch(selection[0]) {
+        switch(selection[1]) {
           case 'os':
-            temp['nodeName'] = selection[1];
-            temp['operatingSystem'] = selection[2];
+            temp['nodeName'] = selection[2];
+            temp['operatingSystem'] = selection[3];
             break;
           case 'nodetype':
-            temp['nodeName'] = selection[1];
-            temp['hardwareType'] = selection[2];
+            temp['nodeName'] = selection[2];
+            temp['hardwareType'] = selection[3];
             break;
           case 'location':
-            temp['nodeName'] = selection[1];
-            temp['ipAddress'] = selection[2];
+            temp['nodeName'] = selection[2];
+            temp['ipAddress'] = selection[3];
             break;
         }
         this.graphItemParametersList[id_of_node[temp['nodeName']]] = temp;
         globalGraphItemParametersList = this.graphItemParametersList;
       }
       try {
-        if(currentGraphItemSelection['id'] == id_of_node[selection[1]]) {
+        if(currentGraphItemSelection['id'] == id_of_node[selection[2]]) {
           showRelevantContentInDialogBox();
         }
       } catch (ex) {
@@ -828,18 +828,19 @@ export class HlbComponent implements OnInit, AfterViewInit {
     for(var key in globalGraphItemParametersList) {
       var temp = globalGraphItemParametersList[key];
       var sentence = '';
+      var feature_keyword = 'feature';
       switch(temp.type) {
         case GraphItemType.NODE:
           if(temp.operatingSystem) {
-            sentence = 'os ' + temp.nodeName + ' ' + temp.operatingSystem;
+            sentence = feature_keyword + ' ' + 'os ' + temp.nodeName + ' ' + temp.operatingSystem;
             data.push(sentence);
           }
           if(temp.hardwareType) {
-            sentence = 'nodetype ' + temp.nodeName + ' ' + temp.hardwareType;
+            sentence = feature_keyword + ' ' + 'nodetype ' + temp.nodeName + ' ' + temp.hardwareType;
             data.push(sentence);
           }
           if(temp.ipAddress) {
-            sentence = 'location ' + temp.nodeName + ' ' + temp.ipAddress;
+            sentence = feature_keyword + ' ' + 'location ' + temp.nodeName + ' ' + temp.ipAddress;
             data.push(sentence);
           }
           break;
@@ -855,7 +856,7 @@ export class HlbComponent implements OnInit, AfterViewInit {
   removeConstraintSentences(data) {
     var temp = [];
     data.forEach(element => {
-      if(!['os', 'nodetype', 'location'].includes(element.split(' ')[0])) {
+      if(!['os', 'nodetype', 'location'].includes(element.split(' ')[1])) {
         temp.push(element);
       }
     });
