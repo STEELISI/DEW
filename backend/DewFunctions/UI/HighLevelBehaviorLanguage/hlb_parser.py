@@ -1,3 +1,4 @@
+from os import link
 from pyparsing import ParseException, NotAny, Empty, Group, Word, CaselessKeyword, Literal, alphas, alphanums, nums, White, ZeroOrMore, OneOrMore, Optional, LineEnd, cppStyleComment
 from enum import Enum
 import sys
@@ -20,17 +21,22 @@ class HLBHintType(Enum):
 class ConstraintParser():
     wsp = White().suppress()
     comma = Literal(",").suppress()
+    open_bracket = Literal("[").suppress()
+    close_bracket = Literal("]").suppress()
     all_keyword = CaselessKeyword("all")
     any_keyword = CaselessKeyword("any")
     num_keyword  = CaselessKeyword("num")
     link_keyword = CaselessKeyword("link")
+    bw_keyword = CaselessKeyword("bw")
+    delay_keyword = CaselessKeyword("delay")
     link_all_keyword = link_keyword + wsp + all_keyword
     link_any_keyword = link_keyword + wsp + any_keyword
     lan_keyword  = CaselessKeyword("lan")
     lan_all_keyword  = lan_keyword + wsp + all_keyword
     lan_any_keyword  = lan_keyword + wsp + any_keyword
     feature_keyword = CaselessKeyword("feature")
-    not_akeyword = (NotAny(all_keyword) + NotAny(any_keyword) + NotAny(num_keyword) + NotAny(link_keyword) + NotAny(lan_keyword))
+    with_keyword = CaselessKeyword("with")
+    not_akeyword = (NotAny(all_keyword) + NotAny(any_keyword) + NotAny(num_keyword) + NotAny(link_keyword) + NotAny(lan_keyword) + NotAny(with_keyword) + NotAny(bw_keyword) + NotAny(delay_keyword))
     
     actor = (not_akeyword + Word(alphanums+'_'))
     actors = actor + ZeroOrMore(wsp + actor)
@@ -40,13 +46,18 @@ class ConstraintParser():
     
     single_entity_num_constraint = num_keyword
     
+    link_lan_param_value_stmt = (bw_keyword + wsp + numValue) | (delay_keyword + wsp + numValue)
+    multiple_link_lan_param_value_stmt = (link_lan_param_value_stmt + ZeroOrMore(ZeroOrMore(wsp) + comma + ZeroOrMore(wsp) + link_lan_param_value_stmt))
+    param_stmt = open_bracket + ZeroOrMore(wsp) + multiple_link_lan_param_value_stmt + ZeroOrMore(wsp) + close_bracket
     single_entity_num_stmt = (single_entity_num_constraint("constraint") + wsp + actor("target") + wsp + numValue("value"))
     single_entity_str_stmt = (strValue("entity") + wsp + actor("target") + wsp + strValue("value"))
-    link_stmt = (link_keyword("constraint") + wsp + actor_pair("target")) | (link_all_keyword("constraint") + wsp + actor_pair("target")) | (link_any_keyword("constraint") + wsp + actor_pair("target"))
+    link_stmt = (link_keyword("constraint") + wsp + actor_pair("target")) | (link_all_keyword("constraint") + wsp + actors("target")) | (link_any_keyword("constraint") + wsp + actors("target"))
     lan_stmt = (lan_keyword("constraint") + wsp + actors("target")) | (lan_all_keyword("constraint") + wsp + actors("target")) | (lan_any_keyword("constraint") + wsp + actors("target"))
+    link_with_param_stmt = (link_stmt + wsp + with_keyword + wsp + param_stmt("value")) | (link_stmt)
+    lan_with_param_stmt = (lan_stmt + wsp + with_keyword + wsp + param_stmt("value")) | (lan_stmt)
     feature_stmt = (feature_keyword("constraint") + wsp + single_entity_str_stmt)
     
-    constraint_statement = (single_entity_num_stmt | feature_stmt | link_stmt | lan_stmt) + LineEnd()
+    constraint_statement = (single_entity_num_stmt | feature_stmt | link_with_param_stmt | lan_with_param_stmt) + LineEnd()
     
     def parse_stmt(self, statement):
         """Parses an HLB statement and returns a tuple: (triggers, actors, action, e_events)
