@@ -29,35 +29,37 @@ class ConstraintParser():
     link_keyword = CaselessKeyword("link")
     bw_keyword = CaselessKeyword("bw")
     delay_keyword = CaselessKeyword("delay")
+    interfaces_keyword = CaselessKeyword("interfaces")
+    location_keyword = CaselessKeyword("location")
+    nodetype_keyword = CaselessKeyword("nodetype")
+    os_keyword   = CaselessKeyword("os")
     link_all_keyword = link_keyword + wsp + all_keyword
     link_any_keyword = link_keyword + wsp + any_keyword
     lan_keyword  = CaselessKeyword("lan")
     lan_all_keyword  = lan_keyword + wsp + all_keyword
     lan_any_keyword  = lan_keyword + wsp + any_keyword
-    feature_keyword = CaselessKeyword("feature")
-    with_keyword = CaselessKeyword("with")
-    not_akeyword = (NotAny(all_keyword) + NotAny(any_keyword) + NotAny(num_keyword) + NotAny(link_keyword) + NotAny(lan_keyword) + NotAny(with_keyword) + NotAny(bw_keyword) + NotAny(delay_keyword))
+    not_akeyword = (NotAny(all_keyword) + NotAny(any_keyword) + NotAny(num_keyword) + NotAny(link_keyword) + NotAny(lan_keyword) + NotAny(bw_keyword) + NotAny(delay_keyword) + NotAny(os_keyword) + NotAny(nodetype_keyword) + NotAny(location_keyword) + NotAny(interfaces_keyword))
     
     actor = (not_akeyword + Word(alphanums+'_'))
-    actors = actor + ZeroOrMore(wsp + actor)
+    actors = actor + ZeroOrMore(ZeroOrMore(wsp) + actor)
     actor_pair = actor + wsp + actor
     strValue = (not_akeyword + Word(alphanums+'_'))
     numValue = (not_akeyword + Word(nums))
-    
-    single_entity_num_constraint = num_keyword
-    
-    link_lan_param_value_stmt = (bw_keyword + wsp + numValue) | (delay_keyword + wsp + numValue)
+
+    entity_param_value_stmt = (os_keyword+ wsp + strValue("value")) | (nodetype_keyword + wsp + strValue("value")) | (location_keyword + wsp + strValue("value")) | (interfaces_keyword + wsp + strValue("value")) | (num_keyword + wsp + numValue("value"))
+    multiple_entity_param_value_stmt = (entity_param_value_stmt + ZeroOrMore(ZeroOrMore(wsp) + comma + ZeroOrMore(wsp) + entity_param_value_stmt))
+    entity_param_stmt = open_bracket + ZeroOrMore(wsp) + multiple_entity_param_value_stmt + ZeroOrMore(wsp) + close_bracket
+    entity_stmt = actors("target") + wsp + entity_param_stmt("value")
+
+    link_lan_param_value_stmt = (bw_keyword + wsp + numValue("value")) | (delay_keyword + wsp + numValue("value"))
     multiple_link_lan_param_value_stmt = (link_lan_param_value_stmt + ZeroOrMore(ZeroOrMore(wsp) + comma + ZeroOrMore(wsp) + link_lan_param_value_stmt))
     param_stmt = open_bracket + ZeroOrMore(wsp) + multiple_link_lan_param_value_stmt + ZeroOrMore(wsp) + close_bracket
-    single_entity_num_stmt = (single_entity_num_constraint("constraint") + wsp + actor("target") + wsp + numValue("value"))
-    single_entity_str_stmt = (strValue("entity") + wsp + actor("target") + wsp + strValue("value"))
     link_stmt = (link_keyword("constraint") + wsp + actor_pair("target")) | (link_all_keyword("constraint") + wsp + actors("target")) | (link_any_keyword("constraint") + wsp + actors("target"))
     lan_stmt = (lan_keyword("constraint") + wsp + actors("target")) | (lan_all_keyword("constraint") + wsp + actors("target")) | (lan_any_keyword("constraint") + wsp + actors("target"))
-    link_with_param_stmt = (link_stmt + wsp + with_keyword + wsp + param_stmt("value")) | (link_stmt)
-    lan_with_param_stmt = (lan_stmt + wsp + with_keyword + wsp + param_stmt("value")) | (lan_stmt)
-    feature_stmt = (feature_keyword("constraint") + wsp + single_entity_str_stmt)
+    link_with_param_stmt = (link_stmt + wsp + param_stmt("value")) | (link_stmt)
+    lan_with_param_stmt = (lan_stmt + wsp + param_stmt("value")) | (lan_stmt)
     
-    constraint_statement = (single_entity_num_stmt | feature_stmt | link_with_param_stmt | lan_with_param_stmt) + LineEnd()
+    constraint_statement = (lan_with_param_stmt | link_with_param_stmt | entity_stmt) + LineEnd()
     
     def parse_stmt(self, statement):
         """Parses an HLB statement and returns a tuple: (triggers, actors, action, e_events)
@@ -70,7 +72,9 @@ class ConstraintParser():
             return(None, None, None)
         if parsed.e_events == None:
             parsed.e_events = []
-        return_tuple = (str(parsed.constraint), list(parsed.entity), list(parsed.target), list(parsed.value))
+        if(parsed.constraint == ""):
+            parsed.constraint = 'config'
+        return_tuple = (str(parsed.constraint), list(parsed.target), list(parsed.value))
         return(tuple(r if r != [] and r != "" else None for r in return_tuple))
 
 class BindingParser():
