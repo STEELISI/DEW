@@ -212,15 +212,29 @@
     </div>
   </mat-drawer>
   
-  <div>
+  <div id="graph-container">
     <div class="d-flex flex-row justify-content-between toggle-icons">
-      <div (click)="drawer.toggle(); openSideNavBar()" class="side-nav-icon">
-        <img src="../../../../assets/icons/svg/arrow-circle-right.svg">
-        <img src="../../../../assets/icons/svg/arrow-circle-left.svg" class="hide">
-        <span class="text-left font-weight-bold">Textual Representation</span>
+      <div style="width: 30%">
+        <div (click)="drawer.toggle(); openSideNavBar()" class="side-nav-icon">
+          <img src="../../../../assets/icons/svg/arrow-circle-right.svg">
+          <img src="../../../../assets/icons/svg/arrow-circle-left.svg" class="hide">
+          <span class="text-left font-weight-bold">Textual Representation</span>
+        </div>
       </div>
 
-      <div>
+      <div  style="width: 30%" style="text-align: center;">
+        <div id="graphActionButtonList">
+          <div class="d-flex flex-row justify-content-center">
+            <div class="graph-action-button" id="addNodeBtn">Add Node</div>
+            <div class="graph-action-button" id="addLANBtn">Add LAN</div>
+          </div>
+        </div>
+        <div id="actionMessage">
+          <span>Press <kbd>Ctrl</kbd> to edit edges, Select a node/edge and press <kbd>Del</kbd> to delete</span>
+        </div>
+    </div>
+
+      <div  style="width: 30%">
         <div (click)="toggleTopologyView()" class="dependency-topology-toggle-icon-topology">
           <span class="text-left font-weight-bold">Topology</span>
         </div>
@@ -289,15 +303,20 @@
         <li data-action="second">Second thing</li>
         <li data-action="third">Third thing</li>
       </ul>
-      <div id="visNetwork" #visNetwork></div>
+      <div id="topologyGraphNetwork" #topologyGraphNetwork></div>
     </div>
     <div class="graph-box-dependency hide">
+      <div style="width: 200px; margin-top: 100px; margin-left: 50px; position: absolute;">
+        <div class="row" *ngFor="let legend of dependencyGraphLegends">
+          <div class="col-md-3 mt-1" [ngStyle]="{'background-color': legend.color}"></div><div class="col-md-9 mt-1">{{legend.actor}}</div>
+        </div>
+      </div>
       <ul class='custom-menu dependency'>
         <li data-action="first">First thing</li>
         <li data-action="second">Second thing</li>
         <li data-action="third">Third thing</li>
       </ul>
-      <div id="visNetwork-dependency" #visNetworkDependency></div>
+      <div id="dependencyGraphNetwork" #dependencyGraphNetwork></div>
     </div>
   </div>
 
