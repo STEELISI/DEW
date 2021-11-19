@@ -37,8 +37,13 @@ Quill.register("modules/counter", EditorService);
 })
 export class HlbComponent implements OnInit, AfterViewInit {
 
-  @ViewChild('visNetwork', { static: false }) visNetwork!: ElementRef;
-  private networkInstance: any;
+  @ViewChild('topologyGraphNetwork', { static: false }) topologyGraphNetwork!: ElementRef;
+  @ViewChild('dependencyGraphNetwork', { static: false }) dependencyGraphNetwork!: ElementRef;
+  private topologyNetworkInstance: any;
+  private dependencyNetworkInstance: any;
+  addNodeType: "Node" | "LAN";
+  isKeyPressed: boolean = false;
+  dependencyGraphLegends: Array<{ actor: String, color: String }> = [];
   graphItemParametersList: Map<any, GraphItemParameters>;
   actorService: EditorService;
   behaviorService: EditorService;
@@ -66,16 +71,16 @@ export class HlbComponent implements OnInit, AfterViewInit {
     'psuccess($action) - process completed w success for the given action'
   ];
   specialFunctions = [
-    {name: 'expIP', value: 'experimental IP on the node'},
-    {name: 'ctlIP', value: 'control IP on the node'},
-    {name: 'expeth', value: 'experimental interface on the node'},
-    {name: 'expIP(A)', value: 'experimental IP on this node leading to A'},
-    {name: 'expeth(A)', value: 'experimental interface on this node leading to A'},
-    {name: 'IP(A)', value: 'IP address of node A'},
-    {name: 'pid', value: 'project name'},
-    {name: 'eid', value: 'experiment name'},
-    {name: 'nid', value: 'node name'},
-    {name: 'epoch', value: 'epoch time'}
+    { name: 'expIP', value: 'experimental IP on the node' },
+    { name: 'ctlIP', value: 'control IP on the node' },
+    { name: 'expeth', value: 'experimental interface on the node' },
+    { name: 'expIP(A)', value: 'experimental IP on this node leading to A' },
+    { name: 'expeth(A)', value: 'experimental interface on this node leading to A' },
+    { name: 'IP(A)', value: 'IP address of node A' },
+    { name: 'pid', value: 'project name' },
+    { name: 'eid', value: 'experiment name' },
+    { name: 'nid', value: 'node name' },
+    { name: 'epoch', value: 'epoch time' }
   ];
 
   scenariosObjFormat = [];
@@ -126,7 +131,7 @@ export class HlbComponent implements OnInit, AfterViewInit {
 
   resetFilterList() {
     this.filteredBindingHandle = of(this.filterBindingOptions);
-    this.filteredBindingHandleForEvent = of (this.filterBindingOptionsForEvent);
+    this.filteredBindingHandleForEvent = of(this.filterBindingOptionsForEvent);
   }
   searchFilter(value: any, category: any) {
     if (category === 'event' || category === 't_event') {
@@ -145,10 +150,10 @@ export class HlbComponent implements OnInit, AfterViewInit {
     const result = [];
     wordArray.forEach((element) => {
       if (this.defaultTextColor[element] !== undefined && this.defaultTextColor[element] !== null &&
-          this.defaultTextColor[element].trim() !== '') {
-        result.push({insert: element + ' ', attributes: { color: this.defaultTextColor[element], bold: true }});
+        this.defaultTextColor[element].trim() !== '') {
+        result.push({ insert: element + ' ', attributes: { color: this.defaultTextColor[element], bold: true } });
       } else {
-        result.push({insert: element + ' '});
+        result.push({ insert: element + ' ' });
       }
     });
     return result;
@@ -158,7 +163,7 @@ export class HlbComponent implements OnInit, AfterViewInit {
     const map: Map<string, {}> = new Map<string, {}>();
     console.log(textJson)
     textJson.forEach(element => {
-      map.set(element['text']+"_row_"+element['row'],element)
+      map.set(element['text'] + "_row_" + element['row'], element)
     });
 
     return map;
@@ -169,21 +174,21 @@ export class HlbComponent implements OnInit, AfterViewInit {
   }
 
   addColor(stringArray, row, map) {
-    let occurenceMap : Map<String, number> = new Map<String, number>();
+    let occurenceMap: Map<String, number> = new Map<String, number>();
     stringArray.forEach(element => {
-      if(occurenceMap.has(element.insert.trim())){
-        occurenceMap.set(element.insert.trim(),occurenceMap.get(element.insert.trim())+1)
-      }else{
-        occurenceMap.set(element.insert.trim(),1)
+      if (occurenceMap.has(element.insert.trim())) {
+        occurenceMap.set(element.insert.trim(), occurenceMap.get(element.insert.trim()) + 1)
+      } else {
+        occurenceMap.set(element.insert.trim(), 1)
       }
 
-      if(map.has(element.insert.trim()+"_row_"+row)) {
-        let detail = map.get(element.insert.trim()+"_row_"+row)
-        if(detail['occurence'] == -1){
-          element["attributes"]= { "color": detail['color'], "bold": true }
-        }else {
-          if(occurenceMap.get(element.insert.trim()) == detail['occurence']){
-            element["attributes"]= { "color": detail['color'], "bold": true }
+      if (map.has(element.insert.trim() + "_row_" + row)) {
+        let detail = map.get(element.insert.trim() + "_row_" + row)
+        if (detail['occurence'] == -1) {
+          element["attributes"] = { "color": detail['color'], "bold": true }
+        } else {
+          if (occurenceMap.get(element.insert.trim()) == detail['occurence']) {
+            element["attributes"] = { "color": detail['color'], "bold": true }
           }
         }
 
@@ -196,11 +201,11 @@ export class HlbComponent implements OnInit, AfterViewInit {
   colorText(data, textJson) {
     let map = this.convertTextToMap(textJson)
     var textArray = []
-    let row =1
+    let row = 1
     data.forEach((element) => {
       let stringArray = this.convertStringToJsonObject(element)
-      textArray = [...textArray,...this.addColor(stringArray,row,map),{ insert: '\n' }]
-      row ++
+      textArray = [...textArray, ...this.addColor(stringArray, row, map), { insert: '\n' }]
+      row++
     });
 
     return textArray
@@ -215,7 +220,7 @@ export class HlbComponent implements OnInit, AfterViewInit {
         var text = "";
         var textArray = []
         data.forEach((element) => {
-          textArray = [...textArray,...this.convertStringToJsonObject(element),{ insert: '\n' }]
+          textArray = [...textArray, ...this.convertStringToJsonObject(element), { insert: '\n' }]
           text += element + "<br>";
         });
 
@@ -341,7 +346,7 @@ export class HlbComponent implements OnInit, AfterViewInit {
           }
         });
         this.behaviorService.getSuggestionData().subscribe((data) => {
-          if(data == null){
+          if (data == null) {
             data = {
               currentSentence: "",
               remainingSentences: []
@@ -356,7 +361,7 @@ export class HlbComponent implements OnInit, AfterViewInit {
               actors: [],
             };
             this.stateservice.getConstraints().subscribe((constraints) => {
-              if(constraints != null || constraints != undefined){
+              if (constraints != null || constraints != undefined) {
                 params.constraints = constraints
               }
             })
@@ -413,7 +418,7 @@ export class HlbComponent implements OnInit, AfterViewInit {
           }
         });
         this.constraintService.getSuggestionData().subscribe((data) => {
-          if(data == null){
+          if (data == null) {
             data = {
               currentSentence: "",
               remainingSentences: []
@@ -521,7 +526,7 @@ export class HlbComponent implements OnInit, AfterViewInit {
       .put('v1/pr/hlb/parse', data, { withCredential: true })
       .subscribe((receivedData: ParseApiBean) => {
         this.extractInfo(receivedData);
-	//this.suggestAll(receivedData);
+        //this.suggestAll(receivedData);
       });
   }
 
@@ -557,8 +562,8 @@ export class HlbComponent implements OnInit, AfterViewInit {
     this.http
       .put('v1/pr/hlb/parse', data, { withCredential: true })
       .subscribe((receivedData: ParseApiBean) => {
-         //this.suggestAll(receivedData);
-         this.extractInfo(receivedData);
+        //this.suggestAll(receivedData);
+        this.extractInfo(receivedData);
       });
   }
 
@@ -578,8 +583,7 @@ export class HlbComponent implements OnInit, AfterViewInit {
     var temp;
     //Populate the Nodes in the Graph
     data.parsedScenario.forEach(element => {
-      //console.log(element[1], id_of_node[element[1]])
-      if(!id_of_node[element[1]]) {
+      if (typeof id_of_node[element[1]] === "undefined") {
         id_of_node[element[1]] = id_count;
         temp = {
           id: id_count++,
@@ -591,8 +595,9 @@ export class HlbComponent implements OnInit, AfterViewInit {
 
     //Populate the Edges in the Graph
     data.parsedConstraints.forEach(element => {
-      switch(element[0]) {
+      switch (element[0]) {
         case 'link':
+        case "['link', 'all']":
           temp = {
             from: id_of_node[element[2][0]],
             to: id_of_node[element[2][1]]
@@ -606,8 +611,18 @@ export class HlbComponent implements OnInit, AfterViewInit {
           }
           temp_edges.push(temp);
           break;
+        case 'num':
+          if (typeof id_of_node[element[1]] === "undefined") {
+            id_of_node[element[1]] = id_count;
+            temp = {
+              id: id_count++,
+              label: element[1].toString()
+            }
+            temp_nodes.push(temp);
+          }
+          break;
         default:
-          //Do nothing
+        //Do nothing
       }
     });
 
@@ -615,7 +630,7 @@ export class HlbComponent implements OnInit, AfterViewInit {
     this.graph_nodes = new DataSet<any>(
       temp_nodes
     );
- 
+
     // Create an array with edges
     this.graph_edges = new DataSet<any>(
       temp_edges
@@ -623,34 +638,47 @@ export class HlbComponent implements OnInit, AfterViewInit {
 
     var nodes = this.graph_nodes;
     var edges = this.graph_edges;
- 
+
     this.graph_data = { nodes, edges };
- 
-    this.graph_container = this.visNetwork;
-    this.networkInstance = new Network(this.graph_container.nativeElement, this.graph_data, {
-      height: '100%',
-      width: '100%',
-      nodes: {
-        shape: 'ellipse',
-        font: {
-          color: 'black',
-          bold: 'true',
-          size: 20
+
+    this.topologyNetworkInstance = new Network(this.topologyGraphNetwork.nativeElement, this.graph_data, {
+      manipulation: {
+        enabled: false,
+        initiallyActive: false,
+        addNode: (nodeData, callback) => {
+          if (this.addNodeType == "LAN") {
+            nodeData.group = "LAN";
+            nodeData.label = "";
+          }
+          this.clearMessage();
+          callback(nodeData);
         },
-        size: 40
+        addEdge: (edgeData, callback) => {
+          this.clearMessage();
+          callback(edgeData);
+        },
+        deleteNode: (data, callback) => {
+          $("#deleteNodeBtn").hide();
+          $("#deleteEdgeBtn").hide();
+          callback(data);
+        }
       },
       edges: {
-        smooth: true,
-        arrows: {
-          to: {
-            enabled: true,
-            type: 'vee',
-          },
-        },
+        color: '#777777'
       },
+      nodes: {
+        image: "/assets/server.png",
+        shape: "image",
+      },
+      groups: {
+        LAN: {
+          shape: 'circle',
+          color: '#000000'
+        }
+      }
     });
-    
-    this.networkInstance.on( 'click', function(properties) {
+
+    this.topologyNetworkInstance.on('click', function (properties) {
       var ids = properties.nodes;
       var clickedNodes = nodes.get(ids);
       var items = properties.items;
@@ -660,11 +688,11 @@ export class HlbComponent implements OnInit, AfterViewInit {
       clickedNodes.length || items.length || $dialogBox.toggleClass('hide');
       //Show Node/Link Content
       clickedNodes.length && $('#dialog-box-title').html(clickedNodes[0].label) && (currentGraphItemSelection['id'] = clickedNodes[0].id) && (currentGraphItemSelection['type'] = 'node');
-      items.length && (clickedNodes.length==0) && $('#dialog-box-title').html('Link') && (currentGraphItemSelection['id'] = items[0].edgeId) && (currentGraphItemSelection['type'] = 'link');
-      if(items.length && clickedNodes.length==0) {
+      items.length && (clickedNodes.length == 0) && $('#dialog-box-title').html('Link') && (currentGraphItemSelection['id'] = items[0].edgeId) && (currentGraphItemSelection['type'] = 'link');
+      if (items.length && clickedNodes.length == 0) {
         $('.dialog-box-fields:not(is-node)').removeClass('hide');
         $('.dialog-box-fields.is-node').addClass('hide');
-      } else if(clickedNodes.length) {
+      } else if (clickedNodes.length) {
         $('.dialog-box-fields:not(is-node)').addClass('hide');
         $('.dialog-box-fields.is-node').removeClass('hide');
       }
@@ -673,22 +701,81 @@ export class HlbComponent implements OnInit, AfterViewInit {
       $(".custom-menu").is(':visible') && $(".custom-menu").finish().toggle(100);
     });
 
-    this.networkInstance.on('oncontext', function (properties) {
+    this.topologyNetworkInstance.on("select", (data) => {
+      $("#deleteNodeBtn").hide();
+      $("#deleteEdgeBtn").hide();
+      if (data.nodes.length) {
+        $("#deleteNodeBtn").show();
+      } else if (data.edges.length) {
+        $("#deleteEdgeBtn").show();
+      }
+    })
+
+    this.topologyNetworkInstance.on('oncontext', function (properties) {
       properties.event.preventDefault();
-      if(!properties.nodes.length) {
+      if (!properties.nodes.length) {
         $('.toastBox').fadeIn(200);
-        setTimeout(()=> {
+        setTimeout(() => {
           $('.toastBox').fadeOut(500);
         }, 4000);
       } else {
         $(".custom-menu").is(':visible') && $(".custom-menu").finish().toggle();;
         $(".custom-menu").finish().toggle(100);
         $(".custom-menu").css({
-            top: properties.event.pageY - 100 + "px",
-            left: properties.event.pageX + "px"
+          top: properties.event.pageY - 100 + "px",
+          left: properties.event.pageX + "px"
         });
-    }
+      }
     });
+
+    $("#graph-container").keyup((e) => {
+      this.isKeyPressed = false;
+      if (e.key === "Escape" || e.key === "Control") { // escape key maps to keycode `27`
+        this.addNodeType = null;
+        this.clearMessage();
+        this.topologyNetworkInstance.disableEditMode();
+      } else if (e.key === "Delete") {
+        this.topologyNetworkInstance.deleteSelected();
+      }
+    });
+
+    $("#graph-container").keydown((e) => {
+      if (this.isKeyPressed) {
+        return;
+      }
+      this.isKeyPressed = true;
+      if (e.key === "Control") {
+        this.topologyNetworkInstance.addEdgeMode();
+        this.displayMessage("Draw edge between two edges");
+      }
+    });
+
+    $("#addNodeBtn").on('click', () => {
+      this.addNodeType = "Node";
+      this.topologyNetworkInstance.addNodeMode();
+      this.displayMessage("Click anywhere to add a node, press esc to cancel.");
+      $("#graph-container").focus();
+    })
+
+    $("#addLANBtn").on('click', () => {
+      this.addNodeType = "LAN";
+      this.topologyNetworkInstance.addNodeMode();
+      this.displayMessage("Click anywhere to add a LAN, press esc to cancel.");
+      $("#graph-container").focus();
+    })
+
+  }
+
+  displayMessage = (message) => {
+    $("#graphActionButtonList").hide();
+    $("#actionMessage").html(message);
+    $("#actionMessage").show();
+  }
+
+  clearMessage = () => {
+    $("#graphActionButtonList").show();
+    $("#actionMessage").html("<span>Press <kbd>Ctrl</kbd> to edit edges, Select a node/edge and press <kbd>Del</kbd> to delete</span>");
+    // $("#actionMessage").hide();
   }
 
   toggleTopologyView() {
@@ -699,6 +786,8 @@ export class HlbComponent implements OnInit, AfterViewInit {
     $(".custom-menu").is(':visible') && $(".custom-menu").finish().toggle(100);
     var $dialogBox = $('.dialog-box');
     !$dialogBox.hasClass('hide') && $dialogBox.addClass('hide');
+    $('#graphActionButtonList').removeClass('hide');
+
   }
 
   toggleDependencyView() {
@@ -709,6 +798,93 @@ export class HlbComponent implements OnInit, AfterViewInit {
     $(".custom-menu").is(':visible') && $(".custom-menu").finish().toggle(100);
     var $dialogBox = $('.dialog-box');
     !$dialogBox.hasClass('hide') && $dialogBox.addClass('hide');
+    $('#graphActionButtonList').addClass('hide');
+
+    this.http.put("v1/pr/hlb/dependency_graph/parse", { "scenario": this.behaviorList }, { withCredential: true }).subscribe((d) => {
+      let nodes = []
+      let links = []
+      var actors = {}
+      let groupCount = 1
+      for (const n of d['nodes']) {
+        if (!actors.hasOwnProperty(n.actors[0])) {
+          actors[n.actors[0]] = groupCount++;
+        }
+
+        var n2 = {
+          data: n,
+          id: n.id,
+          label: n.action,
+          group: "group" + actors[n.actors[0]]
+        }
+        nodes.push(n2)
+      }
+
+      for (const e of d['edges']) {
+        var e2 = e
+        e2.from = e2.source;
+        e2.to = e2.target;
+        e2.arrows = {
+          to: {
+            enabled: true,
+            type: "arrow",
+          },
+        }
+        links.push(e2)
+      }
+
+      const colors = ["#003f5c", "#2f4b7c", "#665191", "#a05195", "#d45087", "#f95d6a", "#ff7c43", "#ffa600"];
+
+      this.dependencyGraphLegends = Object.keys(actors).map(actor => { return { actor: actor, color: colors[actors[actor] - 1] } })
+
+      this.dependencyNetworkInstance = new Network(this.dependencyGraphNetwork.nativeElement, { nodes, edges: links }, {
+        manipulation: {
+          enabled: false,
+          initiallyActive: false,
+          addNode: (nodeData, callback) => {
+            this.clearMessage();
+            callback(nodeData);
+          },
+          addEdge: (edgeData, callback) => {
+            edgeData.arrows = {
+              to: {
+                enabled: true,
+                type: "arrow",
+              },
+            };
+            this.clearMessage();
+            callback(edgeData);
+          },
+          deleteNode: (data, callback) => {
+            $("#deleteNodeBtn").hide();
+            $("#deleteEdgeBtn").hide();
+            callback(data);
+          }
+        },
+        layout: {
+          hierarchical: {
+            sortMethod: "directed",
+            shakeTowards: "leaves",
+          },
+        },
+        edges: {
+          color: '#999999',
+          length: 200
+        },
+        nodes: {
+          shape: "box",
+          font: {
+            color: '#FFFFFF'
+          }
+        },
+        physics: {
+          hierarchicalRepulsion: {
+            nodeDistance: 200
+          }
+        },
+        groups: Object.assign({}, ...colors.map((color, index) => ({ ["group" + (index + 1)]: { color } })))
+      });
+    })
+
   }
 
   populateGraphParameters() {
@@ -717,9 +893,9 @@ export class HlbComponent implements OnInit, AfterViewInit {
     var data = this.stateservice.getConstraints().source['_value'];
     data.forEach(element => {
       var selection = element.split(' ');
-      if(['os', 'nodetype', 'location'].includes(selection[1])) {
+      if (['os', 'nodetype', 'location'].includes(selection[0])) {
         var temp;
-        if(!this.graphItemParametersList[id_of_node[selection[2]]]) {
+        if (!this.graphItemParametersList[id_of_node[selection[1]]]) {
           temp = {};
           temp['bandwidth'] = '1'; //Default Value
           temp['delay'] = '0'; //Default Value
@@ -731,7 +907,7 @@ export class HlbComponent implements OnInit, AfterViewInit {
         } else {
           temp = this.graphItemParametersList[id_of_node[selection[2]]];
         }
-        switch(selection[1]) {
+        switch (selection[0]) {
           case 'os':
             temp['nodeName'] = selection[2];
             temp['operatingSystem'] = selection[3];
@@ -749,7 +925,7 @@ export class HlbComponent implements OnInit, AfterViewInit {
         globalGraphItemParametersList = this.graphItemParametersList;
       }
       try {
-        if(currentGraphItemSelection['id'] == id_of_node[selection[2]]) {
+        if (currentGraphItemSelection['id'] == id_of_node[selection[1]]) {
           showRelevantContentInDialogBox();
         }
       } catch (ex) {
@@ -768,7 +944,7 @@ export class HlbComponent implements OnInit, AfterViewInit {
     // hardwareType: string
     //TODO: Figure out a way to override the parameters without overwriting the previous values
     var temp = this.graphItemParametersList[currentGraphItemSelection['id']] ? this.graphItemParametersList[currentGraphItemSelection['id']] : null;
-    if(!temp) {
+    if (!temp) {
       temp = {};
       temp['bandwidth'] = '1'; //Default Value
       temp['delay'] = '0'; //Default Value
@@ -776,7 +952,7 @@ export class HlbComponent implements OnInit, AfterViewInit {
       temp['operatingSystem'] = '';
       temp['hardwareType'] = '';
       temp['nodeName'] = '';
-      switch(currentGraphItemSelection['type']) {
+      switch (currentGraphItemSelection['type']) {
         case 'node':
           temp['type'] = GraphItemType.NODE;
           temp['nodeName'] = $('#dialog-box-title').html();
@@ -786,7 +962,7 @@ export class HlbComponent implements OnInit, AfterViewInit {
           break;
       }
     } else {
-      switch(temp.type) {
+      switch (temp.type) {
         case 'node':
           $('#node-ip-address').val(temp.ipAddress);
           $('#node-operating-system').val(temp.operatingSystem);
@@ -800,7 +976,7 @@ export class HlbComponent implements OnInit, AfterViewInit {
     }
     var currentValue = event.target.value;
     var currentField = $(event.target).attr('id');
-    switch(currentField) {
+    switch (currentField) {
       case 'node-ip-address':
         temp['ipAddress'] = currentValue;
         break;
@@ -825,22 +1001,21 @@ export class HlbComponent implements OnInit, AfterViewInit {
   updateConstraintsOnTopologyParameterChange() {
     var data = this.stateservice.getConstraints().source['_value'];
     data = this.removeConstraintSentences(data);
-    for(var key in globalGraphItemParametersList) {
+    for (var key in globalGraphItemParametersList) {
       var temp = globalGraphItemParametersList[key];
       var sentence = '';
-      var feature_keyword = 'feature';
-      switch(temp.type) {
+      switch (temp.type) {
         case GraphItemType.NODE:
-          if(temp.operatingSystem) {
-            sentence = feature_keyword + ' ' + 'os ' + temp.nodeName + ' ' + temp.operatingSystem;
+          if (temp.operatingSystem) {
+            sentence = 'os ' + temp.nodeName + ' ' + temp.operatingSystem;
             data.push(sentence);
           }
-          if(temp.hardwareType) {
-            sentence = feature_keyword + ' ' + 'nodetype ' + temp.nodeName + ' ' + temp.hardwareType;
+          if (temp.hardwareType) {
+            sentence = 'nodetype ' + temp.nodeName + ' ' + temp.hardwareType;
             data.push(sentence);
           }
-          if(temp.ipAddress) {
-            sentence = feature_keyword + ' ' + 'location ' + temp.nodeName + ' ' + temp.ipAddress;
+          if (temp.ipAddress) {
+            sentence = 'location ' + temp.nodeName + ' ' + temp.ipAddress;
             data.push(sentence);
           }
           break;
@@ -856,7 +1031,7 @@ export class HlbComponent implements OnInit, AfterViewInit {
   removeConstraintSentences(data) {
     var temp = [];
     data.forEach(element => {
-      if(!['os', 'nodetype', 'location'].includes(element.split(' ')[1])) {
+      if (!['os', 'nodetype', 'location'].includes(element.split(' ')[0])) {
         temp.push(element);
       }
     });
@@ -879,11 +1054,11 @@ export class HlbComponent implements OnInit, AfterViewInit {
 
   checkIfAllOrAnyAlreadyEntered(emittedEvents) {
     for (const evt of emittedEvents) {
-      const allIdxs = _.map(_.keys(_.pickBy(this.scenariosObjFormat, {insert: evt + ' '})), Number);
+      const allIdxs = _.map(_.keys(_.pickBy(this.scenariosObjFormat, { insert: evt + ' ' })), Number);
       for (const idx of allIdxs) {
         if (idx > 0) {
           if (this.scenariosObjFormat[idx - 1].insert.toLowerCase() === 'all ') {
-              // || this.scenariosObjFormat[idx - 1].insert.toLowerCase() === 'any ') {
+            // || this.scenariosObjFormat[idx - 1].insert.toLowerCase() === 'any ') {
             return true;
           }
         }
@@ -899,7 +1074,7 @@ export class HlbComponent implements OnInit, AfterViewInit {
     }
 
     for (const val of emittedEvents) {
-      const allIdxs = _.map(_.keys(_.pickBy(this.scenariosObjFormat, {insert: val + ' '})), Number);
+      const allIdxs = _.map(_.keys(_.pickBy(this.scenariosObjFormat, { insert: val + ' ' })), Number);
 
       // Add the all/any keyword at the location of the when keyword and assign new array to the scenario object array
       const tempObjFmtArray = _.cloneDeep(this.scenariosObjFormat);
@@ -908,7 +1083,7 @@ export class HlbComponent implements OnInit, AfterViewInit {
         if (idx > 0) {
           if (this.scenariosObjFormat[idx - 1].insert.toLowerCase() === 'when ') {
             // tempObjFmtArray.splice(idx, 0, {insert: 'ALL|ANY ', attributes: {bold: true, color: 'red'}});
-             tempObjFmtArray.splice(idx, 0, {insert: 'all '});
+            tempObjFmtArray.splice(idx, 0, { insert: 'all ' });
           }
         }
       }
@@ -925,24 +1100,24 @@ export class HlbComponent implements OnInit, AfterViewInit {
     // Add the all/any keyword at the location of the when keyword and assign new array to the scenario object array
     const tempObjFmtArray = _.cloneDeep(this.constraintsObjFormat);
     // Get all indexes where the actor is present
-    const allIdxs = _.map(_.keys(_.pickBy(tempObjFmtArray, {insert: actor + ' '})), Number);
+    const allIdxs = _.map(_.keys(_.pickBy(tempObjFmtArray, { insert: actor + ' ' })), Number);
     for (const idx of allIdxs) {
       if (idx === 1) {
         if (this.constraintsObjFormat[idx - 1].insert.toLowerCase() === 'link ' ||
-            this.constraintsObjFormat[idx - 1].insert.toLowerCase() === 'lan ') {
+          this.constraintsObjFormat[idx - 1].insert.toLowerCase() === 'lan ') {
           // tempObjFmtArray.splice(idx, 0, {insert: 'ALL|ANY ', attributes: {bold: true, color: 'red'}});
-          tempObjFmtArray.splice(idx, 0, {insert: 'all '});
+          tempObjFmtArray.splice(idx, 0, { insert: 'all ' });
           continue;
         }
       }
       if (idx > 1) {
         if ((this.constraintsObjFormat[idx - 1].insert.toLowerCase() === 'link ' ||
-            this.constraintsObjFormat[idx - 2].insert.toLowerCase() === 'link ' ||
-            this.constraintsObjFormat[idx - 1].insert.toLowerCase() === 'lan ' ||
-            this.constraintsObjFormat[idx - 2].insert.toLowerCase() === 'lan ') &&
-            (this.constraintsObjFormat[idx - 1].insert.toLowerCase() !== 'all ')) {
+          this.constraintsObjFormat[idx - 2].insert.toLowerCase() === 'link ' ||
+          this.constraintsObjFormat[idx - 1].insert.toLowerCase() === 'lan ' ||
+          this.constraintsObjFormat[idx - 2].insert.toLowerCase() === 'lan ') &&
+          (this.constraintsObjFormat[idx - 1].insert.toLowerCase() !== 'all ')) {
           // tempObjFmtArray.splice(idx, 0, {insert: 'ALL|ANY ', attributes: {bold: true, color: 'red'}});
-          tempObjFmtArray.splice(idx, 0, {insert: 'all '});
+          tempObjFmtArray.splice(idx, 0, { insert: 'all ' });
         }
       }
     }
@@ -955,34 +1130,34 @@ export class HlbComponent implements OnInit, AfterViewInit {
 
     // First run in the scenario editor and update the object
     let tempArray = _.cloneDeep(this.scenariosObjFormat);
-    let allIdxs = _.map(_.keys(_.pickBy(tempArray, {insert: 'all '})), Number);
+    let allIdxs = _.map(_.keys(_.pickBy(tempArray, { insert: 'all ' })), Number);
     for (const idx of allIdxs) {
-      const actName = _.findKey(actorEventObj, (v, k)  => {
+      const actName = _.findKey(actorEventObj, (v, k) => {
         return v.includes(this.scenariosObjFormat[idx + 1].insert.trimEnd());
       });
       const numActor = _.find(constraintsWithNum, v => v[1][0] === actName);
       if (!constraintsWithNum.map(v => v[1][0]).includes(actName) ||
-          (numActor && parseInt(numActor[2][0], 10) === 1)) {
-         tempArray.splice(idx, 1);
+        (numActor && parseInt(numActor[2][0], 10) === 1)) {
+        tempArray.splice(idx, 1);
       }
     }
     if (!_.isEqual(this.scenariosObjFormat, tempArray)) {
-        this.scenariosObjFormat = tempArray;
+      this.scenariosObjFormat = tempArray;
     }
 
     // Secondly run in the constraints editor and update the object
     tempArray = _.cloneDeep(this.constraintsObjFormat);
-    allIdxs = _.map(_.keys(_.pickBy(tempArray, {insert: 'all '})), Number);
+    allIdxs = _.map(_.keys(_.pickBy(tempArray, { insert: 'all ' })), Number);
     for (const idx of allIdxs) {
       const actName = this.constraintsObjFormat[idx + 1].insert.trimEnd();
       const numActor = _.find(constraintsWithNum, v => v[1][0] === actName);
       if (!constraintsWithNum.map(v => v[1][0]).includes(actName) ||
-          (numActor && parseInt(numActor[2][0], 10) === 1)) {
-         tempArray.splice(idx, 1);
+        (numActor && parseInt(numActor[2][0], 10) === 1)) {
+        tempArray.splice(idx, 1);
       }
     }
     if (!_.isEqual(this.constraintsObjFormat, tempArray)) {
-        this.constraintsObjFormat = tempArray;
+      this.constraintsObjFormat = tempArray;
     }
   }
 
@@ -1006,10 +1181,10 @@ export class HlbComponent implements OnInit, AfterViewInit {
         actorEventObj[val[1][0]] = emittedEvents;
         // if it has a link attribute or its emitted event is waited for my some node
         if (val[0] === 'num' && parseInt(val[2][0], 10) > 1 && (foundInLinkLan || (this.checkIfEmittedEventIsATriggerEvent(emittedEvents,
-            parsedConstraintData.parsedScenario) && !this.checkIfAllOrAnyAlreadyEntered(emittedEvents)))) {
+          parsedConstraintData.parsedScenario) && !this.checkIfAllOrAnyAlreadyEntered(emittedEvents)))) {
           // this.alertMessage = 'You should have an ALL or ANY preceding ' + val[1][0] + '. Please see the documentation';
           this.alertMessage = 'An ALL keyword has been inserted preceding ' + val[1][0] +
-              ' and/or its events as it maps to multiple nodes. Please see the documentation';
+            ' and/or its events as it maps to multiple nodes. Please see the documentation';
           this.showAlertMsg = true;
           setTimeout(() => {
             this.showAlertMsg = false;
@@ -1017,13 +1192,13 @@ export class HlbComponent implements OnInit, AfterViewInit {
 
           // add all in the scenarios and constraints
           Promise.all([this.addAllInScenarioEditor(emittedEvents), this.addAllInConstraintsEditor(val[1][0])])
-              .then((done) => {
-                // Still have to resolve the promises part. This is a hack and ugly way of doing it
-                setTimeout(() => {
-                  this.stateservice.setBehavior(this.getScenariosFromEditor());
-                  this.stateservice.setConstraints(this.getConstraintsFromEditor());
-                }, 1000);
-              });
+            .then((done) => {
+              // Still have to resolve the promises part. This is a hack and ugly way of doing it
+              setTimeout(() => {
+                this.stateservice.setBehavior(this.getScenariosFromEditor());
+                this.stateservice.setConstraints(this.getConstraintsFromEditor());
+              }, 1000);
+            });
           this.stateservice.setAllAnyPresentFlag(true);
         }
       }
@@ -1051,7 +1226,7 @@ export class HlbComponent implements OnInit, AfterViewInit {
       if (element[0] != null) {
         element[0].map((x) => {
           if (!trigger.includes(x)) {
-            trigger.push({key: x, category: 't_event', value: ''});
+            trigger.push({ key: x, category: 't_event', value: '' });
           }
         });
       }
@@ -1059,7 +1234,7 @@ export class HlbComponent implements OnInit, AfterViewInit {
       if (element[2] != null) {
         element[2].map((x) => {
           if (!trigger.includes(x)) {
-            trigger.push({key: x, category: 'action', value: ''});
+            trigger.push({ key: x, category: 'action', value: '' });
           }
         });
       }
@@ -1067,7 +1242,7 @@ export class HlbComponent implements OnInit, AfterViewInit {
       if (element[3] != null) {
         element[3].map((x) => {
           if (!trigger.includes(x)) {
-            trigger.push({key: x, category: 'event', value: ''});
+            trigger.push({ key: x, category: 'event', value: '' });
           }
         });
       }
@@ -1097,7 +1272,7 @@ export class HlbComponent implements OnInit, AfterViewInit {
           this.bindingList.push(element);
         } else {
           if (!this.bindingList.some(e => e.key === element.key)) {
-              this.bindingList.push(this.bindingMap.get(element.key));
+            this.bindingList.push(this.bindingMap.get(element.key));
           }
         }
       });
@@ -1279,7 +1454,7 @@ export class HlbComponent implements OnInit, AfterViewInit {
 
     // This part is done just to remove the the description
     if (index && (this.bindingList[index].value.includes(str1) || this.bindingList[index].value.includes(str2) ||
-        this.bindingList[index].value.includes(str3) || this.bindingList[index].value.includes(str4))) {
+      this.bindingList[index].value.includes(str3) || this.bindingList[index].value.includes(str4))) {
       const splitter = this.bindingList[index].value.split(' - ');
       this.bindingList[index].value = splitter[0];
     }
@@ -1317,7 +1492,7 @@ export class BindingPopUp {
   constructor(
     public dialogRef: MatDialogRef<BindingPopUp>,
     @Inject(MAT_DIALOG_DATA) public bindingList: any
-  ) {}
+  ) { }
 
   onNoClick(): void {
     this.dialogRef.close();
@@ -1333,7 +1508,7 @@ export class HLBInforPopUp {
   constructor(
     public dialogRef: MatDialogRef<HLBInforPopUp>,
     @Inject(MAT_DIALOG_DATA) public showId: number
-  ) {}
+  ) { }
 
   onNoClick(): void {
     this.dialogRef.close();
@@ -1347,7 +1522,7 @@ var id_of_node = {};
 function showRelevantContentInDialogBox() {
   try {
     var temp = globalGraphItemParametersList[currentGraphItemSelection['id']];
-    if(!temp) { 
+    if (!temp) {
       $('#node-ip-address').val('');
       $('#node-operating-system').val('');
       $('#node-hardware-type').val('');
@@ -1360,7 +1535,7 @@ function showRelevantContentInDialogBox() {
       $('#link-bandwidth').val(temp.bandwidth);
       $('#link-delay').val(temp.delay);
     }
-  } catch(ex) {
+  } catch (ex) {
     //Do nothing
   }
 }
