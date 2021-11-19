@@ -599,10 +599,11 @@ export class HlbComponent implements OnInit, AfterViewInit {
         case 'link':
         case "['link', 'all']":
           temp = {
-            from: id_of_node[element[2][0]],
-            to: id_of_node[element[2][1]]
+            from: id_of_node[element[1][0]],
+            to: id_of_node[element[1][1]]
           }
           temp_edges.push(temp);
+          console.log(temp_edges);
           break;
         case 'lan':
           temp = {
