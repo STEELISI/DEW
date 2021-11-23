@@ -49,8 +49,11 @@ class BashGenerator(Generator):
     def collectNum(self):
         self.num = dict()
         for c in self.constraints_parsed:
-            if c[0] == 'num':
-                self.num[c[1][0]] = int(c[2][0])
+            if c[0] == 'config':
+                for i in range(0, len(c[2]), 2):
+                    if c[2][i] == 'num':
+                        for x in c[1]:
+                            self.num[x] = int(c[2][i+1])
             
     def generateActions(self):
         sid = 0
@@ -250,9 +253,10 @@ class BashGenerator(Generator):
                     pos_vars.append(self.bindings_parsed[action])
                 if clist is not None:
                     for c in clist:
-                        pos_vars.append(self.bindings_parsed[c])
-                        if s[4] is not None:
-                            pos_vars.append("wait " + s[4])    
+                        if self.bindings_parsed != {}:
+                            pos_vars.append(self.bindings_parsed[c])
+                            if s[4] is not None:
+                                pos_vars.append("wait " + s[4])    
             
             for stmt in pos_vars:
                 r1 = re.findall(r"\$\w+", stmt)

@@ -568,7 +568,7 @@ export class HlbComponent implements OnInit, AfterViewInit {
   }
 
   extractInfo(data: ParseApiBean) {
-    console.log(data);
+    console.log(data)
     this.updateGraph(data);
     this.populateGraphParameters();
     this.extractScenario(data.parsedScenario);
@@ -576,6 +576,22 @@ export class HlbComponent implements OnInit, AfterViewInit {
   }
 
   updateGraph(data) { //Update the Graph View
+    var request = {
+      ParseType: 'bash',
+      scenario: [],
+      constraints: [],
+    };
+    var scenarios = this.getScenariosFromEditor();
+    var constraints = this.getConstraintsFromEditor();
+    request.constraints = constraints;
+    request.scenario = scenarios;
+    this.http
+    .put('v1/pr/hlb/topology/parse', request, { withCredential: true })
+    .subscribe((receivedData: ParseApiBean) => {
+      //this.suggestAll(receivedData);
+      //this.extractInfo(receivedData);
+      console.log(receivedData);
+    });
     var temp_nodes = [];
     var temp_edges = [];
     id_of_node = {};
@@ -583,7 +599,7 @@ export class HlbComponent implements OnInit, AfterViewInit {
     var temp;
     //Populate the Nodes in the Graph
     data.parsedScenario.forEach(element => {
-      if (typeof id_of_node[element[1]] === "undefined") {
+      if (!id_of_node[element[1]]) {
         id_of_node[element[1]] = id_count;
         temp = {
           id: id_count++,
@@ -603,12 +619,12 @@ export class HlbComponent implements OnInit, AfterViewInit {
             to: id_of_node[element[1][1]]
           }
           temp_edges.push(temp);
-          console.log(temp_edges);
+          //console.log(temp_edges);
           break;
         case 'lan':
           temp = {
-            from: id_of_node[element[2][0]],
-            to: id_of_node[element[2][1]]
+            from: id_of_node[element[1][0]],
+            to: id_of_node[element[1][1]]
           }
           temp_edges.push(temp);
           break;

@@ -41,7 +41,7 @@ class ConstraintParser():
     not_akeyword = (NotAny(all_keyword) + NotAny(any_keyword) + NotAny(num_keyword) + NotAny(link_keyword) + NotAny(lan_keyword) + NotAny(bw_keyword) + NotAny(delay_keyword) + NotAny(os_keyword) + NotAny(nodetype_keyword) + NotAny(location_keyword) + NotAny(interfaces_keyword))
     
     actor = (not_akeyword + Word(alphanums+'_'))
-    actors = actor + ZeroOrMore(ZeroOrMore(wsp) + actor)
+    actors = actor + ZeroOrMore(wsp + actor)
     actor_pair = actor + wsp + actor
     strValue = (not_akeyword + Word(alphanums+'_'))
     numValue = (not_akeyword + Word(nums))
