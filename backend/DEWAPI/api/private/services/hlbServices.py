@@ -334,12 +334,14 @@ class HLBService():
         actor_location = {}
         actor_nodetype = {}
         actor_interfaces = {}
+        actor_num = {}
         for const in parsed_constraints:
             if(const[0]=='config'):
                 temp_os = 'default'
                 temp_location = 'default'
                 temp_nodetype = 'default'
                 temp_interfaces = 'default'
+                temp_num = 1
                 for i in range(0, len(const[2]), 2):
                     if(const[2][i]=='os'):
                         temp_os = const[2][i+1]
@@ -349,11 +351,14 @@ class HLBService():
                         temp_nodetype = const[2][i+1]
                     if(const[2][i]=='interfaces'):
                         temp_interfaces = const[2][i+1]
+                    if(const[2][i]=='num'):
+                        temp_num = const[2][i+1]
                 for i in const[1]:
                     actor_os[i] = temp_os
                     actor_location[i] = temp_location
                     actor_nodetype[i] = temp_nodetype
                     actor_interfaces[i] = temp_interfaces
+                    actor_num[i] = temp_num
             else:
                 continue
         for s in parsed_scenario:
@@ -365,7 +370,9 @@ class HLBService():
                   actor_interfaces[s[1][0]] = 'default'
             if(s[1][0] not in actor_os.keys()):
                   actor_os[s[1][0]] = 'default'
-            actors[s[1][0]] = dict({ 'num': 1, 'os': actor_os[s[1][0]], 'nodeType': actor_nodetype[s[1][0]], 'location': actor_location[s[1][0]], 'interfaces': actor_interfaces[s[1][0]] })
+            if(s[1][0] not in actor_num.keys()):
+                  actor_num[s[1][0]] = 1
+            actors[s[1][0]] = dict({ 'num': actor_num[s[1][0]], 'os': actor_os[s[1][0]], 'nodeType': actor_nodetype[s[1][0]], 'location': actor_location[s[1][0]], 'interfaces': actor_interfaces[s[1][0]] })
         for i, const in enumerate(parsed_constraints):
             if const[0] is not None:
                 if const[1][0] not in actors:

@@ -615,6 +615,17 @@ export class HlbComponent implements OnInit, AfterViewInit {
             label: data.toString()
           }
           temp_nodes.push(temp);
+          temp = {}
+          temp['bandwidth'] = '';
+          temp['delay'] = '';
+          temp['ipAddress'] = actors[data]['location'] == 'default' ? '' : actors[data]['location'];
+          temp['operatingSystem'] = actors[data]['os'] == 'default' ? '' : actors[data]['os'];
+          temp['hardwareType'] = actors[data]['nodeType'] == 'default' ? '' : actors[data]['nodeType'];
+          temp['nodeName'] = data;
+          temp['num'] = actors[data]['num'];
+          temp['type'] = GraphItemType.NODE;
+          this.graphItemParametersList[id_count-1] = temp;
+          globalGraphItemParametersList = this.graphItemParametersList;
         }
       }
       var received_lans = receivedData['lans'];
@@ -633,7 +644,6 @@ export class HlbComponent implements OnInit, AfterViewInit {
 
 
       //Populate the Edges in the Graph
-      id_count = 1;
       var received_edges = receivedData['edges'];
       for(var i = 0; i < received_edges.length; i++) {
         var source = received_edges[i]['source'];
@@ -645,6 +655,18 @@ export class HlbComponent implements OnInit, AfterViewInit {
         }
         temp_edges.push(temp);
         id_of_edge[source + '-' + target] = temp;
+        temp = {};
+        temp['bandwidth'] = received_edges[i]['bw']=='default' ? '1' : received_edges[i]['bw']; //Default Value
+        temp['delay'] = received_edges[i]['delay']=='default' ? '0' : received_edges[i]['delay']; //Default Value
+        temp['ipAddress'] = '';
+        temp['operatingSystem'] = '';
+        temp['hardwareType'] = '';
+        temp['nodeName'] = '';
+        temp['num'] = '0';
+        temp['type'] = target.includes('lan') ? GraphItemType.LAN : GraphItemType.LINK;
+        var pointer = temp['type'] == GraphItemType.LAN ? id_of_node[target] : id_count-1;
+        this.graphItemParametersList[pointer] = temp;
+        globalGraphItemParametersList = this.graphItemParametersList;
       }
 
       // data.parsedConstraints.forEach(element => {
@@ -977,7 +999,7 @@ export class HlbComponent implements OnInit, AfterViewInit {
           temp['nodeName'] = '';
           temp['type'] = GraphItemType.NODE;
         } else {
-          temp = this.graphItemParametersList[id_of_node[selection[2]]];
+          temp = this.graphItemParametersList[id_of_node[selection[1]]];
         }
         switch (selection[0]) {
           case 'os':

@@ -5,7 +5,8 @@ export interface GraphItemParameters {
     ipAddress: string,
     operatingSystem: string,
     hardwareType: string,
-    nodeName: string
+    nodeName: string,
+    num: string
 }
 
 export enum GraphItemType {
