@@ -5,7 +5,8 @@ import {
   ChangeDetectorRef,
   ViewChild,
   ElementRef,
-  AfterViewInit
+  AfterViewInit,
+  HostListener 
 } from "@angular/core";
 import { CdkDragDrop, moveItemInArray } from "@angular/cdk/drag-drop";
 import * as Quill from "quill";
@@ -39,6 +40,12 @@ export class HlbComponent implements OnInit, AfterViewInit {
 
   @ViewChild('topologyGraphNetwork', { static: false }) topologyGraphNetwork!: ElementRef;
   @ViewChild('dependencyGraphNetwork', { static: false }) dependencyGraphNetwork!: ElementRef;
+  @HostListener('document:keydown.escape', ['$event'])
+  onKeydownHandler(event: KeyboardEvent) { 
+    this.addNodeType = null;
+    this.clearMessage();
+    this.topologyNetworkInstance.disableEditMode();
+  }
   private topologyNetworkInstance: any;
   private dependencyNetworkInstance: any;
   addNodeType: "Node" | "LAN";
@@ -569,13 +576,13 @@ export class HlbComponent implements OnInit, AfterViewInit {
 
   extractInfo(data: ParseApiBean) {
     console.log(data)
-    this.updateGraph(data);
+    this.updateGraph();
     this.populateGraphParameters();
     this.extractScenario(data.parsedScenario);
     this.storeBinding(undefined);
   }
 
-  updateGraph(data) { //Update the Graph View
+  updateGraph() { //Update the Graph View
     var request = {
       ParseType: 'bash',
       scenario: [],
@@ -591,196 +598,244 @@ export class HlbComponent implements OnInit, AfterViewInit {
       //this.suggestAll(receivedData);
       //this.extractInfo(receivedData);
       console.log(receivedData);
-    });
-    var temp_nodes = [];
-    var temp_edges = [];
-    id_of_node = {};
-    var id_count = 1;
-    var temp;
-    //Populate the Nodes in the Graph
-    data.parsedScenario.forEach(element => {
-      if (!id_of_node[element[1]]) {
-        id_of_node[element[1]] = id_count;
-        temp = {
-          id: id_count++,
-          label: element[1].toString()
+      //Graph Operations
+      var temp_nodes = [];
+      var temp_edges = [];
+      id_of_node = {};
+      id_of_edge = {};
+      var id_count = 1;
+      var temp;
+      //Populate the Nodes in the Graph
+      var actors = receivedData['actors'];
+      for(var data in actors) {
+        if (!id_of_node[data]) {
+          id_of_node[data] = id_count;
+          temp = {
+            id: id_count++,
+            label: data.toString()
+          }
+          temp_nodes.push(temp);
         }
-        temp_nodes.push(temp);
       }
-    });
+      var received_lans = receivedData['lans'];
+      for(var i = 0; i < received_lans.length; i++) {
+        var name = received_lans[i]['type'] + received_lans[i]['lineNum']
+        if (!id_of_node[name]) {
+          id_of_node[name] = id_count;
+          temp = {
+            id: id_count++,
+            label: "",
+            group: "LAN"
+          }
+          temp_nodes.push(temp);
+        }
+      }
 
-    //Populate the Edges in the Graph
-    data.parsedConstraints.forEach(element => {
-      switch (element[0]) {
-        case 'link':
-        case "['link', 'all']":
-          temp = {
-            from: id_of_node[element[1][0]],
-            to: id_of_node[element[1][1]]
-          }
-          temp_edges.push(temp);
-          //console.log(temp_edges);
-          break;
-        case 'lan':
-          temp = {
-            from: id_of_node[element[1][0]],
-            to: id_of_node[element[1][1]]
-          }
-          temp_edges.push(temp);
-          break;
-        case 'num':
-          if (typeof id_of_node[element[1]] === "undefined") {
-            id_of_node[element[1]] = id_count;
-            temp = {
-              id: id_count++,
-              label: element[1].toString()
+
+      //Populate the Edges in the Graph
+      id_count = 1;
+      var received_edges = receivedData['edges'];
+      for(var i = 0; i < received_edges.length; i++) {
+        var source = received_edges[i]['source'];
+        var target = received_edges[i]['target'];
+        temp = {
+          from: id_of_node[source],
+          to: id_of_node[target],
+          id: id_count++
+        }
+        temp_edges.push(temp);
+        id_of_edge[source + '-' + target] = temp;
+      }
+
+      // data.parsedConstraints.forEach(element => {
+      //   switch (element[0]) {
+      //     case 'link':
+      //     case "['link', 'all']":
+      //       temp = {
+      //         from: id_of_node[element[1][0]],
+      //         to: id_of_node[element[1][1]]
+      //       }
+      //       temp_edges.push(temp);
+      //       //console.log(temp_edges);
+      //       break;
+      //     case 'lan':
+      //       temp = {
+      //         from: id_of_node[element[1][0]],
+      //         to: id_of_node[element[1][1]]
+      //       }
+      //       temp_edges.push(temp);
+      //       break;
+      //     case 'num':
+      //       if (typeof id_of_node[element[1]] === "undefined") {
+      //         id_of_node[element[1]] = id_count;
+      //         temp = {
+      //           id: id_count++,
+      //           label: element[1].toString()
+      //         }
+      //         temp_nodes.push(temp);
+      //       }
+      //       break;
+      //     default:
+      //     //Do nothing
+      //   }
+      // });
+
+      // Create an array with nodes
+      this.graph_nodes = new DataSet<any>(
+        temp_nodes
+      );
+
+      // Create an array with edges
+      this.graph_edges = new DataSet<any>(
+        temp_edges
+      );
+
+      var nodes = this.graph_nodes;
+      var edges = this.graph_edges;
+
+      this.graph_data = { nodes, edges };
+
+      this.topologyNetworkInstance = new Network(this.topologyGraphNetwork.nativeElement, this.graph_data, {
+        manipulation: {
+          enabled: false,
+          initiallyActive: false,
+          addNode: (nodeData, callback) => {
+            if (this.addNodeType == "LAN") {
+              nodeData.group = "LAN";
+              nodeData.label = "";
             }
-            temp_nodes.push(temp);
+            this.clearMessage();
+            callback(nodeData);
+          },
+          addEdge: (edgeData, callback) => {
+            this.clearMessage();
+            callback(edgeData);
+          },
+          deleteNode: (data, callback) => {
+            $("#deleteNodeBtn").hide();
+            $("#deleteEdgeBtn").hide();
+            callback(data);
           }
-          break;
-        default:
-        //Do nothing
-      }
-    });
-
-    // Create an array with nodes
-    this.graph_nodes = new DataSet<any>(
-      temp_nodes
-    );
-
-    // Create an array with edges
-    this.graph_edges = new DataSet<any>(
-      temp_edges
-    );
-
-    var nodes = this.graph_nodes;
-    var edges = this.graph_edges;
-
-    this.graph_data = { nodes, edges };
-
-    this.topologyNetworkInstance = new Network(this.topologyGraphNetwork.nativeElement, this.graph_data, {
-      manipulation: {
-        enabled: false,
-        initiallyActive: false,
-        addNode: (nodeData, callback) => {
-          if (this.addNodeType == "LAN") {
-            nodeData.group = "LAN";
-            nodeData.label = "";
+        },
+        edges: {
+          color: '#777777'
+        },
+        nodes: {
+          image: "/assets/server.png",
+          shape: "image",
+        },
+        groups: {
+          LAN: {
+            shape: 'circle',
+            color: '#000000'
           }
-          this.clearMessage();
-          callback(nodeData);
-        },
-        addEdge: (edgeData, callback) => {
-          this.clearMessage();
-          callback(edgeData);
-        },
-        deleteNode: (data, callback) => {
+        }
+      });
+
+      this.topologyNetworkInstance.on('click', function (properties) {
+        var ids = properties.nodes;
+        var clickedNodes = nodes.get(ids);
+        var items = properties.items;
+        //Show Dialog Box
+        var $dialogBox = $('.dialog-box');
+        $dialogBox.hasClass('hide') && $dialogBox.toggleClass('hide');
+        clickedNodes.length || items.length || $dialogBox.toggleClass('hide');
+        //Show Node/Link Content
+        if(clickedNodes.length) {
+          $('#dialog-box-title').html(clickedNodes[0].label) && (currentGraphItemSelection['id'] = clickedNodes[0].id) && (currentGraphItemSelection['type'] = 'node');
+          for(var i in id_of_node) {
+            if(id_of_node[i] == currentGraphItemSelection['id'] && i.includes('lan')) {
+              $('#dialog-box-title').html('LAN') && (currentGraphItemSelection['type'] = 'lan');
+              break;
+            }
+          }
+        }
+        if(items.length && (clickedNodes.length == 0)) {
+          $('#dialog-box-title').html('Link') && (currentGraphItemSelection['id'] = items[0].edgeId) && (currentGraphItemSelection['type'] = 'link');
+          var selectedEdge = items[0]['edgeId'];
+          var id_of_nodes_rev = swapJSON(id_of_node);
+          for(var i in id_of_edge) {
+            if(id_of_edge[i]['id']==selectedEdge && id_of_nodes_rev[id_of_edge[i]['to']].includes('lan')) {
+              $dialogBox.toggleClass('hide');
+              break;
+            }
+          }
+        }
+        if ((items.length && clickedNodes.length == 0) || currentGraphItemSelection['type'] == 'lan') {
+          $('.dialog-box-fields:not(is-node)').removeClass('hide');
+          $('.dialog-box-fields.is-node').addClass('hide');
+        } else if (clickedNodes.length) {
+          $('.dialog-box-fields:not(is-node)').addClass('hide');
+          $('.dialog-box-fields.is-node').removeClass('hide');
+        }
+        showRelevantContentInDialogBox(); //Content to Display on the Context Menu
+        //Hide dialogBox and customMenu
+        //$(".custom-menu").is(':visible') && $(".custom-menu").finish().toggle(100);
+        });
+
+        this.topologyNetworkInstance.on("select", (data) => {
           $("#deleteNodeBtn").hide();
           $("#deleteEdgeBtn").hide();
-          callback(data);
-        }
-      },
-      edges: {
-        color: '#777777'
-      },
-      nodes: {
-        image: "/assets/server.png",
-        shape: "image",
-      },
-      groups: {
-        LAN: {
-          shape: 'circle',
-          color: '#000000'
-        }
-      }
-    });
+          if (data.nodes.length) {
+            $("#deleteNodeBtn").show();
+          } else if (data.edges.length) {
+            $("#deleteEdgeBtn").show();
+          }
+        })
 
-    this.topologyNetworkInstance.on('click', function (properties) {
-      var ids = properties.nodes;
-      var clickedNodes = nodes.get(ids);
-      var items = properties.items;
-      //Show Dialog Box
-      var $dialogBox = $('.dialog-box');
-      $dialogBox.hasClass('hide') && $dialogBox.toggleClass('hide');
-      clickedNodes.length || items.length || $dialogBox.toggleClass('hide');
-      //Show Node/Link Content
-      clickedNodes.length && $('#dialog-box-title').html(clickedNodes[0].label) && (currentGraphItemSelection['id'] = clickedNodes[0].id) && (currentGraphItemSelection['type'] = 'node');
-      items.length && (clickedNodes.length == 0) && $('#dialog-box-title').html('Link') && (currentGraphItemSelection['id'] = items[0].edgeId) && (currentGraphItemSelection['type'] = 'link');
-      if (items.length && clickedNodes.length == 0) {
-        $('.dialog-box-fields:not(is-node)').removeClass('hide');
-        $('.dialog-box-fields.is-node').addClass('hide');
-      } else if (clickedNodes.length) {
-        $('.dialog-box-fields:not(is-node)').addClass('hide');
-        $('.dialog-box-fields.is-node').removeClass('hide');
-      }
-      showRelevantContentInDialogBox(); //Content to Display on the Context Menu
-      //Hide dialogBox and customMenu
-      $(".custom-menu").is(':visible') && $(".custom-menu").finish().toggle(100);
-    });
-
-    this.topologyNetworkInstance.on("select", (data) => {
-      $("#deleteNodeBtn").hide();
-      $("#deleteEdgeBtn").hide();
-      if (data.nodes.length) {
-        $("#deleteNodeBtn").show();
-      } else if (data.edges.length) {
-        $("#deleteEdgeBtn").show();
-      }
-    })
-
-    this.topologyNetworkInstance.on('oncontext', function (properties) {
-      properties.event.preventDefault();
-      if (!properties.nodes.length) {
-        $('.toastBox').fadeIn(200);
-        setTimeout(() => {
-          $('.toastBox').fadeOut(500);
-        }, 4000);
-      } else {
-        $(".custom-menu").is(':visible') && $(".custom-menu").finish().toggle();;
-        $(".custom-menu").finish().toggle(100);
-        $(".custom-menu").css({
-          top: properties.event.pageY - 100 + "px",
-          left: properties.event.pageX + "px"
+        this.topologyNetworkInstance.on('oncontext', function (properties) {
+          properties.event.preventDefault();
+          // if (!properties.nodes.length) {
+          //   $('.toastBox').fadeIn(200);
+          //   setTimeout(() => {
+          //     $('.toastBox').fadeOut(500);
+          //   }, 4000);
+          // } else {
+          //   $(".custom-menu").is(':visible') && $(".custom-menu").finish().toggle();;
+          //   $(".custom-menu").finish().toggle(100);
+          //   $(".custom-menu").css({
+          //     top: properties.event.pageY - 100 + "px",
+          //     left: properties.event.pageX + "px"
+          //   });
+          // }
         });
-      }
+
+        $("#graph-container").keyup((e) => {
+          this.isKeyPressed = false;
+          if (e.key === "Control") { // escape key maps to keycode `27`
+            this.addNodeType = null;
+            this.clearMessage();
+            this.topologyNetworkInstance.disableEditMode();
+          } else if (e.key === "Delete") {
+            this.topologyNetworkInstance.deleteSelected();
+          }
+        });
+
+        $("#graph-container").keydown((e) => {
+          if (this.isKeyPressed) {
+            return;
+          }
+          this.isKeyPressed = true;
+          if (e.key === "Control") {
+            this.topologyNetworkInstance.addEdgeMode();
+            this.displayMessage("Draw an edge between two edges");
+          }
+        });
+
+        $("#addNodeBtn").on('click', () => {
+          this.addNodeType = "Node";
+          this.topologyNetworkInstance.addNodeMode();
+          this.displayMessage("Click anywhere to add a node, press <kbd>ESC</kbd> to cancel.");
+          $("#graph-container").focus();
+        })
+
+        $("#addLANBtn").on('click', () => {
+          this.addNodeType = "LAN";
+          this.topologyNetworkInstance.addNodeMode();
+          this.displayMessage("Click anywhere to add a LAN, press <kbd>ESC</kbd> to cancel.");
+          $("#graph-container").focus();
+        })
     });
-
-    $("#graph-container").keyup((e) => {
-      this.isKeyPressed = false;
-      if (e.key === "Escape" || e.key === "Control") { // escape key maps to keycode `27`
-        this.addNodeType = null;
-        this.clearMessage();
-        this.topologyNetworkInstance.disableEditMode();
-      } else if (e.key === "Delete") {
-        this.topologyNetworkInstance.deleteSelected();
-      }
-    });
-
-    $("#graph-container").keydown((e) => {
-      if (this.isKeyPressed) {
-        return;
-      }
-      this.isKeyPressed = true;
-      if (e.key === "Control") {
-        this.topologyNetworkInstance.addEdgeMode();
-        this.displayMessage("Draw edge between two edges");
-      }
-    });
-
-    $("#addNodeBtn").on('click', () => {
-      this.addNodeType = "Node";
-      this.topologyNetworkInstance.addNodeMode();
-      this.displayMessage("Click anywhere to add a node, press esc to cancel.");
-      $("#graph-container").focus();
-    })
-
-    $("#addLANBtn").on('click', () => {
-      this.addNodeType = "LAN";
-      this.topologyNetworkInstance.addNodeMode();
-      this.displayMessage("Click anywhere to add a LAN, press esc to cancel.");
-      $("#graph-container").focus();
-    })
-
   }
 
   displayMessage = (message) => {
@@ -800,7 +855,7 @@ export class HlbComponent implements OnInit, AfterViewInit {
     $('.dependency-topology-toggle-icon-dependency').css('z-index', 0);
     $('.graph-box').removeClass('hide');
     $('.graph-box-dependency').addClass('hide');
-    $(".custom-menu").is(':visible') && $(".custom-menu").finish().toggle(100);
+    //$(".custom-menu").is(':visible') && $(".custom-menu").finish().toggle(100);
     var $dialogBox = $('.dialog-box');
     !$dialogBox.hasClass('hide') && $dialogBox.addClass('hide');
     $('#graphActionButtonList').removeClass('hide');
@@ -812,7 +867,7 @@ export class HlbComponent implements OnInit, AfterViewInit {
     $('.dependency-topology-toggle-icon-dependency').css('z-index', 50);
     $('.graph-box').addClass('hide');
     $('.graph-box-dependency').removeClass('hide');
-    $(".custom-menu").is(':visible') && $(".custom-menu").finish().toggle(100);
+    //$(".custom-menu").is(':visible') && $(".custom-menu").finish().toggle(100);
     var $dialogBox = $('.dialog-box');
     !$dialogBox.hasClass('hide') && $dialogBox.addClass('hide');
     $('#graphActionButtonList').addClass('hide');
@@ -1535,6 +1590,15 @@ export class HLBInforPopUp {
 var currentGraphItemSelection = {};
 var globalGraphItemParametersList;
 var id_of_node = {};
+var id_of_edge = {};
+
+function swapJSON(data) {
+  var temp = {};
+  for(var i in data) {
+    temp[data[i]] = i;
+  }
+  return temp;
+}
 
 function showRelevantContentInDialogBox() {
   try {

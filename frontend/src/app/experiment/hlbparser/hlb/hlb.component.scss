@@ -178,6 +178,7 @@ ul {
     width: fit-content;
     cursor: pointer;
     border-bottom-right-radius: 10px;
+    min-width: 212px;
   }
 
   .side-nav-icon > img {
@@ -276,20 +277,7 @@ ul {
     height: 100%;
   }
 
-  .graph-action-button {
-    background-color: #04AA6D;
-    border: none;
-    color: white;
-    text-align: center;
-    text-decoration: none;
-    font-size: 16px;
-    padding: 10px 20px;
-    border-radius: 10px;
-    cursor: pointer;
-    float: left;
-    margin: 10px 15px;
-    z-index: 9999999;
-}
+
 
   /* Toggle between Dependency and Topology Icons */
 
@@ -388,7 +376,17 @@ ul {
 }
 
 
-kbd {
+
+ //Graph
+
+ .graph-buttons {
+   position: absolute;
+   bottom: 20px;
+   z-index: 10;
+   width: 100%;
+ }
+
+ kbd {
   background-color: #eee;
   border-radius: 3px;
   border: 1px solid #b4b4b4;
@@ -401,3 +399,30 @@ kbd {
   padding: 2px 4px;
   white-space: nowrap;
  }
+
+ .graph-action-button {
+  background-color: #04AA6D;
+  border: none;
+  color: white;
+  text-align: center;
+  text-decoration: none;
+  font-size: 12px;
+  font-weight: bold;
+  padding: 10px;
+  border-radius: 10px;
+  cursor: pointer;
+  margin: 10px 15px;
+  z-index: 10;
+  width: 100px;
+  text-align: center;
+}
+
+.noselect {
+  -webkit-touch-callout: none; /* iOS Safari */
+    -webkit-user-select: none; /* Safari */
+     -khtml-user-select: none; /* Konqueror HTML */
+       -moz-user-select: none; /* Old versions of Firefox */
+        -ms-user-select: none; /* Internet Explorer/Edge */
+            user-select: none; /* Non-prefixed version, currently
+                                  supported by Chrome, Edge, Opera and Firefox */
+}

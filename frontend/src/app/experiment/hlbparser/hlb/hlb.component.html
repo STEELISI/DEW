@@ -222,18 +222,6 @@
         </div>
       </div>
 
-      <div  style="width: 30%" style="text-align: center;">
-        <div id="graphActionButtonList">
-          <div class="d-flex flex-row justify-content-center">
-            <div class="graph-action-button" id="addNodeBtn">Add Node</div>
-            <div class="graph-action-button" id="addLANBtn">Add LAN</div>
-          </div>
-        </div>
-        <div id="actionMessage">
-          <span>Press <kbd>Ctrl</kbd> to edit edges, Select a node/edge and press <kbd>Del</kbd> to delete</span>
-        </div>
-    </div>
-
       <div  style="width: 30%">
         <div (click)="toggleTopologyView()" class="dependency-topology-toggle-icon-topology">
           <span class="text-left font-weight-bold">Topology</span>
@@ -298,11 +286,17 @@
     </div>
 
     <div class="graph-box">
-      <ul class='custom-menu'>
-        <li data-action="first">First thing</li>
-        <li data-action="second">Second thing</li>
-        <li data-action="third">Third thing</li>
-      </ul>
+      <div class="graph-buttons d-flex flex-column noselect" style="text-align: center;">
+        <div id="graphActionButtonList" class="flex-grow-1">
+          <div class="d-flex flex-row justify-content-center">
+            <div class="graph-action-button" id="addNodeBtn">Add Node</div>
+            <div class="graph-action-button" id="addLANBtn">Add LAN</div>
+          </div>
+        </div>
+        <div id="actionMessage">
+          <span>Press <kbd>Ctrl</kbd> to edit edges, Select a node/edge and press <kbd>Del</kbd> to delete</span>
+        </div>
+    </div>
       <div id="topologyGraphNetwork" #topologyGraphNetwork></div>
     </div>
     <div class="graph-box-dependency hide">
@@ -311,11 +305,6 @@
           <div class="col-md-3 mt-1" [ngStyle]="{'background-color': legend.color}"></div><div class="col-md-9 mt-1">{{legend.actor}}</div>
         </div>
       </div>
-      <ul class='custom-menu dependency'>
-        <li data-action="first">First thing</li>
-        <li data-action="second">Second thing</li>
-        <li data-action="third">Third thing</li>
-      </ul>
       <div id="dependencyGraphNetwork" #dependencyGraphNetwork></div>
     </div>
   </div>
