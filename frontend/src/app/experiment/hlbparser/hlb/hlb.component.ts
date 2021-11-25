@@ -595,9 +595,6 @@ export class HlbComponent implements OnInit, AfterViewInit {
     this.http
     .put('v1/pr/hlb/topology/parse', request, { withCredential: true })
     .subscribe((receivedData: ParseApiBean) => {
-      //this.suggestAll(receivedData);
-      //this.extractInfo(receivedData);
-      console.log(receivedData);
       //Graph Operations
       var temp_nodes = [];
       var temp_edges = [];
@@ -1036,6 +1033,7 @@ export class HlbComponent implements OnInit, AfterViewInit {
     // ipAddress: string,
     // operatingSystem: string,
     // hardwareType: string
+    // num: string
     //TODO: Figure out a way to override the parameters without overwriting the previous values
     var temp = this.graphItemParametersList[currentGraphItemSelection['id']] ? this.graphItemParametersList[currentGraphItemSelection['id']] : null;
     if (!temp) {
@@ -1046,6 +1044,7 @@ export class HlbComponent implements OnInit, AfterViewInit {
       temp['operatingSystem'] = '';
       temp['hardwareType'] = '';
       temp['nodeName'] = '';
+      temp['num'] = '1'; //Default Value
       switch (currentGraphItemSelection['type']) {
         case 'node':
           temp['type'] = GraphItemType.NODE;
@@ -1054,17 +1053,8 @@ export class HlbComponent implements OnInit, AfterViewInit {
         case 'link':
           temp['type'] = GraphItemType.LINK;
           break;
-      }
-    } else {
-      switch (temp.type) {
-        case 'node':
-          $('#node-ip-address').val(temp.ipAddress);
-          $('#node-operating-system').val(temp.operatingSystem);
-          $('#node-hardware-type').val(temp.hardwareType);
-          break;
-        case 'link':
-          $('#link-bandwidth').val(temp.bandwidth);
-          $('#link-delay').val(temp.delay);
+        case 'lan':
+          temp['type'] = GraphItemType.LAN;
           break;
       }
     }
@@ -1080,11 +1070,17 @@ export class HlbComponent implements OnInit, AfterViewInit {
       case 'node-hardware-type':
         temp['hardwareType'] = currentValue;
         break;
+      case 'node-num':
+        temp['num'] = currentValue=="" || (parseInt(currentValue)<=0) ? '1': currentValue;
+        $('#node-num').val(temp['num']);
+        break;
       case 'link-bandwidth':
-        temp['bandwidth'] = currentValue;
+        temp['bandwidth'] = currentValue=="" || (parseInt(currentValue)<0) ? '1': currentValue;
+        $('#link-bandwidth').val(temp['bw']);
         break;
       case 'link-delay':
-        temp['delay'] = currentValue;
+        temp['delay'] = currentValue=="" || (parseInt(currentValue)<0) ? '0': currentValue;
+        $('#link-delay').val(temp['delay']);
         break;
     }
     this.graphItemParametersList[currentGraphItemSelection['id']] = temp;
@@ -1093,7 +1089,17 @@ export class HlbComponent implements OnInit, AfterViewInit {
   }
 
   updateConstraintsOnTopologyParameterChange() {
-    var data = this.stateservice.getConstraints().source['_value'];
+    var request = {
+      constraints: this.stateservice.getConstraints().source['_value'],
+      parameters: [JSON.stringify(globalGraphItemParametersList)]
+    };
+    console.log(request);
+    this.http
+    .put('v1/pr/hlb/graph/parse-parameters', request, { withCredential: true })
+    .subscribe((receivedData: ParseApiBean) => {
+      this.stateservice.setConstraints(receivedData['constraints']);
+    });
+    /*var data = this.stateservice.getConstraints().source['_value'];
     data = this.removeConstraintSentences(data);
     for (var key in globalGraphItemParametersList) {
       var temp = globalGraphItemParametersList[key];
@@ -1119,7 +1125,7 @@ export class HlbComponent implements OnInit, AfterViewInit {
           break;
       }
     }
-    this.stateservice.setConstraints(data);
+    this.stateservice.setConstraints(data);*/
   }
 
   removeConstraintSentences(data) {
@@ -1629,12 +1635,14 @@ function showRelevantContentInDialogBox() {
       $('#node-ip-address').val('');
       $('#node-operating-system').val('');
       $('#node-hardware-type').val('');
+      $('#node-num').val('');
       $('#link-bandwidth').val('');
       $('#link-delay').val('');
     } else {
       $('#node-ip-address').val(temp.ipAddress);
       $('#node-operating-system').val(temp.operatingSystem);
       $('#node-hardware-type').val(temp.hardwareType);
+      $('#node-num').val(temp.num);
       $('#link-bandwidth').val(temp.bandwidth);
       $('#link-delay').val(temp.delay);
     }

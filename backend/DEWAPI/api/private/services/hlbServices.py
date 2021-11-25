@@ -321,6 +321,9 @@ class HLBService():
                     j += 1
                     edges.append({ 'id': e + str(j), 'source': s, 'target': t, 'label': e, 'data': {'all_or_any': all_any_flags[t] }})
         return nodes, edges
+    
+    def HandleGraphParameterParse(self, parameters, constranints):
+        return (["fsdfdsfdsfsd", "dsadadsa"])
 
     def HandleTopologyParse(self,sceanrios,constraints):
         actors = dict()
@@ -372,7 +375,7 @@ class HLBService():
                   actor_os[s[1][0]] = 'default'
             if(s[1][0] not in actor_num.keys()):
                   actor_num[s[1][0]] = 1
-            actors[s[1][0]] = dict({ 'num': actor_num[s[1][0]], 'os': actor_os[s[1][0]], 'nodeType': actor_nodetype[s[1][0]], 'location': actor_location[s[1][0]], 'interfaces': actor_interfaces[s[1][0]] })
+            actors[s[1][0]] = dict({ 'num': str(actor_num[s[1][0]]), 'os': actor_os[s[1][0]], 'nodeType': actor_nodetype[s[1][0]], 'location': actor_location[s[1][0]], 'interfaces': actor_interfaces[s[1][0]] })
         for i, const in enumerate(parsed_constraints):
             if const[0] is not None:
                 if const[1][0] not in actors:

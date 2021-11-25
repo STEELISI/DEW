@@ -151,6 +151,19 @@ class HandleTopologyParse(Resource):
         actors, lans, edges = hlb.HandleTopologyParse(scenarios, constraints)
         return {"status": "success", "actors": actors, "lans": lans, "edges": edges }
 
+@ns.route('/hlb/graph/parse-parameters')
+class HandleGraphParametersParse(Resource):
+    @api.expect(parameter_list)
+    def put(self):
+        """
+          Parses graph parameters to update constraints
+        """
+        json_data = request.get_json(force=True)
+        parameters = json_data['parameters']
+        constraints = json_data['constraints']
+        updated_constraints = hlb.HandleGraphParameterParse(parameters, constraints)
+        return {"status": "success", "constraints": updated_constraints }
+
 @ns.route('/nlp/behavior')
 class HandleNLPTranslator(Resource):
 

@@ -68,6 +68,11 @@ topology_text = api.model('Toplogy parsing', {
   'constraints': fields.List(fields.String,description="Constraints of the experiment",required=True)
   })
 
+parameter_list = api.model('Parameter parsing', {
+  'constraints': fields.List(fields.String,description="Constraints of the experiment",required=True),
+  'parameters': fields.List(fields.String,description="Parameters of the graph",required=True)
+  })
+
 experiment_detail = api.model('get experiment request', {
   'id':fields.String(description="Id of experiment", required=True)
   })

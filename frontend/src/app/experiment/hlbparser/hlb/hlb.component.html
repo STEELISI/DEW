@@ -253,6 +253,10 @@
             <mat-label>Hardware Type</mat-label>
             <input type="text" id="node-hardware-type" aria-label="string" (change)="onTopologyParametersChange($event)" matInput>
           </mat-form-field>
+          <mat-form-field class="flex-grow-1" appearance="outline">
+            <mat-label>Number of Nodes</mat-label>
+            <input type="text" id="node-num" onkeypress="return (event.charCode !=8 && event.charCode ==0 || (event.charCode >= 48 && event.charCode <= 57))" value="1" aria-label="string" (change)="onTopologyParametersChange($event)" matInput>
+          </mat-form-field>
         </div>
 
         <!--Link/LAN Fields-->
@@ -261,7 +265,7 @@
           <mat-form-field class="flex-grow-1" appearance="outline">
             <mat-label>BandWidth</mat-label>
             <div class="d-flex flex-row">
-              <input type="text" value="1" class="flex-grow-1 align-self-center" id="link-bandwidth"  aria-label="string" (change)="onTopologyParametersChange($event)" matInput>
+              <input type="text" value="1" class="flex-grow-1 align-self-center" id="link-bandwidth" onkeypress="return (event.charCode !=8 && event.charCode ==0 || (event.charCode >= 48 && event.charCode <= 57))" aria-label="string" (change)="onTopologyParametersChange($event)" matInput>
               <div class="field-units align-self-center">
                 <span>Gbps</span>
               </div>
@@ -270,7 +274,7 @@
           <mat-form-field class="flex-grow-1" appearance="outline">
             <mat-label>Delay</mat-label>
             <div class="d-flex flex-row">
-              <input type="text" value="0" class="flex-grow-1 align-self-center" id="link-delay" aria-label="string" (change)="onTopologyParametersChange($event)" matInput>
+              <input type="text" value="0" class="flex-grow-1 align-self-center" id="link-delay" onkeypress="return (event.charCode !=8 && event.charCode ==0 || (event.charCode >= 48 && event.charCode <= 57))" aria-label="string" (change)="onTopologyParametersChange($event)" matInput>
               <div class="field-units align-self-center">
                 <span>ms</span>
               </div>
