@@ -404,11 +404,7 @@ class HLBService():
             actors[s[1][0]] = dict({ 'num': str(actor_num[s[1][0]]), 'os': actor_os[s[1][0]], 'nodeType': actor_nodetype[s[1][0]], 'location': actor_location[s[1][0]], 'interfaces': actor_interfaces[s[1][0]] })
         for i, const in enumerate(parsed_constraints):
             if const[0] is not None:
-                if const[1][0] not in actors:
-                    actors[const[1][0]] = dict({ 'num': 1, 'os': 'default', 'type': 'actor' })
-                if const[0] == "num" or const[0] == "os":
-                    actors[const[1][0]][const[0]] = const[2][0]
-                elif "link" in const[0]:
+                if "link" in const[0]:
                     delay = 'default'
                     bw = 'default'
                     try:
