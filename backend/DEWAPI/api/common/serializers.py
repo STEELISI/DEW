@@ -70,7 +70,9 @@ topology_text = api.model('Toplogy parsing', {
 
 parameter_list = api.model('Parameter parsing', {
   'constraints': fields.List(fields.String,description="Constraints of the experiment",required=True),
-  'parameters': fields.List(fields.String,description="Parameters of the graph",required=True)
+  'parameters': fields.List(fields.String,description="Parameters of the graph",required=True),
+  'nodes': fields.List(fields.String,description="Node IDs of the graph",required=True),
+  'edges': fields.List(fields.String,description="Edge IDs of the graph",required=True)
   })
 
 experiment_detail = api.model('get experiment request', {

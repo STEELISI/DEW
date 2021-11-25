@@ -322,8 +322,34 @@ class HLBService():
                     edges.append({ 'id': e + str(j), 'source': s, 'target': t, 'label': e, 'data': {'all_or_any': all_any_flags[t] }})
         return nodes, edges
     
-    def HandleGraphParameterParse(self, parameters, constranints):
-        return (["fsdfdsfdsfsd", "dsadadsa"])
+    def HandleGraphParameterParse(self, param, nodesData, edgesData, constraints):
+        parameters = json.loads(param)
+        nodes = json.loads(nodesData)
+        edges = json.loads(edgesData)
+        nodes = dict((v,k) for k,v in nodes.items())
+        edges = [k for k in edges.keys()]
+        param_names = {
+            'operatingSystem': 0,
+            'hardwareType': 1,
+            'ipAddress': 2,
+            'num': 3,
+            'bandwidth': 4,
+            'delay': 5
+        }
+        temp_struct = {}
+        len_keys = len(nodes.keys())
+        for i in nodes.keys():
+            temp_struct[i] = [""] * len_keys
+        for i in parameters.keys():
+            for j in parameters[i].keys():
+                try:
+                    temp_struct[int(i)][param_names[j]] = parameters[i][j]
+                except:
+                    pass
+                print(i,j)
+                pass
+        print(temp_struct)
+        return (["lan client router controller [bw 100, delay 400]", "link router server [bw 100, delay 200]", "router [num 5, os fdsfds]"])
 
     def HandleTopologyParse(self,sceanrios,constraints):
         actors = dict()
@@ -385,20 +411,26 @@ class HLBService():
                 elif "link" in const[0]:
                     delay = 'default'
                     bw = 'default'
-                    for j in range(0, len(const[2]), 2):
-                        if const[2][j] == 'bw':
-                            bw = const[2][j+1]
-                        elif const[2][j] == 'delay':
-                            delay = const[2][j+1]
+                    try:
+                        for j in range(0, len(const[2]), 2):
+                            if const[2][j] == 'bw':
+                                bw = const[2][j+1]
+                            elif const[2][j] == 'delay':
+                                delay = const[2][j+1]
+                    except:
+                        pass
                     edges.append({ 'source': const[1][0], 'target': const[1][1], 'delay': delay, 'bw': bw })
                 elif "lan" in const[0]:
                     delay = 'default'
                     bw = 'default'
-                    for j in range(0, len(const[2]), 2):
-                        if const[2][j] == 'bw':
-                            bw = const[2][j+1]
-                        elif const[2][j] == 'delay':
-                            delay = const[2][j+1]
+                    try:
+                        for j in range(0, len(const[2]), 2):
+                            if const[2][j] == 'bw':
+                                bw = const[2][j+1]
+                            elif const[2][j] == 'delay':
+                                delay = const[2][j+1]
+                    except:
+                        pass
                     nodeName = "lan" + str(i)
                     lans.append({ 'type' : 'lan', 'lineNum': i, 'actors': const[1]})
                     for n in const[1]:

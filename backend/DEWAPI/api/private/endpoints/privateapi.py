@@ -161,7 +161,9 @@ class HandleGraphParametersParse(Resource):
         json_data = request.get_json(force=True)
         parameters = json_data['parameters']
         constraints = json_data['constraints']
-        updated_constraints = hlb.HandleGraphParameterParse(parameters, constraints)
+        nodes = json_data['nodes']
+        edges = json_data['edges']
+        updated_constraints = hlb.HandleGraphParameterParse(parameters[0], nodes[0], edges[0], constraints)
         return {"status": "success", "constraints": updated_constraints }
 
 @ns.route('/nlp/behavior')

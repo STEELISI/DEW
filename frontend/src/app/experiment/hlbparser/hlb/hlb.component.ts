@@ -577,7 +577,6 @@ export class HlbComponent implements OnInit, AfterViewInit {
   extractInfo(data: ParseApiBean) {
     console.log(data)
     this.updateGraph();
-    this.populateGraphParameters();
     this.extractScenario(data.parsedScenario);
     this.storeBinding(undefined);
   }
@@ -978,7 +977,7 @@ export class HlbComponent implements OnInit, AfterViewInit {
 
   }
 
-  populateGraphParameters() {
+  /*populateGraphParameters() {
     this.graphItemParametersList = new Map<any, GraphItemParameters>();
     globalGraphItemParametersList = this.graphItemParametersList;
     var data = this.stateservice.getConstraints().source['_value'];
@@ -994,6 +993,7 @@ export class HlbComponent implements OnInit, AfterViewInit {
           temp['operatingSystem'] = '';
           temp['hardwareType'] = '';
           temp['nodeName'] = '';
+          temp['num'] = '1';
           temp['type'] = GraphItemType.NODE;
         } else {
           temp = this.graphItemParametersList[id_of_node[selection[1]]];
@@ -1023,7 +1023,7 @@ export class HlbComponent implements OnInit, AfterViewInit {
         //Do nothing
       }
     });
-  }
+  }*/
 
   onTopologyParametersChange(event: any) {
     //TODO: Get the object parameters correct
@@ -1091,9 +1091,11 @@ export class HlbComponent implements OnInit, AfterViewInit {
   updateConstraintsOnTopologyParameterChange() {
     var request = {
       constraints: this.stateservice.getConstraints().source['_value'],
-      parameters: [JSON.stringify(globalGraphItemParametersList)]
+      parameters: [JSON.stringify(globalGraphItemParametersList)],
+      nodes: [JSON.stringify(id_of_node)],
+      edges: [JSON.stringify(id_of_edge)]
     };
-    console.log(request);
+    console.log(globalGraphItemParametersList, id_of_node, id_of_edge);
     this.http
     .put('v1/pr/hlb/graph/parse-parameters', request, { withCredential: true })
     .subscribe((receivedData: ParseApiBean) => {
