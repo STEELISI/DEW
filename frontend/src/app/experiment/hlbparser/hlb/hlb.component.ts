@@ -658,7 +658,7 @@ export class HlbComponent implements OnInit, AfterViewInit {
         temp['operatingSystem'] = '';
         temp['hardwareType'] = '';
         temp['nodeName'] = '';
-        temp['num'] = '-1'; //The value is negative to help with the backend parsing of graph to text
+        temp['num'] = ''; //The value is empty to help with the backend parsing of graph to text
         temp['type'] = target.includes('lan') ? GraphItemType.LAN : GraphItemType.LINK;
         var pointer = temp['type'] == GraphItemType.LAN ? id_of_node[target] : id_count-1;
         this.graphItemParametersList[pointer] = temp;

@@ -323,6 +323,7 @@ class HLBService():
         return nodes, edges
     
     def HandleGraphParameterParse(self, param, nodesData, edgesData, constraints):
+        updated_constraints = []
         parameters = json.loads(param)
         nodes = json.loads(nodesData)
         edges = json.loads(edgesData)
@@ -332,24 +333,66 @@ class HLBService():
             'operatingSystem': 0,
             'hardwareType': 1,
             'ipAddress': 2,
-            'num': 3,
-            'bandwidth': 4,
-            'delay': 5
+            'num': 3
         }
-        temp_struct = {}
+        swapped_param_names = dict((v,k) for k,v in param_names.items())
+        swapped_param_names[param_names['operatingSystem']] = 'os'
+        swapped_param_names[param_names['ipAddress']] = 'location'
+        swapped_param_names[param_names['hardwareType']] = 'nodeType'
+        tempStruct = {}
         len_keys = len(nodes.keys())
         for i in nodes.keys():
-            temp_struct[i] = [""] * len_keys
-        for i in parameters.keys():
+            tempStruct[i] = [""] * len_keys
+        for i in parameters.keys(): #Populate the tempStruct 
             for j in parameters[i].keys():
                 try:
-                    temp_struct[int(i)][param_names[j]] = parameters[i][j]
+                    tempStruct[int(i)][param_names[j]] = parameters[i][j]
                 except:
                     pass
-                print(i,j)
                 pass
-        print(temp_struct)
-        return (["lan client router controller [bw 100, delay 400]", "link router server [bw 100, delay 200]", "router [num 5, os fdsfds]"])
+        param_list = []
+        current_param_list = []
+        current_nodes = []
+        temp_tempStruct = tempStruct.copy()
+        for i in tempStruct.keys():
+            if('lan' in nodes[i]):
+                continue
+            temp_tempStruct.pop(i, None)
+            while(tempStruct[i].count("") != len(tempStruct[i])):        
+                current_nodes = [i]
+                current_param_list = []
+                maxCount = 0
+                for j in temp_tempStruct.keys():
+                    count = 0
+                    param_list = []
+                    for k in range(len(temp_tempStruct[j])):
+                        if(tempStruct[i][k]==tempStruct[j][k] and tempStruct[i][k]!=""):
+                            count = count + 1
+                            param_list.append(k)
+                    if(maxCount == count and count!=0):
+                        missing_params = [i for i in current_param_list if i not in param_list]
+                        if(missing_params == []):
+                            current_nodes.append(j)
+                    if(maxCount<count):
+                            maxCount = count
+                            current_nodes = [i,j]
+                            current_param_list = param_list
+                if(maxCount == 0):
+                    for j in range(len(tempStruct[i])):
+                        if(tempStruct[i][j]!=""):
+                            current_param_list.append(j)
+                sentence = ""
+                for j in current_nodes:
+                    sentence = sentence + nodes[j] + " "
+                sentence = sentence + "[ "
+                for j in current_param_list:
+                    sentence = sentence + swapped_param_names[j] + " " + tempStruct[i][j] + ", "
+                    for k in current_nodes:
+                        tempStruct[k][j] = ""
+                sentence = sentence[:-2] + " ]"
+                updated_constraints.append(sentence)
+        print(updated_constraints)
+        return (constraints)
 
     def HandleTopologyParse(self,sceanrios,constraints):
         actors = dict()
