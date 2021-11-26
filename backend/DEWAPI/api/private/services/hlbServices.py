@@ -325,10 +325,9 @@ class HLBService():
     def HandleGraphParameterParse(self, param, nodesData, edgesData, constraints):
         updated_constraints = []
         parameters = json.loads(param)
-        nodes = json.loads(nodesData)
+        swapped_nodes = json.loads(nodesData)
         edges = json.loads(edgesData)
-        nodes = dict((v,k) for k,v in nodes.items())
-        edges = [k for k in edges.keys()]
+        nodes = dict((v,k) for k,v in swapped_nodes.items())
         param_names = {
             'operatingSystem': 0,
             'hardwareType': 1,
@@ -391,8 +390,31 @@ class HLBService():
                         tempStruct[k][j] = ""
                 sentence = sentence[:-2] + " ]"
                 updated_constraints.append(sentence)
-        print(updated_constraints)
-        return (constraints)
+        lan_edges = {}
+        param_names = {'bandwidth': 'bw', 'delay': 'delay'}
+        for i in edges.keys():
+            node = i.split('-')
+            if('lan' in node[1]):
+                if(node[1] not in lan_edges.keys()):
+                    lan_edges[node[1]] = []
+                lan_edges[node[1]].append(node[0])
+            else:
+                sentence = "link "
+                sentence = sentence + node[0] + " " + node[1] + " [ "
+                for k in param_names.keys():
+                    sentence = sentence + param_names[k] + " " + parameters[str(edges[i]['id'])][k] + ", "
+                sentence = sentence[:-2] + " ]"
+                updated_constraints.append(sentence)
+        for i in lan_edges.keys():
+            sentence = "lan "
+            for j in lan_edges[i]:
+                sentence = sentence + j + " "
+            sentence = sentence + "[ "
+            for k in param_names.keys():
+                    sentence = sentence + param_names[k] + " " + parameters[str(swapped_nodes[i])][k] + ", "
+            sentence = sentence[:-2] + " ]"
+            updated_constraints.append(sentence)
+        return (updated_constraints)
 
     def HandleTopologyParse(self,sceanrios,constraints):
         actors = dict()

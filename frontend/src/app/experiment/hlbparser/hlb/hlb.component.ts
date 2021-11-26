@@ -1076,7 +1076,7 @@ export class HlbComponent implements OnInit, AfterViewInit {
         break;
       case 'link-bandwidth':
         temp['bandwidth'] = currentValue=="" || (parseInt(currentValue)<0) ? '1': currentValue;
-        $('#link-bandwidth').val(temp['bw']);
+        $('#link-bandwidth').val(temp['bandwidth']);
         break;
       case 'link-delay':
         temp['delay'] = currentValue=="" || (parseInt(currentValue)<0) ? '0': currentValue;
