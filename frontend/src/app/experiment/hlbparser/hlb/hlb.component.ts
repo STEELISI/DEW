@@ -581,6 +581,71 @@ export class HlbComponent implements OnInit, AfterViewInit {
     this.storeBinding(undefined);
   }
 
+  assignNewActorInTopologyGraph(isLAN) {
+    var name;
+    var max_count = 0
+    for(var i in id_of_node) {
+      max_count = Math.max(max_count, id_of_node[i]);
+    }
+    for(var i in id_of_edge) {
+      max_count = Math.max(max_count, id_of_edge[i]['id']);
+    }
+    name = isLAN ? "lan" + (max_count + 1) : "actor" + (max_count + 1);
+    id_of_node[name] = max_count + 1;
+    var temp = this.stateservice.getConstraints().source['_value'];
+    isLAN ? temp.push("lan [ bw 1, delay 0 ]") : temp.push(name + " [ num 1 ]");
+    this.stateservice.setConstraints(temp);
+    this.createNewGraphTypeObject(isLAN, name);
+    return [isLAN ? "" : name, max_count+1];
+  }
+
+  assignNewEdgeInTopologyGraph(from, to) {
+    var max_count = 0
+    for(var i in id_of_edge) {
+      max_count = Math.max(max_count, id_of_edge[i]['id']);
+    }
+    for(var i in id_of_node) {
+      max_count = Math.max(max_count, id_of_node[i]);
+    }
+    var swappedNodes = swapJSON(id_of_node);
+    var name = swappedNodes[from] + '-' + swappedNodes[to];
+    id_of_edge[name] = {from: from, to: to, id: max_count + 1};
+    console.log(id_of_edge)
+    var temp = this.stateservice.getConstraints().source['_value'];
+    temp.push('link ' + swappedNodes[from] + ' ' + swappedNodes[to] + " [ bw 1, delay 0 ]");
+    this.stateservice.setConstraints(temp);
+    this.createNewGraphTypeObjectEdge(name);
+    return max_count + 1;
+  }
+
+  createNewGraphTypeObjectEdge(name) {
+    var temp = {}
+    temp['bandwidth'] = '1';
+    temp['delay'] = '0';
+    temp['ipAddress'] = '';
+    temp['operatingSystem'] = '';
+    temp['hardwareType'] = '';
+    temp['nodeName'] = name;
+    temp['num'] = '';
+    temp['type'] = GraphItemType.LINK;
+    this.graphItemParametersList[id_of_edge[name]['id']] = temp;
+    globalGraphItemParametersList = this.graphItemParametersList;
+  }
+
+  createNewGraphTypeObject(isLAN, name) {
+    var temp = {}
+    temp['bandwidth'] = isLAN ? '1': '';
+    temp['delay'] = isLAN ? '0': '';
+    temp['ipAddress'] = '';
+    temp['operatingSystem'] = '';
+    temp['hardwareType'] = '';
+    temp['nodeName'] = name;
+    temp['num'] = isLAN ? '' : '1';
+    temp['type'] = isLAN ? GraphItemType.LAN : GraphItemType.NODE;
+    this.graphItemParametersList[id_of_node[name]] = temp;
+    globalGraphItemParametersList = this.graphItemParametersList;
+  }
+
   updateGraph() { //Update the Graph View
     var request = {
       ParseType: 'bash',
@@ -720,13 +785,14 @@ export class HlbComponent implements OnInit, AfterViewInit {
           addNode: (nodeData, callback) => {
             if (this.addNodeType == "LAN") {
               nodeData.group = "LAN";
-              nodeData.label = "";
-            }
+            } 
+            [nodeData.label, nodeData.id] = this.assignNewActorInTopologyGraph(nodeData.group == "LAN");
             this.clearMessage();
             callback(nodeData);
           },
           addEdge: (edgeData, callback) => {
             this.clearMessage();
+            edgeData.id = this.assignNewEdgeInTopologyGraph(edgeData.from, edgeData.to);
             callback(edgeData);
           },
           deleteNode: (data, callback) => {
@@ -977,56 +1043,7 @@ export class HlbComponent implements OnInit, AfterViewInit {
 
   }
 
-  /*populateGraphParameters() {
-    this.graphItemParametersList = new Map<any, GraphItemParameters>();
-    globalGraphItemParametersList = this.graphItemParametersList;
-    var data = this.stateservice.getConstraints().source['_value'];
-    data.forEach(element => {
-      var selection = element.split(' ');
-      if (['os', 'nodetype', 'location'].includes(selection[0])) {
-        var temp;
-        if (!this.graphItemParametersList[id_of_node[selection[1]]]) {
-          temp = {};
-          temp['bandwidth'] = '1'; //Default Value
-          temp['delay'] = '0'; //Default Value
-          temp['ipAddress'] = '';
-          temp['operatingSystem'] = '';
-          temp['hardwareType'] = '';
-          temp['nodeName'] = '';
-          temp['num'] = '1';
-          temp['type'] = GraphItemType.NODE;
-        } else {
-          temp = this.graphItemParametersList[id_of_node[selection[1]]];
-        }
-        switch (selection[0]) {
-          case 'os':
-            temp['nodeName'] = selection[2];
-            temp['operatingSystem'] = selection[3];
-            break;
-          case 'nodetype':
-            temp['nodeName'] = selection[2];
-            temp['hardwareType'] = selection[3];
-            break;
-          case 'location':
-            temp['nodeName'] = selection[2];
-            temp['ipAddress'] = selection[3];
-            break;
-        }
-        this.graphItemParametersList[id_of_node[temp['nodeName']]] = temp;
-        globalGraphItemParametersList = this.graphItemParametersList;
-      }
-      try {
-        if (currentGraphItemSelection['id'] == id_of_node[selection[1]]) {
-          showRelevantContentInDialogBox();
-        }
-      } catch (ex) {
-        //Do nothing
-      }
-    });
-  }*/
-
   onTopologyParametersChange(event: any) {
-    //TODO: Get the object parameters correct
     // type: GraphItemType,
     // bandwidth: string,
     // delay: string,
@@ -1034,7 +1051,6 @@ export class HlbComponent implements OnInit, AfterViewInit {
     // operatingSystem: string,
     // hardwareType: string
     // num: string
-    //TODO: Figure out a way to override the parameters without overwriting the previous values
     var temp = this.graphItemParametersList[currentGraphItemSelection['id']] ? this.graphItemParametersList[currentGraphItemSelection['id']] : null;
     if (!temp) {
       temp = {};
@@ -1101,33 +1117,6 @@ export class HlbComponent implements OnInit, AfterViewInit {
     .subscribe((receivedData: ParseApiBean) => {
       this.stateservice.setConstraints(receivedData['constraints']);
     });
-    /*var data = this.stateservice.getConstraints().source['_value'];
-    data = this.removeConstraintSentences(data);
-    for (var key in globalGraphItemParametersList) {
-      var temp = globalGraphItemParametersList[key];
-      var sentence = '';
-      switch (temp.type) {
-        case GraphItemType.NODE:
-          if (temp.operatingSystem) {
-            sentence = 'os ' + temp.nodeName + ' ' + temp.operatingSystem;
-            data.push(sentence);
-          }
-          if (temp.hardwareType) {
-            sentence = 'nodetype ' + temp.nodeName + ' ' + temp.hardwareType;
-            data.push(sentence);
-          }
-          if (temp.ipAddress) {
-            sentence = 'location ' + temp.nodeName + ' ' + temp.ipAddress;
-            data.push(sentence);
-          }
-          break;
-        case GraphItemType.LINK:
-          break;
-        case GraphItemType.LAN:
-          break;
-      }
-    }
-    this.stateservice.setConstraints(data);*/
   }
 
   removeConstraintSentences(data) {
