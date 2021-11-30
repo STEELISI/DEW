@@ -48,6 +48,7 @@ export class HlbComponent implements OnInit, AfterViewInit {
   }
   private topologyNetworkInstance: any;
   private dependencyNetworkInstance: any;
+  private selectedNetworkInstance: any;
   addNodeType: "Node" | "LAN";
   isKeyPressed: boolean = false;
   dependencyGraphLegends: Array<{ actor: String, color: String }> = [];
@@ -178,6 +179,9 @@ export class HlbComponent implements OnInit, AfterViewInit {
 
   openSideNavBar() {
     $('.side-nav-icon > img').toggleClass('hide');
+    setTimeout(() => {
+      this.selectedNetworkInstance.fit();
+    }, 600);
   }
 
   addColor(stringArray, row, map) {
@@ -794,11 +798,6 @@ export class HlbComponent implements OnInit, AfterViewInit {
             this.clearMessage();
             edgeData.id = this.assignNewEdgeInTopologyGraph(edgeData.from, edgeData.to);
             callback(edgeData);
-          },
-          deleteNode: (data, callback) => {
-            $("#deleteNodeBtn").hide();
-            $("#deleteEdgeBtn").hide();
-            callback(data);
           }
         },
         edges: {
@@ -857,16 +856,6 @@ export class HlbComponent implements OnInit, AfterViewInit {
         //$(".custom-menu").is(':visible') && $(".custom-menu").finish().toggle(100);
         });
 
-        this.topologyNetworkInstance.on("select", (data) => {
-          $("#deleteNodeBtn").hide();
-          $("#deleteEdgeBtn").hide();
-          if (data.nodes.length) {
-            $("#deleteNodeBtn").show();
-          } else if (data.edges.length) {
-            $("#deleteEdgeBtn").show();
-          }
-        })
-
         this.topologyNetworkInstance.on('oncontext', function (properties) {
           properties.event.preventDefault();
           // if (!properties.nodes.length) {
@@ -884,28 +873,6 @@ export class HlbComponent implements OnInit, AfterViewInit {
           // }
         });
 
-        $("#graph-container").keyup((e) => {
-          this.isKeyPressed = false;
-          if (e.key === "Control") { // escape key maps to keycode `27`
-            this.addNodeType = null;
-            this.clearMessage();
-            this.topologyNetworkInstance.disableEditMode();
-          } else if (e.key === "Delete") {
-            this.topologyNetworkInstance.deleteSelected();
-          }
-        });
-
-        $("#graph-container").keydown((e) => {
-          if (this.isKeyPressed) {
-            return;
-          }
-          this.isKeyPressed = true;
-          if (e.key === "Control") {
-            this.topologyNetworkInstance.addEdgeMode();
-            this.displayMessage("Draw an edge between two edges");
-          }
-        });
-
         $("#addNodeBtn").on('click', () => {
           this.addNodeType = "Node";
           this.topologyNetworkInstance.addNodeMode();
@@ -920,43 +887,9 @@ export class HlbComponent implements OnInit, AfterViewInit {
           $("#graph-container").focus();
         })
     });
-  }
 
-  displayMessage = (message) => {
-    $("#graphActionButtonList").hide();
-    $("#actionMessage").html(message);
-    $("#actionMessage").show();
-  }
-
-  clearMessage = () => {
-    $("#graphActionButtonList").show();
-    $("#actionMessage").html("<span>Press <kbd>Ctrl</kbd> to edit edges, Select a node/edge and press <kbd>Del</kbd> to delete</span>");
-    // $("#actionMessage").hide();
-  }
-
-  toggleTopologyView() {
-    $('.dependency-topology-toggle-icon-topology').css('z-index', 50);
-    $('.dependency-topology-toggle-icon-dependency').css('z-index', 0);
-    $('.graph-box').removeClass('hide');
-    $('.graph-box-dependency').addClass('hide');
-    //$(".custom-menu").is(':visible') && $(".custom-menu").finish().toggle(100);
-    var $dialogBox = $('.dialog-box');
-    !$dialogBox.hasClass('hide') && $dialogBox.addClass('hide');
-    $('#graphActionButtonList').removeClass('hide');
-
-  }
-
-  toggleDependencyView() {
-    $('.dependency-topology-toggle-icon-topology').css('z-index', 0);
-    $('.dependency-topology-toggle-icon-dependency').css('z-index', 50);
-    $('.graph-box').addClass('hide');
-    $('.graph-box-dependency').removeClass('hide');
-    //$(".custom-menu").is(':visible') && $(".custom-menu").finish().toggle(100);
-    var $dialogBox = $('.dialog-box');
-    !$dialogBox.hasClass('hide') && $dialogBox.addClass('hide');
-    $('#graphActionButtonList').addClass('hide');
-
-    this.http.put("v1/pr/hlb/dependency_graph/parse", { "scenario": this.behaviorList }, { withCredential: true }).subscribe((d) => {
+    this.http.put("v1/pr/hlb/dependency_graph/parse", request, { withCredential: true })
+    .subscribe((d) => {
       let nodes = []
       let links = []
       var actors = {}
@@ -1009,11 +942,6 @@ export class HlbComponent implements OnInit, AfterViewInit {
             };
             this.clearMessage();
             callback(edgeData);
-          },
-          deleteNode: (data, callback) => {
-            $("#deleteNodeBtn").hide();
-            $("#deleteEdgeBtn").hide();
-            callback(data);
           }
         },
         layout: {
@@ -1042,6 +970,68 @@ export class HlbComponent implements OnInit, AfterViewInit {
       });
     })
 
+    $("#graph-container").keyup((e) => {
+      this.isKeyPressed = false;
+      if (e.key === "Control") {
+        this.addNodeType = null;
+        this.clearMessage();
+        this.selectedNetworkInstance.disableEditMode();
+      } else if (e.key === "Delete") {
+        this.selectedNetworkInstance.deleteSelected();
+        var $dialogBox = $('.dialog-box');
+        !$dialogBox.hasClass('hide') && $dialogBox.addClass('hide');
+      }
+    });
+
+    $("#graph-container").keydown((e) => {
+      if (this.isKeyPressed) {
+        return;
+      }
+      this.isKeyPressed = true;
+      if (e.key === "Control") {
+        this.selectedNetworkInstance.addEdgeMode();
+        this.displayMessage("Draw an edge between two nodes");
+      }
+    });
+  }
+
+  displayMessage = (message) => {
+    $("#graphActionButtonList").hide();
+    $("#actionMessage").html(message);
+    $("#actionMessage").show();
+  }
+
+  clearMessage = () => {
+    $("#graphActionButtonList").show();
+    $("#actionMessage").html("<span>Press <kbd>Ctrl</kbd> to edit edges, Select a node/edge and press <kbd>Del</kbd> to delete</span>");
+    // $("#actionMessage").hide();
+  }
+
+  toggleTopologyView() {
+    $('.dependency-topology-toggle-icon-topology').css('z-index', 50);
+    $('.dependency-topology-toggle-icon-dependency').css('z-index', 0);
+    $('.graph-box').removeClass('hide');
+    $('.graph-box-dependency').addClass('hide');
+    //$(".custom-menu").is(':visible') && $(".custom-menu").finish().toggle(100);
+    var $dialogBox = $('.dialog-box');
+    !$dialogBox.hasClass('hide') && $dialogBox.addClass('hide');
+    $('#graphActionButtonList').removeClass('hide');
+    this.selectedNetworkInstance = this.topologyNetworkInstance;
+    this.selectedNetworkInstance.fit();
+
+  }
+
+  toggleDependencyView() {
+    $('.dependency-topology-toggle-icon-topology').css('z-index', 0);
+    $('.dependency-topology-toggle-icon-dependency').css('z-index', 50);
+    $('.graph-box').addClass('hide');
+    $('.graph-box-dependency').removeClass('hide');
+    //$(".custom-menu").is(':visible') && $(".custom-menu").finish().toggle(100);
+    var $dialogBox = $('.dialog-box');
+    !$dialogBox.hasClass('hide') && $dialogBox.addClass('hide');
+    $('#graphActionButtonList').addClass('hide');
+    this.selectedNetworkInstance = this.dependencyNetworkInstance;
+    this.selectedNetworkInstance.fit();
   }
 
   onTopologyParametersChange(event: any) {
