@@ -223,12 +223,11 @@
       </div>
 
       <div  style="width: 30%">
-        <div (click)="toggleTopologyView()" class="dependency-topology-toggle-icon-topology">
-          <span class="text-left font-weight-bold">Topology</span>
-        </div>
-        
         <div (click)="toggleDependencyView()" class="dependency-topology-toggle-icon-dependency">
           <span class="text-left font-weight-bold">Dependency</span>
+        </div>
+        <div (click)="toggleTopologyView()" class="dependency-topology-toggle-icon-topology active">
+          <span class="text-left font-weight-bold">Topology</span>
         </div>
       </div>
     </div>

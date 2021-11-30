@@ -1008,8 +1008,8 @@ export class HlbComponent implements OnInit, AfterViewInit {
   }
 
   toggleTopologyView() {
-    $('.dependency-topology-toggle-icon-topology').css('z-index', 50);
-    $('.dependency-topology-toggle-icon-dependency').css('z-index', 0);
+    $('.dependency-topology-toggle-icon-topology').toggleClass('active');
+    $('.dependency-topology-toggle-icon-dependency').toggleClass('active');
     $('.graph-box').removeClass('hide');
     $('.graph-box-dependency').addClass('hide');
     //$(".custom-menu").is(':visible') && $(".custom-menu").finish().toggle(100);
@@ -1022,8 +1022,8 @@ export class HlbComponent implements OnInit, AfterViewInit {
   }
 
   toggleDependencyView() {
-    $('.dependency-topology-toggle-icon-topology').css('z-index', 0);
-    $('.dependency-topology-toggle-icon-dependency').css('z-index', 50);
+    $('.dependency-topology-toggle-icon-topology').toggleClass('active');
+    $('.dependency-topology-toggle-icon-dependency').toggleClass('active');
     $('.graph-box').addClass('hide');
     $('.graph-box-dependency').removeClass('hide');
     //$(".custom-menu").is(':visible') && $(".custom-menu").finish().toggle(100);

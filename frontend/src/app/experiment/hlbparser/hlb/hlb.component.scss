@@ -289,37 +289,34 @@ ul {
   .dependency-topology-toggle-icon-topology, .dependency-topology-toggle-icon-dependency {
     color: white;
     font-weight: bolder;
-    position: absolute;
+    position: relative;
     border-bottom-right-radius: 10px;
     border-bottom-left-radius: 10px;
+    transform: scale(1);
+    transition: transform 0.25s ease;
+    z-index: 0;
+    width: 100px;
+    float: right;
+    cursor: pointer;
+    text-align: center;
+    padding: 10px;
+    opacity: 0.6;
+  }
+
+  .dependency-topology-toggle-icon-topology.active, .dependency-topology-toggle-icon-dependency.active{
+    transform: scale(1.25);
+    transition: transform 0.25s ease;
+    z-index: 50;
+    opacity: 1;
   }
 
   .dependency-topology-toggle-icon-dependency {
     background-color: rgb(219, 69, 0);
-    padding: 10px;
-    align-items: center;
-    text-align: center;
-    float: right;
-    width: fit-content;
-    cursor: pointer;
-    z-index: 0;
-    margin-right: 10px;
-    right: 0px;
-    width: 130px;
+    margin-right: 20px;
   }
 
   .dependency-topology-toggle-icon-topology {
     background-color: rgb(49, 209, 0);
-    padding: 10px;
-    align-items: center;
-    text-align: center;
-    float: right;
-    width: fit-content;
-    cursor: pointer;
-    z-index: 50;
-    right: 0px;
-    margin-right: 90px;
-    width: 130px;
   }
 
   /* Custom Context Menu */
