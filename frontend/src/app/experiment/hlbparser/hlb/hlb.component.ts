@@ -1020,6 +1020,7 @@ export class HlbComponent implements OnInit, AfterViewInit {
           hierarchical: {
             sortMethod: "directed",
             shakeTowards: "leaves",
+            levelSeparation: 100
           },
         },
         edges: {
