@@ -651,6 +651,9 @@ export class HlbComponent implements OnInit, AfterViewInit {
   }
 
   updateGraph() { //Update the Graph View
+    if (!this.selectedNetworkInstance) {
+      this.selectedNetworkInstance = this.topologyNetworkInstance;
+    }
     var request = {
       ParseType: 'bash',
       scenario: [],
@@ -798,6 +801,10 @@ export class HlbComponent implements OnInit, AfterViewInit {
             this.clearMessage();
             edgeData.id = this.assignNewEdgeInTopologyGraph(edgeData.from, edgeData.to);
             callback(edgeData);
+          },
+          deleteNode: (nodeData, callback) => {
+            this.onTopologyDelete(nodeData.label);
+            callback(nodeData);
           }
         },
         edges: {
@@ -921,7 +928,32 @@ export class HlbComponent implements OnInit, AfterViewInit {
         links.push(e2)
       }
 
-      const colors = ["#003f5c", "#2f4b7c", "#665191", "#a05195", "#d45087", "#f95d6a", "#ff7c43", "#ffa600"];
+      // const colors = ["#003f5c", "#2f4b7c", "#665191", "#a05195", "#d45087", "#f95d6a", "#ff7c43", "#ffa600"];
+      const colors = ["#F0C929",
+        "#F48B29",
+        "#AC0D0D",
+        "#693C72",
+        "#55B3B1",
+        "#F08A5D",
+        "#B83B5E",
+        "#54E346",
+        "#1F1D36",
+        "#420516",
+        "#91091E",
+        "#EE8572",
+        "#35495E",
+        "#347474",
+        "#480032",
+        "#FF4C29",
+        "#FB3640",
+        "#126E82",
+        "#05004E",
+        "#FF005C",
+        "#240041",
+        "#F4E557",
+        "#B983FF",
+        "#1DB9C3",
+        "#005F99"]
 
       this.dependencyGraphLegends = Object.keys(actors).map(actor => { return { actor: actor, color: colors[actors[actor] - 1] } })
 
@@ -1034,6 +1066,32 @@ export class HlbComponent implements OnInit, AfterViewInit {
     this.selectedNetworkInstance.fit();
   }
 
+  onTopologyDelete(node1: string, node2?: string) {
+    try {
+      let constraints = this.stateservice.getConstraints().source['_value'];
+      console.log("abc", constraints);
+      let searchWords = [node1];
+      if (node2) { //Delete Link between node1 and node2
+        searchWords.push('link');
+        searchWords.push(node2);
+      }
+
+      constraints = constraints.filter(line => {
+        let words = new Set(line.split(' '));
+        for (const searchWord of searchWords) {
+          if (!words.has(searchWord)) {
+            return true;
+          }
+        }
+        return false;
+      })
+      console.log("xyz", constraints);
+      this.stateservice.setConstraints(constraints);
+    } catch (error) {
+
+    }
+  }
+
   onTopologyParametersChange(event: any) {
     // type: GraphItemType,
     // bandwidth: string,
@@ -1105,7 +1163,8 @@ export class HlbComponent implements OnInit, AfterViewInit {
     console.log(globalGraphItemParametersList, id_of_node, id_of_edge);
     this.http
     .put('v1/pr/hlb/graph/parse-parameters', request, { withCredential: true })
-    .subscribe((receivedData: ParseApiBean) => {
+      .subscribe((receivedData: ParseApiBean) => {
+        console.log(receivedData);
       this.stateservice.setConstraints(receivedData['constraints']);
     });
   }
