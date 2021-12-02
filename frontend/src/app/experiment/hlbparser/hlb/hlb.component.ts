@@ -583,11 +583,13 @@ export class HlbComponent implements OnInit, AfterViewInit {
     this.storeBinding(undefined);
   }
 
-  displayConversion() {
+  displayConversion() { //TODO: Remove this function
     const data = {
       constraints: []
     };
-    const constraints = this.getConstraintsFromEditor();
+    const constraints = ['link a b', 'num client 5', 'lan a b c', 'os client fds'];
+    console.log(constraints);
+    console.log("-------------")
     data.constraints = constraints;
     this.http
       .put('v1/pr/convert/dew1to2', data, { withCredential: true })
