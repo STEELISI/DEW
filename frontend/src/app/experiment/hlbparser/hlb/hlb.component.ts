@@ -576,9 +576,25 @@ export class HlbComponent implements OnInit, AfterViewInit {
 
   extractInfo(data: ParseApiBean) {
     console.log(data)
+    //TODO: Remove this function
+    this.displayConversion();
     this.updateGraph();
     this.extractScenario(data.parsedScenario);
     this.storeBinding(undefined);
+  }
+
+  displayConversion() {
+    const data = {
+      constraints: []
+    };
+    const constraints = this.getConstraintsFromEditor();
+    data.constraints = constraints;
+    this.http
+      .put('v1/pr/convert/dew1to2', data, { withCredential: true })
+      .subscribe((receivedData: ParseApiBean) => {
+        console.log("Here")
+        console.log(receivedData);
+      });
   }
 
   assignNewActorInTopologyGraph(isLAN) {
