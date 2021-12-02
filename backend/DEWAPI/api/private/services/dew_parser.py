@@ -23,4 +23,8 @@ class DEWParser(object):
             if "actors" in vals and vals["actors"] != None:
                 actors = actors.union(vals["actors"])
         return actors
+    
+    def convert_DEW_1_to_2(self, constraints):
+        converted_constraints = constraints
+        return converted_constraints
         

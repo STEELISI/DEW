@@ -60,6 +60,18 @@ class HandleHLBParser(Resource):
         parsed_data = hlb.HandleParse(json_data)
         return parsed_data
 
+@ns.route('/convert/dew1to2')
+class ConvertDEW1To2(Resource):
+  @api.expect(constraint_text)
+  def put(self):
+      """
+        Parses DEW 1.0 and converts it to 2.0
+      """
+      json_data = request.get_json(force=True)
+      constraints = json_data['constraints']
+      converted_constraints = dew_parser.convert_DEW_1_to_2(constraints)
+      return {"status": "success", "constraints": converted_constraints }
+
 @ns.route('/hlb/generateNs')
 class HandleHLBGeneratorNs(Resource):
 
