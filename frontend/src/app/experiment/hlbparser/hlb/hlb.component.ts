@@ -306,6 +306,7 @@ export class HlbComponent implements OnInit, AfterViewInit {
         }, 2000);
         return true;
       }
+      $span.html("Convert from DEW 1.0 to 2.0");
       //Animate Button
       $('.convert-btn > div').animate(
         { deg: '+=360' },
@@ -325,10 +326,16 @@ export class HlbComponent implements OnInit, AfterViewInit {
         this.http
           .put('v1/pr/convert/dew1to2', data, { withCredential: true })
           .subscribe((receivedData: ParseApiBean) => {
+            $('.error-text').addClass('hide');
             this.stateservice.setConstraints(receivedData.parsedConstraints);
             setTimeout(()=> {
               this.updateActorsConstraint()
             }, 2000);
+          }, (error: any) => {
+            $('.error-text').removeClass('hide');
+            setTimeout(()=> {
+              $('.error-text').addClass('hide');
+            }, 3000);
           });
     });
 
