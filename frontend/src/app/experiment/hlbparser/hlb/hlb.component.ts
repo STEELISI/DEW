@@ -292,11 +292,45 @@ export class HlbComponent implements OnInit, AfterViewInit {
     this.stateservice.getExperimentControl().subscribe((flag) => {
       this.experimentAccess = flag;
     });
+
   }
 
   ngAfterViewInit(): void {
 
-    //Do Nothing
+    $('.convert-btn > div').on('click', ()=>{
+      var $span = $('.convert-btn > span');
+      if($span.html().includes("DEW 1.0 to 2.0")) {
+        $span.html("Click again to convert...");
+        setTimeout(()=> {
+          $span.html("Convert from DEW 1.0 to 2.0");
+        }, 2000);
+        return true;
+      }
+      //Animate Button
+      $('.convert-btn > div').animate(
+        { deg: '+=360' },
+        {
+          duration: 600,
+          step: function(now) {
+            $(this).css({ transform: 'rotate(' + now + 'deg)' });
+          }
+        }
+      );
+      //Update DEW
+        const data = {
+          constraints: []
+        };
+        const constraints = this.getConstraintsFromEditor();
+        data.constraints = constraints;
+        this.http
+          .put('v1/pr/convert/dew1to2', data, { withCredential: true })
+          .subscribe((receivedData: ParseApiBean) => {
+            this.stateservice.setConstraints(receivedData.parsedConstraints);
+            setTimeout(()=> {
+              this.updateActorsConstraint()
+            }, 2000);
+          });
+    });
 
   }
 
@@ -575,28 +609,9 @@ export class HlbComponent implements OnInit, AfterViewInit {
   }
 
   extractInfo(data: ParseApiBean) {
-    console.log(data)
-    //TODO: Remove this function
-    this.displayConversion();
     this.updateGraph();
     this.extractScenario(data.parsedScenario);
     this.storeBinding(undefined);
-  }
-
-  displayConversion() { //TODO: Remove this function
-    const data = {
-      constraints: []
-    };
-    const constraints = ['link a b', 'num client 5', 'lan a b c', 'os client fds'];
-    console.log(constraints);
-    console.log("-------------")
-    data.constraints = constraints;
-    this.http
-      .put('v1/pr/convert/dew1to2', data, { withCredential: true })
-      .subscribe((receivedData: ParseApiBean) => {
-        console.log("Here")
-        console.log(receivedData);
-      });
   }
 
   assignNewActorInTopologyGraph(isLAN) {

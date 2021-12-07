@@ -70,7 +70,7 @@ class ConvertDEW1To2(Resource):
       json_data = request.get_json(force=True)
       constraints = json_data['constraints']
       converted_constraints = dew_parser.convert_DEW_1_to_2(constraints)
-      return {"status": "success", "constraints": converted_constraints }
+      return {"status": "success", "parsedConstraints": converted_constraints }
 
 @ns.route('/hlb/generateNs')
 class HandleHLBGeneratorNs(Resource):
