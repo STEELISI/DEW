@@ -423,3 +423,25 @@ ul {
             user-select: none; /* Non-prefixed version, currently
                                   supported by Chrome, Edge, Opera and Firefox */
 }
+
+.graph-description-box {
+  border: #5bc0de dashed 2px;
+  border-radius: 5px;
+  margin-top: 10px;
+  padding: 10px;
+  background-color: #FFFFFF;
+  opacity: 0.9;
+  position: absolute;
+  right: 0;
+  margin: 10px;
+  width: 200px;
+  margin-top: 60px;
+}
+.graph-description-box .graph-description-box-icon {
+  color:#5bc0de;
+  text-align: center;
+}
+
+.graph-description-box .graph-description-box-content {
+  float: left;
+}

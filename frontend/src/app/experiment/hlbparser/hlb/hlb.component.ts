@@ -61,6 +61,7 @@ export class HlbComponent implements OnInit, AfterViewInit {
   graph_edges: DataSet<any>;
   graph_data: any;
   graph_container: any;
+  graphDescription: string;
   filterBindingOptions = [
     "tcpdump -i expeth($node) -w $file",
     "ping $node",
@@ -299,9 +300,7 @@ export class HlbComponent implements OnInit, AfterViewInit {
   }
 
   ngAfterViewInit(): void {
-
-    //Do Nothing
-
+    this.toggleTopologyView();
   }
 
 
@@ -651,9 +650,6 @@ export class HlbComponent implements OnInit, AfterViewInit {
   }
 
   updateGraph() { //Update the Graph View
-    if (!this.selectedNetworkInstance) {
-      this.selectedNetworkInstance = this.topologyNetworkInstance;
-    }
     var request = {
       ParseType: 'bash',
       scenario: [],
@@ -879,20 +875,10 @@ export class HlbComponent implements OnInit, AfterViewInit {
           //   });
           // }
         });
-
-        $("#addNodeBtn").on('click', () => {
-          this.addNodeType = "Node";
-          this.topologyNetworkInstance.addNodeMode();
-          this.displayMessage("Click anywhere to add a node, press <kbd>ESC</kbd> to cancel.");
-          $("#graph-container").focus();
-        })
-
-        $("#addLANBtn").on('click', () => {
-          this.addNodeType = "LAN";
-          this.topologyNetworkInstance.addNodeMode();
-          this.displayMessage("Click anywhere to add a LAN, press <kbd>ESC</kbd> to cancel.");
-          $("#graph-container").focus();
-        })
+      
+        if (!this.selectedNetworkInstance) {
+          this.selectedNetworkInstance = this.topologyNetworkInstance;
+        }
     });
 
     this.http.put("v1/pr/hlb/dependency_graph/parse", request, { withCredential: true })
@@ -1039,29 +1025,42 @@ export class HlbComponent implements OnInit, AfterViewInit {
     // $("#actionMessage").hide();
   }
 
+  onAddNodeClick = (type) => {
+    if (type == "Node") {
+      this.addNodeType = "Node";
+      this.displayMessage("Click anywhere to add a node, press <kbd>ESC</kbd> to cancel.");
+    } else {
+      this.addNodeType = "LAN";
+      this.displayMessage("Click anywhere to add a LAN, press <kbd>ESC</kbd> to cancel.");
+    }
+    this.topologyNetworkInstance.addNodeMode();
+    $("#graph-container").focus();
+  }
+
   toggleTopologyView() {
-    $('.dependency-topology-toggle-icon-topology').toggleClass('active');
-    $('.dependency-topology-toggle-icon-dependency').toggleClass('active');
+    $('.dependency-topology-toggle-icon-topology').addClass('active');
+    $('.dependency-topology-toggle-icon-dependency').removeClass('active');
     $('.graph-box').removeClass('hide');
     $('.graph-box-dependency').addClass('hide');
     //$(".custom-menu").is(':visible') && $(".custom-menu").finish().toggle(100);
     var $dialogBox = $('.dialog-box');
     !$dialogBox.hasClass('hide') && $dialogBox.addClass('hide');
     $('#graphActionButtonList').removeClass('hide');
+    this.graphDescription = "This graph depicts the connections between different Node/LAN in the network";
     this.selectedNetworkInstance = this.topologyNetworkInstance;
     this.selectedNetworkInstance.fit();
-
   }
 
   toggleDependencyView() {
-    $('.dependency-topology-toggle-icon-topology').toggleClass('active');
-    $('.dependency-topology-toggle-icon-dependency').toggleClass('active');
+    $('.dependency-topology-toggle-icon-topology').removeClass('active');
+    $('.dependency-topology-toggle-icon-dependency').addClass('active');
     $('.graph-box').addClass('hide');
     $('.graph-box-dependency').removeClass('hide');
     //$(".custom-menu").is(':visible') && $(".custom-menu").finish().toggle(100);
     var $dialogBox = $('.dialog-box');
     !$dialogBox.hasClass('hide') && $dialogBox.addClass('hide');
     $('#graphActionButtonList').addClass('hide');
+    this.graphDescription = "This graph depicts the dependency between different actions as stated in scenario";
     this.selectedNetworkInstance = this.dependencyNetworkInstance;
     this.selectedNetworkInstance.fit();
   }
