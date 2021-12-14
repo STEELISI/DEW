@@ -8,6 +8,7 @@ import { RouterModule } from '@angular/router';
 import { HttpService } from './http-service.service';
 import { AuthModule } from './@auth/auth.module';
 import { StateService } from './state-service.service';
+import { LogService } from "./experiment/hlbparser/common/logging-service";
 
 @NgModule({
   declarations: [
@@ -23,8 +24,7 @@ import { StateService } from './state-service.service';
     AppRoutingModule,
     HttpClientModule
   ],
-  providers: [HttpService, StateService
-  ],
+  providers: [HttpService, StateService, LogService],
   bootstrap: [AppComponent]
 })
 export class AppModule {

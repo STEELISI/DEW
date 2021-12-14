@@ -28,6 +28,7 @@ import { GRAPH_ITEM_PARAMETERS_LIST } from '../../graph-data/graph-item-paramete
 import { GraphItemParameters, GraphItemType } from '../../graph-data/graph-item-parameters-interface';
 import { NULL_EXPR } from "@angular/compiler/src/output/output_ast";
 import { type } from "os";
+import { LogService } from '../common/logging-service';
 
 Quill.register("modules/counter", EditorService);
 
@@ -131,7 +132,8 @@ export class HlbComponent implements OnInit, AfterViewInit {
     public dialog: MatDialog,
     private stateservice: StateService,
     private _snackBar: MatSnackBar,
-    private changeDetection: ChangeDetectorRef
+    private changeDetection: ChangeDetectorRef,
+    private logger: LogService
   ) {
     this.graphItemParametersList = GRAPH_ITEM_PARAMETERS_LIST;
   }
@@ -616,6 +618,7 @@ export class HlbComponent implements OnInit, AfterViewInit {
   }
 
   extractInfo(data: ParseApiBean) {
+    this.logger.log(data.parsedConstraints);
     this.updateGraph();
     this.extractScenario(data.parsedScenario);
     this.storeBinding(undefined);

@@ -14,6 +14,7 @@ from ..services.sshConnectivity import SSHConnection
 from ..services.deterlab_experiment_manager import DeterLabExperimentManager
 from DEWAPI.user import userObj
 from DEWAPI.api.public.services.userinfoservice import GoogleLogin
+from ..services.logger import Logger
 import globals
 
 
@@ -71,6 +72,19 @@ class ConvertDEW1To2(Resource):
       constraints = json_data['constraints']
       converted_constraints = dew_parser.convert_DEW_1_to_2(constraints)
       return {"status": "success", "parsedConstraints": converted_constraints }
+
+@ns.route('/log/user-logging')
+class LogData(Resource):
+  @api.expect(log_message)
+  def put(self):
+      """
+        Logs Data
+      """
+      json_data = request.get_json(force=True)
+      message = json_data['message'][0]
+      user = login.getLoginUserDetail(json_data['token'][0])['emailId']
+      Logger.log(user, message)
+      return {"status": "success"}
 
 @ns.route('/hlb/generateNs')
 class HandleHLBGeneratorNs(Resource):
