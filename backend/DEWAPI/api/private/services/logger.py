@@ -4,7 +4,8 @@ class Logger(object):
     def log(user, message):
         try:
             message = message + "\n"
-            path = "/var/log/DEW/" + user + "/"
+            #path = "/var/log/DEW/" + user + "/"
+            path = "C:/Users/allan/Desktop/ISI Work/DEW GitHub Repo/STEELISI - DEW/backend/logs/DEW/" + user + "/"
             if (not os.path.exists(path)):
                 os.makedirs(path)
             path = path + "frontend_logs.log"
