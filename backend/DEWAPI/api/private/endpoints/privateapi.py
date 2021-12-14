@@ -61,7 +61,7 @@ class HandleHLBParser(Resource):
         parsed_data = hlb.HandleParse(json_data)
         return parsed_data
 
-@ns.route('/hlb/convert-dew1to2')
+@ns.route('/convert/dew1to2')
 class ConvertDEW1To2(Resource):
   @api.expect(constraint_text)
   def put(self):
@@ -73,7 +73,7 @@ class ConvertDEW1To2(Resource):
       converted_constraints = dew_parser.convert_DEW_1_to_2(constraints)
       return {"status": "success", "parsedConstraints": converted_constraints }
 
-@ns.route('/hlb/user-logging')
+@ns.route('/log/user-logging')
 class LogData(Resource):
   @api.expect(log_message)
   def put(self):
@@ -158,7 +158,7 @@ class HandleGraphParse(Resource):
         nodes, edges = hlb.HandleGraphParse(scenarios)
         return {"status": "success", "nodes": nodes, "edges": edges }
 
-@ns.route('/hlb/topology-parse')
+@ns.route('/hlb/topology/parse')
 class HandleTopologyParse(Resource):
     @api.expect(topology_text)
     def put(self):

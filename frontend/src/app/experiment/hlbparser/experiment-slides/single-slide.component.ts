@@ -232,7 +232,7 @@ export class SingleSlideComponent implements OnInit{
     this.state.getBehavior().subscribe((b) => {
       behaviors = b || []
     })
-    this.http.put("v1/pr/hlb/topology-parse", {"scenario": behaviors, "constraints": constraints},{withCredential: true}).subscribe((data) => {
+    this.http.put("v1/pr/hlb/topology/parse", {"scenario": behaviors, "constraints": constraints},{withCredential: true}).subscribe((data) => {
       this.nodes = []
       this.links = []
       for(const n in data['actors']){
