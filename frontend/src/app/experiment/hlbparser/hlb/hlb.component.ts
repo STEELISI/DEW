@@ -326,7 +326,7 @@ export class HlbComponent implements OnInit, AfterViewInit {
         const constraints = this.getConstraintsFromEditor();
         data.constraints = constraints;
         this.http
-          .put('v1/pr/convert/dew1to2', data, { withCredential: true })
+          .put('v1/pr/hlb/convert-dew1to2', data, { withCredential: true })
           .subscribe((receivedData: ParseApiBean) => {
             $('.error-text').addClass('hide');
             this.stateservice.setConstraints(receivedData.parsedConstraints);
@@ -700,7 +700,7 @@ export class HlbComponent implements OnInit, AfterViewInit {
     request.constraints = constraints;
     request.scenario = scenarios;
     this.http
-    .put('v1/pr/hlb/topology/parse', request, { withCredential: true })
+    .put('v1/pr/hlb/topology-parse', request, { withCredential: true })
     .subscribe((receivedData: ParseApiBean) => {
       //Graph Operations
       var temp_nodes = [];

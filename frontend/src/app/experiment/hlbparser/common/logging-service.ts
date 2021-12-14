@@ -48,7 +48,7 @@ export class LogService {
                 token: [this.authService.getToken()]
               };
             this.http
-            .put('v1/pr/log/user-logging', data, { withCredential: true })
+            .put('v1/pr/hlb/user-logging', data, { withCredential: true })
             .subscribe((receivedData: ParseApiBean) => {
                 console.log(receivedData);
             });
