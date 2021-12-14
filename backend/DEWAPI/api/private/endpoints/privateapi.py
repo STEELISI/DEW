@@ -83,8 +83,8 @@ class LogData(Resource):
       json_data = request.get_json(force=True)
       message = json_data['message'][0]
       user = login.getLoginUserDetail(json_data['token'][0])['emailId']
-      Logger.log(user, message)
-      return {"status": "success"}
+      logged_msg = Logger.log(user, message)
+      return {"status": "success", "message": logged_msg}
 
 @ns.route('/hlb/generateNs')
 class HandleHLBGeneratorNs(Resource):
