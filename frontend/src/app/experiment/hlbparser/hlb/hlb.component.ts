@@ -1168,7 +1168,6 @@ export class HlbComponent implements OnInit, AfterViewInit {
       nodes: [JSON.stringify(id_of_node)],
       edges: [JSON.stringify(id_of_edge)]
     };
-    console.log(globalGraphItemParametersList, id_of_node, id_of_edge);
     this.http
     .put('v1/pr/hlb/graph/parse-parameters', request, { withCredential: true })
     .subscribe((receivedData: ParseApiBean) => {
