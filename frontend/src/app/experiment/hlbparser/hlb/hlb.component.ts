@@ -987,7 +987,11 @@ export class HlbComponent implements OnInit, AfterViewInit {
             hierarchical: {
               sortMethod: "directed",
               shakeTowards: "leaves",
-              levelSeparation: 100
+              treeSpacing: 150,
+              levelSeparation: 100,
+              nodeSpacing: 200,
+              edgeMinimization: false,
+              blockShifting: false
             },
           },
           edges: {
@@ -1000,11 +1004,7 @@ export class HlbComponent implements OnInit, AfterViewInit {
               color: '#FFFFFF'
             }
           },
-          physics: {
-            hierarchicalRepulsion: {
-              nodeDistance: 200
-            }
-          },
+          physics: false  ,
           groups: Object.assign({}, ...colors.map((color, index) => ({ ["group" + (index + 1)]: { color } })))
         });
       })
