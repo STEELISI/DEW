@@ -167,9 +167,9 @@ class HLBParser():
     action = (not_akeyword + Word(alphanums+'_'))
     event = (not_akeyword + Word(alphanums+'_'))
     events = event + ZeroOrMore((comma + wsp + event | comma + event))
-    when_trigger = (when_keyword + events("t_events")) | (when_keyword + wsp + keyword_all("all") + wsp + events("t_events")) | (when_keyword + wsp + keyword_any("any") + wsp + events("t_events"))
+    when_trigger = (when_keyword + wsp + events("t_events")) | (when_keyword + wsp + keyword_all("all") + wsp + events("t_events")) | (when_keyword + wsp + keyword_any("any") + wsp + events("t_events"))
     wait_time = (Word(nums) | Word(initChars='$', bodyChars=alphanums))
-    wait_trigger = (wait_keyword + wait_time("wait_time"))
+    wait_trigger = (wait_keyword + wsp + wait_time("wait_time"))
     trigger = (when_trigger + wsp + wait_trigger | when_trigger | wait_trigger)
     
     # Full complete statment.

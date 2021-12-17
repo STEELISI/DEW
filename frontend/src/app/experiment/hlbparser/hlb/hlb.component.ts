@@ -28,7 +28,7 @@ import { GRAPH_ITEM_PARAMETERS_LIST } from '../../graph-data/graph-item-paramete
 import { GraphItemParameters, GraphItemType } from '../../graph-data/graph-item-parameters-interface';
 import { NULL_EXPR } from "@angular/compiler/src/output/output_ast";
 import { type } from "os";
-import { LogService, LogHeader } from '../common/logging-service';
+import { LogService, LogHeader, LogEntry } from '../common/logging-service';
 import { GoogleDriveService } from "src/app/google-drive-service.service";
 
 Quill.register("modules/counter", EditorService);
@@ -182,6 +182,7 @@ export class HlbComponent implements OnInit, AfterViewInit {
 
   openSideNavBar() {
     $('.side-nav-icon > img').toggleClass('hide');
+    this.logger.log(LogHeader.KEY_PRESS, "User opened/closed the side navigation bar");
   }
 
   addColor(stringArray, row, map) {
@@ -310,6 +311,7 @@ export class HlbComponent implements OnInit, AfterViewInit {
         }, 2000);
         return true;
       }
+      this.logger.log(LogHeader.KEY_PRESS, "User tried converting the constraints from DEW 1.0 to 2.0");
       $span.html("Convert from DEW 1.0 to 2.0");
       //Animate Button
       $('.convert-btn > div').animate(
@@ -326,12 +328,14 @@ export class HlbComponent implements OnInit, AfterViewInit {
           constraints: []
         };
         const constraints = this.getConstraintsFromEditor();
+        this.logger.log(LogHeader.DATA_SENT, constraints);
         data.constraints = constraints;
         this.http
           .put('v1/pr/convert/dew1to2', data, { withCredential: true })
           .subscribe((receivedData: ParseApiBean) => {
             $('.error-text').addClass('hide');
             this.stateservice.setConstraints(receivedData.parsedConstraints);
+            this.logger.log(LogHeader.DATA_RECEIVED, receivedData.parsedConstraints);
             setTimeout(()=> {
               this.updateActorsConstraint()
             }, 2000);
@@ -340,6 +344,7 @@ export class HlbComponent implements OnInit, AfterViewInit {
             setTimeout(()=> {
               $('.error-text').addClass('hide');
             }, 3000);
+            this.logger.log(LogHeader.DATA_RECEIVED, "Error converting constraints");
           });
     });
 
@@ -776,7 +781,7 @@ export class HlbComponent implements OnInit, AfterViewInit {
         globalGraphItemParametersList = this.graphItemParametersList;
 
         //Log Data
-        this.logger.log(LogHeader.GRAPH_UPDATE, printGraphParameterData());
+        this.logger.log(LogHeader.GRAPH_UPDATE, entry.printGraphParameterData(globalGraphItemParametersList, id_of_node, id_of_edge));
       }
 
       // data.parsedConstraints.forEach(element => {
@@ -1663,6 +1668,7 @@ var globalGraphItemParametersList;
 var id_of_node = {};
 var id_of_edge = {};
 let accessibleLogger;
+let entry = new LogEntry();
 
 function swapJSON(data) {
   var temp = {};
@@ -1693,28 +1699,4 @@ function showRelevantContentInDialogBox() {
   } catch (ex) {
     //Do nothing
   }
-}
-
-function printGraphParameterData() {
-  let string = ""
-  for(var i in id_of_node) {
-    string += "Node " + i + ": (";
-    var temp = globalGraphItemParametersList[id_of_node[i]];
-    for(var j in temp) {
-      string += j + " - " + temp[j] + ", ";
-    }
-    string = string.substring(0, string.length - 2)
-    string += "), "
-  }
-  for(var i in id_of_edge) {
-    string += "Edge " + i + ": (";
-    var temp = globalGraphItemParametersList[id_of_edge[i]['id']];
-    for(var j in temp) {
-      string += j + " - " + temp[j] + ", ";
-    }
-    string = string.substring(0, string.length - 2)
-    string += "), "
-  }
-  string = string.substring(0, string.length - 2)
-  return string;
 }

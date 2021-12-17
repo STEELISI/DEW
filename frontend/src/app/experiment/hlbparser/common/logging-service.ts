@@ -102,4 +102,28 @@ export class LogEntry {
         ret += header + ": " + logData;    
         return ret;
     }
+
+    printGraphParameterData(graphItemParametersList, id_of_node, id_of_edge):string {
+        let string = ""
+        for(var i in id_of_node) {
+          string += "Node " + i + ": (";
+          var temp = graphItemParametersList[id_of_node[i]];
+          for(var j in temp) {
+            string += j + " - " + temp[j] + ", ";
+          }
+          string = string.substring(0, string.length - 2)
+          string += "), "
+        }
+        for(var i in id_of_edge) {
+          string += "Edge " + i + ": (";
+          var temp = graphItemParametersList[id_of_edge[i]['id']];
+          for(var j in temp) {
+            string += j + " - " + temp[j] + ", ";
+          }
+          string = string.substring(0, string.length - 2)
+          string += "), "
+        }
+        string = string.substring(0, string.length - 2)
+        return string;
+      }
 }
