@@ -151,6 +151,34 @@ class HandleTopologyParse(Resource):
         actors, lans, edges = hlb.HandleTopologyParse(scenarios, constraints)
         return {"status": "success", "actors": actors, "lans": lans, "edges": edges }
 
+@ns.route('/hlb/topology/graph-remove')
+class HandleTopologyGraphRemove(Resource):
+    @api.expect(topology_remove_text)
+    def put(self):
+        """
+          Update Scenarios and Bindings on removal of node/edge from graph 
+        """
+        json_data = request.get_json(force=True)
+        scenarios = json_data['scenarios']
+        bindings = json.loads(json_data['bindings'][0])
+        deleted_node = json_data['deleted_node']
+        updated_scenarios, updated_bindings = hlb.HandleTopologyGraphRemove(deleted_node, scenarios, bindings)
+        return {"status": "success", "scenarios": updated_scenarios, "bindings": updated_bindings }
+
+@ns.route('/hlb/topology-graph/generate-constrains')
+class HandleTopologyGraphGenerateConstrains(Resource):
+    @api.expect(topology_graph_generate_constraints)
+    def put(self):
+        """
+          Generate Constrains from Topology Graph 
+        """
+        json_data = request.get_json(force=True)
+        nodes = json.loads(json_data['nodes'][0])
+        edges = json.loads(json_data['edges'][0])
+        parameters = json.loads(json_data['parameters'][0])
+        constraints = hlb.HandleTopologyGraphGenerateConstrains(nodes, edges, parameters)
+        return {"status": "success", "constraints": constraints }
+
 @ns.route('/hlb/graph/parse-parameters')
 class HandleGraphParametersParse(Resource):
     @api.expect(parameter_list)

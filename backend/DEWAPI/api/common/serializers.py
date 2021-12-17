@@ -68,6 +68,18 @@ topology_text = api.model('Toplogy parsing', {
   'constraints': fields.List(fields.String,description="Constraints of the experiment",required=True)
   })
 
+topology_remove_text = api.model('Toplogy remove', {
+  'scenarios': fields.List(fields.String,description="Scenario of the experiment",required=True),
+  'bindings': fields.List(fields.String,description="Bindings of the experiment",required=True),
+  'deleted_node': fields.String(description="Deleted node label of the graph",required=True),
+  })
+
+topology_graph_generate_constraints = api.model('Toplogy graph generate constraints', {
+  'nodes': fields.List(fields.String,description="Nodes of graphs",required=True),
+  'edges': fields.List(fields.String,description="Edges of graphs",required=True),
+  'parameters': fields.List(fields.String,description="Parameters of nodes and edges",required=True),
+  })
+
 parameter_list = api.model('Parameter parsing', {
   'constraints': fields.List(fields.String,description="Constraints of the experiment",required=True),
   'parameters': fields.List(fields.String,description="Parameters of the graph",required=True),
