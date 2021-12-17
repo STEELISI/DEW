@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpService } from 'src/app/http-service.service';
 import { AuthService } from 'src/app/@auth/auth.service';
+import { data } from 'vis-network';
 
 @Injectable()
 
@@ -30,19 +31,18 @@ export class LogService {
         this.writeToLog(msg, LogLevel.Fatal, optionalParams);
     }
     
-    log(msg: any, ...optionalParams: any[]) {
+    log(header: any, msg: any) {
         console.log(msg);
-        this.writeToLog(msg.toString(), LogLevel.All, optionalParams);
+        this.writeToLog(msg.toString(), LogLevel.All, header);
     }
 
-    private writeToLog(msg: string, level: LogLevel, params: any[]) {
+    private writeToLog(msg: string, level: LogLevel, header) {
         if (this.shouldLog(level)) {
             let entry: LogEntry = new LogEntry();
             entry.message = msg;
             entry.level = level;
-            entry.extraInfo = params;
             entry.logWithDate = this.logWithDate;
-            var message = entry.buildLogString();
+            var message = entry.buildLogString(header,msg);
             const data = {
                 message: [message],
                 token: [this.authService.getToken()]
@@ -76,6 +76,14 @@ export enum LogLevel {
     Off = 6
 }
 
+export enum LogHeader {
+    KEY_PRESS = "KEY_PRESS",
+    DATA_RECEIVED = "DATA_RECEIVED",
+    DATA_SENT = "DATA_SENT",
+    GRAPH_UPDATE = "GRAPH_UPDATE",
+    TEXT_UPDATED = "TEXT_UPDATED"
+}
+
 export class LogEntry {
     // Public Properties
     entryDate: Date = new Date();
@@ -84,35 +92,14 @@ export class LogEntry {
     extraInfo: any[] = [];
     logWithDate: boolean = true;
     
-    buildLogString(): string {
+    buildLogString(header, logData): string {
         let ret: string = "";
         
         if (this.logWithDate) {
-            ret = new Date() + " - ";
+            ret = new Date() + " | ";
         }
-        
-        ret += "Type: " + LogLevel[this.level];
-        ret += " - Message: " + this.message;
-        if (this.extraInfo.length) {
-            ret += " - Extra Info: " + this.formatParams(this.extraInfo);
-        }
-        
-        return ret;
-    }
-    
-    private formatParams(params: any[]): string {
-        let ret: string = params.join(",");
-        
-        // Is there at least one object in the array?
-        if (params.some(p => typeof p == "object")) {
-            ret = "";
-            
-            // Build comma-delimited string
-            for (let item of params) {
-                ret += JSON.stringify(item) + ",";
-            }
-        }
-        
+        ret += "FRONTEND "
+        ret += header + ": " + logData;    
         return ret;
     }
 }

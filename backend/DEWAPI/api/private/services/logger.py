@@ -1,4 +1,5 @@
 import os
+from datetime import date
 
 class Logger(object):
     def log(user, message):
@@ -8,7 +9,7 @@ class Logger(object):
             path = "C:/Users/allan/Desktop/ISI Work/DEW GitHub Repo/STEELISI - DEW/backend/logs/DEW/" + user + "/"
             if (not os.path.exists(path)):
                 os.makedirs(path)
-            path = path + "frontend_logs.log"
+            path = path + "dew_" + str(date.today()) + "_logs.log"
             file = open(path, "a")  # append mode
             file.write(message)
             file.close()

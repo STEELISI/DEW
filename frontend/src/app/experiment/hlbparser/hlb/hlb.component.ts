@@ -28,7 +28,8 @@ import { GRAPH_ITEM_PARAMETERS_LIST } from '../../graph-data/graph-item-paramete
 import { GraphItemParameters, GraphItemType } from '../../graph-data/graph-item-parameters-interface';
 import { NULL_EXPR } from "@angular/compiler/src/output/output_ast";
 import { type } from "os";
-import { LogService } from '../common/logging-service';
+import { LogService, LogHeader } from '../common/logging-service';
+import { GoogleDriveService } from "src/app/google-drive-service.service";
 
 Quill.register("modules/counter", EditorService);
 
@@ -136,6 +137,7 @@ export class HlbComponent implements OnInit, AfterViewInit {
     private logger: LogService
   ) {
     this.graphItemParametersList = GRAPH_ITEM_PARAMETERS_LIST;
+    accessibleLogger = logger;
   }
 
   resetFilterList() {
@@ -618,7 +620,8 @@ export class HlbComponent implements OnInit, AfterViewInit {
   }
 
   extractInfo(data: ParseApiBean) {
-    this.logger.log(data.parsedConstraints);
+    this.logger.log(LogHeader.TEXT_UPDATED, "Constraints/Scenario Updated");
+    this.logger.log(LogHeader.DATA_RECEIVED, "Parsed Scenario - " + data.parsedScenario + " | Parsed Constraints - " + data.parsedConstraints);
     this.updateGraph();
     this.extractScenario(data.parsedScenario);
     this.storeBinding(undefined);
@@ -662,7 +665,7 @@ export class HlbComponent implements OnInit, AfterViewInit {
   }
 
   createNewGraphTypeObjectEdge(name) {
-    var temp = {}
+    var temp = {};
     temp['bandwidth'] = '1';
     temp['delay'] = '0';
     temp['ipAddress'] = '';
@@ -771,6 +774,9 @@ export class HlbComponent implements OnInit, AfterViewInit {
         var pointer = temp['type'] == GraphItemType.LAN ? id_of_node[target] : id_count-1;
         this.graphItemParametersList[pointer] = temp;
         globalGraphItemParametersList = this.graphItemParametersList;
+
+        //Log Data
+        this.logger.log(LogHeader.GRAPH_UPDATE, printGraphParameterData());
       }
 
       // data.parsedConstraints.forEach(element => {
@@ -870,14 +876,17 @@ export class HlbComponent implements OnInit, AfterViewInit {
         //Show Node/Link Content
         if(clickedNodes.length) {
           $('#dialog-box-title').html(clickedNodes[0].label) && (currentGraphItemSelection['id'] = clickedNodes[0].id) && (currentGraphItemSelection['type'] = 'node');
+          accessibleLogger.log(LogHeader.KEY_PRESS, "User Clicked on a Node");
           for(var i in id_of_node) {
             if(id_of_node[i] == currentGraphItemSelection['id'] && i.includes('lan')) {
               $('#dialog-box-title').html('LAN') && (currentGraphItemSelection['type'] = 'lan');
+              accessibleLogger.log(LogHeader.KEY_PRESS, "Node clicked was a LAN");
               break;
             }
           }
         }
         if(items.length && (clickedNodes.length == 0)) {
+          accessibleLogger.log(LogHeader.KEY_PRESS, "User Clicked on a Link");
           $('#dialog-box-title').html('Link') && (currentGraphItemSelection['id'] = items[0].edgeId) && (currentGraphItemSelection['type'] = 'link');
           var selectedEdge = items[0]['edgeId'];
           var id_of_nodes_rev = swapJSON(id_of_node);
@@ -1653,6 +1662,7 @@ var currentGraphItemSelection = {};
 var globalGraphItemParametersList;
 var id_of_node = {};
 var id_of_edge = {};
+let accessibleLogger;
 
 function swapJSON(data) {
   var temp = {};
@@ -1683,4 +1693,28 @@ function showRelevantContentInDialogBox() {
   } catch (ex) {
     //Do nothing
   }
+}
+
+function printGraphParameterData() {
+  let string = ""
+  for(var i in id_of_node) {
+    string += "Node " + i + ": (";
+    var temp = globalGraphItemParametersList[id_of_node[i]];
+    for(var j in temp) {
+      string += j + " - " + temp[j] + ", ";
+    }
+    string = string.substring(0, string.length - 2)
+    string += "), "
+  }
+  for(var i in id_of_edge) {
+    string += "Edge " + i + ": (";
+    var temp = globalGraphItemParametersList[id_of_edge[i]['id']];
+    for(var j in temp) {
+      string += j + " - " + temp[j] + ", ";
+    }
+    string = string.substring(0, string.length - 2)
+    string += "), "
+  }
+  string = string.substring(0, string.length - 2)
+  return string;
 }
