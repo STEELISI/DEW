@@ -18,7 +18,7 @@ export class HttpService {
     return environment.apiUrl;
   }
 
-  constructor(private http: HttpClient ) {
+  constructor(private http: HttpClient) {
    
   }
 
@@ -33,6 +33,7 @@ export class HttpService {
   }
 
   put(endpoint: string, data, options?): Observable<any> {
+    data['logToken'] = this.getCookie('token');
     return this.http.put(`${this.apiUrl}/${endpoint}`, data);
   }
 
@@ -43,4 +44,21 @@ export class HttpService {
   delete(endpoint: string, options?): Observable<any> {
     return this.http.delete(`${this.apiUrl}/${endpoint}`,options);
   }
+
+  getCookie(key) {
+    var name = key + "=";
+    var decodedCookie = decodeURIComponent(document.cookie);
+    var ca = decodedCookie.split(';');
+    for(var i = 0; i <ca.length; i++) {
+      var c = ca[i];
+      while (c.charAt(0) == ' ') {
+        c = c.substring(1);
+      }
+      if (c.indexOf(name) == 0) {
+        return c.substring(name.length, c.length);
+      }
+    }
+    return "";
+  }
+
 }
