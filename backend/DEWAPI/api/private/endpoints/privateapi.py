@@ -16,6 +16,7 @@ from DEWAPI.user import userObj
 from DEWAPI.api.public.services.userinfoservice import GoogleLogin
 from ..services.logger import Logger
 import globals
+import traceback
 
 
 
@@ -68,10 +69,17 @@ class ConvertDEW1To2(Resource):
       """
         Parses DEW 1.0 and converts it to 2.0
       """
-      json_data = request.get_json(force=True)
-      constraints = json_data['constraints']
-      converted_constraints = dew_parser.convert_DEW_1_to_2(constraints)
-      return {"status": "success", "parsedConstraints": converted_constraints }
+      try:
+        json_data = request.get_json(force=True)
+        user = login.getLoginUserDetail(json_data['logToken'])['emailId']
+        constraints = json_data['constraints']
+        Logger.backendLog(user,"ConvertDEW1To2()", "Entered Function")
+        converted_constraints = dew_parser.convert_DEW_1_to_2(constraints)
+        Logger.backendLog(user,"ConvertDEW1To2()", "Successfully converted constraints!")
+        return {"status": "success", "parsedConstraints": converted_constraints }
+      except BaseException:
+        Logger.backendErrorLog(user, traceback.format_exc())
+        raise Exception("Error Occured on the Server")
 
 @ns.route('/log/user-logging')
 class LogData(Resource):

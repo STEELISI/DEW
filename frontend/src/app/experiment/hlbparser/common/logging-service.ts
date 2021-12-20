@@ -94,9 +94,10 @@ export class LogEntry {
     
     buildLogString(header, logData): string {
         let ret: string = "";
-        
+        var date = new Date();
+        var dateTime = ((date.getMonth() > 8) ? (date.getMonth() + 1) : ('0' + (date.getMonth() + 1))) + '/' + ((date.getDate() > 9) ? date.getDate() : ('0' + date.getDate())) + '/' + date.getFullYear() + " " + date.toLocaleTimeString();
         if (this.logWithDate) {
-            ret = new Date() + " | ";
+            ret = dateTime + " | ";
         }
         ret += "FRONTEND "
         ret += header + ": " + logData;    
