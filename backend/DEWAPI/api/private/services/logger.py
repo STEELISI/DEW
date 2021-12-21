@@ -40,7 +40,7 @@ class Logger(object):
         try:
             now = datetime.now()
             dt_string = now.strftime("%m/%d/%Y %I:%M:%S %p")
-            log = dt_string + " | BACKEND INFO: (FUNCTION: " + function + ") "
+            log = dt_string + " | BACKEND INFO: (CLASS: " + function + ") "
             message = log + str(message)
             message = message + "\n"
             #path = "/var/log/DEW/" + user + "/"

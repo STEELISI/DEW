@@ -491,16 +491,24 @@ class HandleExperimentDelete(Resource):
     """
       Delete experiment from database
     """
-    content = request.get_json(force=True)
-    userId = userObj.getUserId()
-    experiment_id = content['id']
-    
     try:
-      em.soft_delete_experiment(userId, experiment_id)
-      return None, 204
-    except ValueError as e:
-      if str(e) == "Forbidden":
-        return {}, 403
+      content = request.get_json(force=True)
+      user = userObj.getEmailId()
+      Logger.backendLog(user,"HandleExperimentDelete()", "Entered Function")
+      userId = userObj.getUserId()
+      experiment_id = content['id']
+      
+      try:
+        em.soft_delete_experiment(userId, experiment_id)
+        Logger.backendLog(user,"HandleExperimentDelete()", "Successfully deleted experiment")
+        return None, 204
+      except ValueError as e:
+        if str(e) == "Forbidden":
+          Logger.backendLog(user,"HandleExperimentDelete()", "Unable to delete experiment")
+          return {}, 403
+    except BaseException:
+          Logger.backendErrorLog(user, traceback.format_exc())
+          raise Exception("Error Occured on the Server")
 
 @ns.route("/persist/experiment/removeaccess")
 class HandleExperimentAccessRemoval(Resource):
@@ -509,16 +517,24 @@ class HandleExperimentAccessRemoval(Resource):
     """
       Delete experiment from database
     """
-    content = request.get_json(force=True)
-    userId = userObj.getUserId()
-    experiment_id = content['id']
-    userHandle= content['userHandle']
     try:
-      em.soft_delete_access(userId, experiment_id,userHandle)
-      return None, 200
-    except ValueError as e:
-      if str(e) == "Forbidden":
-        return {}, 403
+      content = request.get_json(force=True)
+      user = userObj.getEmailId()
+      Logger.backendLog(user,"HandleExperimentAccessRemoval()", "Entered Function")
+      userId = userObj.getUserId()
+      experiment_id = content['id']
+      userHandle= content['userHandle']
+      try:
+        em.soft_delete_access(userId, experiment_id,userHandle)
+        Logger.backendLog(user,"HandleExperimentAccessRemoval()", "Successfully deleted access")
+        return None, 200
+      except ValueError as e:
+        if str(e) == "Forbidden":
+          Logger.backendLog(user,"HandleExperimentAccessRemoval()", "Unable to delete access")
+          return {}, 403
+    except BaseException:
+          Logger.backendErrorLog(user, traceback.format_exc())
+          raise Exception("Error Occured on the Server")
 
 @ns.route("/persist/experiment/versions")
 class HandleExperimentVersions(Resource):
@@ -527,16 +543,23 @@ class HandleExperimentVersions(Resource):
         """
           Get versions of experiment from database
         """
-        content = request.get_json(force=True)
-        userId = userObj.getUserId()
-        experiment_id = content['id']
-        versions = em.get_experiment_versions(experiment_id, userId)
-
         try:
-            return { "status": "success", "versions": versions}
-        except ValueError as e:
-            if str(e) == "Forbidden":
+          content = request.get_json(force=True)
+          user = userObj.getEmailId()
+          Logger.backendLog(user,"HandleExperimentVersions()", "Entered Function")
+          userId = userObj.getUserId()
+          experiment_id = content['id']
+          versions = em.get_experiment_versions(experiment_id, userId)
+          try:
+              Logger.backendLog(user,"HandleExperimentVersions()", "Successfully retrieved versions")
+              return { "status": "success", "versions": versions}
+          except ValueError as e:
+              if str(e) == "Forbidden":
+                Logger.backendLog(user,"HandleExperimentVersions()", "Unable to retrieve versions")
                 return {}, 403
+        except BaseException:
+          Logger.backendErrorLog(user, traceback.format_exc())
+          raise Exception("Error Occured on the Server")
 
 @ns.route("/export/dew")
 class HandleExportToDEW(Resource):
@@ -545,17 +568,25 @@ class HandleExportToDEW(Resource):
         """
         Get experiment in DEW format
         """
-        content = request.get_json(force=True)
-        userId = userObj.getUserId()
         try:
-            dew_content = em.dew_content(content['id'], userId)
-            result = {}
-            result['status'] = True
-            result['dew_content'] = dew_content
-            return result, 200
-        except ValueError as e:
-            if str(e) == "Forbidden":
+          content = request.get_json(force=True)
+          user = userObj.getEmailId()
+          Logger.backendLog(user,"HandleExportToDEW()", "Entered Function")
+          userId = userObj.getUserId()
+          try:
+              dew_content = em.dew_content(content['id'], userId)
+              result = {}
+              result['status'] = True
+              result['dew_content'] = dew_content
+              Logger.backendLog(user,"HandleExportToDEW()", "Successfully exported to DEW")
+              return result, 200
+          except ValueError as e:
+              if str(e) == "Forbidden":
+                Logger.backendLog(user,"HandleExportToDEW()", "Unable to export to DEW")
                 return {}, 403
+        except BaseException:
+          Logger.backendErrorLog(user, traceback.format_exc())
+          raise Exception("Error Occured on the Server")
 
 @ns.route("/persist/experiment/copy")
 class HandleExperimentCopy(Resource):
@@ -564,20 +595,27 @@ class HandleExperimentCopy(Resource):
     """
       Duplicate the experiment
     """
-    content = request.get_json(force=True)
-    userId = userObj.getUserId()
-    experiment_id = content['id']
-    
     try:
-      experiment = em.get_experiment(experiment_id, userId)
-      copied_experiment = em.copy_experiment(experiment, userId).to_dict()
-      result = {}
-      result['status'] = True
-      result['experiment_id'] = copied_experiment['id']
-      return result, 201
-    except ValueError as e:
-      if str(e) == "Forbidden":
-        return {}, 403
+      content = request.get_json(force=True)
+      user = userObj.getEmailId()
+      Logger.backendLog(user,"HandleExperimentCopy()", "Entered Function")
+      userId = userObj.getUserId()
+      experiment_id = content['id']
+      try:
+        experiment = em.get_experiment(experiment_id, userId)
+        copied_experiment = em.copy_experiment(experiment, userId).to_dict()
+        result = {}
+        result['status'] = True
+        result['experiment_id'] = copied_experiment['id']
+        Logger.backendLog(user,"HandleExperimentCopy()", "Successfully duplicated the experiment")
+        return result, 201
+      except ValueError as e:
+        if str(e) == "Forbidden":
+          Logger.backendLog(user,"HandleExperimentCopy()", "Unable to duplicate the experiment")
+          return {}, 403
+    except BaseException:
+          Logger.backendErrorLog(user, traceback.format_exc())
+          raise Exception("Error Occured on the Server")
 
 @ns.route("/persist/experiment/grantaccess")
 class HandleExperimentAccess(Resource):
@@ -586,20 +624,28 @@ class HandleExperimentAccess(Resource):
     """
      Grant experiment access
     """
-    content = request.get_json(force=True)
-    userId = userObj.getUserId()
-    userHandle = content['userHandle']
-    experiment_id = content['id']
-    accessLevel = content['accessLevel']
     try:
-      if int(accessLevel)>0 and int(accessLevel)<=4:
-        result = em.grantExperimentAccess(experiment_id, userId,userHandle,accessLevel)
-      else:
-        result = {'error':'Invalid Access Level'}
-      return result, 200
-    except ValueError as e:
-      if str(e) == "Forbidden":
-        return {}, 403
+      content = request.get_json(force=True)
+      user = userObj.getEmailId()
+      Logger.backendLog(user,"HandleExperimentAccess()", "Entered Function")
+      userId = userObj.getUserId()
+      userHandle = content['userHandle']
+      experiment_id = content['id']
+      accessLevel = content['accessLevel']
+      try:
+        if int(accessLevel)>0 and int(accessLevel)<=4:
+          result = em.grantExperimentAccess(experiment_id, userId,userHandle,accessLevel)
+        else:
+          result = {'error':'Invalid Access Level'}
+        Logger.backendLog(user,"HandleExperimentAccess()", "Successfully granted access. Result - " + str(result))
+        return result, 200
+      except ValueError as e:
+        if str(e) == "Forbidden":
+          Logger.backendLog(user,"HandleExperimentAccess()", "Unable to grant access")
+          return {}, 403
+    except BaseException:
+          Logger.backendErrorLog(user, traceback.format_exc())
+          raise Exception("Error Occured on the Server")
 
 @ns.route("/persist/experiment/control")
 class HandleExperimentControl(Resource):
@@ -608,23 +654,39 @@ class HandleExperimentControl(Resource):
     """
      Grant experiment Control
     """
-    content = request.get_json(force=True)
-    userId = userObj.getUserId()
-    experiment_id = content['id']
-    
     try:
-      result = em.getExperimentControlInfoByUserId(experiment_id, userId)
-      return result, 200
-    except ValueError as e:
-      if str(e) == "Forbidden":
-        return {}, 403
+      content = request.get_json(force=True)
+      user = userObj.getEmailId()
+      Logger.backendLog(user,"HandleExperimentControl()", "Entered Function")
+      userId = userObj.getUserId()
+      experiment_id = content['id']
+      
+      try:
+        result = em.getExperimentControlInfoByUserId(experiment_id, userId)
+        Logger.backendLog(user,"HandleExperimentControl()", "Granted experiment control")
+        return result, 200
+      except ValueError as e:
+        if str(e) == "Forbidden":
+          Logger.backendLog(user,"HandleExperimentControl()", "Unable to grant experiment control")
+          return {}, 403
+    except BaseException:
+          Logger.backendErrorLog(user, traceback.format_exc())
+          raise Exception("Error Occured on the Server")
 
 @ns.route('/persist/getUserAccessList/')
 class HandleExperimentUserControlList(Resource):
     @api.expect(userAccessListModel)
     def post(self):
+      try:
         json_data = request.get_json(force=True)
-        return em.getUserAccessList(userObj.getUserId(),json_data['experiment_id'])
+        user = userObj.getEmailId()
+        Logger.backendLog(user,"HandleExperimentUserControlList()", "Entered Function")
+        result = em.getUserAccessList(userObj.getUserId(),json_data['experiment_id'])
+        Logger.backendLog(user,"HandleExperimentUserControlList()", "Successfully retrieved user access list")
+        return result
+      except BaseException:
+        Logger.backendErrorLog(user, traceback.format_exc())
+        raise Exception("Error Occured on the Server")
 
 @ns.route('/upload/dew')
 class HandleUploadParser(Resource):
