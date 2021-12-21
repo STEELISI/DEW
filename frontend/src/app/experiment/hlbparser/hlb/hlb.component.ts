@@ -57,8 +57,8 @@ export class HlbComponent implements OnInit, AfterViewInit {
   behaviorService: EditorService;
   filteredBindingHandle: Observable<string[]>;
   filteredBindingHandleForEvent: Observable<string[]>;
-  graph_nodes: DataSet<any>;
-  graph_edges: DataSet<any>;
+  topologyGraphNodes: DataSet<any>;
+  topologyGraphEdges: DataSet<any>;
   graph_data: any;
   graph_container: any;
   graphDescription: string;
@@ -770,17 +770,17 @@ export class HlbComponent implements OnInit, AfterViewInit {
         // });
 
         // Create an array with nodes
-        this.graph_nodes = new DataSet<any>(
+        this.topologyGraphNodes = new DataSet<any>(
           temp_nodes
         );
 
         // Create an array with edges
-        this.graph_edges = new DataSet<any>(
+        this.topologyGraphEdges = new DataSet<any>(
           temp_edges
         );
 
-        var nodes = this.graph_nodes;
-        var edges = this.graph_edges;
+        var nodes = this.topologyGraphNodes;
+        var edges = this.topologyGraphEdges;
 
         this.graph_data = { nodes, edges };
 
@@ -798,6 +798,21 @@ export class HlbComponent implements OnInit, AfterViewInit {
               callback(nodeData);
             },
             addEdge: (edgeData, callback) => {
+              //Check for self connection
+              if (edgeData.from == edgeData.to) {
+                return;
+              }
+              //Check if such an edge already exists or 2 LANs are connected
+              const sameEdges = this.topologyGraphEdges.get({
+                filter: (edge) =>
+                  (edge.from == edgeData.from && edge.to == edgeData.to) ||
+                  (edge.from == edgeData.to && edge.to == edgeData.from) ||
+                  (this.topologyGraphNodes.get(edgeData.from)["group"] == "LAN" && this.topologyGraphNodes.get(edgeData.to)["group"] == "LAN")
+              });
+              if (sameEdges.length) {
+                return;
+              }
+
               this.clearMessage();
               edgeData.id = this.assignNewEdgeInTopologyGraph(edgeData.from, edgeData.to);
               this.onTopologyChange();
@@ -811,7 +826,7 @@ export class HlbComponent implements OnInit, AfterViewInit {
                 delete id_of_edge[Object.keys(id_of_edge).find(edge_name => id_of_edge[edge_name].id == deletedEdge)]
               }
 
-              this.onTopologyDelete(this.graph_nodes.get(data.nodes[0])['label']);
+              this.onTopologyDelete(this.topologyGraphNodes.get(data.nodes[0])['label']);
               this.onTopologyChange();
               callback(data);
             },
@@ -819,7 +834,7 @@ export class HlbComponent implements OnInit, AfterViewInit {
               //Remove deleted edge from id_of_edge
               delete id_of_edge[Object.keys(id_of_edge).find(edge_name => id_of_edge[edge_name].id == data.edges[0])]
               delete globalGraphItemParametersList[data.edges[0] + ""]
-              const edge = this.graph_edges.get(data.edges[0]);
+              const edge = this.topologyGraphEdges.get(data.edges[0]);
               this.onTopologyChange();
               callback(data);
             }
@@ -975,6 +990,20 @@ export class HlbComponent implements OnInit, AfterViewInit {
               addNode: (data, callback) => { return; },
               deleteNode: (data, callback) => { return; },
               addEdge: (edgeData, callback) => {
+                
+                if (edgeData.from == edgeData.to) {
+                  return;
+                }
+                //Check if such an edge already exists
+                const sameEdges = this.dependencyGraphEdges.get({
+                  filter: (edge) =>
+                    (edge.from == edgeData.from && edge.to == edgeData.to) ||
+                    (edge.from == edgeData.to && edge.to == edgeData.from)
+                });
+                if (sameEdges.length) {
+                  return;
+                }
+
                 edgeData.arrows = {
                   to: {
                     enabled: true,
