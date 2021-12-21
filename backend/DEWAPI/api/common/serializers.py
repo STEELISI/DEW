@@ -80,6 +80,16 @@ topology_graph_generate_constraints = api.model('Toplogy graph generate constrai
   'parameters': fields.List(fields.String,description="Parameters of nodes and edges",required=True),
   })
 
+dependency_graph_update_edge = api.model('Dependency graph update edge', {
+  'scenarios': fields.List(fields.String,description="Scenario of the experiment",required=True),
+  'bindings': fields.List(fields.String,description="Bindings of the experiment",required=True),
+  'actor_from': fields.String(description="Name of actor from which the event is emitted",required=True),
+  'action_from': fields.String(description="Name of action from which the event is emitted",required=True),
+  'actor_to': fields.String(description="Name of actor to which the event is emitted",required=True),
+  'action_to': fields.String(description="Name of action to which the event is emitted",required=True),
+  'update_type': fields.String(description="INSERT/REMOVE; Update the graph by adding/deleting and edge",required=True),
+  })
+
 parameter_list = api.model('Parameter parsing', {
   'constraints': fields.List(fields.String,description="Constraints of the experiment",required=True),
   'parameters': fields.List(fields.String,description="Parameters of the graph",required=True),

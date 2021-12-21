@@ -62,6 +62,8 @@ export class HlbComponent implements OnInit, AfterViewInit {
   graph_data: any;
   graph_container: any;
   graphDescription: string;
+  dependencyGraphNodes: DataSet<any>;
+  dependencyGraphEdges: DataSet<any>;
   filterBindingOptions = [
     "tcpdump -i expeth($node) -w $file",
     "ping $node",
@@ -935,7 +937,6 @@ export class HlbComponent implements OnInit, AfterViewInit {
           links.push(e2)
         }
 
-        // const colors = ["#003f5c", "#2f4b7c", "#665191", "#a05195", "#d45087", "#f95d6a", "#ff7c43", "#ffa600"];
         const colors = ["#F0C929",
           "#F48B29",
           "#AC0D0D",
@@ -961,27 +962,48 @@ export class HlbComponent implements OnInit, AfterViewInit {
           "#B983FF",
           "#1DB9C3",
           "#005F99"]
+          
+        this.dependencyGraphNodes = new DataSet<any>(nodes);
+        this.dependencyGraphEdges = new DataSet<any>(links);
 
         this.dependencyGraphLegends = Object.keys(actors).map(actor => { return { actor: actor, color: colors[actors[actor] - 1] } })
 
-        this.dependencyNetworkInstance = new Network(this.dependencyGraphNetwork.nativeElement, { nodes, edges: links }, {
+        this.dependencyNetworkInstance = new Network(this.dependencyGraphNetwork.nativeElement, { nodes: this.dependencyGraphNodes, edges: this.dependencyGraphEdges }, {
           manipulation: {
-            enabled: false,
-            initiallyActive: false,
-            addNode: (nodeData, callback) => {
-              this.clearMessage();
-              callback(nodeData);
-            },
-            addEdge: (edgeData, callback) => {
-              edgeData.arrows = {
-                to: {
-                  enabled: true,
-                  type: "arrow",
-                },
-              };
-              this.clearMessage();
-              callback(edgeData);
-            }
+              enabled: false,
+              initiallyActive: false,
+              addNode: (data, callback) => { return; },
+              deleteNode: (data, callback) => { return; },
+              addEdge: (edgeData, callback) => {
+                edgeData.arrows = {
+                  to: {
+                    enabled: true,
+                    type: "arrow",
+                  },
+                };
+                const actorFrom = this.dependencyGraphNodes.get(edgeData.from)["data"].actors[0];
+                const actionFrom = this.dependencyGraphNodes.get(edgeData.from)["data"].action;
+
+                const actorTo = this.dependencyGraphNodes.get(edgeData.to)["data"].actors[0];
+                const actionTo = this.dependencyGraphNodes.get(edgeData.to)["data"].action;
+                this.onDependencyUpdateEdge("INSERT", actorFrom, actionFrom, actorTo, actionTo).then(eventName => {
+                  edgeData.label = eventName;
+                  callback(edgeData);
+                })
+                this.clearMessage();
+              },
+              deleteEdge: (data, callback) => {
+                const edgeData = this.dependencyGraphEdges.get(data.edges[0]);
+                
+                const actorFrom = this.dependencyGraphNodes.get(edgeData["from"])["data"].actors[0];
+                const actionFrom = this.dependencyGraphNodes.get(edgeData["from"])["data"].action;
+
+                const actorTo = this.dependencyGraphNodes.get(edgeData["to"])["data"].actors[0];
+                const actionTo = this.dependencyGraphNodes.get(edgeData["to"])["data"].action;
+                this.onDependencyUpdateEdge("REMOVE", actorFrom, actionFrom, actorTo, actionTo)
+                this.clearMessage();
+                callback(data);
+              }
           },
           layout: {
             hierarchical: {
@@ -1004,7 +1026,6 @@ export class HlbComponent implements OnInit, AfterViewInit {
               color: '#FFFFFF'
             }
           },
-          physics: false  ,
           groups: Object.assign({}, ...colors.map((color, index) => ({ ["group" + (index + 1)]: { color } })))
         });
       })
@@ -1103,7 +1124,6 @@ export class HlbComponent implements OnInit, AfterViewInit {
   onTopologyDelete(deletedNode: string) {
     var request = {
       scenarios: this.getScenariosFromEditor(),
-      constraints: this.getConstraintsFromEditor(),
       bindings: [JSON.stringify(this.bindingList)],
       deleted_node: deletedNode,
     };
@@ -1177,6 +1197,28 @@ export class HlbComponent implements OnInit, AfterViewInit {
     this.graphItemParametersList[currentGraphItemSelection['id']] = temp;
     globalGraphItemParametersList = this.graphItemParametersList;
     this.onTopologyChange();
+  }
+
+  onDependencyUpdateEdge(updateType, actorFrom, actionFrom, actorTo, actionTo) {
+    return new Promise((resolve, reject) => {
+      var request = {
+        scenarios: this.getScenariosFromEditor(),
+        bindings: [JSON.stringify(this.bindingList)],
+        actor_from: actorFrom,
+        action_from: actionFrom,
+        actor_to: actorTo,
+        action_to: actionTo,
+        update_type: updateType
+      };
+      this.http
+        .put('v1/pr/hlb/dependency-graph/update-edge', request, { withCredential: true })
+        .subscribe((receivedData: ParseApiBean) => {
+          this.stateservice.setBehavior(receivedData['scenarios']);
+          this.stateservice.setBindings(receivedData['bindings']);
+          resolve(receivedData['event_name']);
+        });
+    });
+    
   }
 
   removeConstraintSentences(data) {

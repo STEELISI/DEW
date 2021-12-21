@@ -179,6 +179,24 @@ class HandleTopologyGraphGenerateConstrains(Resource):
         constraints = hlb.HandleTopologyGraphGenerateConstrains(nodes, edges, parameters)
         return {"status": "success", "constraints": constraints }
 
+@ns.route('/hlb/dependency-graph/update-edge')
+class HandleDependencyGraphUpdateEdge(Resource):
+    @api.expect(dependency_graph_update_edge)
+    def put(self):
+        """
+          Update Scenarios and Bindings by adding/removing the edge 
+        """
+        json_data = request.get_json(force=True)
+        scenarios = json_data['scenarios']
+        bindings = json.loads(json_data['bindings'][0])
+        actor_from = json_data['actor_from']
+        action_from = json_data['action_from']
+        actor_to = json_data['actor_to']
+        action_to = json_data['action_to']
+        update_type = json_data['update_type']
+        updated_scenarios, updated_bindings, event_name = hlb.HandleDependencyGraphUpdateEdge(update_type, actor_from, action_from, actor_to, action_to, scenarios, bindings)
+        return {"status": "success", "scenarios": updated_scenarios, "bindings": updated_bindings, "event_name": event_name }
+
 @ns.route('/hlb/graph/parse-parameters')
 class HandleGraphParametersParse(Resource):
     @api.expect(parameter_list)

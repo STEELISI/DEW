@@ -644,6 +644,64 @@ class HLBService():
 
         return constraints
 
+    def HandleDependencyGraphUpdateEdge(self, update_type, actor_from, action_from, actor_to, action_to, scenarios, bindings):
+        gen = bashGenerator(scenario=scenarios,constraints="",bindings=[])
+        gen.generate()
+        parsed_scenarios = gen.scenario_parsed
+        updated_scenarios = []
+        updated_bindings = bindings
+
+        scenario_parse_index = {
+            "when": 0,
+            "actor": 1,
+            "action": 2,
+            "emit": 3,
+            "wait": 4
+        }
+
+        def generateScenarioSentence(scenario):
+            sentence = []
+            if scenario[scenario_parse_index["when"]] != None and len(scenario[scenario_parse_index["when"]]) != 0: #when
+                sentence.append("when " + ", ".join(scenario[scenario_parse_index["when"]]))
+            if scenario[scenario_parse_index["wait"]] != None: #when
+                sentence.append("wait " + scenario[scenario_parse_index["wait"]])
+            sentence.append(scenario[scenario_parse_index["actor"]][0]) #actor
+            sentence.append(scenario[scenario_parse_index["action"]][0]) #action
+            if scenario[scenario_parse_index["emit"]] != None: #emit
+                sentence.append("emit " + ", ".join(scenario[scenario_parse_index["emit"]]))
+
+            return " ".join(sentence)
+
+        event_name = actor_from + "Run" + action_from + "Sig"
+
+        #Add event name to from if no emit exists
+        for scenario in parsed_scenarios:
+            scenario = list(scenario)
+            if actor_from in scenario[scenario_parse_index["actor"]] and action_from in scenario[scenario_parse_index["action"]]:
+                emit_events = scenario[scenario_parse_index["emit"]]
+                if emit_events == None: #Add new event name
+                    emit_events = [event_name]
+                    scenario[scenario_parse_index["emit"]] = emit_events
+                else: #Get existing event name
+                    event_name = emit_events[0]
+                break
+          
+        #Remove/Insert the event from the dependent action
+        for scenario in parsed_scenarios:
+            scenario = list(scenario)
+            if actor_to in scenario[scenario_parse_index["actor"]] and action_to in scenario[scenario_parse_index["action"]]:
+                when_events = scenario[scenario_parse_index["when"]]
+                if update_type == "REMOVE": #Remove event
+                    when_events.remove(event_name)
+                else: #Add event
+                    if when_events == None:
+                        when_events = []
+                    when_events.append(event_name)
+                scenario[scenario_parse_index["when"]] = when_events
+            updated_scenarios.append(generateScenarioSentence(scenario))
+
+        return (updated_scenarios, updated_bindings, event_name)
+
     #Handle generateNS
     def HandleNS(self,json_data):
         errors = []
