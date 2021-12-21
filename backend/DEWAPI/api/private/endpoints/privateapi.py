@@ -696,55 +696,62 @@ class HandleUploadParser(Resource):
         """
           Get the actors, behaviors and constraints for a given string of text parsed using NLP.
         """
-        uploaded_file = upload_parser.parse_args()['file']
-        content = uploaded_file.read()
-        x = dew_parser.get_behaviors_and_constraints(content.decode("utf-8"))
+        try:
+          user = userObj.getEmailId()
+          Logger.backendLog(user,"HandleUploadParser()", "Entered Class")
+          uploaded_file = upload_parser.parse_args()['file']
+          content = uploaded_file.read()
+          x = dew_parser.get_behaviors_and_constraints(content.decode("utf-8"))
 
-        # This section is being done to extract the bindings category as
-        # only the key and values are stored in dew file
+          # This section is being done to extract the bindings category as
+          # only the key and values are stored in dew file
 
-        # Creating data dictionary to send to the parser api
-        data = {
-            'ParseType': 'bash',
-            'Scenario': x['behaviors'],
-            'Constraints': [],
-        }
-        parsed_data = hlb.HandleParse(data)
+          # Creating data dictionary to send to the parser api
+          data = {
+              'ParseType': 'bash',
+              'Scenario': x['behaviors'],
+              'Constraints': [],
+          }
+          parsed_data = hlb.HandleParse(data)
 
-        # copy into another variable
-        bindings_copy = x['bindings']
+          # copy into another variable
+          bindings_copy = x['bindings']
 
-        # define function to flatten lists
-        def flatten(lst):
-            lst = [a for a in lst if a is not None]
-            return [item for sublist in lst for item in sublist]
+          # define function to flatten lists
+          def flatten(lst):
+              lst = [a for a in lst if a is not None]
+              return [item for sublist in lst for item in sublist]
 
-        # Get all actions, events and unknowns
-        all_actions = flatten([x[2] for x in parsed_data['parsedScenario']])
-        all_events = flatten([x[3] for x in parsed_data['parsedScenario']])
+          # Get all actions, events and unknowns
+          all_actions = flatten([x[2] for x in parsed_data['parsedScenario']])
+          all_events = flatten([x[3] for x in parsed_data['parsedScenario']])
 
-        formatted_bindings = []
-        for val in bindings_copy:
-            if val[0] in all_actions:
-                formatted_bindings.append({
-                    'category': 'action',
-                    'key': val[0],
-                    'value': val[1]
-                })
-            elif val[0] in all_events:
-                formatted_bindings.append({
-                    'category': 'event',
-                    'key': val[0],
-                    'value': val[1]
-                })
-            else:
-                formatted_bindings.append({
-                    'category': 'unknown',
-                    'key': val[0],
-                    'value': val[1]
-                })
-        x['bindings'] = formatted_bindings
-        return x
+          formatted_bindings = []
+          for val in bindings_copy:
+              if val[0] in all_actions:
+                  formatted_bindings.append({
+                      'category': 'action',
+                      'key': val[0],
+                      'value': val[1]
+                  })
+              elif val[0] in all_events:
+                  formatted_bindings.append({
+                      'category': 'event',
+                      'key': val[0],
+                      'value': val[1]
+                  })
+              else:
+                  formatted_bindings.append({
+                      'category': 'unknown',
+                      'key': val[0],
+                      'value': val[1]
+                  })
+          x['bindings'] = formatted_bindings
+          Logger.backendLog(user,"HandleUploadParser()", "Successfully parsed actors, behaviors and constraints")
+          return x
+        except BaseException:
+          Logger.backendErrorLog(user, traceback.format_exc())
+          raise Exception("Error Occured on the Server")
 
 @ns.route('/token-based-auth/create')
 class HandleTokenBasedAuthCreateToken(Resource):
@@ -753,17 +760,25 @@ class HandleTokenBasedAuthCreateToken(Resource):
         """
         Create token for a given experiment
         """
-        content = request.get_json(force=True)
-        experiment_id = content['experiment_id']
-        access_level = content['access_level']
-        creator_uid = userObj.getUserId()
-
         try:
+          user = userObj.getEmailId()
+          Logger.backendLog(user,"HandleTokenBasedAuthCreateToken()", "Entered Class")
+          content = request.get_json(force=True)
+          experiment_id = content['experiment_id']
+          access_level = content['access_level']
+          creator_uid = userObj.getUserId()
+
+          try:
             token = tm.create_token(experiment_id, access_level, creator_uid)
+            Logger.backendLog(user,"HandleTokenBasedAuthCreateToken()", "Successfully created token")
             return token, 201
-        except ValueError as e:
+          except ValueError as e:
             if str(e) == "Forbidden":
-                return {}, 403
+              Logger.backendLog(user,"HandleTokenBasedAuthCreateToken()", "Unable to create token")
+              return {}, 403
+        except BaseException:
+          Logger.backendErrorLog(user, traceback.format_exc())
+          raise Exception("Error Occured on the Server")
 
 
 @ns.route('/token-based-auth/getTokenList')
@@ -773,24 +788,31 @@ class HandleTokenBasedAuthTokenList(Resource):
         """
         Create token for a given experiment
         """
-        content = request.get_json(force=True)
-        experiment_id = content['experiment_id']
-        creator_uid = userObj.getUserId()
-
         try:
-            result = []
-            tokenList = tm.getTokenList(experiment_id, creator_uid)
-            for t in tokenList:
-                obj = {}
-                obj['token'] = t['token']
-                obj['accessLevel'] = t['access_level']
-                obj['status'] = t['active']
-                result.append(obj)
-            return result, 200
-        except ValueError as e:
-            if str(e) == "Forbidden":
-                return {}, 403
+          user = userObj.getEmailId()
+          Logger.backendLog(user,"HandleTokenBasedAuthTokenList()", "Entered Class")
+          content = request.get_json(force=True)
+          experiment_id = content['experiment_id']
+          creator_uid = userObj.getUserId()
 
+          try:
+              result = []
+              tokenList = tm.getTokenList(experiment_id, creator_uid)
+              for t in tokenList:
+                  obj = {}
+                  obj['token'] = t['token']
+                  obj['accessLevel'] = t['access_level']
+                  obj['status'] = t['active']
+                  result.append(obj)
+              Logger.backendLog(user,"HandleTokenBasedAuthTokenList()", "Successfully retrieved token list")
+              return result, 200
+          except ValueError as e:
+              if str(e) == "Forbidden":
+                Logger.backendLog(user,"HandleTokenBasedAuthTokenList()", "Unable to retrieve token list")
+                return {}, 403
+        except BaseException:
+          Logger.backendErrorLog(user, traceback.format_exc())
+          raise Exception("Error Occured on the Server")
 
 
 @ns.route('/profile/accounts/deterLab/save')
@@ -800,17 +822,25 @@ class HandleProfileDeterLabSaveAccounts(Resource):
         """
         Create token for a given experiment
         """
-        content = request.get_json(force=True)
-        username = content['username']
-        password = content['password']
-        creator_uid = userObj.getUserId()
-        print(creator_uid)
         try:
-            result = ps.save(creator_uid, username, password)
-            return result, 200
-        except ValueError as e:
-            if str(e) == "Forbidden":
+          user = userObj.getEmailId()
+          Logger.backendLog(user,"HandleProfileDeterLabSaveAccounts()", "Entered Class")
+          content = request.get_json(force=True)
+          username = content['username']
+          password = content['password']
+          creator_uid = userObj.getUserId()
+          print(creator_uid)
+          try:
+              result = ps.save(creator_uid, username, password)
+              Logger.backendLog(user,"HandleProfileDeterLabSaveAccounts()", "Saved Account")
+              return result, 200
+          except ValueError as e:
+              if str(e) == "Forbidden":
+                Logger.backendLog(user,"HandleProfileDeterLabSaveAccounts()", "Unable to save account")
                 return {}, 403
+        except BaseException:
+          Logger.backendErrorLog(user, traceback.format_exc())
+          raise Exception("Error Occured on the Server")
 
 
 @ns.route('/profile/accounts/deterLab/get')
@@ -819,14 +849,21 @@ class HandleProfileDeterLabGetAccounts(Resource):
         """
         Create token for a given experiment
         """
-        creator_uid = userObj.getUserId()
-
         try:
-            result = ps.getList(creator_uid)
-            return result, 200
-        except ValueError as e:
-            if str(e) == "Forbidden":
+          user = userObj.getEmailId()
+          Logger.backendLog(user,"HandleProfileDeterLabGetAccounts()", "Entered Class")
+          creator_uid = userObj.getUserId()
+          try:
+              result = ps.getList(creator_uid)
+              Logger.backendLog(user,"HandleProfileDeterLabGetAccounts()", "Successfully retrieved accounts")
+              return result, 200
+          except ValueError as e:
+              if str(e) == "Forbidden":
+                Logger.backendLog(user,"HandleProfileDeterLabGetAccounts()", "Unable to retrieve accounts")
                 return {}, 403
+        except BaseException:
+          Logger.backendErrorLog(user, traceback.format_exc())
+          raise Exception("Error Occured on the Server")
 
 @ns.route('/profile/accounts/deterLab/delete')
 class HandleProfileDeterLabDeleteAccounts(Resource):
@@ -834,14 +871,22 @@ class HandleProfileDeterLabDeleteAccounts(Resource):
         """
         Create token for a given experiment
         """
-        creator_uid = userObj.getUserId()
-        daid = request.args.get('id')
         try:
-            result = ps.delete(creator_uid,daid)
-            return result, 200
-        except ValueError as e:
-            if str(e) == "Forbidden":
+          user = userObj.getEmailId()
+          Logger.backendLog(user,"HandleProfileDeterLabDeleteAccounts()", "Entered Class")
+          creator_uid = userObj.getUserId()
+          daid = request.args.get('id')
+          try:
+              result = ps.delete(creator_uid,daid)
+              Logger.backendLog(user,"HandleProfileDeterLabDeleteAccounts()", "Successfully deleted account")
+              return result, 200
+          except ValueError as e:
+              if str(e) == "Forbidden":
+                Logger.backendLog(user,"HandleProfileDeterLabDeleteAccounts()", "Unable to delete account")
                 return {}, 403
+        except BaseException:
+          Logger.backendErrorLog(user, traceback.format_exc())
+          raise Exception("Error Occured on the Server")
 
 @ns.route('/deterlab/project/exists')
 class HandleDeterLabProjectExists(Resource):
