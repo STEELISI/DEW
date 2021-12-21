@@ -321,100 +321,6 @@ class HLBService():
                     j += 1
                     edges.append({ 'id': e + str(j), 'source': s, 'target': t, 'label': e, 'data': {'all_or_any': all_any_flags[t] }})
         return nodes, edges
-    
-    def HandleGraphParameterParse(self, param, nodesData, edgesData, constraints):
-        updated_constraints = []
-        parameters = json.loads(param)
-        swapped_nodes = json.loads(nodesData)
-        edges = json.loads(edgesData)
-        nodes = dict((v,k) for k,v in swapped_nodes.items())
-        param_names = {
-            'operatingSystem': 0,
-            'hardwareType': 1,
-            'ipAddress': 2,
-            'num': 3
-        }
-        swapped_param_names = dict((v,k) for k,v in param_names.items())
-        swapped_param_names[param_names['operatingSystem']] = 'os'
-        swapped_param_names[param_names['ipAddress']] = 'location'
-        swapped_param_names[param_names['hardwareType']] = 'nodeType'
-        tempStruct = {}
-        len_keys = len(nodes.keys())
-        for i in nodes.keys():
-            tempStruct[i] = [""] * len_keys
-        for i in parameters.keys(): #Populate the tempStruct 
-            for j in parameters[i].keys():
-                try:
-                    tempStruct[int(i)][param_names[j]] = parameters[i][j]
-                except:
-                    pass
-                pass
-        param_list = []
-        current_param_list = []
-        current_nodes = []
-        temp_tempStruct = tempStruct.copy()
-        for i in tempStruct.keys():
-            if('lan' in nodes[i]):
-                continue
-            temp_tempStruct.pop(i, None)
-            while(tempStruct[i].count("") != len(tempStruct[i])):        
-                current_nodes = [i]
-                current_param_list = []
-                maxCount = 0
-                for j in temp_tempStruct.keys():
-                    count = 0
-                    param_list = []
-                    for k in range(len(temp_tempStruct[j])):
-                        if(tempStruct[i][k]==tempStruct[j][k] and tempStruct[i][k]!=""):
-                            count = count + 1
-                            param_list.append(k)
-                    if(maxCount == count and count!=0):
-                        missing_params = [i for i in current_param_list if i not in param_list]
-                        if(missing_params == []):
-                            current_nodes.append(j)
-                    if(maxCount<count):
-                            maxCount = count
-                            current_nodes = [i,j]
-                            current_param_list = param_list
-                if(maxCount == 0):
-                    for j in range(len(tempStruct[i])):
-                        if(tempStruct[i][j]!=""):
-                            current_param_list.append(j)
-                sentence = ""
-                for j in current_nodes:
-                    sentence = sentence + nodes[j] + " "
-                sentence = sentence + "[ "
-                for j in current_param_list:
-                    sentence = sentence + swapped_param_names[j] + " " + tempStruct[i][j] + ", "
-                    for k in current_nodes:
-                        tempStruct[k][j] = ""
-                sentence = sentence[:-2] + " ]"
-                updated_constraints.append(sentence)
-        lan_edges = {}
-        param_names = {'bandwidth': 'bw', 'delay': 'delay'}
-        for i in edges.keys():
-            node = i.split('-')
-            if('lan' in node[1]):
-                if(node[1] not in lan_edges.keys()):
-                    lan_edges[node[1]] = []
-                lan_edges[node[1]].append(node[0])
-            else:
-                sentence = "link "
-                sentence = sentence + node[0] + " " + node[1] + " [ "
-                for k in param_names.keys():
-                    sentence = sentence + param_names[k] + " " + parameters[str(edges[i]['id'])][k] + ", "
-                sentence = sentence[:-2] + " ]"
-                updated_constraints.append(sentence)
-        for i in lan_edges.keys():
-            sentence = "lan "
-            for j in lan_edges[i]:
-                sentence = sentence + j + " "
-            sentence = sentence + "[ "
-            for k in param_names.keys():
-                    sentence = sentence + param_names[k] + " " + parameters[str(swapped_nodes[i])][k] + ", "
-            sentence = sentence[:-2] + " ]"
-            updated_constraints.append(sentence)
-        return (updated_constraints)
 
     def HandleTopologyParse(self,sceanrios,constraints):
         actors = dict()
@@ -499,7 +405,208 @@ class HLBService():
 
         return actors, lans, edges
 
+    def HandleTopologyGraphRemove(self, deleted_node, scenarios, bindings):
 
+        gen = bashGenerator(scenario=scenarios,constraints="",bindings=[])
+        gen.generate()
+        parsed_scenarios = gen.scenario_parsed
+        updated_scenarios = []
+        updated_bindings = []
+
+        scenario_parse_index = {
+            "when": 0,
+            "actor": 1,
+            "action": 2,
+            "emit": 3,
+            "wait": 4
+        }
+
+        def generateScenarioSentence(scenario):
+            sentence = []
+            if scenario[scenario_parse_index["when"]] != None and len(scenario[scenario_parse_index["when"]]) != 0: #when
+                sentence.append("when " + ", ".join(scenario[scenario_parse_index["when"]]))
+            if scenario[scenario_parse_index["wait"]] != None: #when
+                sentence.append("wait " + scenario[scenario_parse_index["wait"]])
+            sentence.append(scenario[scenario_parse_index["actor"]][0]) #actor
+            sentence.append(scenario[scenario_parse_index["action"]][0]) #action
+            if scenario[scenario_parse_index["emit"]] != None: #emit
+                sentence.append("emit " + ", ".join(scenario[scenario_parse_index["emit"]]))
+
+            return " ".join(sentence)
+
+        deleted_events = []
+        deleted_actions = []
+        filtered_parsed_scenarios = []
+        
+        #Filter scenarios and get all deleted events
+        for scenario in parsed_scenarios:
+            if deleted_node in scenario[scenario_parse_index["actor"]]:
+                if scenario[scenario_parse_index["emit"]] != None:
+                    deleted_events += scenario[scenario_parse_index["emit"]]
+                deleted_actions += scenario[scenario_parse_index["action"]]
+                continue
+            filtered_parsed_scenarios.append(scenario)
+
+        #remove all deleted events from when
+        for scenario in filtered_parsed_scenarios:
+            if scenario[scenario_parse_index["when"]] != None:
+                for event in deleted_events:
+                    if event in scenario[scenario_parse_index["when"]]:
+                        scenario[scenario_parse_index["when"]].remove(event)
+            updated_scenarios.append(generateScenarioSentence(scenario))
+        
+        #filter Bindings
+        for binding in bindings:
+            if binding["key"] not in deleted_actions and binding["key"] not in deleted_events:
+                updated_bindings.append(binding)
+                    
+        return (updated_scenarios, updated_bindings)
+
+    def HandleTopologyGraphGenerateConstrains(self, nodes, edges, parameters):
+
+        def generateConstrainSentence(constraint):
+            def generateParameterSentence(parameters):
+                if not parameters:
+                    return ""
+                return "[ " + ", ".join([parameters[i] + " " + parameters[i+1] for i in range(0,len(parameters), 2)]) + " ]"
+            
+            if constraint[0] in ['config']:
+                return " ".join([" ".join(constraint[1]), generateParameterSentence(constraint[2])])
+            elif constraint[0] in ['lan', 'link']:
+                return " ".join([constraint[0], " ".join(constraint[1]), generateParameterSentence(constraint[2])])
+
+        node_parameters = {
+            "operatingSystem": "os",
+            "hardwareType": "nodeType",
+            "ipAddress": "location",
+            "num": "num"
+        }
+
+        edge_parameters = {
+            'bandwidth': 'bw',
+            'delay': 'delay'
+        }
+
+        lan_parameters = {
+            'bandwidth': 'bw',
+            'delay': 'delay'
+        }
+
+        lans = {}
+        nodes_group_by_param = defaultdict(set)
+        nodes_by_id = dict((str(v),k) for (k,v) in nodes.items())
+
+        for (id, properties) in parameters.items():
+            if properties["type"] == 0: #Node
+                #Group nodes by their properties
+                for (prop, value) in properties.items():
+                    if prop in node_parameters and value != "":
+                        if prop == "num" and value == "1":
+                            continue
+                        nodes_group_by_param[(node_parameters[prop], value)].add(id)
+            elif properties["type"] == 1: #Edge
+                #Do nothing
+                pass
+            elif properties["type"] == 2: #LAN
+                #Store node in LANs and set it properties
+                lans[id] = {"nodes": [], "parameters": []}
+                for (prop, value) in properties.items():
+                    if prop in lan_parameters and value != "":
+                        lans[id]["parameters"] += [lan_parameters[prop], value]
+                nodes_by_id.pop(id)
+
+        # Group the params by set of nodes
+        param_group_by_node = defaultdict(list)
+        for (param, node_set) in nodes_group_by_param.items():
+            node_hash = tuple(sorted(list(node_set)))
+            param_group_by_node[node_hash] += list(param)
+
+        constraints = []
+
+        #Add node properties to constrains
+        for (node_list, param) in param_group_by_node.items():
+            constraints.append(generateConstrainSentence(('config', list(map(lambda x: nodes_by_id[x], node_list)), param)))
+
+        #Add link and its parametes to constrains
+        for (_, edge) in edges.items():
+            edge["from"] = str(edge["from"])
+            edge["to"] = str(edge["to"])
+            edge["id"] = str(edge["id"])
+
+            if edge["from"] in nodes_by_id and edge["to"] in nodes_by_id: #Filter edges connected to LANs
+                params = []
+                for (prop, value) in parameters[edge["id"]].items():
+                    if prop in edge_parameters and value != "":
+                        params += [edge_parameters[prop], value]
+                constraints.append(generateConstrainSentence(('link', [nodes_by_id[edge["from"]], nodes_by_id[edge["to"]]], params)))
+            else: #Add node to lan
+                lan_id, node_id = (edge["from"], edge["to"]) if edge["from"] in lans else (edge["to"], edge["from"])
+                lans[lan_id]["nodes"].append(nodes_by_id[node_id])
+
+        #Add LAN to constrains
+        for lan_prop in lans.values():
+            if len(lan_prop["nodes"]) >= 1:
+                constraints.append(generateConstrainSentence(('lan', lan_prop["nodes"], lan_prop["parameters"])))
+
+        return constraints
+
+    def HandleDependencyGraphUpdateEdge(self, update_type, actor_from, action_from, actor_to, action_to, scenarios, bindings):
+        gen = bashGenerator(scenario=scenarios,constraints="",bindings=[])
+        gen.generate()
+        parsed_scenarios = gen.scenario_parsed
+        updated_scenarios = []
+        updated_bindings = bindings
+
+        scenario_parse_index = {
+            "when": 0,
+            "actor": 1,
+            "action": 2,
+            "emit": 3,
+            "wait": 4
+        }
+
+        def generateScenarioSentence(scenario):
+            sentence = []
+            if scenario[scenario_parse_index["when"]] != None and len(scenario[scenario_parse_index["when"]]) != 0: #when
+                sentence.append("when " + ", ".join(scenario[scenario_parse_index["when"]]))
+            if scenario[scenario_parse_index["wait"]] != None: #when
+                sentence.append("wait " + scenario[scenario_parse_index["wait"]])
+            sentence.append(scenario[scenario_parse_index["actor"]][0]) #actor
+            sentence.append(scenario[scenario_parse_index["action"]][0]) #action
+            if scenario[scenario_parse_index["emit"]] != None: #emit
+                sentence.append("emit " + ", ".join(scenario[scenario_parse_index["emit"]]))
+
+            return " ".join(sentence)
+
+        event_name = actor_from + "Run" + action_from + "Sig"
+
+        #Add event name to from if no emit exists
+        for scenario in parsed_scenarios:
+            scenario = list(scenario)
+            if actor_from in scenario[scenario_parse_index["actor"]] and action_from in scenario[scenario_parse_index["action"]]:
+                emit_events = scenario[scenario_parse_index["emit"]]
+                if emit_events == None: #Add new event name
+                    emit_events = [event_name]
+                    scenario[scenario_parse_index["emit"]] = emit_events
+                else: #Get existing event name
+                    event_name = emit_events[0]
+                break
+          
+        #Remove/Insert the event from the dependent action
+        for scenario in parsed_scenarios:
+            scenario = list(scenario)
+            if actor_to in scenario[scenario_parse_index["actor"]] and action_to in scenario[scenario_parse_index["action"]]:
+                when_events = scenario[scenario_parse_index["when"]]
+                if update_type == "REMOVE": #Remove event
+                    when_events.remove(event_name)
+                else: #Add event
+                    if when_events == None:
+                        when_events = []
+                    when_events.append(event_name)
+                scenario[scenario_parse_index["when"]] = when_events
+            updated_scenarios.append(generateScenarioSentence(scenario))
+
+        return (updated_scenarios, updated_bindings, event_name)
 
     #Handle generateNS
     def HandleNS(self,json_data):

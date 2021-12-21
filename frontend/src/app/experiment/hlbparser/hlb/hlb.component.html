@@ -233,13 +233,21 @@
       </div>
 
       <div  style="width: 30%">
-        <div (click)="toggleTopologyView()" class="dependency-topology-toggle-icon-topology">
-          <span class="text-left font-weight-bold">Topology</span>
-        </div>
-        
         <div (click)="toggleDependencyView()" class="dependency-topology-toggle-icon-dependency">
           <span class="text-left font-weight-bold">Dependency</span>
         </div>
+        <div (click)="toggleTopologyView()" class="dependency-topology-toggle-icon-topology">
+          <span class="text-left font-weight-bold">Topology</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="graph-description-box">
+      <div class="graph-description-box-icon">
+        <i class="fas fa-info-circle"></i>
+      </div>
+      <div class="graph-description-box-content">
+        {{graphDescription}}
       </div>
     </div>
 
@@ -299,12 +307,12 @@
       Kindly select a node before attempting to change any of the links
     </div>
 
-    <div class="graph-box">
+    <div class="graph-box hide">
       <div class="graph-buttons d-flex flex-column noselect" style="text-align: center;">
         <div id="graphActionButtonList" class="flex-grow-1">
           <div class="d-flex flex-row justify-content-center">
-            <div class="graph-action-button" id="addNodeBtn">Add Node</div>
-            <div class="graph-action-button" id="addLANBtn">Add LAN</div>
+            <div class="graph-action-button" (click)="onAddNodeClick('Node')">Add Node</div>
+            <div class="graph-action-button" (click)="onAddNodeClick('LAN')">Add LAN</div>
           </div>
         </div>
         <div id="actionMessage">

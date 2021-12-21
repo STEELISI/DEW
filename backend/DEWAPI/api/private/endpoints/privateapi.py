@@ -231,27 +231,51 @@ class HandleTopologyParse(Resource):
             Logger.backendErrorLog(user, traceback.format_exc())
             raise Exception("Error Occured on the Server")
 
-@ns.route('/hlb/graph/parse-parameters')
-class HandleGraphParametersParse(Resource):
-    @api.expect(parameter_list)
+@ns.route('/hlb/topology/graph-remove')
+class HandleTopologyGraphRemove(Resource):
+    @api.expect(topology_remove_text)
     def put(self):
         """
-          Parses graph parameters to update constraints
+          Update Scenarios and Bindings on removal of node/edge from graph 
         """
-        try:
-          json_data = request.get_json(force=True)
-          user = login.getLoginUserDetail(json_data['logToken'])['emailId']
-          Logger.backendLog(user,"HandleGraphParametersParse()", "Entered Function")
-          parameters = json_data['parameters']
-          constraints = json_data['constraints']
-          nodes = json_data['nodes']
-          edges = json_data['edges']
-          updated_constraints = hlb.HandleGraphParameterParse(parameters[0], nodes[0], edges[0], constraints)
-          Logger.backendLog(user,"HandleGraphParametersParse()", "Successfully parsed graph parameters")
-          return {"status": "success", "constraints": updated_constraints }
-        except BaseException:
-            Logger.backendErrorLog(user, traceback.format_exc())
-            raise Exception("Error Occured on the Server")
+        json_data = request.get_json(force=True)
+        scenarios = json_data['scenarios']
+        bindings = json.loads(json_data['bindings'][0])
+        deleted_node = json_data['deleted_node']
+        updated_scenarios, updated_bindings = hlb.HandleTopologyGraphRemove(deleted_node, scenarios, bindings)
+        return {"status": "success", "scenarios": updated_scenarios, "bindings": updated_bindings }
+
+@ns.route('/hlb/topology-graph/generate-constrains')
+class HandleTopologyGraphGenerateConstrains(Resource):
+    @api.expect(topology_graph_generate_constraints)
+    def put(self):
+        """
+          Generate Constrains from Topology Graph 
+        """
+        json_data = request.get_json(force=True)
+        nodes = json.loads(json_data['nodes'][0])
+        edges = json.loads(json_data['edges'][0])
+        parameters = json.loads(json_data['parameters'][0])
+        constraints = hlb.HandleTopologyGraphGenerateConstrains(nodes, edges, parameters)
+        return {"status": "success", "constraints": constraints }
+
+@ns.route('/hlb/dependency-graph/update-edge')
+class HandleDependencyGraphUpdateEdge(Resource):
+    @api.expect(dependency_graph_update_edge)
+    def put(self):
+        """
+          Update Scenarios and Bindings by adding/removing the edge 
+        """
+        json_data = request.get_json(force=True)
+        scenarios = json_data['scenarios']
+        bindings = json.loads(json_data['bindings'][0])
+        actor_from = json_data['actor_from']
+        action_from = json_data['action_from']
+        actor_to = json_data['actor_to']
+        action_to = json_data['action_to']
+        update_type = json_data['update_type']
+        updated_scenarios, updated_bindings, event_name = hlb.HandleDependencyGraphUpdateEdge(update_type, actor_from, action_from, actor_to, action_to, scenarios, bindings)
+        return {"status": "success", "scenarios": updated_scenarios, "bindings": updated_bindings, "event_name": event_name }
 
 @ns.route('/nlp/behavior')
 class HandleNLPTranslator(Resource):
