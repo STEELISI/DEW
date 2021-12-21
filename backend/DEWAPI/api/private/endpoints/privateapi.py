@@ -197,21 +197,6 @@ class HandleDependencyGraphUpdateEdge(Resource):
         updated_scenarios, updated_bindings, event_name = hlb.HandleDependencyGraphUpdateEdge(update_type, actor_from, action_from, actor_to, action_to, scenarios, bindings)
         return {"status": "success", "scenarios": updated_scenarios, "bindings": updated_bindings, "event_name": event_name }
 
-@ns.route('/hlb/graph/parse-parameters')
-class HandleGraphParametersParse(Resource):
-    @api.expect(parameter_list)
-    def put(self):
-        """
-          Parses graph parameters to update constraints
-        """
-        json_data = request.get_json(force=True)
-        parameters = json_data['parameters']
-        constraints = json_data['constraints']
-        nodes = json_data['nodes']
-        edges = json_data['edges']
-        updated_constraints = hlb.HandleGraphParameterParse(parameters[0], nodes[0], edges[0], constraints)
-        return {"status": "success", "constraints": updated_constraints }
-
 @ns.route('/nlp/behavior')
 class HandleNLPTranslator(Resource):
 

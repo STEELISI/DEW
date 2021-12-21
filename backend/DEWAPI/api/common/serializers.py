@@ -90,13 +90,6 @@ dependency_graph_update_edge = api.model('Dependency graph update edge', {
   'update_type': fields.String(description="INSERT/REMOVE; Update the graph by adding/deleting and edge",required=True),
   })
 
-parameter_list = api.model('Parameter parsing', {
-  'constraints': fields.List(fields.String,description="Constraints of the experiment",required=True),
-  'parameters': fields.List(fields.String,description="Parameters of the graph",required=True),
-  'nodes': fields.List(fields.String,description="Node IDs of the graph",required=True),
-  'edges': fields.List(fields.String,description="Edge IDs of the graph",required=True)
-  })
-
 experiment_detail = api.model('get experiment request', {
   'id':fields.String(description="Id of experiment", required=True)
   })
