@@ -68,8 +68,7 @@ constraint_text = api.model('Constraint parsing', {
 })
 
 log_message = api.model('Constraint parsing', {
-  'message': fields.List(fields.String, description="Log Message",required=True),
-  'token': fields.List(fields.String, description="User",required=True)
+  'message': fields.List(fields.String, description="Log Message",required=True)
 })
 
 topology_text = api.model('Toplogy parsing', {

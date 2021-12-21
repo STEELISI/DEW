@@ -44,8 +44,7 @@ export class LogService {
             entry.logWithDate = this.logWithDate;
             var message = entry.buildLogString(header,msg);
             const data = {
-                message: [message],
-                token: [this.authService.getToken()]
+                message: [message]
               };
             this.http
             .put('v1/pr/log/user-logging', data, { withCredential: true })
