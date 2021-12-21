@@ -94,7 +94,19 @@ export class LogEntry {
     buildLogString(header, logData): string {
         let ret: string = "";
         var date = new Date();
-        var dateTime = ((date.getMonth() > 8) ? (date.getMonth() + 1) : ('0' + (date.getMonth() + 1))) + '/' + ((date.getDate() > 9) ? date.getDate() : ('0' + date.getDate())) + '/' + date.getFullYear() + " " + date.toLocaleTimeString();
+        var time = date.toLocaleTimeString();
+        var tempTime = time.split(":")
+        if (tempTime[0].length==1) {
+            tempTime[0] = "0" + tempTime[0];
+        } 
+        if (tempTime[1].length==1) {
+            tempTime[1] = "0" + tempTime[1];
+        }
+        if (tempTime[2].length==1) {
+            tempTime[2] = "0" + tempTime[2];
+        }
+        time = tempTime.join(":");
+        var dateTime = ((date.getMonth() > 8) ? (date.getMonth() + 1) : ('0' + (date.getMonth() + 1))) + '/' + ((date.getDate() > 9) ? date.getDate() : ('0' + date.getDate())) + '/' + date.getFullYear() + " " + time;
         if (this.logWithDate) {
             ret = dateTime + " | ";
         }
