@@ -48,7 +48,7 @@ class HandleHLBTranslator(Resource):
         try:
           json_data = request.get_json(force=True)
           user = userObj.getEmailId()
-          Logger.backendLog(user,"HandleHLBTranslator()", "Entered Function")
+          Logger.backendLog(user,"HandleHLBTranslator()", "Entered Class")
           script = json_data['Script']
           parsed_dew, scenarios, constraints, bindings, actor = hlb.HandleTranslator(format, script)
           Logger.backendLog(user,"HandleHLBTranslator()", "Successfully Converted to DEW")
@@ -68,7 +68,7 @@ class HandleHLBParser(Resource):
         try:
           json_data = request.get_json(force=True)
           user = userObj.getEmailId()
-          Logger.backendLog(user,"HandleHLBParser()", "Entered Function")
+          Logger.backendLog(user,"HandleHLBParser()", "Entered Class")
           parsed_data = hlb.HandleParse(json_data)
           Logger.backendLog(user,"HandleHLBParser()", "Successfully Parsed Data")
           return parsed_data
@@ -87,7 +87,7 @@ class ConvertDEW1To2(Resource):
       try:
         json_data = request.get_json(force=True)
         user = userObj.getEmailId()
-        Logger.backendLog(user,"ConvertDEW1To2()", "Entered Function")
+        Logger.backendLog(user,"ConvertDEW1To2()", "Entered Class")
         constraints = json_data['constraints']
         converted_constraints = dew_parser.convert_DEW_1_to_2(constraints)
         Logger.backendLog(user,"ConvertDEW1To2()", "Successfully converted constraints!")
@@ -120,7 +120,7 @@ class HandleHLBGeneratorNs(Resource):
         try:
           json_data = request.get_json(force=True)
           user = userObj.getEmailId()
-          Logger.backendLog(user,"HandleHLBGeneratorNs()", "Entered Function")
+          Logger.backendLog(user,"HandleHLBGeneratorNs()", "Entered Class")
           script = hlb.HandleNS(json_data)
           Logger.backendLog(user,"HandleHLBGeneratorNs()", "Successfully generated NS file")
           return {'script': script}
@@ -139,7 +139,7 @@ class HandleHLBGeneratorBash(Resource):
         try:
           json_data = request.get_json(force=True)
           user = userObj.getEmailId()
-          Logger.backendLog(user,"HandleHLBGeneratorBash()", "Entered Function")
+          Logger.backendLog(user,"HandleHLBGeneratorBash()", "Entered Class")
           scriptList = hlb.HandleBASH(json_data)
           bashScriptDict = {}
           Logger.backendLog(user,"HandleHLBGeneratorBash()", "Successfully generated BASH file")
@@ -164,7 +164,7 @@ class HandleHLBSuggestions(Resource):
           globals.actions=dict()
           json_data = request.get_json(force=True)
           user = userObj.getEmailId()
-          Logger.backendLog(user,"HandleHLBSuggestions()", "Entered Function")
+          Logger.backendLog(user,"HandleHLBSuggestions()", "Entered Class")
           print(len(json_data['suggestion_for']))
           if json_data["type"] == "behavior":
             s, t = hlb.HandleBehaviorSuggestions(json_data["behaviors"], json_data['actors'], json_data['suggestion_for'])
@@ -196,7 +196,7 @@ class HandleGraphParse(Resource):
           globals.actions = dict()
           json_data = request.get_json(force=True)
           user = userObj.getEmailId()
-          Logger.backendLog(user,"HandleGraphParse()", "Entered Function")
+          Logger.backendLog(user,"HandleGraphParse()", "Entered Class")
           scenarios = json_data['scenario']
           nodes, edges = hlb.HandleGraphParse(scenarios)
           Logger.backendLog(user,"HandleGraphParse()", "Successfully built graph data")
@@ -221,7 +221,7 @@ class HandleTopologyParse(Resource):
           globals.actions = dict()
           json_data = request.get_json(force=True)
           user = userObj.getEmailId()
-          Logger.backendLog(user,"HandleTopologyParse()", "Entered Function")
+          Logger.backendLog(user,"HandleTopologyParse()", "Entered Class")
           scenarios = json_data['scenario']
           constraints = json_data['constraints']
           actors, lans, edges = hlb.HandleTopologyParse(scenarios, constraints)
@@ -241,7 +241,7 @@ class HandleTopologyGraphRemove(Resource):
         try:
           json_data = request.get_json(force=True)
           user = userObj.getEmailId()
-          Logger.backendLog(user,"HandleTopologyGraphRemove()", "Entered Function")
+          Logger.backendLog(user,"HandleTopologyGraphRemove()", "Entered Class")
           scenarios = json_data['scenarios']
           bindings = json.loads(json_data['bindings'][0])
           deleted_node = json_data['deleted_node']
@@ -262,7 +262,7 @@ class HandleTopologyGraphGenerateConstrains(Resource):
         try:
           json_data = request.get_json(force=True)
           user = userObj.getEmailId()
-          Logger.backendLog(user,"HandleTopologyGraphGenerateConstrains()", "Entered Function")
+          Logger.backendLog(user,"HandleTopologyGraphGenerateConstrains()", "Entered Class")
           nodes = json.loads(json_data['nodes'][0])
           edges = json.loads(json_data['edges'][0])
           parameters = json.loads(json_data['parameters'][0])
@@ -283,7 +283,7 @@ class HandleDependencyGraphUpdateEdge(Resource):
         try:
           json_data = request.get_json(force=True)
           user = userObj.getEmailId()
-          Logger.backendLog(user,"HandleDependencyGraphUpdateEdge()", "Entered Function")
+          Logger.backendLog(user,"HandleDependencyGraphUpdateEdge()", "Entered Class")
           scenarios = json_data['scenarios']
           bindings = json.loads(json_data['bindings'][0])
           actor_from = json_data['actor_from']
@@ -309,7 +309,7 @@ class HandleNLPTranslator(Resource):
         try:
           json_data = request.get_json(force=True)
           user = userObj.getEmailId()
-          Logger.backendLog(user,"HandleNLPTranslator()", "Entered Function")
+          Logger.backendLog(user,"HandleNLPTranslator()", "Entered Class")
           nlp_text = json_data['text']
           response = nlp.HandleNLPString(nlp_text)
           print(response)
@@ -331,7 +331,7 @@ class HandleExperimentPushToDrive(Resource):
         try:
           content = request.get_json(force=True)
           user = userObj.getEmailId()
-          Logger.backendLog(user,"HandleExperimentPushToDrive()", "Entered Function")
+          Logger.backendLog(user,"HandleExperimentPushToDrive()", "Entered Class")
           userId = userObj.getUserId()
           actors = content['actors']
           constraints = content['constraints']
@@ -388,7 +388,7 @@ class HandleExperimentSave(Resource):
         try:
           content = request.get_json(force=True)
           user = userObj.getEmailId()
-          Logger.backendLog(user,"HandleExperimentSave()", "Entered Function")
+          Logger.backendLog(user,"HandleExperimentSave()", "Entered Class")
           userId = userObj.getUserId()
           actors = content['actors']
           constraints = content['constraints']
@@ -439,7 +439,7 @@ class HandleExperimentListRetrieval(Resource):
         try:
           token = userObj.getToken()
           user = userObj.getEmailId()
-          Logger.backendLog(user,"HandleExperimentListRetrieval()", "Entered Function")
+          Logger.backendLog(user,"HandleExperimentListRetrieval()", "Entered Class")
           experiment = em.get_accessible_experiments(userObj.getUserId())
           result = []
           if experiment is not None:
@@ -460,7 +460,7 @@ class HandleSingleExperimentRetrieval(Resource):
         try:
           content = request.get_json(force=True)
           user = userObj.getEmailId()
-          Logger.backendLog(user,"HandleSingleExperimentRetrieval()", "Entered Function")
+          Logger.backendLog(user,"HandleSingleExperimentRetrieval()", "Entered Class")
           userId = userObj.getUserId()
           id1 = content['id']
           try:
@@ -494,7 +494,7 @@ class HandleExperimentDelete(Resource):
     try:
       content = request.get_json(force=True)
       user = userObj.getEmailId()
-      Logger.backendLog(user,"HandleExperimentDelete()", "Entered Function")
+      Logger.backendLog(user,"HandleExperimentDelete()", "Entered Class")
       userId = userObj.getUserId()
       experiment_id = content['id']
       
@@ -520,7 +520,7 @@ class HandleExperimentAccessRemoval(Resource):
     try:
       content = request.get_json(force=True)
       user = userObj.getEmailId()
-      Logger.backendLog(user,"HandleExperimentAccessRemoval()", "Entered Function")
+      Logger.backendLog(user,"HandleExperimentAccessRemoval()", "Entered Class")
       userId = userObj.getUserId()
       experiment_id = content['id']
       userHandle= content['userHandle']
@@ -546,7 +546,7 @@ class HandleExperimentVersions(Resource):
         try:
           content = request.get_json(force=True)
           user = userObj.getEmailId()
-          Logger.backendLog(user,"HandleExperimentVersions()", "Entered Function")
+          Logger.backendLog(user,"HandleExperimentVersions()", "Entered Class")
           userId = userObj.getUserId()
           experiment_id = content['id']
           versions = em.get_experiment_versions(experiment_id, userId)
@@ -571,7 +571,7 @@ class HandleExportToDEW(Resource):
         try:
           content = request.get_json(force=True)
           user = userObj.getEmailId()
-          Logger.backendLog(user,"HandleExportToDEW()", "Entered Function")
+          Logger.backendLog(user,"HandleExportToDEW()", "Entered Class")
           userId = userObj.getUserId()
           try:
               dew_content = em.dew_content(content['id'], userId)
@@ -598,7 +598,7 @@ class HandleExperimentCopy(Resource):
     try:
       content = request.get_json(force=True)
       user = userObj.getEmailId()
-      Logger.backendLog(user,"HandleExperimentCopy()", "Entered Function")
+      Logger.backendLog(user,"HandleExperimentCopy()", "Entered Class")
       userId = userObj.getUserId()
       experiment_id = content['id']
       try:
@@ -627,7 +627,7 @@ class HandleExperimentAccess(Resource):
     try:
       content = request.get_json(force=True)
       user = userObj.getEmailId()
-      Logger.backendLog(user,"HandleExperimentAccess()", "Entered Function")
+      Logger.backendLog(user,"HandleExperimentAccess()", "Entered Class")
       userId = userObj.getUserId()
       userHandle = content['userHandle']
       experiment_id = content['id']
@@ -657,7 +657,7 @@ class HandleExperimentControl(Resource):
     try:
       content = request.get_json(force=True)
       user = userObj.getEmailId()
-      Logger.backendLog(user,"HandleExperimentControl()", "Entered Function")
+      Logger.backendLog(user,"HandleExperimentControl()", "Entered Class")
       userId = userObj.getUserId()
       experiment_id = content['id']
       
@@ -680,7 +680,7 @@ class HandleExperimentUserControlList(Resource):
       try:
         json_data = request.get_json(force=True)
         user = userObj.getEmailId()
-        Logger.backendLog(user,"HandleExperimentUserControlList()", "Entered Function")
+        Logger.backendLog(user,"HandleExperimentUserControlList()", "Entered Class")
         result = em.getUserAccessList(userObj.getUserId(),json_data['experiment_id'])
         Logger.backendLog(user,"HandleExperimentUserControlList()", "Successfully retrieved user access list")
         return result
