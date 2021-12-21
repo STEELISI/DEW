@@ -45,10 +45,17 @@ class HandleHLBTranslator(Resource):
         """
             Takes a file as an input and returns the dew format
         """
-        script = request.get_json(force=True)['Script']
-        parsed_dew, scenarios, constraints, bindings, actor = hlb.HandleTranslator(format, script)
-
-        return { 'dew': parsed_dew, 'scenarios': scenarios, 'constraints': constraints, 'bindings': bindings, 'actor': actor }
+        try:
+          json_data = request.get_json(force=True)
+          user = login.getLoginUserDetail(json_data['logToken'])['emailId']
+          Logger.backendLog(user,"HandleHLBTranslator()", "Entered Function")
+          script = json_data['Script']
+          parsed_dew, scenarios, constraints, bindings, actor = hlb.HandleTranslator(format, script)
+          Logger.backendLog(user,"HandleHLBTranslator()", "Successfully Converted to DEW")
+          return { 'dew': parsed_dew, 'scenarios': scenarios, 'constraints': constraints, 'bindings': bindings, 'actor': actor }
+        except BaseException:
+          Logger.backendErrorLog(user, traceback.format_exc())
+          raise Exception("Error Occured on the Server")
 
 @ns.route('/hlb/parse')
 class HandleHLBParser(Resource):
@@ -58,9 +65,17 @@ class HandleHLBParser(Resource):
         """
           Take an input string (behavior) and return the actors, triggers, actions, emit events and wait times. This can be used for auto completing the actors list.
         """
-        json_data = request.get_json(force=True)
-        parsed_data = hlb.HandleParse(json_data)
-        return parsed_data
+        try:
+          json_data = request.get_json(force=True)
+          user = login.getLoginUserDetail(json_data['logToken'])['emailId']
+          Logger.backendLog(user,"HandleHLBParser()", "Entered Function")
+          parsed_data = hlb.HandleParse(json_data)
+          Logger.backendLog(user,"HandleHLBParser()", "Successfully Parsed Data")
+          return parsed_data
+        except BaseException:
+          Logger.backendErrorLog(user, traceback.format_exc())
+          raise Exception("Error Occured on the Server")
+        
 
 @ns.route('/convert/dew1to2')
 class ConvertDEW1To2(Resource):
@@ -72,8 +87,8 @@ class ConvertDEW1To2(Resource):
       try:
         json_data = request.get_json(force=True)
         user = login.getLoginUserDetail(json_data['logToken'])['emailId']
-        constraints = json_data['constraints']
         Logger.backendLog(user,"ConvertDEW1To2()", "Entered Function")
+        constraints = json_data['constraints']
         converted_constraints = dew_parser.convert_DEW_1_to_2(constraints)
         Logger.backendLog(user,"ConvertDEW1To2()", "Successfully converted constraints!")
         return {"status": "success", "parsedConstraints": converted_constraints }
@@ -96,57 +111,74 @@ class LogData(Resource):
 
 @ns.route('/hlb/generateNs')
 class HandleHLBGeneratorNs(Resource):
-
     @api.expect(ns_object)
     @api.representation('text/plain')
     def put(self):
         """
           Generates NS file for given behaviors, actors, and constraints
         """
-        json_data = request.get_json(force=True)
-        script = hlb.HandleNS(json_data)
-        return {'script': script}
+        try:
+          json_data = request.get_json(force=True)
+          user = login.getLoginUserDetail(json_data['logToken'])['emailId']
+          Logger.backendLog(user,"HandleHLBGeneratorNs()", "Entered Function")
+          script = hlb.HandleNS(json_data)
+          Logger.backendLog(user,"HandleHLBGeneratorNs()", "Successfully generated NS file")
+          return {'script': script}
+        except BaseException:
+          Logger.backendErrorLog(user, traceback.format_exc())
+          raise Exception("Error Occured on the Server")
 
 @ns.route('/hlb/generateBash')
 class HandleHLBGeneratorBash(Resource):
-
     @api.expect(ns_object)
     @api.representation('text/plain')
     def put(self):
         """
           Generates BASH file for given behaviors, actors, and constraints
         """
-        json_data = request.get_json(force=True)
-        scriptList = hlb.HandleBASH(json_data)
-        bashScriptDict = {}
-        return scriptList
+        try:
+          json_data = request.get_json(force=True)
+          user = login.getLoginUserDetail(json_data['logToken'])['emailId']
+          Logger.backendLog(user,"HandleHLBGeneratorBash()", "Entered Function")
+          scriptList = hlb.HandleBASH(json_data)
+          bashScriptDict = {}
+          Logger.backendLog(user,"HandleHLBGeneratorBash()", "Successfully generated BASH file")
+          return scriptList
+        except BaseException:
+            Logger.backendErrorLog(user, traceback.format_exc())
+            raise Exception("Error Occured on the Server")
 
 @ns.route('/hlb/suggestions')
 class HandleHLBSuggestions(Resource):
-
-
     @api.expect(suggestion_object)
     def put(self):
         """
           Gets suggestions for given input
         """
-
-        # TODO : Remove globals
-        globals.actors=dict()
-        globals.behaviors=dict()
-        globals.constraints=dict()
-        globals.events=dict()
-        globals.actions=dict()
-        json_data = request.get_json(force=True)
-        print(len(json_data['suggestion_for']))
-        if json_data["type"] == "behavior":
-          s, t = hlb.HandleBehaviorSuggestions(json_data["behaviors"], json_data['actors'], json_data['suggestion_for'])
-          return { 'suggestions': s, 'suggestion_text': t}
-        elif json_data["type"] == "constraint":
-          s, t = hlb.HandleConstraintSuggestions(json_data["constraints"], json_data["actors"], json_data["suggestion_for"], json_data["behaviors"])
-          return { 'suggestions': s, 'suggestion_text': t}
-        else:
-          pass
+        try:
+          # TODO : Remove globals
+          globals.actors=dict()
+          globals.behaviors=dict()
+          globals.constraints=dict()
+          globals.events=dict()
+          globals.actions=dict()
+          json_data = request.get_json(force=True)
+          user = login.getLoginUserDetail(json_data['logToken'])['emailId']
+          Logger.backendLog(user,"HandleHLBSuggestions()", "Entered Function")
+          print(len(json_data['suggestion_for']))
+          if json_data["type"] == "behavior":
+            s, t = hlb.HandleBehaviorSuggestions(json_data["behaviors"], json_data['actors'], json_data['suggestion_for'])
+            Logger.backendLog(user,"HandleHLBSuggestions()", "Successfully generated behaviour suggestions")
+            return { 'suggestions': s, 'suggestion_text': t}
+          elif json_data["type"] == "constraint":
+            s, t = hlb.HandleConstraintSuggestions(json_data["constraints"], json_data["actors"], json_data["suggestion_for"], json_data["behaviors"])
+            Logger.backendLog(user,"HandleHLBSuggestions()", "Successfully generated constraint suggestions")
+            return { 'suggestions': s, 'suggestion_text': t}
+          else:
+            pass
+        except BaseException:
+            Logger.backendErrorLog(user, traceback.format_exc())
+            raise Exception("Error Occured on the Server")
 
 @ns.route('/hlb/dependency_graph/parse')
 class HandleGraphParse(Resource):
@@ -155,16 +187,23 @@ class HandleGraphParse(Resource):
         """
           Parses scenario to help in building a graph
         """
-        # TODO : Remove globals
-        globals.actors = dict()
-        globals.behaviors = dict()
-        globals.constraints = dict()
-        globals.events = dict()
-        globals.actions = dict()
-        json_data = request.get_json(force=True)
-        scenarios = json_data['scenario']
-        nodes, edges = hlb.HandleGraphParse(scenarios)
-        return {"status": "success", "nodes": nodes, "edges": edges }
+        try:
+          # TODO : Remove globals
+          globals.actors = dict()
+          globals.behaviors = dict()
+          globals.constraints = dict()
+          globals.events = dict()
+          globals.actions = dict()
+          json_data = request.get_json(force=True)
+          user = login.getLoginUserDetail(json_data['logToken'])['emailId']
+          Logger.backendLog(user,"HandleGraphParse()", "Entered Function")
+          scenarios = json_data['scenario']
+          nodes, edges = hlb.HandleGraphParse(scenarios)
+          Logger.backendLog(user,"HandleGraphParse()", "Successfully built graph data")
+          return {"status": "success", "nodes": nodes, "edges": edges }
+        except BaseException:
+            Logger.backendErrorLog(user, traceback.format_exc())
+            raise Exception("Error Occured on the Server")
 
 @ns.route('/hlb/topology/parse')
 class HandleTopologyParse(Resource):
@@ -173,17 +212,24 @@ class HandleTopologyParse(Resource):
         """
           Parses scenario to help in building a graph
         """
-        # TODO : Remove globals
-        globals.actors = dict()
-        globals.behaviors = dict()
-        globals.constraints = dict()
-        globals.events = dict()
-        globals.actions = dict()
-        json_data = request.get_json(force=True)
-        scenarios = json_data['scenario']
-        constraints = json_data['constraints']
-        actors, lans, edges = hlb.HandleTopologyParse(scenarios, constraints)
-        return {"status": "success", "actors": actors, "lans": lans, "edges": edges }
+        try:
+          # TODO : Remove globals
+          globals.actors = dict()
+          globals.behaviors = dict()
+          globals.constraints = dict()
+          globals.events = dict()
+          globals.actions = dict()
+          json_data = request.get_json(force=True)
+          user = login.getLoginUserDetail(json_data['logToken'])['emailId']
+          Logger.backendLog(user,"HandleTopologyParse()", "Entered Function")
+          scenarios = json_data['scenario']
+          constraints = json_data['constraints']
+          actors, lans, edges = hlb.HandleTopologyParse(scenarios, constraints)
+          Logger.backendLog(user,"HandleTopologyParse()", "Successfully parsed topology")
+          return {"status": "success", "actors": actors, "lans": lans, "edges": edges }
+        except BaseException:
+            Logger.backendErrorLog(user, traceback.format_exc())
+            raise Exception("Error Occured on the Server")
 
 @ns.route('/hlb/graph/parse-parameters')
 class HandleGraphParametersParse(Resource):
@@ -192,13 +238,20 @@ class HandleGraphParametersParse(Resource):
         """
           Parses graph parameters to update constraints
         """
-        json_data = request.get_json(force=True)
-        parameters = json_data['parameters']
-        constraints = json_data['constraints']
-        nodes = json_data['nodes']
-        edges = json_data['edges']
-        updated_constraints = hlb.HandleGraphParameterParse(parameters[0], nodes[0], edges[0], constraints)
-        return {"status": "success", "constraints": updated_constraints }
+        try:
+          json_data = request.get_json(force=True)
+          user = login.getLoginUserDetail(json_data['logToken'])['emailId']
+          Logger.backendLog(user,"HandleGraphParametersParse()", "Entered Function")
+          parameters = json_data['parameters']
+          constraints = json_data['constraints']
+          nodes = json_data['nodes']
+          edges = json_data['edges']
+          updated_constraints = hlb.HandleGraphParameterParse(parameters[0], nodes[0], edges[0], constraints)
+          Logger.backendLog(user,"HandleGraphParametersParse()", "Successfully parsed graph parameters")
+          return {"status": "success", "constraints": updated_constraints }
+        except BaseException:
+            Logger.backendErrorLog(user, traceback.format_exc())
+            raise Exception("Error Occured on the Server")
 
 @ns.route('/nlp/behavior')
 class HandleNLPTranslator(Resource):
