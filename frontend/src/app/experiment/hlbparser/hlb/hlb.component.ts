@@ -230,6 +230,7 @@ export class HlbComponent implements OnInit, AfterViewInit {
     return textArray
   }
   ngOnInit(): void {
+    this.logger.log(LogHeader.INFO, "User entered the experiment page")
     this.resetFilterList();
     this.bindingMap = new Map<String, any>();
     this.behaviorList = [];
@@ -704,6 +705,7 @@ export class HlbComponent implements OnInit, AfterViewInit {
   }
 
   updateGraph(updateTopology: boolean = true, updateDependency: boolean = true) { //Update the Graph View
+    this.logger.log(LogHeader.GRAPH_UPDATE, "Graph update initiated");
     var request = {
       ParseType: 'bash',
       scenario: [],
@@ -1138,8 +1140,10 @@ export class HlbComponent implements OnInit, AfterViewInit {
       if (e.key === "Control") {
         this.selectedNetworkInstance.addEdgeMode();
         this.displayMessage("Draw an edge between two nodes");
+        accessibleLogger.log(LogHeader.GRAPH_UPDATE, "User initiated drawing an edge");
       }
     });
+    this.logger.log(LogHeader.GRAPH_UPDATE, "Graph update completed");
   }
 
   displayMessage = (message) => {
@@ -1155,6 +1159,7 @@ export class HlbComponent implements OnInit, AfterViewInit {
   }
 
   onAddNodeClick = (type) => {
+    accessibleLogger.log(LogHeader.GRAPH_UPDATE, "User initiated node addition. Node type - " + type);
     if (type == "Node") {
       this.addNodeType = "Node";
       this.displayMessage("Click anywhere to add a node, press <kbd>ESC</kbd> to cancel.");
@@ -1167,6 +1172,7 @@ export class HlbComponent implements OnInit, AfterViewInit {
   }
 
   toggleTopologyView() {
+    this.logger.log(LogHeader.KEY_PRESS, "User toggled topology view");
     $('.dependency-topology-toggle-icon-topology').addClass('active');
     $('.dependency-topology-toggle-icon-dependency').removeClass('active');
     $('.graph-box').removeClass('hide');
@@ -1181,6 +1187,7 @@ export class HlbComponent implements OnInit, AfterViewInit {
   }
 
   toggleDependencyView() {
+    this.logger.log(LogHeader.KEY_PRESS, "User toggled dependency view");
     $('.dependency-topology-toggle-icon-topology').removeClass('active');
     $('.dependency-topology-toggle-icon-dependency').addClass('active');
     $('.graph-box').addClass('hide');
@@ -1195,6 +1202,7 @@ export class HlbComponent implements OnInit, AfterViewInit {
   }
 
   onTopologyChange() {
+    this.logger.log(LogHeader.KEY_PRESS, "The topology changed");
     var request = {
       parameters: [JSON.stringify(globalGraphItemParametersList)],
       nodes: [JSON.stringify(id_of_node)],
@@ -1204,20 +1212,24 @@ export class HlbComponent implements OnInit, AfterViewInit {
     .put('v1/pr/hlb/topology-graph/generate-constrains', request, { withCredential: true })
       .subscribe((receivedData: ParseApiBean) => {
         this.stateservice.setConstraints(receivedData['constraints']);
+        this.logger.log(LogHeader.DATA_RECEIVED, "Updated constraints - " + receivedData['constraints']);
     });
   }
 
   onTopologyDelete(deletedNode: string) {
+    this.logger.log(LogHeader.KEY_PRESS, "User tried to delete a topology element");
     var request = {
       scenarios: this.getScenariosFromEditor(),
       bindings: [JSON.stringify(this.bindingList)],
       deleted_node: deletedNode,
     };
+    this.logger.log(LogHeader.DATA_SENT, "Scenario - " + request['scenarios'] + ",Bindings - " + request['bindings'] + ", Deleted Node - " + request['deleted_node']);
     this.http
     .put('v1/pr/hlb/topology/graph-remove', request, { withCredential: true })
       .subscribe((receivedData: ParseApiBean) => {
         this.stateservice.setBehavior(receivedData['scenarios']);
         this.stateservice.setBindings(receivedData['bindings']);
+        this.logger.log(LogHeader.DATA_RECEIVED, "Scenario - " + receivedData['scenarios'] + ", Bindings - " + receivedData['bindings']);
         setTimeout(() => {
           this.updateGraph(false, true);
         }, 500)
@@ -1232,6 +1244,7 @@ export class HlbComponent implements OnInit, AfterViewInit {
     // operatingSystem: string,
     // hardwareType: string
     // num: string
+    this.logger.log(LogHeader.GRAPH_UPDATE, "Topology parameters have changed");
     var temp = this.graphItemParametersList[currentGraphItemSelection['id']] ? this.graphItemParametersList[currentGraphItemSelection['id']] : null;
     if (!temp) {
       temp = {};
@@ -1282,10 +1295,12 @@ export class HlbComponent implements OnInit, AfterViewInit {
     }
     this.graphItemParametersList[currentGraphItemSelection['id']] = temp;
     globalGraphItemParametersList = this.graphItemParametersList;
+    this.logger.log(LogHeader.GRAPH_UPDATE, entry.printGraphParameterData(globalGraphItemParametersList, id_of_node, id_of_edge));
     this.onTopologyChange();
   }
 
   onDependencyUpdateEdge(updateType, actorFrom, actionFrom, actorTo, actionTo) {
+    this.logger.log(LogHeader.GRAPH_UPDATE, "User updated edge of dependency graph. actorFrom - " + actorFrom + ", actionFrom - " + actionFrom + ", actorTo - " + actorTo + ", actionTo - " + actionTo);
     return new Promise((resolve, reject) => {
       var request = {
         scenarios: this.getScenariosFromEditor(),
