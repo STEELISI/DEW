@@ -18,7 +18,7 @@ export class HttpService {
     return environment.apiUrl;
   }
 
-  constructor(private http: HttpClient ) {
+  constructor(private http: HttpClient) {
    
   }
 
@@ -43,4 +43,5 @@ export class HttpService {
   delete(endpoint: string, options?): Observable<any> {
     return this.http.delete(`${this.apiUrl}/${endpoint}`,options);
   }
+
 }

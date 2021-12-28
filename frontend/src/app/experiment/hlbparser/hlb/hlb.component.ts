@@ -28,6 +28,8 @@ import { GRAPH_ITEM_PARAMETERS_LIST } from '../../graph-data/graph-item-paramete
 import { GraphItemParameters, GraphItemType } from '../../graph-data/graph-item-parameters-interface';
 import { NULL_EXPR } from "@angular/compiler/src/output/output_ast";
 import { type } from "os";
+import { LogService, LogHeader, LogEntry } from '../common/logging-service';
+import { GoogleDriveService } from "src/app/google-drive-service.service";
 
 Quill.register("modules/counter", EditorService);
 
@@ -137,9 +139,11 @@ export class HlbComponent implements OnInit, AfterViewInit {
     public dialog: MatDialog,
     private stateservice: StateService,
     private _snackBar: MatSnackBar,
-    private changeDetection: ChangeDetectorRef
+    private changeDetection: ChangeDetectorRef,
+    private logger: LogService
   ) {
     this.graphItemParametersList = GRAPH_ITEM_PARAMETERS_LIST;
+    accessibleLogger = logger;
   }
 
   resetFilterList() {
@@ -184,6 +188,7 @@ export class HlbComponent implements OnInit, AfterViewInit {
 
   openSideNavBar() {
     $('.side-nav-icon > img').toggleClass('hide');
+    this.logger.log(LogHeader.KEY_PRESS, "User opened/closed the side navigation bar");
     setTimeout(() => {
       this.selectedNetworkInstance.fit();
     }, 600);
@@ -301,9 +306,55 @@ export class HlbComponent implements OnInit, AfterViewInit {
     this.stateservice.getExperimentControl().subscribe((flag) => {
       this.experimentAccess = flag;
     });
+
   }
 
   ngAfterViewInit(): void {
+    $('.convert-btn > div').on('click', ()=>{
+      var $span = $('.convert-btn > span');
+      if($span.html().includes("DEW 1.0 to 2.0")) {
+        $span.html("Click again to convert...");
+        setTimeout(()=> {
+          $span.html("Convert from DEW 1.0 to 2.0");
+        }, 2000);
+        return true;
+      }
+      this.logger.log(LogHeader.KEY_PRESS, "User tried converting the constraints from DEW 1.0 to 2.0");
+      $span.html("Convert from DEW 1.0 to 2.0");
+      //Animate Button
+      $('.convert-btn > div').animate(
+        { deg: '+=360' },
+        {
+          duration: 600,
+          step: function(now) {
+            $(this).css({ transform: 'rotate(' + now + 'deg)' });
+          }
+        }
+      );
+      //Update DEW
+        const data = {
+          constraints: []
+        };
+        const constraints = this.getConstraintsFromEditor();
+        this.logger.log(LogHeader.DATA_SENT, constraints);
+        data.constraints = constraints;
+        this.http
+          .put('v1/pr/convert/dew1to2', data, { withCredential: true })
+          .subscribe((receivedData: ParseApiBean) => {
+            $('.error-text').addClass('hide');
+            this.stateservice.setConstraints(receivedData.parsedConstraints);
+            this.logger.log(LogHeader.DATA_RECEIVED, receivedData.parsedConstraints);
+            setTimeout(()=> {
+              this.updateActorsConstraint()
+            }, 2000);
+          }, (error: any) => {
+            $('.error-text').removeClass('hide');
+            setTimeout(()=> {
+              $('.error-text').addClass('hide');
+            }, 3000);
+            this.logger.log(LogHeader.DATA_RECEIVED, "Error converting constraints");
+          });
+    });
     this.toggleTopologyView();
   }
 
@@ -582,7 +633,8 @@ export class HlbComponent implements OnInit, AfterViewInit {
   }
 
   extractInfo(data: ParseApiBean) {
-    console.log(data)
+    this.logger.log(LogHeader.TEXT_UPDATED, "Constraints/Scenario Updated");
+    this.logger.log(LogHeader.DATA_RECEIVED, "Parsed Scenario - " + data.parsedScenario + " | Parsed Constraints - " + data.parsedConstraints);
     this.updateGraph();
     this.extractScenario(data.parsedScenario);
     this.storeBinding(undefined);
@@ -626,7 +678,7 @@ export class HlbComponent implements OnInit, AfterViewInit {
   }
 
   createNewGraphTypeObjectEdge(name) {
-    var temp = {}
+    var temp = {};
     temp['bandwidth'] = '1';
     temp['delay'] = '0';
     temp['ipAddress'] = '';
@@ -737,6 +789,8 @@ export class HlbComponent implements OnInit, AfterViewInit {
           this.graphItemParametersList[pointer] = temp;
           globalGraphItemParametersList = this.graphItemParametersList;
         }
+        //Log Data
+        this.logger.log(LogHeader.GRAPH_UPDATE, entry.printGraphParameterData(globalGraphItemParametersList, id_of_node, id_of_edge));
 
         // data.parsedConstraints.forEach(element => {
         //   switch (element[0]) {
@@ -866,15 +920,18 @@ export class HlbComponent implements OnInit, AfterViewInit {
           clickedNodes.length || items.length || $dialogBox.toggleClass('hide');
           //Show Node/Link Content
           if(clickedNodes.length) {
+            accessibleLogger.log(LogHeader.KEY_PRESS, "User Clicked on a Node");
             $('#dialog-box-title').html(clickedNodes[0].label) && (currentGraphItemSelection['id'] = clickedNodes[0].id) && (currentGraphItemSelection['type'] = 'node');
             for(var i in id_of_node) {
               if(id_of_node[i] == currentGraphItemSelection['id'] && i.includes('lan')) {
+                accessibleLogger.log(LogHeader.KEY_PRESS, "User Clicked on a LAN");
                 $('#dialog-box-title').html('LAN') && (currentGraphItemSelection['type'] = 'lan');
                 break;
               }
             }
           }
           if(items.length && (clickedNodes.length == 0)) {
+            accessibleLogger.log(LogHeader.KEY_PRESS, "User Clicked on a Link");
             $('#dialog-box-title').html('Link') && (currentGraphItemSelection['id'] = items[0].edgeId) && (currentGraphItemSelection['type'] = 'link');
             var selectedEdge = items[0]['edgeId'];
             var id_of_nodes_rev = swapJSON(id_of_node);
@@ -1106,7 +1163,6 @@ export class HlbComponent implements OnInit, AfterViewInit {
                     length: 200
                   },
                   nodes: {
-                    fixed: true,
                     shape: "box",
                     font: {
                       color: '#FFFFFF'
@@ -1803,6 +1859,8 @@ var currentGraphItemSelection = {};
 var globalGraphItemParametersList;
 var id_of_node = {};
 var id_of_edge = {};
+let accessibleLogger;
+let entry = new LogEntry();
 
 function swapJSON(data) {
   var temp = {};

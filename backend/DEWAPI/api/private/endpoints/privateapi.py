@@ -14,7 +14,9 @@ from ..services.sshConnectivity import SSHConnection
 from ..services.deterlab_experiment_manager import DeterLabExperimentManager
 from DEWAPI.user import userObj
 from DEWAPI.api.public.services.userinfoservice import GoogleLogin
+from ..services.logger import Logger
 import globals
+import traceback
 
 
 
@@ -43,10 +45,17 @@ class HandleHLBTranslator(Resource):
         """
             Takes a file as an input and returns the dew format
         """
-        script = request.get_json(force=True)['Script']
-        parsed_dew, scenarios, constraints, bindings, actor = hlb.HandleTranslator(format, script)
-
-        return { 'dew': parsed_dew, 'scenarios': scenarios, 'constraints': constraints, 'bindings': bindings, 'actor': actor }
+        try:
+          json_data = request.get_json(force=True)
+          user = userObj.getEmailId()
+          Logger.backendLog(user,"HandleHLBTranslator()", "Entered Class")
+          script = json_data['Script']
+          parsed_dew, scenarios, constraints, bindings, actor = hlb.HandleTranslator(format, script)
+          Logger.backendLog(user,"HandleHLBTranslator()", "Successfully Converted to DEW")
+          return { 'dew': parsed_dew, 'scenarios': scenarios, 'constraints': constraints, 'bindings': bindings, 'actor': actor }
+        except BaseException:
+          Logger.backendErrorLog(user, traceback.format_exc())
+          raise Exception("Error Occured on the Server")
 
 @ns.route('/hlb/parse')
 class HandleHLBParser(Resource):
@@ -56,63 +65,120 @@ class HandleHLBParser(Resource):
         """
           Take an input string (behavior) and return the actors, triggers, actions, emit events and wait times. This can be used for auto completing the actors list.
         """
+        try:
+          json_data = request.get_json(force=True)
+          user = userObj.getEmailId()
+          Logger.backendLog(user,"HandleHLBParser()", "Entered Class")
+          parsed_data = hlb.HandleParse(json_data)
+          Logger.backendLog(user,"HandleHLBParser()", "Successfully Parsed Data")
+          return parsed_data
+        except BaseException:
+          Logger.backendErrorLog(user, traceback.format_exc())
+          raise Exception("Error Occured on the Server")
+        
+
+@ns.route('/convert/dew1to2')
+class ConvertDEW1To2(Resource):
+  @api.expect(constraint_text)
+  def put(self):
+      """
+        Parses DEW 1.0 and converts it to 2.0
+      """
+      try:
         json_data = request.get_json(force=True)
-        parsed_data = hlb.HandleParse(json_data)
-        return parsed_data
+        user = userObj.getEmailId()
+        Logger.backendLog(user,"ConvertDEW1To2()", "Entered Class")
+        constraints = json_data['constraints']
+        converted_constraints = dew_parser.convert_DEW_1_to_2(constraints)
+        Logger.backendLog(user,"ConvertDEW1To2()", "Successfully converted constraints!")
+        return {"status": "success", "parsedConstraints": converted_constraints }
+      except BaseException:
+        Logger.backendErrorLog(user, traceback.format_exc())
+        raise Exception("Error Occured on the Server")
+
+@ns.route('/log/user-logging')
+class LogData(Resource):
+  @api.expect(log_message)
+  def put(self):
+      """
+        Logs Data
+      """
+      json_data = request.get_json(force=True)
+      message = json_data['message'][0]
+      user = userObj.getEmailId()
+      logged_msg = Logger.log(user, message)
+      return {"status": "success", "message": logged_msg}
 
 @ns.route('/hlb/generateNs')
 class HandleHLBGeneratorNs(Resource):
-
     @api.expect(ns_object)
     @api.representation('text/plain')
     def put(self):
         """
           Generates NS file for given behaviors, actors, and constraints
         """
-        json_data = request.get_json(force=True)
-        script = hlb.HandleNS(json_data)
-        return {'script': script}
+        try:
+          json_data = request.get_json(force=True)
+          user = userObj.getEmailId()
+          Logger.backendLog(user,"HandleHLBGeneratorNs()", "Entered Class")
+          script = hlb.HandleNS(json_data)
+          Logger.backendLog(user,"HandleHLBGeneratorNs()", "Successfully generated NS file")
+          return {'script': script}
+        except BaseException:
+          Logger.backendErrorLog(user, traceback.format_exc())
+          raise Exception("Error Occured on the Server")
 
 @ns.route('/hlb/generateBash')
 class HandleHLBGeneratorBash(Resource):
-
     @api.expect(ns_object)
     @api.representation('text/plain')
     def put(self):
         """
           Generates BASH file for given behaviors, actors, and constraints
         """
-        json_data = request.get_json(force=True)
-        scriptList = hlb.HandleBASH(json_data)
-        bashScriptDict = {}
-        return scriptList
+        try:
+          json_data = request.get_json(force=True)
+          user = userObj.getEmailId()
+          Logger.backendLog(user,"HandleHLBGeneratorBash()", "Entered Class")
+          scriptList = hlb.HandleBASH(json_data)
+          bashScriptDict = {}
+          Logger.backendLog(user,"HandleHLBGeneratorBash()", "Successfully generated BASH file")
+          return scriptList
+        except BaseException:
+            Logger.backendErrorLog(user, traceback.format_exc())
+            raise Exception("Error Occured on the Server")
 
 @ns.route('/hlb/suggestions')
 class HandleHLBSuggestions(Resource):
-
-
     @api.expect(suggestion_object)
     def put(self):
         """
           Gets suggestions for given input
         """
-
-        # TODO : Remove globals
-        globals.actors=dict()
-        globals.behaviors=dict()
-        globals.constraints=dict()
-        globals.events=dict()
-        globals.actions=dict()
-        json_data = request.get_json(force=True)
-        print(len(json_data['suggestion_for']))
-        if json_data["type"] == "behavior":
-          s, t = hlb.HandleBehaviorSuggestions(json_data["behaviors"], json_data['actors'], json_data['suggestion_for'])
-          return { 'suggestions': s, 'suggestion_text': t}
-        elif json_data["type"] == "constraint":
-          s, t = hlb.HandleConstraintSuggestions(json_data["constraints"], json_data["actors"], json_data["suggestion_for"], json_data["behaviors"])
-          return { 'suggestions': s, 'suggestion_text': t}
-        else:
-          pass
+        try:
+          # TODO : Remove globals
+          globals.actors=dict()
+          globals.behaviors=dict()
+          globals.constraints=dict()
+          globals.events=dict()
+          globals.actions=dict()
+          json_data = request.get_json(force=True)
+          user = userObj.getEmailId()
+          Logger.backendLog(user,"HandleHLBSuggestions()", "Entered Class")
+          print(len(json_data['suggestion_for']))
+          if json_data["type"] == "behavior":
+            s, t = hlb.HandleBehaviorSuggestions(json_data["behaviors"], json_data['actors'], json_data['suggestion_for'])
+            Logger.backendLog(user,"HandleHLBSuggestions()", "Successfully generated behaviour suggestions")
+            return { 'suggestions': s, 'suggestion_text': t}
+          elif json_data["type"] == "constraint":
+            s, t = hlb.HandleConstraintSuggestions(json_data["constraints"], json_data["actors"], json_data["suggestion_for"], json_data["behaviors"])
+            Logger.backendLog(user,"HandleHLBSuggestions()", "Successfully generated constraint suggestions")
+            return { 'suggestions': s, 'suggestion_text': t}
+          else:
+            pass
+        except BaseException:
+            Logger.backendErrorLog(user, traceback.format_exc())
+            raise Exception("Error Occured on the Server")
 
 @ns.route('/hlb/dependency_graph/parse')
 class HandleGraphParse(Resource):
@@ -121,16 +187,23 @@ class HandleGraphParse(Resource):
         """
           Parses scenario to help in building a graph
         """
-        # TODO : Remove globals
-        globals.actors = dict()
-        globals.behaviors = dict()
-        globals.constraints = dict()
-        globals.events = dict()
-        globals.actions = dict()
-        json_data = request.get_json(force=True)
-        scenarios = json_data['scenario']
-        nodes, edges = hlb.HandleGraphParse(scenarios)
-        return {"status": "success", "nodes": nodes, "edges": edges }
+        try:
+          # TODO : Remove globals
+          globals.actors = dict()
+          globals.behaviors = dict()
+          globals.constraints = dict()
+          globals.events = dict()
+          globals.actions = dict()
+          json_data = request.get_json(force=True)
+          user = userObj.getEmailId()
+          Logger.backendLog(user,"HandleGraphParse()", "Entered Class")
+          scenarios = json_data['scenario']
+          nodes, edges = hlb.HandleGraphParse(scenarios)
+          Logger.backendLog(user,"HandleGraphParse()", "Successfully built graph data")
+          return {"status": "success", "nodes": nodes, "edges": edges }
+        except BaseException:
+            Logger.backendErrorLog(user, traceback.format_exc())
+            raise Exception("Error Occured on the Server")
 
 @ns.route('/hlb/topology/parse')
 class HandleTopologyParse(Resource):
@@ -139,17 +212,24 @@ class HandleTopologyParse(Resource):
         """
           Parses scenario to help in building a graph
         """
-        # TODO : Remove globals
-        globals.actors = dict()
-        globals.behaviors = dict()
-        globals.constraints = dict()
-        globals.events = dict()
-        globals.actions = dict()
-        json_data = request.get_json(force=True)
-        scenarios = json_data['scenario']
-        constraints = json_data['constraints']
-        actors, lans, edges = hlb.HandleTopologyParse(scenarios, constraints)
-        return {"status": "success", "actors": actors, "lans": lans, "edges": edges }
+        try:
+          # TODO : Remove globals
+          globals.actors = dict()
+          globals.behaviors = dict()
+          globals.constraints = dict()
+          globals.events = dict()
+          globals.actions = dict()
+          json_data = request.get_json(force=True)
+          user = userObj.getEmailId()
+          Logger.backendLog(user,"HandleTopologyParse()", "Entered Class")
+          scenarios = json_data['scenario']
+          constraints = json_data['constraints']
+          actors, lans, edges = hlb.HandleTopologyParse(scenarios, constraints)
+          Logger.backendLog(user,"HandleTopologyParse()", "Successfully parsed topology")
+          return {"status": "success", "actors": actors, "lans": lans, "edges": edges }
+        except BaseException:
+            Logger.backendErrorLog(user, traceback.format_exc())
+            raise Exception("Error Occured on the Server")
 
 @ns.route('/hlb/topology/graph-remove')
 class HandleTopologyGraphRemove(Resource):
@@ -158,26 +238,40 @@ class HandleTopologyGraphRemove(Resource):
         """
           Update Scenarios and Bindings on removal of node/edge from graph 
         """
-        json_data = request.get_json(force=True)
-        scenarios = json_data['scenarios']
-        bindings = json.loads(json_data['bindings'][0])
-        deleted_node = json_data['deleted_node']
-        updated_scenarios, updated_bindings = hlb.HandleTopologyGraphRemove(deleted_node, scenarios, bindings)
-        return {"status": "success", "scenarios": updated_scenarios, "bindings": updated_bindings }
+        try:
+          json_data = request.get_json(force=True)
+          user = userObj.getEmailId()
+          Logger.backendLog(user,"HandleTopologyGraphRemove()", "Entered Class")
+          scenarios = json_data['scenarios']
+          bindings = json.loads(json_data['bindings'][0])
+          deleted_node = json_data['deleted_node']
+          updated_scenarios, updated_bindings = hlb.HandleTopologyGraphRemove(deleted_node, scenarios, bindings)
+          Logger.backendLog(user,"HandleTopologyGraphRemove()", "Successfully updated scenarios and bindings")
+          return {"status": "success", "scenarios": updated_scenarios, "bindings": updated_bindings }
+        except BaseException:
+            Logger.backendErrorLog(user, traceback.format_exc())
+            raise Exception("Error Occured on the Server")
 
 @ns.route('/hlb/topology-graph/generate-constrains')
 class HandleTopologyGraphGenerateConstrains(Resource):
     @api.expect(topology_graph_generate_constraints)
     def put(self):
         """
-          Generate Constrains from Topology Graph 
+          Generate Constraints from Topology Graph 
         """
-        json_data = request.get_json(force=True)
-        nodes = json.loads(json_data['nodes'][0])
-        edges = json.loads(json_data['edges'][0])
-        parameters = json.loads(json_data['parameters'][0])
-        constraints = hlb.HandleTopologyGraphGenerateConstrains(nodes, edges, parameters)
-        return {"status": "success", "constraints": constraints }
+        try:
+          json_data = request.get_json(force=True)
+          user = userObj.getEmailId()
+          Logger.backendLog(user,"HandleTopologyGraphGenerateConstrains()", "Entered Class")
+          nodes = json.loads(json_data['nodes'][0])
+          edges = json.loads(json_data['edges'][0])
+          parameters = json.loads(json_data['parameters'][0])
+          constraints = hlb.HandleTopologyGraphGenerateConstrains(nodes, edges, parameters)
+          Logger.backendLog(user,"HandleTopologyGraphGenerateConstrains()", "Successfully generated constraints from topology graph")
+          return {"status": "success", "constraints": constraints }
+        except BaseException:
+            Logger.backendErrorLog(user, traceback.format_exc())
+            raise Exception("Error Occured on the Server")
 
 @ns.route('/hlb/dependency-graph/has-cycle')
 class HandleDependencyGraphHasCycle(Resource):
@@ -199,16 +293,23 @@ class HandleDependencyGraphUpdateEdge(Resource):
         """
           Update Scenarios and Bindings by adding/removing the edge 
         """
-        json_data = request.get_json(force=True)
-        scenarios = json_data['scenarios']
-        bindings = json.loads(json_data['bindings'][0])
-        actor_from = json_data['actor_from']
-        action_from = json_data['action_from']
-        actor_to = json_data['actor_to']
-        action_to = json_data['action_to']
-        update_type = json_data['update_type']
-        updated_scenarios, updated_bindings, event_name, cycle_path = hlb.HandleDependencyGraphUpdateEdge(update_type, actor_from, action_from, actor_to, action_to, scenarios, bindings)
-        return {"status": "success", "scenarios": updated_scenarios, "bindings": updated_bindings, "event_name": event_name, "cycle_path": cycle_path }
+        try:
+          json_data = request.get_json(force=True)
+          user = userObj.getEmailId()
+          Logger.backendLog(user,"HandleDependencyGraphUpdateEdge()", "Entered Class")
+          scenarios = json_data['scenarios']
+          bindings = json.loads(json_data['bindings'][0])
+          actor_from = json_data['actor_from']
+          action_from = json_data['action_from']
+          actor_to = json_data['actor_to']
+          action_to = json_data['action_to']
+          update_type = json_data['update_type']
+          updated_scenarios, updated_bindings, event_name, cycle_path = hlb.HandleDependencyGraphUpdateEdge(update_type, actor_from, action_from, actor_to, action_to, scenarios, bindings)
+          Logger.backendLog(user,"HandleDependencyGraphUpdateEdge()", "Successfully updated scenarios and bindings")
+          return {"status": "success", "scenarios": updated_scenarios, "bindings": updated_bindings, "event_name": event_name, "cycle_path": cycle_path }
+        except BaseException:
+            Logger.backendErrorLog(user, traceback.format_exc())
+            raise Exception("Error Occured on the Server")
 
 @ns.route('/nlp/behavior')
 class HandleNLPTranslator(Resource):
@@ -218,10 +319,18 @@ class HandleNLPTranslator(Resource):
         """
           Get the actors, behaviors and constraints for a given string of text parsed using NLP.
         """
-        nlp_text = request.get_json(force=True)['text']
-        response = nlp.HandleNLPString(nlp_text)
-        print(response)
-        return response
+        try:
+          json_data = request.get_json(force=True)
+          user = userObj.getEmailId()
+          Logger.backendLog(user,"HandleNLPTranslator()", "Entered Class")
+          nlp_text = json_data['text']
+          response = nlp.HandleNLPString(nlp_text)
+          print(response)
+          Logger.backendLog(user,"HandleNLPTranslator()", "Successfully retrieved actors, behaviors, and constraints")
+          return response
+        except BaseException:
+            Logger.backendErrorLog(user, traceback.format_exc())
+            raise Exception("Error Occured on the Server")
 
 
 @ns.route("/persist/save_drive")
@@ -232,45 +341,53 @@ class HandleExperimentPushToDrive(Resource):
         """
             Save and push to drive
         """
-        content = request.get_json(force=True)
-        userId = userObj.getUserId()
-        actors = content['actors']
-        constraints = content['constraints']
-        behaviors = content['behaviors']
-        bindings = content['bindings']
-        create_new_file = content['create_new_file']
-        token = content['token']
-        experimentId = None
-        if 'id' in content:
-            experimentId = content['id']
-        name = content['name']
-        description = content['description']
+        try:
+          content = request.get_json(force=True)
+          user = userObj.getEmailId()
+          Logger.backendLog(user,"HandleExperimentPushToDrive()", "Entered Class")
+          userId = userObj.getUserId()
+          actors = content['actors']
+          constraints = content['constraints']
+          behaviors = content['behaviors']
+          bindings = content['bindings']
+          create_new_file = content['create_new_file']
+          token = content['token']
+          experimentId = None
+          if 'id' in content:
+              experimentId = content['id']
+          name = content['name']
+          description = content['description']
 
-        experiment_content = json.dumps(
-            {'actors': actors, 'constraints': constraints, 'behaviors': behaviors, 'bindings': bindings})
+          experiment_content = json.dumps(
+              {'actors': actors, 'constraints': constraints, 'behaviors': behaviors, 'bindings': bindings})
 
-        if experimentId is None or experimentId.strip() == '':
-            try:
-                experiment = em.create_experiment(userId, experiment_content, experimentId, name, description)
-                print(experiment.to_dict())
-                res = em.push_to_drive(experiment_id=experiment.experiment_id, current_user_id=userId, token=token,
-                                 create_new_file=create_new_file)
-            except ValueError as e:
-                msg = {'saved': False, 'message': str(e)}
-                return msg, 403
-            if res:
-                return {'saved': True, 'message': "Successful"}
+          if experimentId is None or experimentId.strip() == '':
+              try:
+                  experiment = em.create_experiment(userId, experiment_content, experimentId, name, description)
+                  print(experiment.to_dict())
+                  res = em.push_to_drive(experiment_id=experiment.experiment_id, current_user_id=userId, token=token,
+                                  create_new_file=create_new_file)
+              except ValueError as e:
+                  msg = {'saved': False, 'message': str(e)}
+                  return msg, 403
+              if res:
+                  Logger.backendLog(user,"HandleExperimentPushToDrive()", "Successfully saved to Drive")
+                  return {'saved': True, 'message': "Successful"}
 
-        else:
-            try:
-                flag, message, experiment = em.update_experiment(experimentId, userId, name=name, description=description,
-                                                     content=experiment_content)
-                em.push_to_drive(experiment_id=experimentId, current_user_id=userId, token=token,
-                                 create_new_file=create_new_file)
-                return {'saved': flag, 'message': message}
-            except ValueError as e:
-                msg = {'saved': False, 'message': str(e)}
-                return msg, 403
+          else:
+              try:
+                  flag, message, experiment = em.update_experiment(experimentId, userId, name=name, description=description,
+                                                      content=experiment_content)
+                  em.push_to_drive(experiment_id=experimentId, current_user_id=userId, token=token, create_new_file=create_new_file)
+                  Logger.backendLog(user,"HandleExperimentPushToDrive()", "Saved to Drive with flag - " + str(flag))
+                  return {'saved': flag, 'message': message}
+              except ValueError as e:
+                  Logger.backendLog(user,"HandleExperimentPushToDrive()", "Unable to save to Drive")
+                  msg = {'saved': False, 'message': str(e)}
+                  return msg, 403
+        except BaseException:
+            Logger.backendErrorLog(user, traceback.format_exc())
+            raise Exception("Error Occured on the Server")
 
 
 @ns.route('/persist/save')
@@ -281,34 +398,43 @@ class HandleExperimentSave(Resource):
         """
           Save content to database
         """
-        content = request.get_json(force=True)
-        userId = userObj.getUserId()
-        actors = content['actors']
-        constraints = content['constraints']
-        behaviors = content['behaviors']
-        bindings = content['bindings']
-        experimentId = None
-        if 'id' in content:
-          experimentId = content['id']
-        name = content['name']
-        description = content['description']
-        driveId = content['driveId']
-        print("driveId: ", driveId)
-        experiment_content = json.dumps({'actors': actors, 'constraints': constraints, 'behaviors': behaviors, 'bindings': bindings})
-        # print("Experiment : ", json.loads(json.dumps({'actors': actors, 'constraints': constraints, 'behaviors': behaviors, 'bindings': bindings},ensure_ascii=False)))
+        try:
+          content = request.get_json(force=True)
+          user = userObj.getEmailId()
+          Logger.backendLog(user,"HandleExperimentSave()", "Entered Class")
+          userId = userObj.getUserId()
+          actors = content['actors']
+          constraints = content['constraints']
+          behaviors = content['behaviors']
+          bindings = content['bindings']
+          experimentId = None
+          if 'id' in content:
+            experimentId = content['id']
+          name = content['name']
+          description = content['description']
+          driveId = content['driveId']
+          print("driveId: ", driveId)
+          experiment_content = json.dumps({'actors': actors, 'constraints': constraints, 'behaviors': behaviors, 'bindings': bindings})
+          # print("Experiment : ", json.loads(json.dumps({'actors': actors, 'constraints': constraints, 'behaviors': behaviors, 'bindings': bindings},ensure_ascii=False)))
 
-        if experimentId is None or experimentId.strip() == '':
-          experiment = em.create_experiment(userId, experiment_content,experimentId,name,description)
-          if experiment is not None:
-              return {'saved': True,'message':"Successful", "experiment": experiment.response_dict() }
-            
-        else: 
-          try:
-            flag , message, experiment = em.update_experiment(experimentId,userId,name=name, description=description,content=experiment_content,driveId=driveId)
-            return {'saved': flag,'message':message, 'experiment': experiment.response_dict() }
-          except ValueError as e:
-            msg = {'saved': False, 'message': str(e)}
-            return msg, 403
+          if experimentId is None or experimentId.strip() == '':
+            experiment = em.create_experiment(userId, experiment_content,experimentId,name,description)
+            if experiment is not None:
+                Logger.backendLog(user,"HandleExperimentSave()", "Successfully saved Experiment")
+                return {'saved': True,'message':"Successful", "experiment": experiment.response_dict() }
+              
+          else: 
+            try:
+              flag , message, experiment = em.update_experiment(experimentId,userId,name=name, description=description,content=experiment_content,driveId=driveId)
+              Logger.backendLog(user,"HandleExperimentSave()", "Saved Experiment with flag - " + str(flag))
+              return {'saved': flag,'message':message, 'experiment': experiment.response_dict() }
+            except ValueError as e:
+              Logger.backendLog(user,"HandleExperimentSave()", "Unable to save experiment")
+              msg = {'saved': False, 'message': str(e)}
+              return msg, 403
+        except BaseException:
+            Logger.backendErrorLog(user, traceback.format_exc())
+            raise Exception("Error Occured on the Server")
 
          # persistence.services.sqlite3.query_db("select id from users where username="+username,one=True)
          # return 
@@ -323,14 +449,19 @@ class HandleExperimentListRetrieval(Resource):
         """
             Retrieve content from database
         """
-
-        token = userObj.getToken()
-        experiment = em.get_accessible_experiments(userObj.getUserId())
-        result = []
-        if experiment is not None:
-            result=experiment
-        
-        return result
+        try:
+          token = userObj.getToken()
+          user = userObj.getEmailId()
+          Logger.backendLog(user,"HandleExperimentListRetrieval()", "Entered Class")
+          experiment = em.get_accessible_experiments(userObj.getUserId())
+          result = []
+          if experiment is not None:
+              result=experiment
+          Logger.backendLog(user,"HandleExperimentListRetrieval()", "Successfully retrieved experiments")
+          return result
+        except BaseException:
+            Logger.backendErrorLog(user, traceback.format_exc())
+            raise Exception("Error Occured on the Server")
 
 @ns.route("/persist/getExperimentById")
 class HandleSingleExperimentRetrieval(Resource):
@@ -339,24 +470,31 @@ class HandleSingleExperimentRetrieval(Resource):
         """
             Retrieve content from database by experiment id and userId
         """
-        
-        content = request.get_json(force=True)
-        userId = userObj.getUserId()
-        id1 = content['id']
         try:
-            experiment = em.get_experiment(id1, userId)
-            
-            result = {}
-            if experiment is not None:
-                r = experiment.to_dict()
-                result=json.loads(r['content'])
-                result['name'] = r['name']
-                result['description'] = r['description']
-                result['driveId'] = r['driveId']
-                return result
-        except ValueError as e:
-            if str(e) == "Forbidden":
+          content = request.get_json(force=True)
+          user = userObj.getEmailId()
+          Logger.backendLog(user,"HandleSingleExperimentRetrieval()", "Entered Class")
+          userId = userObj.getUserId()
+          id1 = content['id']
+          try:
+              experiment = em.get_experiment(id1, userId)
+              
+              result = {}
+              if experiment is not None:
+                  r = experiment.to_dict()
+                  result=json.loads(r['content'])
+                  result['name'] = r['name']
+                  result['description'] = r['description']
+                  result['driveId'] = r['driveId']
+                  Logger.backendLog(user,"HandleSingleExperimentRetrieval()", "Successfully retrieved experiment")
+                  return result
+          except ValueError as e:
+              if str(e) == "Forbidden":
+                Logger.backendLog(user,"HandleSingleExperimentRetrieval()", "Unable to retrieve experiment")
                 return {}, 403
+        except BaseException:
+          Logger.backendErrorLog(user, traceback.format_exc())
+          raise Exception("Error Occured on the Server")
 
 
 @ns.route("/persist/experiment/delete")
@@ -366,16 +504,24 @@ class HandleExperimentDelete(Resource):
     """
       Delete experiment from database
     """
-    content = request.get_json(force=True)
-    userId = userObj.getUserId()
-    experiment_id = content['id']
-    
     try:
-      em.soft_delete_experiment(userId, experiment_id)
-      return None, 204
-    except ValueError as e:
-      if str(e) == "Forbidden":
-        return {}, 403
+      content = request.get_json(force=True)
+      user = userObj.getEmailId()
+      Logger.backendLog(user,"HandleExperimentDelete()", "Entered Class")
+      userId = userObj.getUserId()
+      experiment_id = content['id']
+      
+      try:
+        em.soft_delete_experiment(userId, experiment_id)
+        Logger.backendLog(user,"HandleExperimentDelete()", "Successfully deleted experiment")
+        return None, 204
+      except ValueError as e:
+        if str(e) == "Forbidden":
+          Logger.backendLog(user,"HandleExperimentDelete()", "Unable to delete experiment")
+          return {}, 403
+    except BaseException:
+          Logger.backendErrorLog(user, traceback.format_exc())
+          raise Exception("Error Occured on the Server")
 
 @ns.route("/persist/experiment/removeaccess")
 class HandleExperimentAccessRemoval(Resource):
@@ -384,16 +530,24 @@ class HandleExperimentAccessRemoval(Resource):
     """
       Delete experiment from database
     """
-    content = request.get_json(force=True)
-    userId = userObj.getUserId()
-    experiment_id = content['id']
-    userHandle= content['userHandle']
     try:
-      em.soft_delete_access(userId, experiment_id,userHandle)
-      return None, 200
-    except ValueError as e:
-      if str(e) == "Forbidden":
-        return {}, 403
+      content = request.get_json(force=True)
+      user = userObj.getEmailId()
+      Logger.backendLog(user,"HandleExperimentAccessRemoval()", "Entered Class")
+      userId = userObj.getUserId()
+      experiment_id = content['id']
+      userHandle= content['userHandle']
+      try:
+        em.soft_delete_access(userId, experiment_id,userHandle)
+        Logger.backendLog(user,"HandleExperimentAccessRemoval()", "Successfully deleted access")
+        return None, 200
+      except ValueError as e:
+        if str(e) == "Forbidden":
+          Logger.backendLog(user,"HandleExperimentAccessRemoval()", "Unable to delete access")
+          return {}, 403
+    except BaseException:
+          Logger.backendErrorLog(user, traceback.format_exc())
+          raise Exception("Error Occured on the Server")
 
 @ns.route("/persist/experiment/versions")
 class HandleExperimentVersions(Resource):
@@ -402,16 +556,23 @@ class HandleExperimentVersions(Resource):
         """
           Get versions of experiment from database
         """
-        content = request.get_json(force=True)
-        userId = userObj.getUserId()
-        experiment_id = content['id']
-        versions = em.get_experiment_versions(experiment_id, userId)
-
         try:
-            return { "status": "success", "versions": versions}
-        except ValueError as e:
-            if str(e) == "Forbidden":
+          content = request.get_json(force=True)
+          user = userObj.getEmailId()
+          Logger.backendLog(user,"HandleExperimentVersions()", "Entered Class")
+          userId = userObj.getUserId()
+          experiment_id = content['id']
+          versions = em.get_experiment_versions(experiment_id, userId)
+          try:
+              Logger.backendLog(user,"HandleExperimentVersions()", "Successfully retrieved versions")
+              return { "status": "success", "versions": versions}
+          except ValueError as e:
+              if str(e) == "Forbidden":
+                Logger.backendLog(user,"HandleExperimentVersions()", "Unable to retrieve versions")
                 return {}, 403
+        except BaseException:
+          Logger.backendErrorLog(user, traceback.format_exc())
+          raise Exception("Error Occured on the Server")
 
 @ns.route("/export/dew")
 class HandleExportToDEW(Resource):
@@ -420,17 +581,25 @@ class HandleExportToDEW(Resource):
         """
         Get experiment in DEW format
         """
-        content = request.get_json(force=True)
-        userId = userObj.getUserId()
         try:
-            dew_content = em.dew_content(content['id'], userId)
-            result = {}
-            result['status'] = True
-            result['dew_content'] = dew_content
-            return result, 200
-        except ValueError as e:
-            if str(e) == "Forbidden":
+          content = request.get_json(force=True)
+          user = userObj.getEmailId()
+          Logger.backendLog(user,"HandleExportToDEW()", "Entered Class")
+          userId = userObj.getUserId()
+          try:
+              dew_content = em.dew_content(content['id'], userId)
+              result = {}
+              result['status'] = True
+              result['dew_content'] = dew_content
+              Logger.backendLog(user,"HandleExportToDEW()", "Successfully exported to DEW")
+              return result, 200
+          except ValueError as e:
+              if str(e) == "Forbidden":
+                Logger.backendLog(user,"HandleExportToDEW()", "Unable to export to DEW")
                 return {}, 403
+        except BaseException:
+          Logger.backendErrorLog(user, traceback.format_exc())
+          raise Exception("Error Occured on the Server")
 
 @ns.route("/persist/experiment/copy")
 class HandleExperimentCopy(Resource):
@@ -439,20 +608,27 @@ class HandleExperimentCopy(Resource):
     """
       Duplicate the experiment
     """
-    content = request.get_json(force=True)
-    userId = userObj.getUserId()
-    experiment_id = content['id']
-    
     try:
-      experiment = em.get_experiment(experiment_id, userId)
-      copied_experiment = em.copy_experiment(experiment, userId).to_dict()
-      result = {}
-      result['status'] = True
-      result['experiment_id'] = copied_experiment['id']
-      return result, 201
-    except ValueError as e:
-      if str(e) == "Forbidden":
-        return {}, 403
+      content = request.get_json(force=True)
+      user = userObj.getEmailId()
+      Logger.backendLog(user,"HandleExperimentCopy()", "Entered Class")
+      userId = userObj.getUserId()
+      experiment_id = content['id']
+      try:
+        experiment = em.get_experiment(experiment_id, userId)
+        copied_experiment = em.copy_experiment(experiment, userId).to_dict()
+        result = {}
+        result['status'] = True
+        result['experiment_id'] = copied_experiment['id']
+        Logger.backendLog(user,"HandleExperimentCopy()", "Successfully duplicated the experiment")
+        return result, 201
+      except ValueError as e:
+        if str(e) == "Forbidden":
+          Logger.backendLog(user,"HandleExperimentCopy()", "Unable to duplicate the experiment")
+          return {}, 403
+    except BaseException:
+          Logger.backendErrorLog(user, traceback.format_exc())
+          raise Exception("Error Occured on the Server")
 
 @ns.route("/persist/experiment/grantaccess")
 class HandleExperimentAccess(Resource):
@@ -461,20 +637,28 @@ class HandleExperimentAccess(Resource):
     """
      Grant experiment access
     """
-    content = request.get_json(force=True)
-    userId = userObj.getUserId()
-    userHandle = content['userHandle']
-    experiment_id = content['id']
-    accessLevel = content['accessLevel']
     try:
-      if int(accessLevel)>0 and int(accessLevel)<=4:
-        result = em.grantExperimentAccess(experiment_id, userId,userHandle,accessLevel)
-      else:
-        result = {'error':'Invalid Access Level'}
-      return result, 200
-    except ValueError as e:
-      if str(e) == "Forbidden":
-        return {}, 403
+      content = request.get_json(force=True)
+      user = userObj.getEmailId()
+      Logger.backendLog(user,"HandleExperimentAccess()", "Entered Class")
+      userId = userObj.getUserId()
+      userHandle = content['userHandle']
+      experiment_id = content['id']
+      accessLevel = content['accessLevel']
+      try:
+        if int(accessLevel)>0 and int(accessLevel)<=4:
+          result = em.grantExperimentAccess(experiment_id, userId,userHandle,accessLevel)
+        else:
+          result = {'error':'Invalid Access Level'}
+        Logger.backendLog(user,"HandleExperimentAccess()", "Successfully granted access. Result - " + str(result))
+        return result, 200
+      except ValueError as e:
+        if str(e) == "Forbidden":
+          Logger.backendLog(user,"HandleExperimentAccess()", "Unable to grant access")
+          return {}, 403
+    except BaseException:
+          Logger.backendErrorLog(user, traceback.format_exc())
+          raise Exception("Error Occured on the Server")
 
 @ns.route("/persist/experiment/control")
 class HandleExperimentControl(Resource):
@@ -483,23 +667,39 @@ class HandleExperimentControl(Resource):
     """
      Grant experiment Control
     """
-    content = request.get_json(force=True)
-    userId = userObj.getUserId()
-    experiment_id = content['id']
-    
     try:
-      result = em.getExperimentControlInfoByUserId(experiment_id, userId)
-      return result, 200
-    except ValueError as e:
-      if str(e) == "Forbidden":
-        return {}, 403
+      content = request.get_json(force=True)
+      user = userObj.getEmailId()
+      Logger.backendLog(user,"HandleExperimentControl()", "Entered Class")
+      userId = userObj.getUserId()
+      experiment_id = content['id']
+      
+      try:
+        result = em.getExperimentControlInfoByUserId(experiment_id, userId)
+        Logger.backendLog(user,"HandleExperimentControl()", "Granted experiment control")
+        return result, 200
+      except ValueError as e:
+        if str(e) == "Forbidden":
+          Logger.backendLog(user,"HandleExperimentControl()", "Unable to grant experiment control")
+          return {}, 403
+    except BaseException:
+          Logger.backendErrorLog(user, traceback.format_exc())
+          raise Exception("Error Occured on the Server")
 
 @ns.route('/persist/getUserAccessList/')
 class HandleExperimentUserControlList(Resource):
     @api.expect(userAccessListModel)
     def post(self):
+      try:
         json_data = request.get_json(force=True)
-        return em.getUserAccessList(userObj.getUserId(),json_data['experiment_id'])
+        user = userObj.getEmailId()
+        Logger.backendLog(user,"HandleExperimentUserControlList()", "Entered Class")
+        result = em.getUserAccessList(userObj.getUserId(),json_data['experiment_id'])
+        Logger.backendLog(user,"HandleExperimentUserControlList()", "Successfully retrieved user access list")
+        return result
+      except BaseException:
+        Logger.backendErrorLog(user, traceback.format_exc())
+        raise Exception("Error Occured on the Server")
 
 @ns.route('/upload/dew')
 class HandleUploadParser(Resource):
@@ -509,55 +709,62 @@ class HandleUploadParser(Resource):
         """
           Get the actors, behaviors and constraints for a given string of text parsed using NLP.
         """
-        uploaded_file = upload_parser.parse_args()['file']
-        content = uploaded_file.read()
-        x = dew_parser.get_behaviors_and_constraints(content.decode("utf-8"))
+        try:
+          user = userObj.getEmailId()
+          Logger.backendLog(user,"HandleUploadParser()", "Entered Class")
+          uploaded_file = upload_parser.parse_args()['file']
+          content = uploaded_file.read()
+          x = dew_parser.get_behaviors_and_constraints(content.decode("utf-8"))
 
-        # This section is being done to extract the bindings category as
-        # only the key and values are stored in dew file
+          # This section is being done to extract the bindings category as
+          # only the key and values are stored in dew file
 
-        # Creating data dictionary to send to the parser api
-        data = {
-            'ParseType': 'bash',
-            'Scenario': x['behaviors'],
-            'Constraints': [],
-        }
-        parsed_data = hlb.HandleParse(data)
+          # Creating data dictionary to send to the parser api
+          data = {
+              'ParseType': 'bash',
+              'Scenario': x['behaviors'],
+              'Constraints': [],
+          }
+          parsed_data = hlb.HandleParse(data)
 
-        # copy into another variable
-        bindings_copy = x['bindings']
+          # copy into another variable
+          bindings_copy = x['bindings']
 
-        # define function to flatten lists
-        def flatten(lst):
-            lst = [a for a in lst if a is not None]
-            return [item for sublist in lst for item in sublist]
+          # define function to flatten lists
+          def flatten(lst):
+              lst = [a for a in lst if a is not None]
+              return [item for sublist in lst for item in sublist]
 
-        # Get all actions, events and unknowns
-        all_actions = flatten([x[2] for x in parsed_data['parsedScenario']])
-        all_events = flatten([x[3] for x in parsed_data['parsedScenario']])
+          # Get all actions, events and unknowns
+          all_actions = flatten([x[2] for x in parsed_data['parsedScenario']])
+          all_events = flatten([x[3] for x in parsed_data['parsedScenario']])
 
-        formatted_bindings = []
-        for val in bindings_copy:
-            if val[0] in all_actions:
-                formatted_bindings.append({
-                    'category': 'action',
-                    'key': val[0],
-                    'value': val[1]
-                })
-            elif val[0] in all_events:
-                formatted_bindings.append({
-                    'category': 'event',
-                    'key': val[0],
-                    'value': val[1]
-                })
-            else:
-                formatted_bindings.append({
-                    'category': 'unknown',
-                    'key': val[0],
-                    'value': val[1]
-                })
-        x['bindings'] = formatted_bindings
-        return x
+          formatted_bindings = []
+          for val in bindings_copy:
+              if val[0] in all_actions:
+                  formatted_bindings.append({
+                      'category': 'action',
+                      'key': val[0],
+                      'value': val[1]
+                  })
+              elif val[0] in all_events:
+                  formatted_bindings.append({
+                      'category': 'event',
+                      'key': val[0],
+                      'value': val[1]
+                  })
+              else:
+                  formatted_bindings.append({
+                      'category': 'unknown',
+                      'key': val[0],
+                      'value': val[1]
+                  })
+          x['bindings'] = formatted_bindings
+          Logger.backendLog(user,"HandleUploadParser()", "Successfully parsed actors, behaviors and constraints")
+          return x
+        except BaseException:
+          Logger.backendErrorLog(user, traceback.format_exc())
+          raise Exception("Error Occured on the Server")
 
 @ns.route('/token-based-auth/create')
 class HandleTokenBasedAuthCreateToken(Resource):
@@ -566,17 +773,25 @@ class HandleTokenBasedAuthCreateToken(Resource):
         """
         Create token for a given experiment
         """
-        content = request.get_json(force=True)
-        experiment_id = content['experiment_id']
-        access_level = content['access_level']
-        creator_uid = userObj.getUserId()
-
         try:
+          user = userObj.getEmailId()
+          Logger.backendLog(user,"HandleTokenBasedAuthCreateToken()", "Entered Class")
+          content = request.get_json(force=True)
+          experiment_id = content['experiment_id']
+          access_level = content['access_level']
+          creator_uid = userObj.getUserId()
+
+          try:
             token = tm.create_token(experiment_id, access_level, creator_uid)
+            Logger.backendLog(user,"HandleTokenBasedAuthCreateToken()", "Successfully created token")
             return token, 201
-        except ValueError as e:
+          except ValueError as e:
             if str(e) == "Forbidden":
-                return {}, 403
+              Logger.backendLog(user,"HandleTokenBasedAuthCreateToken()", "Unable to create token")
+              return {}, 403
+        except BaseException:
+          Logger.backendErrorLog(user, traceback.format_exc())
+          raise Exception("Error Occured on the Server")
 
 
 @ns.route('/token-based-auth/getTokenList')
@@ -586,24 +801,31 @@ class HandleTokenBasedAuthTokenList(Resource):
         """
         Create token for a given experiment
         """
-        content = request.get_json(force=True)
-        experiment_id = content['experiment_id']
-        creator_uid = userObj.getUserId()
-
         try:
-            result = []
-            tokenList = tm.getTokenList(experiment_id, creator_uid)
-            for t in tokenList:
-                obj = {}
-                obj['token'] = t['token']
-                obj['accessLevel'] = t['access_level']
-                obj['status'] = t['active']
-                result.append(obj)
-            return result, 200
-        except ValueError as e:
-            if str(e) == "Forbidden":
-                return {}, 403
+          user = userObj.getEmailId()
+          Logger.backendLog(user,"HandleTokenBasedAuthTokenList()", "Entered Class")
+          content = request.get_json(force=True)
+          experiment_id = content['experiment_id']
+          creator_uid = userObj.getUserId()
 
+          try:
+              result = []
+              tokenList = tm.getTokenList(experiment_id, creator_uid)
+              for t in tokenList:
+                  obj = {}
+                  obj['token'] = t['token']
+                  obj['accessLevel'] = t['access_level']
+                  obj['status'] = t['active']
+                  result.append(obj)
+              Logger.backendLog(user,"HandleTokenBasedAuthTokenList()", "Successfully retrieved token list")
+              return result, 200
+          except ValueError as e:
+              if str(e) == "Forbidden":
+                Logger.backendLog(user,"HandleTokenBasedAuthTokenList()", "Unable to retrieve token list")
+                return {}, 403
+        except BaseException:
+          Logger.backendErrorLog(user, traceback.format_exc())
+          raise Exception("Error Occured on the Server")
 
 
 @ns.route('/profile/accounts/deterLab/save')
@@ -613,17 +835,25 @@ class HandleProfileDeterLabSaveAccounts(Resource):
         """
         Create token for a given experiment
         """
-        content = request.get_json(force=True)
-        username = content['username']
-        password = content['password']
-        creator_uid = userObj.getUserId()
-        print(creator_uid)
         try:
-            result = ps.save(creator_uid, username, password)
-            return result, 200
-        except ValueError as e:
-            if str(e) == "Forbidden":
+          user = userObj.getEmailId()
+          Logger.backendLog(user,"HandleProfileDeterLabSaveAccounts()", "Entered Class")
+          content = request.get_json(force=True)
+          username = content['username']
+          password = content['password']
+          creator_uid = userObj.getUserId()
+          print(creator_uid)
+          try:
+              result = ps.save(creator_uid, username, password)
+              Logger.backendLog(user,"HandleProfileDeterLabSaveAccounts()", "Saved Account")
+              return result, 200
+          except ValueError as e:
+              if str(e) == "Forbidden":
+                Logger.backendLog(user,"HandleProfileDeterLabSaveAccounts()", "Unable to save account")
                 return {}, 403
+        except BaseException:
+          Logger.backendErrorLog(user, traceback.format_exc())
+          raise Exception("Error Occured on the Server")
 
 
 @ns.route('/profile/accounts/deterLab/get')
@@ -632,14 +862,21 @@ class HandleProfileDeterLabGetAccounts(Resource):
         """
         Create token for a given experiment
         """
-        creator_uid = userObj.getUserId()
-
         try:
-            result = ps.getList(creator_uid)
-            return result, 200
-        except ValueError as e:
-            if str(e) == "Forbidden":
+          user = userObj.getEmailId()
+          Logger.backendLog(user,"HandleProfileDeterLabGetAccounts()", "Entered Class")
+          creator_uid = userObj.getUserId()
+          try:
+              result = ps.getList(creator_uid)
+              Logger.backendLog(user,"HandleProfileDeterLabGetAccounts()", "Successfully retrieved accounts")
+              return result, 200
+          except ValueError as e:
+              if str(e) == "Forbidden":
+                Logger.backendLog(user,"HandleProfileDeterLabGetAccounts()", "Unable to retrieve accounts")
                 return {}, 403
+        except BaseException:
+          Logger.backendErrorLog(user, traceback.format_exc())
+          raise Exception("Error Occured on the Server")
 
 @ns.route('/profile/accounts/deterLab/delete')
 class HandleProfileDeterLabDeleteAccounts(Resource):
@@ -647,14 +884,22 @@ class HandleProfileDeterLabDeleteAccounts(Resource):
         """
         Create token for a given experiment
         """
-        creator_uid = userObj.getUserId()
-        daid = request.args.get('id')
         try:
-            result = ps.delete(creator_uid,daid)
-            return result, 200
-        except ValueError as e:
-            if str(e) == "Forbidden":
+          user = userObj.getEmailId()
+          Logger.backendLog(user,"HandleProfileDeterLabDeleteAccounts()", "Entered Class")
+          creator_uid = userObj.getUserId()
+          daid = request.args.get('id')
+          try:
+              result = ps.delete(creator_uid,daid)
+              Logger.backendLog(user,"HandleProfileDeterLabDeleteAccounts()", "Successfully deleted account")
+              return result, 200
+          except ValueError as e:
+              if str(e) == "Forbidden":
+                Logger.backendLog(user,"HandleProfileDeterLabDeleteAccounts()", "Unable to delete account")
                 return {}, 403
+        except BaseException:
+          Logger.backendErrorLog(user, traceback.format_exc())
+          raise Exception("Error Occured on the Server")
 
 @ns.route('/deterlab/project/exists')
 class HandleDeterLabProjectExists(Resource):
