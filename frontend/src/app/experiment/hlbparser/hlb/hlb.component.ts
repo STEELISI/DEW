@@ -40,6 +40,7 @@ export class HlbComponent implements OnInit, AfterViewInit {
 
   @ViewChild('topologyGraphNetwork', { static: false }) topologyGraphNetwork!: ElementRef;
   @ViewChild('dependencyGraphNetwork', { static: false }) dependencyGraphNetwork!: ElementRef;
+  @ViewChild('dependencyGraphCycleNetwork', { static: false }) dependencyGraphCycleNetwork!: ElementRef;
   @HostListener('document:keydown.escape', ['$event'])
   onKeydownHandler(event: KeyboardEvent) { 
     this.addNodeType = null;
@@ -64,6 +65,7 @@ export class HlbComponent implements OnInit, AfterViewInit {
   graphDescription: string;
   dependencyGraphNodes: DataSet<any>;
   dependencyGraphEdges: DataSet<any>;
+  dependencyGraphCyclePath: null | Array<Array<String>>;
   filterBindingOptions = [
     "tcpdump -i expeth($node) -w $file",
     "ping $node",
@@ -917,146 +919,206 @@ export class HlbComponent implements OnInit, AfterViewInit {
           }
       });
     }
-    
+
     if (updateDependency) {
-      this.http.put("v1/pr/hlb/dependency_graph/parse", request, { withCredential: true })
+      this.http.put("v1/pr/hlb/dependency-graph/has-cycle", {scenarios: scenarios}, { withCredential: true })
         .subscribe((d) => {
-        let nodes = []
-        let links = []
-        var actors = {}
-        let groupCount = 1
-        for (const n of d['nodes']) {
-          if (!actors.hasOwnProperty(n.actors[0])) {
-            actors[n.actors[0]] = groupCount++;
-          }
-
-          var n2 = {
-            data: n,
-            id: n.id,
-            label: n.action,
-            group: "group" + actors[n.actors[0]]
-          }
-          nodes.push(n2)
-        }
-
-        for (const e of d['edges']) {
-          var e2 = e
-          e2.from = e2.source;
-          e2.to = e2.target;
-          e2.arrows = {
-            to: {
-              enabled: true,
-              type: "arrow",
-            },
-          }
-          links.push(e2)
-        }
-
-        const colors = ["#F0C929",
-          "#F48B29",
-          "#AC0D0D",
-          "#693C72",
-          "#55B3B1",
-          "#F08A5D",
-          "#B83B5E",
-          "#54E346",
-          "#1F1D36",
-          "#420516",
-          "#91091E",
-          "#EE8572",
-          "#35495E",
-          "#347474",
-          "#480032",
-          "#FF4C29",
-          "#FB3640",
-          "#126E82",
-          "#05004E",
-          "#FF005C",
-          "#240041",
-          "#F4E557",
-          "#B983FF",
-          "#1DB9C3",
-          "#005F99"]
-          
-        this.dependencyGraphNodes = new DataSet<any>(nodes);
-        this.dependencyGraphEdges = new DataSet<any>(links);
-
-        this.dependencyGraphLegends = Object.keys(actors).map(actor => { return { actor: actor, color: colors[actors[actor] - 1] } })
-
-        this.dependencyNetworkInstance = new Network(this.dependencyGraphNetwork.nativeElement, { nodes: this.dependencyGraphNodes, edges: this.dependencyGraphEdges }, {
-          manipulation: {
-              enabled: false,
-              initiallyActive: false,
-              addNode: (data, callback) => { return; },
-              deleteNode: (data, callback) => { return; },
-              addEdge: (edgeData, callback) => {
-                
-                if (edgeData.from == edgeData.to) {
-                  return;
-                }
-                //Check if such an edge already exists
-                const sameEdges = this.dependencyGraphEdges.get({
-                  filter: (edge) =>
-                    (edge.from == edgeData.from && edge.to == edgeData.to) ||
-                    (edge.from == edgeData.to && edge.to == edgeData.from)
-                });
-                if (sameEdges.length) {
-                  return;
-                }
-
-                edgeData.arrows = {
-                  to: {
-                    enabled: true,
-                    type: "arrow",
-                  },
-                };
-                const actorFrom = this.dependencyGraphNodes.get(edgeData.from)["data"].actors[0];
-                const actionFrom = this.dependencyGraphNodes.get(edgeData.from)["data"].action;
-
-                const actorTo = this.dependencyGraphNodes.get(edgeData.to)["data"].actors[0];
-                const actionTo = this.dependencyGraphNodes.get(edgeData.to)["data"].action;
-                this.onDependencyUpdateEdge("INSERT", actorFrom, actionFrom, actorTo, actionTo).then(eventName => {
-                  edgeData.label = eventName;
-                  callback(edgeData);
-                })
-                this.clearMessage();
-              },
-              deleteEdge: (data, callback) => {
-                const edgeData = this.dependencyGraphEdges.get(data.edges[0]);
-                
-                const actorFrom = this.dependencyGraphNodes.get(edgeData["from"])["data"].actors[0];
-                const actionFrom = this.dependencyGraphNodes.get(edgeData["from"])["data"].action;
-
-                const actorTo = this.dependencyGraphNodes.get(edgeData["to"])["data"].actors[0];
-                const actionTo = this.dependencyGraphNodes.get(edgeData["to"])["data"].action;
-                this.onDependencyUpdateEdge("REMOVE", actorFrom, actionFrom, actorTo, actionTo)
-                this.clearMessage();
-                callback(data);
+          const cyclePath = d["cycle_path"];
+          this.dependencyGraphCyclePath = cyclePath;
+          this.http.put("v1/pr/hlb/dependency_graph/parse", request, { withCredential: true })
+            .subscribe((d) => {
+            let nodes = []
+            let links = []
+            var actors = {}
+            let groupCount = 1
+            for (const n of d['nodes']) {
+              if (!actors.hasOwnProperty(n.actors[0])) {
+                actors[n.actors[0]] = groupCount++;
               }
-          },
-          layout: {
-            hierarchical: {
-              sortMethod: "directed",
-              shakeTowards: "leaves",
-              treeSpacing: 150,
-              levelSeparation: 100,
-              nodeSpacing: 200,
-              edgeMinimization: false,
-              blockShifting: false
-            },
-          },
-          edges: {
-            color: '#999999',
-            length: 200
-          },
-          nodes: {
-            shape: "box",
-            font: {
-              color: '#FFFFFF'
+    
+              var n2 = {
+                data: n,
+                id: n.id,
+                label: n.action,
+                group: "group" + actors[n.actors[0]]
+              }
+              nodes.push(n2)
             }
-          },
-          groups: Object.assign({}, ...colors.map((color, index) => ({ ["group" + (index + 1)]: { color } })))
-        });
+    
+            for (const e of d['edges']) {
+              var e2 = e
+              e2.from = e2.source;
+              e2.to = e2.target;
+              e2.arrows = {
+                to: {
+                  enabled: true,
+                  type: "arrow",
+                },
+              }
+              links.push(e2)
+            }
+    
+            const colors = ["#F0C929",
+              "#F48B29",
+              "#AC0D0D",
+              "#693C72",
+              "#55B3B1",
+              "#F08A5D",
+              "#B83B5E",
+              "#54E346",
+              "#1F1D36",
+              "#420516",
+              "#91091E",
+              "#EE8572",
+              "#35495E",
+              "#347474",
+              "#480032",
+              "#FF4C29",
+              "#FB3640",
+              "#126E82",
+              "#05004E",
+              "#FF005C",
+              "#240041",
+              "#F4E557",
+              "#B983FF",
+              "#1DB9C3",
+                "#005F99"]
+              
+              const graphGroups = Object.assign({}, ...colors.map((color, index) => ({ ["group" + (index + 1)]: { color } })));
+              
+            this.dependencyGraphNodes = new DataSet<any>(nodes);
+            this.dependencyGraphEdges = new DataSet<any>(links);
+    
+            this.dependencyGraphLegends = Object.keys(actors).map(actor => { return { actor: actor, color: colors[actors[actor] - 1] } })
+    
+            this.dependencyNetworkInstance = new Network(this.dependencyGraphNetwork.nativeElement, { nodes: this.dependencyGraphNodes, edges: this.dependencyGraphEdges }, {
+              manipulation: {
+                  enabled: false,
+                  initiallyActive: false,
+                  addNode: (data, callback) => { return; },
+                  deleteNode: (data, callback) => { return; },
+                  addEdge: (edgeData, callback) => {
+                    
+                    if (edgeData.from == edgeData.to) {
+                      return;
+                    }
+                    //Check if such an edge already exists
+                    const sameEdges = this.dependencyGraphEdges.get({
+                      filter: (edge) =>
+                        (edge.from == edgeData.from && edge.to == edgeData.to) ||
+                        (edge.from == edgeData.to && edge.to == edgeData.from)
+                    });
+                    if (sameEdges.length) {
+                      return;
+                    }
+    
+                    edgeData.arrows = {
+                      to: {
+                        enabled: true,
+                        type: "arrow",
+                      },
+                    };
+                    const actorFrom = this.dependencyGraphNodes.get(edgeData.from)["data"].actors[0];
+                    const actionFrom = this.dependencyGraphNodes.get(edgeData.from)["data"].action;
+    
+                    const actorTo = this.dependencyGraphNodes.get(edgeData.to)["data"].actors[0];
+                    const actionTo = this.dependencyGraphNodes.get(edgeData.to)["data"].action;
+                    this.onDependencyUpdateEdge("INSERT", actorFrom, actionFrom, actorTo, actionTo).then((result: any) => {
+                      const eventName = result.eventName;
+                      const cyclePath = result.cyclePath;
+                      //Only add edge if event name received (if event name is null, the new edge creates a cycle)
+                      if (!cyclePath) {
+                        edgeData.label = eventName;
+                        callback(edgeData);
+                      }else{
+                        alert("Cannot add this dependency, as it will create cyclic dependency");
+                      }
+
+                    })
+                    this.clearMessage();
+                  },
+                  deleteEdge: (data, callback) => {
+                    const edgeData = this.dependencyGraphEdges.get(data.edges[0]);
+                    
+                    const actorFrom = this.dependencyGraphNodes.get(edgeData["from"])["data"].actors[0];
+                    const actionFrom = this.dependencyGraphNodes.get(edgeData["from"])["data"].action;
+    
+                    const actorTo = this.dependencyGraphNodes.get(edgeData["to"])["data"].actors[0];
+                    const actionTo = this.dependencyGraphNodes.get(edgeData["to"])["data"].action;
+                    this.onDependencyUpdateEdge("REMOVE", actorFrom, actionFrom, actorTo, actionTo)
+                    this.clearMessage();
+                    callback(data);
+                  }
+              },
+              layout: {
+                hierarchical: {
+                  sortMethod: "directed",
+                  shakeTowards: "leaves",
+                  treeSpacing: 150,
+                  levelSeparation: 100,
+                  nodeSpacing: 200,
+                  edgeMinimization: false,
+                  blockShifting: false
+                },
+              },
+              edges: {
+                color: '#999999',
+                length: 200
+              },
+              nodes: {
+                shape: "box",
+                font: {
+                  color: '#FFFFFF'
+                }
+              },
+              groups: graphGroups
+            });
+
+
+            //Show dependency cycle if any
+              if (this.dependencyGraphCyclePath) {
+                $('#dependencyGraphCycleContainer').show();
+                const cycleNodes = this.dependencyGraphCyclePath.map((node, index) => {
+                  return {
+                    id: index,
+                    label: node[1].toString(),
+                    group: "group" + actors[node[0].toString()]
+                  }
+                })
+
+                const cycleEdge = [];
+                for (let i = 0; i < this.dependencyGraphCyclePath.length; i++){
+                  cycleEdge.push({
+                    from: i,
+                    to: (i + 1) % this.dependencyGraphCyclePath.length,
+                    arrows: {
+                      to: {
+                        enabled: true,
+                        type: "arrow",
+                      },
+                    }
+                  })
+                }
+
+                new Network(this.dependencyGraphCycleNetwork.nativeElement, { nodes: cycleNodes, edges: cycleEdge }, {
+                  edges: {
+                    color: '#999999',
+                    length: 200
+                  },
+                  nodes: {
+                    fixed: true,
+                    shape: "box",
+                    font: {
+                      color: '#FFFFFF'
+                    }
+                  },
+                  groups: graphGroups
+                })
+
+              } else {
+                $('#dependencyGraphCycleContainer').hide();
+              }
+          })
       })
     }
     
@@ -1244,7 +1306,7 @@ export class HlbComponent implements OnInit, AfterViewInit {
         .subscribe((receivedData: ParseApiBean) => {
           this.stateservice.setBehavior(receivedData['scenarios']);
           this.stateservice.setBindings(receivedData['bindings']);
-          resolve(receivedData['event_name']);
+          resolve({ eventName: receivedData['event_name'], cyclePath: receivedData['cycle_path']});
         });
     });
     

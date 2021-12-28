@@ -179,6 +179,19 @@ class HandleTopologyGraphGenerateConstrains(Resource):
         constraints = hlb.HandleTopologyGraphGenerateConstrains(nodes, edges, parameters)
         return {"status": "success", "constraints": constraints }
 
+@ns.route('/hlb/dependency-graph/has-cycle')
+class HandleDependencyGraphHasCycle(Resource):
+    @api.expect(dependency_graph_has_cycle)
+    def put(self):
+        """
+          Update Scenarios and Bindings by adding/removing the edge 
+        """
+        json_data = request.get_json(force=True)
+        scenarios = json_data['scenarios']
+        cycle_path = hlb.HandleDependencyGraphHasCycle(scenarios)
+        return {"status": "success", "cycle_path": cycle_path}
+
+
 @ns.route('/hlb/dependency-graph/update-edge')
 class HandleDependencyGraphUpdateEdge(Resource):
     @api.expect(dependency_graph_update_edge)
@@ -194,8 +207,8 @@ class HandleDependencyGraphUpdateEdge(Resource):
         actor_to = json_data['actor_to']
         action_to = json_data['action_to']
         update_type = json_data['update_type']
-        updated_scenarios, updated_bindings, event_name = hlb.HandleDependencyGraphUpdateEdge(update_type, actor_from, action_from, actor_to, action_to, scenarios, bindings)
-        return {"status": "success", "scenarios": updated_scenarios, "bindings": updated_bindings, "event_name": event_name }
+        updated_scenarios, updated_bindings, event_name, cycle_path = hlb.HandleDependencyGraphUpdateEdge(update_type, actor_from, action_from, actor_to, action_to, scenarios, bindings)
+        return {"status": "success", "scenarios": updated_scenarios, "bindings": updated_bindings, "event_name": event_name, "cycle_path": cycle_path }
 
 @ns.route('/nlp/behavior')
 class HandleNLPTranslator(Resource):

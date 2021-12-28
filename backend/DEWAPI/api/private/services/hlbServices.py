@@ -550,6 +550,67 @@ class HLBService():
 
         return constraints
 
+    def HandleDependencyGraphHasCycle(self, scenarios):
+        gen = bashGenerator(scenario=scenarios,constraints="",bindings=[])
+        gen.generate()
+        parsed_scenarios = gen.scenario_parsed
+
+        scenario_parse_index = {
+            "when": 0,
+            "actor": 1,
+            "action": 2,
+            "emit": 3,
+            "wait": 4
+        }
+
+        emit_map = {}
+        when_map = {}
+
+        graph_nodes = set()
+
+        for scenario in parsed_scenarios:
+            node = (scenario[scenario_parse_index["actor"]][0],scenario[scenario_parse_index["action"]][0])
+            graph_nodes.add(node)
+            emit_event = scenario[scenario_parse_index["emit"]]
+            if(emit_event != None):
+                emit_map[node] = emit_event[0]
+
+            when_events = scenario[scenario_parse_index["when"]]
+            if when_events != None:
+                for when_event in when_events:
+                    if when_event not in when_map:
+                        when_map[when_event] = set()
+                    when_map[when_event].add(node)
+
+        def hasCycle(node, visited, stack):
+
+            visited[node] = True
+            stack.append(node)
+
+            emit_event = emit_map.get(node, None)
+            if emit_event != None:
+                adjacent_nodes = when_map.get(emit_event, [])
+                for adjacent_node in adjacent_nodes:
+                    if visited[adjacent_node] == False:
+                        path = hasCycle(adjacent_node, visited, stack)
+                        if path != None:
+                            return path
+                    elif adjacent_node in stack:
+                        return stack[stack.index(adjacent_node):]
+
+            stack.pop()
+            return None
+
+        visited_nodes = dict([(node, False) for node in graph_nodes])
+        stack_nodes = []
+
+        for node in graph_nodes:
+            if visited_nodes[node] == False:
+                path = hasCycle(node, visited_nodes, stack_nodes)
+                if path != None:
+                    return path
+        return None
+            
     def HandleDependencyGraphUpdateEdge(self, update_type, actor_from, action_from, actor_to, action_to, scenarios, bindings):
         gen = bashGenerator(scenario=scenarios,constraints="",bindings=[])
         gen.generate()
@@ -581,8 +642,8 @@ class HLBService():
         event_name = actor_from + "Run" + action_from + "Sig"
 
         #Add event name to from if no emit exists
-        for scenario in parsed_scenarios:
-            scenario = list(scenario)
+        for i in range(len(parsed_scenarios)):
+            scenario = list(parsed_scenarios[i])
             if actor_from in scenario[scenario_parse_index["actor"]] and action_from in scenario[scenario_parse_index["action"]]:
                 emit_events = scenario[scenario_parse_index["emit"]]
                 if emit_events == None: #Add new event name
@@ -590,6 +651,7 @@ class HLBService():
                     scenario[scenario_parse_index["emit"]] = emit_events
                 else: #Get existing event name
                     event_name = emit_events[0]
+                parsed_scenarios[i] = tuple(scenario)
                 break
           
         #Remove/Insert the event from the dependent action
@@ -606,7 +668,14 @@ class HLBService():
                 scenario[scenario_parse_index["when"]] = when_events
             updated_scenarios.append(generateScenarioSentence(scenario))
 
-        return (updated_scenarios, updated_bindings, event_name)
+        if update_type == "INSERT":
+            #Check if cycle exists
+            cycle_path = self.HandleDependencyGraphHasCycle(updated_scenarios)
+            if cycle_path != None:
+                return(scenarios, bindings, event_name, cycle_path)
+            pass
+
+        return (updated_scenarios, updated_bindings, event_name, None)
 
     #Handle generateNS
     def HandleNS(self,json_data):

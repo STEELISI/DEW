@@ -80,6 +80,11 @@ topology_graph_generate_constraints = api.model('Toplogy graph generate constrai
   'parameters': fields.List(fields.String,description="Parameters of nodes and edges",required=True),
   })
 
+
+dependency_graph_has_cycle = api.model('Check if there exists a cycle in the given scenario', {
+  'scenarios': fields.List(fields.String,description="Scenario of the experiment",required=True),
+  })
+
 dependency_graph_update_edge = api.model('Dependency graph update edge', {
   'scenarios': fields.List(fields.String,description="Scenario of the experiment",required=True),
   'bindings': fields.List(fields.String,description="Bindings of the experiment",required=True),

@@ -273,7 +273,7 @@ ul {
     font-weight: bolder;
   }
 
-  #topologyGraphNetwork, #dependencyGraphNetwork {
+  #topologyGraphNetwork, #dependencyGraphNetwork, #dependencyGraphCycleNetwork {
     height: 100%;
   }
 
@@ -444,4 +444,21 @@ ul {
 
 .graph-description-box .graph-description-box-content {
   float: left;
+}
+
+.dependency-cycle-alert {
+  border: solid 1px #ffcc00;
+  padding: 10px;
+  border-radius: 5px;
+  width: fit-content;
+  margin: auto;
+  color: #ffcc00;
+}
+
+#dependencyGraphCycleContainer {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  text-align: center;
+  font-size: 18px;
 }
