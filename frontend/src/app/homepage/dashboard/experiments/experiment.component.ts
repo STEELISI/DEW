@@ -64,13 +64,13 @@ export class ExperimentComponent implements OnInit{
   }
   load(userId){
     this.http.get("v1/pr/persist/getExperimentList",{withCredentials: true}).subscribe(data=>{
-    
       this.experiments = data;
      });
   }
 
   edit(experiments){
     // console.log(experiments)
+    this.logger.log(LogHeader.INFO, "User started to edit experiment " + experiments.name + " (ID: " + experiments.experiment_id + ")");
     window.location.href = "p/e/c/"+experiments.experiment_id;
   }
 
