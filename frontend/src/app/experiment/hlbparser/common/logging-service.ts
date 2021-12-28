@@ -81,7 +81,8 @@ export enum LogHeader {
     DATA_SENT = "DATA_SENT",
     GRAPH_UPDATE = "GRAPH_UPDATE",
     TEXT_UPDATED = "TEXT_UPDATED",
-    INFO = "INFO"
+    INFO = "INFO",
+    ERROR = "ERROR"
 }
 
 export class LogEntry {
