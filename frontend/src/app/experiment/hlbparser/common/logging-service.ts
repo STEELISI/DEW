@@ -23,8 +23,9 @@ export class LogService {
         this.writeToLog(msg, LogLevel.Warn, optionalParams);
     }
     
-    error(msg: string, ...optionalParams: any[]) {
-        this.writeToLog(msg, LogLevel.Error, optionalParams);
+    error(header: any, msg: any) {
+        console.error(msg);
+        this.writeToLog(msg, LogLevel.Error, header);
     }
     
     fatal(msg: string, ...optionalParams: any[]) {
