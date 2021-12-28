@@ -52,6 +52,7 @@ export class HlbComponent implements OnInit, AfterViewInit {
   private topologyNetworkInstance: any;
   private dependencyNetworkInstance: any;
   private selectedNetworkInstance: any;
+  private dependencyCycleNetworkInstance: any;
   addNodeType: "Node" | "LAN";
   isKeyPressed: boolean = false;
   dependencyGraphLegends: Array<{ actor: String, color: String }> = [];
@@ -1157,12 +1158,13 @@ export class HlbComponent implements OnInit, AfterViewInit {
                   })
                 }
 
-                new Network(this.dependencyGraphCycleNetwork.nativeElement, { nodes: cycleNodes, edges: cycleEdge }, {
+                this.dependencyCycleNetworkInstance = new Network(this.dependencyGraphCycleNetwork.nativeElement, { nodes: cycleNodes, edges: cycleEdge }, {
                   edges: {
                     color: '#999999',
                     length: 200
                   },
                   nodes: {
+                    fixed: true,
                     shape: "box",
                     font: {
                       color: '#FFFFFF'
@@ -1253,6 +1255,7 @@ export class HlbComponent implements OnInit, AfterViewInit {
     this.graphDescription = "This graph depicts the dependency between different actions as stated in scenario";
     this.selectedNetworkInstance = this.dependencyNetworkInstance;
     this.selectedNetworkInstance.fit();
+    this.dependencyCycleNetworkInstance.fit();
   }
 
   onTopologyChange() {
