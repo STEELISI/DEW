@@ -5,6 +5,7 @@ import { HttpService } from 'src/app/http-service.service';
 import { HttpHeaders } from '@angular/common/http';
 import { FormControl, FormGroup } from '@angular/forms';
 import { startWith, map } from 'rxjs/operators';
+import { LogService, LogHeader } from 'src/app/experiment/hlbparser/common/logging-service';
 
 @Component({
   selector: 'experiment',
@@ -23,7 +24,8 @@ export class ExperimentComponent implements OnInit{
   experiments:any=[]
   filterExperiments:any=[]
  
-  constructor(private router:Router,private http:HttpService,private initUser:InitUserService){ }
+  constructor(private router:Router,private http:HttpService,private initUser:InitUserService, private logger: LogService) { }
+
   ngOnInit() {
     this.initUser.getUser().subscribe(user=>{
      // console.log(user)
@@ -73,6 +75,7 @@ export class ExperimentComponent implements OnInit{
   }
 
   create(){
+    this.logger.log(LogHeader.INFO, "User created a new experiment.");
     window.location.href = "p/e/c";
   }
 
