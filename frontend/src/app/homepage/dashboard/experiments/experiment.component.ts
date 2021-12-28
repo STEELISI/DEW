@@ -80,7 +80,7 @@ export class ExperimentComponent implements OnInit{
   }
 
   copy(item){
-
+    this.logger.log(LogHeader.INFO, "User copied experiment " + item.name + " (ID: " + item.experiment_id + ")");
     var params = {
       "id": item.experiment_id+""
     }
