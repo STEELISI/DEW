@@ -905,6 +905,9 @@ class HandleProfileDeterLabDeleteAccounts(Resource):
 class HandleDeterLabProjectExists(Resource):
     @api.expect(deterlab_project_name)
     def post(self):
+      try:
+        user = userObj.getEmailId()
+        Logger.backendLog(user,"HandleDeterLabProjectExists()", "Entered Class")
         content = request.get_json(force=True)
         projectName = content['projectName']
         daid = content['account_id']
@@ -916,16 +919,24 @@ class HandleDeterLabProjectExists(Resource):
               ssh = SSHConnection(details['username'],details['password'])
               result = ssh.isProjectExists(projectName)
             else:
-              result = {'error':'username or password doesnot exists'}
+              result = {'error':'username or password does not exists'}
+            Logger.backendLog(user,"HandleDeterLabProjectExists()", "Checked if project exists. Result - " + str(result))
             return result, 200
         except ValueError as e:
             if str(e) == "Forbidden":
-                return {}, 403
+              Logger.backendLog(user,"HandleDeterLabProjectExists()", "Unable to check if project exists")
+              return {}, 403
+      except BaseException:
+        Logger.backendErrorLog(user, traceback.format_exc())
+        raise Exception("Error Occured on the Server")
 
 @ns.route('/deterlab/experiment/exists')
 class HandleDeterLabExperimentExists(Resource):
     @api.expect(deterlab_experiment_details)
     def post(self):
+      try:
+        user = userObj.getEmailId()
+        Logger.backendLog(user,"HandleDeterLabExperimentExists()", "Entered Class")
         content = request.get_json(force=True)
         projectName = content['projectName']
         experimentName = content['experimentName']
@@ -938,15 +949,23 @@ class HandleDeterLabExperimentExists(Resource):
               ssh = SSHConnection(details['username'],details['password'])
               result = ssh.isExperimentExists(projectName,experimentName)
             else:
-              result = {'error':'username or password doesnot exists'}
+              result = {'error':'username or password does not exists'}
+            Logger.backendLog(user,"HandleDeterLabExperimentExists()", "Checked if experiment exists. Result - " + str(result))
             return result, 200
         except ValueError as e:
             if str(e) == "Forbidden":
-                return {}, 403
+              Logger.backendLog(user,"HandleDeterLabExperimentExists()", "Unable to check if experiment exists")
+              return {}, 403
+      except BaseException:
+        Logger.backendErrorLog(user, traceback.format_exc())
+        raise Exception("Error Occured on the Server")
 
 @ns.route('/deter/project/getnsfile')
 class HandleDeterGetNsFileContent(Resource):
     def get(self):
+      try:
+        user = userObj.getEmailId()
+        Logger.backendLog(user,"HandleDeterGetNsFileContent()", "Entered Class")
         eid = request.args.get('eid')
         daid = request.args.get('account_id')
         uid = userObj.getUserId()
@@ -965,28 +984,42 @@ class HandleDeterGetNsFileContent(Resource):
               else:
                 result = mapping
             else:
-              result = {'error':'username or password doesnot exists'}
-              
+              result = {'error':'username or password does not exists'}
+          Logger.backendLog(user,"HandleDeterGetNsFileContent()", "Retrieved file content with result - " + str(result))   
           return result, 200
         except ValueError as e:
             if str(e) == "Forbidden":
-                return {}, 403
-        
+              Logger.backendLog(user,"HandleDeterGetNsFileContent()", "Unable to retrieve file content")
+              return {}, 403
+      except BaseException:
+        Logger.backendErrorLog(user, traceback.format_exc())
+        raise Exception("Error Occured on the Server")
 
 @ns.route('/deter/userlist')
 class HandleDeterUserList(Resource):
     def get(self):
+      try:
+        user = userObj.getEmailId()
+        Logger.backendLog(user,"HandleDeterUserList()", "Entered Class")
         uid = userObj.getUserId()
         try:
           result = ps.getUserList(uid)
+          Logger.backendLog(user,"HandleDeterUserList()", "Retrieved User List with result - " + str(result))
           return result, 200
         except ValueError as e:
             if str(e) == "Forbidden":
-                return {}, 403
+              Logger.backendLog(user,"HandleDeterUserList()", "Unable to retrieve User List")
+              return {}, 403
+      except BaseException:
+        Logger.backendErrorLog(user, traceback.format_exc())
+        raise Exception("Error Occured on the Server")
 
 @ns.route('/deter/project')
 class HandleProjectMapping(Resource):
     def get(self):
+      try:
+        user = userObj.getEmailId()
+        Logger.backendLog(user,"HandleProjectMapping()", "Entered Class")
         eid = request.args.get('eid')
         daid = request.args.get('account_id')
         uid = userObj.getUserId()
@@ -1000,15 +1033,23 @@ class HandleProjectMapping(Resource):
               result = dm.getMapping(details['id'],eid)
             else:
               result = {'error':'username or password doesnot exists'}
+          Logger.backendLog(user,"HandleProjectMapping()", "Mapped projects with result - " + str(result))
           return result, 200
         except ValueError as e:
             if str(e) == "Forbidden":
-                return {}, 403
+              Logger.backendLog(user,"HandleProjectMapping()", "Unable to map projects")
+              return {}, 403
+      except BaseException:
+        Logger.backendErrorLog(user, traceback.format_exc())
+        raise Exception("Error Occured on the Server")
 
 @ns.route('/deter/add/project/mapping')
 class HandleAddProjectMapping(Resource):
     @api.expect(deterlab_experiment_mapping_details)
     def post(self):
+      try:
+        user = userObj.getEmailId()
+        Logger.backendLog(user,"HandleAddProjectMapping()", "Entered Class")
         content = request.get_json(force=True)
         projectName = content['projectName']
         experimentName = content['experimentName']
@@ -1030,15 +1071,23 @@ class HandleAddProjectMapping(Resource):
               if 'error' not in result:
                 result = dm.createOrModifyMapping(details['id'],eid,projectName,experimentName)
             else:
-              result = {'error':'username or password doesnot exists'}
+              result = {'error':'username or password does not exists'}
+          Logger.backendLog(user,"HandleAddProjectMapping()", "Added project mapping with result - " + str(result))
           return result, 200
         except ValueError as e:
             if str(e) == "Forbidden":
-                return {}, 403
+              Logger.backendLog(user,"HandleAddProjectMapping()", "Unable to map projects")
+              return {}, 403
+      except BaseException:
+        Logger.backendErrorLog(user, traceback.format_exc())
+        raise Exception("Error Occured on the Server")
 
 @ns.route('/deter/project/getactivity')
 class HandleGetActivity(Resource):
     def get(self):
+      try:
+        user = userObj.getEmailId()
+        Logger.backendLog(user,"HandleGetActivity()", "Entered Class")
         eid = request.args.get('eid')
         daid = request.args.get('account_id')
         uid = userObj.getUserId()
@@ -1058,15 +1107,22 @@ class HandleGetActivity(Resource):
                 result = mapping
             else:
               result = {'error':'username or password doesnot exists'}
-              
+          Logger.backendLog(user,"HandleGetActivity()", "Retrieved Activity with result - " + str(result))
           return result, 200
         except ValueError as e:
             if str(e) == "Forbidden":
-                return {}, 403
+              Logger.backendLog(user,"HandleGetActivity()", "Unable to retrieve activity")
+              return {}, 403
+      except BaseException:
+        Logger.backendErrorLog(user, traceback.format_exc())
+        raise Exception("Error Occured on the Server")      
 
 @ns.route('/deter/project/getstatus')
 class HandleGetStatus(Resource):
     def get(self):
+      try:
+        user = userObj.getEmailId()
+        Logger.backendLog(user,"HandleGetStatus()", "Entered Class")
         eid = request.args.get('eid')
         daid = request.args.get('account_id')
         uid = userObj.getUserId()
@@ -1086,15 +1142,22 @@ class HandleGetStatus(Resource):
                 result = mapping
             else:
               result = {'error':'username or password doesnot exists'}
-              
+          Logger.backendLog(user,"HandleGetStatus()", "Retrieved status with result - " + str(result))
           return result, 200
         except ValueError as e:
             if str(e) == "Forbidden":
-                return {}, 403
+              Logger.backendLog(user,"HandleGetStatus()", "Unable to retrieve status")
+              return {}, 403
+      except BaseException:
+        Logger.backendErrorLog(user, traceback.format_exc())
+        raise Exception("Error Occured on the Server") 
 
 @ns.route('/deter/project/swap')
-class HandleGetStatus(Resource):
+class HandleProjectSwap(Resource):
     def get(self):
+      try:
+        user = userObj.getEmailId()
+        Logger.backendLog(user,"HandleProjectSwap()", "Entered Class")
         eid = request.args.get('eid')
         daid = request.args.get('account_id')
         swapModeString = request.args.get('mode')
@@ -1120,16 +1183,23 @@ class HandleGetStatus(Resource):
               else:
                 result = mapping
             else:
-              result = {'error':'username or password doesnot exists'}
-              
+              result = {'error':'username or password does not exists'}
+          Logger.backendLog(user,"HandleProjectSwap()", "Swapped projects with result - " + str(result))
           return result, 200
         except ValueError as e:
             if str(e) == "Forbidden":
-                return {}, 403
+              Logger.backendLog(user,"HandleProjectSwap()", "Unable to swap projects")
+              return {}, 403
+      except BaseException:
+        Logger.backendErrorLog(user, traceback.format_exc())
+        raise Exception("Error Occured on the Server") 
 
 @ns.route('/deter/update/project/nsfile')
 class HandleUpdateProjectNSFile(Resource):
     def get(self):
+      try:
+        user = userObj.getEmailId()
+        Logger.backendLog(user,"HandleUpdateProjectNSFile()", "Entered Class")
         eid = request.args.get('eid')
         daid = request.args.get('account_id')
         uid = userObj.getUserId()
@@ -1150,15 +1220,23 @@ class HandleUpdateProjectNSFile(Resource):
               else:
                 result = mapping
             else:
-              result = {'error':'username or password doesnot exists'}
+              result = {'error':'username or password does not exists'}
+          Logger.backendLog(user,"HandleUpdateProjectNSFile()", "Updated project NS file with result - " + str(result))
           return result, 200
         except ValueError as e:
             if str(e) == "Forbidden":
-                return {}, 403
+              Logger.backendLog(user,"HandleUpdateProjectNSFile()", "Unable to update project ns file")
+              return {}, 403
+      except BaseException:
+        Logger.backendErrorLog(user, traceback.format_exc())
+        raise Exception("Error Occured on the Server") 
 
 @ns.route('/deter/project/mapping/delete')
 class HandleProfileDeterLabDeleteMapping(Resource):
     def delete(self):
+      try:
+        user = userObj.getEmailId()
+        Logger.backendLog(user,"HandleProfileDeterLabDeleteMapping()", "Entered Class")
         uid = userObj.getUserId()
         daid = request.args.get('account_id')
         eid = request.args.get('eid')
@@ -1171,11 +1249,16 @@ class HandleProfileDeterLabDeleteMapping(Resource):
               if str(details['username']).strip() !='' and str(details['password']).strip() !='':
                 result = dm.deleteMapping(details['id'],eid)
               else:
-                result['error'] = "username or password doesnot exists"
+                result['error'] = "username or password does not exists"
+            Logger.backendLog(user,"HandleProfileDeterLabDeleteMapping()", "Deleted mapping with result - " + str(result))
             return result, 200
         except ValueError as e:
             if str(e) == "Forbidden":
-                return {}, 403
+              Logger.backendLog(user,"HandleProfileDeterLabDeleteMapping()", "Unable to delete mapping")
+              return {}, 403
+      except BaseException:
+        Logger.backendErrorLog(user, traceback.format_exc())
+        raise Exception("Error Occured on the Server") 
 
 
 
@@ -1184,9 +1267,12 @@ class HandleExperimentSlides(Resource):
     
     @api.expect(create_slides_object)
     def post(self):
-        """
-            Create a new slide
-        """
+      """
+          Create a new slide
+      """
+      try:
+        user = userObj.getEmailId()
+        Logger.backendLog(user,"HandleExperimentSlides(POST)", "Entered Class")
         try:
             json_data = request.get_json(force=True)
             userId = userObj.getUserId()
@@ -1195,93 +1281,136 @@ class HandleExperimentSlides(Resource):
             slide = em.create_experiment_slide(userId, experiment_id,"{}", sequence_number)
 
         except ValueError as e:
+                Logger.backendLog(user,"HandleExperimentSlides(POST)", "Unable to create new slide")
                 msg = {'saved': False, 'message': str(e)}
                 if str(e) == "Forbidden":
                     return msg, 403
                 else:
                     return msg, 400
         if slide:
+            Logger.backendLog(user,"HandleExperimentSlides(POST)", "Created new slide")
             return {'saved': True, 'message': "Successful", "slide": slide.to_dict()}
+      except BaseException:
+        Logger.backendErrorLog(user, traceback.format_exc())
+        raise Exception("Error Occured on the Server") 
 
 
     @api.expect(delete_slide_object)
     def delete(self):
-        """
-            Remove slide for an experiment
-        """
+      """
+          Remove slide for an experiment
+      """
+      try:
+        user = userObj.getEmailId()
+        Logger.backendLog(user,"HandleExperimentSlides(DELETE)", "Entered Class")
+        Logger.backendLog(user,"HandleExperimentSlides(DELETE)", "Exited Class")
+      except BaseException:
+        Logger.backendErrorLog(user, traceback.format_exc())
+        raise Exception("Error Occured on the Server") 
         
 
     @api.expect(update_slide_dew_object)
     def put(self):
-        """
-            Update slide contents
-        """
+      """
+          Update slide contents
+      """
+      try:
+        user = userObj.getEmailId()
+        Logger.backendLog(user,"HandleExperimentSlides(PUT)", "Entered Class")
         try:
-            json_data = request.get_json(force=True)
-            userId = userObj.getUserId()
-            experiment_id = json_data['experiment_id']
-            slide_id = json_data['slide_id']
-            actor_action_mapping = json_data['actor_action_mapping']
-            action_binding_mapping = json_data['action_binding_mapping']
-            slide = em.update_experiment_slide_mapping(userId, experiment_id,slide_id,actor_action_mapping, action_binding_mapping)
+          json_data = request.get_json(force=True)
+          userId = userObj.getUserId()
+          experiment_id = json_data['experiment_id']
+          slide_id = json_data['slide_id']
+          actor_action_mapping = json_data['actor_action_mapping']
+          action_binding_mapping = json_data['action_binding_mapping']
+          slide = em.update_experiment_slide_mapping(userId, experiment_id,slide_id,actor_action_mapping, action_binding_mapping)
         except ValueError as e:
-                msg = {'saved': False, 'message': str(e)}
-                return msg, 403
+          msg = {'saved': False, 'message': str(e)}
+          Logger.backendLog(user,"HandleExperimentSlides(PUT)", "Unable to update slide contents")
+          return msg, 403
         if slide:
-            return {'saved': True, 'message': "Successful", "slide": slide.to_dict()}
+          Logger.backendLog(user,"HandleExperimentSlides(PUT)", "ESuccessfully updated slide contents")
+          return {'saved': True, 'message': "Successful", "slide": slide.to_dict()}
+      except BaseException:
+        Logger.backendErrorLog(user, traceback.format_exc())
+        raise Exception("Error Occured on the Server") 
 
 
 @ns.route('/design/experiment/slides/<experiment_id>/<slide_id>')
 class HandleDeleteExperimentSlide(Resource):
     def delete(self, experiment_id, slide_id):
-        """
-            Delete a slide of the experiment
-        """
+      """
+          Delete a slide of the experiment
+      """
+      try:
+        user = userObj.getEmailId()
+        Logger.backendLog(user,"HandleDeleteExperimentSlide()", "Entered Class")
         try:
-            userId = userObj.getUserId()
-            status = em.delete_slide(userId, experiment_id, slide_id)
+          userId = userObj.getUserId()
+          status = em.delete_slide(userId, experiment_id, slide_id)
 
         except ValueError as e:
-                msg = {'status': "Failure", 'message': str(e)}
-                return msg, 403
+          Logger.backendLog(user,"HandleDeleteExperimentSlide()", "Unable to delete slide")
+          msg = {'status': "Failure", 'message': str(e)}
+          return msg, 403
         if status:
-            return None, 204
-
+          Logger.backendLog(user,"HandleDeleteExperimentSlide()", "Deleted Slide")
+          return None, 204
+      except BaseException:
+        Logger.backendErrorLog(user, traceback.format_exc())
+        raise Exception("Error Occured on the Server") 
 
 @ns.route('/design/experiment/slides/<experiment_id>')
 class HandleGetExperimentSlides(Resource):
     def get(self, experiment_id):
-        """
-            Get slides for an experiment
-        """
+      """
+          Get slides for an experiment
+      """
+      try:
+        user = userObj.getEmailId()
+        Logger.backendLog(user,"HandleGetExperimentSlides()", "Entered Class")
         try:
             userId = userObj.getUserId()
             slides = em.slides_of_experiment(userId, experiment_id)
 
         except ValueError as e:
-                msg = {'status': "Failure", 'message': str(e)}
-                return msg, 403
+          Logger.backendLog(user,"HandleGetExperimentSlides()", "Unable to get slides")
+          msg = {'status': "Failure", 'message': str(e)}
+          return msg, 403
         if slides:
-            return {'status': "Successful", "slides": slides}
+          Logger.backendLog(user,"HandleGetExperimentSlides()", "Retrieved Slides")
+          return {'status': "Successful", "slides": slides}
+      except BaseException:
+        Logger.backendErrorLog(user, traceback.format_exc())
+        raise Exception("Error Occured on the Server") 
 
 @ns.route('/design/experiment/slides/<experiment_id>/dew')
 class HandleDEWforSlides(Resource):
     def get(self, experiment_id):
-        """
-        Get dew from experiment slides
-        """
+      """
+      Get dew from experiment slides
+      """
+      try:
+        user = userObj.getEmailId()
+        Logger.backendLog(user,"HandleDEWforSlides()", "Entered Class")
         try:
             userId = userObj.getUserId()
             behaviors, bindings = em.dew_from_slides(userId, experiment_id)
         except ValueError as e:
+            Logger.backendLog(user,"HandleDEWforSlides()", "Unable to get dew from experiment slides")
             msg = {'status': 'Failure', 'message': str(e)}
             return msg, 403
         if behaviors and bindings:
+            Logger.backendLog(user,"HandleDEWforSlides()", "Retrieved dew from experiment slides")
             return {
                         "status": "Successful", 
                         "behaviors": behaviors,
                         "bindings": bindings
                     }
+      except BaseException:
+        Logger.backendErrorLog(user, traceback.format_exc())
+        raise Exception("Error Occured on the Server") 
     
 
 @ns.route('/design/experiment/slides/swap')
@@ -1289,9 +1418,12 @@ class HandleExperimentSlideMovement(Resource):
     
     @api.expect(move_slides_object)
     def post(self):
-        """
-            Takes 2 slides and swap their positions
-        """
+      """
+          Takes 2 slides and swap their positions
+      """
+      try:
+        user = userObj.getEmailId()
+        Logger.backendLog(user,"HandleExperimentSlideMovement()", "Entered Class")
         try:
             json_data = request.get_json(force=True)
             userId = userObj.getUserId()
@@ -1301,18 +1433,26 @@ class HandleExperimentSlideMovement(Resource):
             status = em.swap_slides(userId, experiment_id,first_slide_id, second_slide_id)
 
         except ValueError as e:
+                Logger.backendLog(user,"HandleExperimentSlideMovement()", "Unable to swap slides")
                 msg = {'saved': False, 'message': str(e)}
                 if str(e) == "Forbidden":
                     return msg, 403
                 else:
                     return msg, 400
         if status:
+            Logger.backendLog(user,"HandleExperimentSlideMovement()", "Successfully swapped slides")
             return {'saved': True, 'message': "Successful"}
+      except BaseException:
+        Logger.backendErrorLog(user, traceback.format_exc())
+        raise Exception("Error Occured on the Server") 
 
 
 @ns.route('/deter/project/run')
 class HandleProjectRunLog(Resource):
     def post(self):
+      try:
+        user = userObj.getEmailId()
+        Logger.backendLog(user,"HandleProjectRunLog()", "Entered Class")
         content = request.get_json(force=True)
         if 'eid' not in content:
           return {"error":"eid is missing"} , 200
@@ -1384,15 +1524,23 @@ class HandleProjectRunLog(Resource):
               else:
                 result = mapping
             else:
-              result = {'error':'username or password doesnot exists'}
+              result = {'error':'username or password does not exists'}
+          Logger.backendLog(user,"HandleProjectRunLog()", "Ran log with result - " + str(result))
           return result, 200
         except ValueError as e:
             if str(e) == "Forbidden":
-                return {}, 403
+              Logger.backendLog(user,"HandleProjectRunLog()", "Unable to run log")
+              return {}, 403
+      except BaseException:
+        Logger.backendErrorLog(user, traceback.format_exc())
+        raise Exception("Error Occured on the Server") 
 
 @ns.route('/deter/project/stop')
-class HandleProjectRunLog(Resource):
+class HandleProjectStopLog(Resource):
     def post(self):
+      try:
+        user = userObj.getEmailId()
+        Logger.backendLog(user,"HandleProjectStopLog()", "Entered Class")
         content = request.get_json(force=True)
         print("Content is ", content)
         if 'rid' not in content:
@@ -1441,14 +1589,22 @@ class HandleProjectRunLog(Resource):
                 result = mapping
             else:
               result = {'error':'username or password doesnot exists'}
+          Logger.backendLog(user,"HandleProjectStopLog()", "Stopped log with result - " + str(result))
           return result, 200
         except ValueError as e:
             if str(e) == "Forbidden":
+                Logger.backendLog(user,"HandleProjectStopLog()", "Unable to stop log")
                 return {}, 403
+      except BaseException:
+        Logger.backendErrorLog(user, traceback.format_exc())
+        raise Exception("Error Occured on the Server") 
 
 @ns.route('/deter/project/run/get')
-class HandleProjectRunLog(Resource):
+class HandleProjectGetLog(Resource):
     def post(self):
+      try:
+        user = userObj.getEmailId()
+        Logger.backendLog(user,"HandleProjectGetLog()", "Entered Class")
         content = request.get_json(force=True)
         if 'rid' not in content:
           return {"error":"rid is missing"} , 200
@@ -1478,14 +1634,22 @@ class HandleProjectRunLog(Resource):
               result = ssh.getRunFile(version_id.unique_name,s,b)
             else:
               result = {'error':'username or password doesnot exists'}
+          Logger.backendLog(user,"HandleProjectGetLog()", "Retrieved log with result - " + str(result))
           return result, 200
         except ValueError as e:
             if str(e) == "Forbidden":
+                Logger.backendLog(user,"HandleProjectGetLog()", "Unable to get log")
                 return {}, 403
+      except BaseException:
+        Logger.backendErrorLog(user, traceback.format_exc())
+        raise Exception("Error Occured on the Server") 
 
 @ns.route('/deter/project/run/logs')
 class HandleProjectGetRunLogs(Resource):
     def get(self):
+      try:
+        user = userObj.getEmailId()
+        Logger.backendLog(user,"HandleProjectGetRunLogs()", "Entered Class")
         eid = request.args.get('eid')
         daid = request.args.get('account_id')
         uid = userObj.getUserId()
@@ -1503,7 +1667,12 @@ class HandleProjectGetRunLogs(Resource):
                 result = mapping
             else:
               result = {'error':'username or password doesnot exists'}
+          Logger.backendLog(user,"HandleProjectGetRunLogs()", "Retrieved run logs with result - " + str(result))
           return result, 200
         except ValueError as e:
             if str(e) == "Forbidden":
+                Logger.backendLog(user,"HandleProjectGetRunLogs()", "Unable to get run logs")
                 return {}, 403
+      except BaseException:
+        Logger.backendErrorLog(user, traceback.format_exc())
+        raise Exception("Error Occured on the Server") 

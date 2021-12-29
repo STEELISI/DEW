@@ -5,6 +5,7 @@ import { HttpService } from 'src/app/http-service.service';
 import { HttpHeaders } from '@angular/common/http';
 import { FormControl, FormGroup } from '@angular/forms';
 import { startWith, map } from 'rxjs/operators';
+import { LogService, LogHeader } from 'src/app/experiment/hlbparser/common/logging-service';
 
 @Component({
   selector: 'experiment',
@@ -23,7 +24,8 @@ export class ExperimentComponent implements OnInit{
   experiments:any=[]
   filterExperiments:any=[]
  
-  constructor(private router:Router,private http:HttpService,private initUser:InitUserService){ }
+  constructor(private router:Router,private http:HttpService,private initUser:InitUserService, private logger: LogService) { }
+
   ngOnInit() {
     this.initUser.getUser().subscribe(user=>{
      // console.log(user)
@@ -62,22 +64,23 @@ export class ExperimentComponent implements OnInit{
   }
   load(userId){
     this.http.get("v1/pr/persist/getExperimentList",{withCredentials: true}).subscribe(data=>{
-    
       this.experiments = data;
      });
   }
 
   edit(experiments){
     // console.log(experiments)
+    this.logger.log(LogHeader.INFO, "User started to edit experiment " + experiments.name + " (ID: " + experiments.experiment_id + ")");
     window.location.href = "p/e/c/"+experiments.experiment_id;
   }
 
   create(){
+    this.logger.log(LogHeader.INFO, "User created a new experiment.");
     window.location.href = "p/e/c";
   }
 
   copy(item){
-
+    this.logger.log(LogHeader.INFO, "User copied experiment " + item.name + " (ID: " + item.experiment_id + ")");
     var params = {
       "id": item.experiment_id+""
     }
