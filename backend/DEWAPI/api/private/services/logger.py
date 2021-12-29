@@ -5,8 +5,8 @@ class Logger(object):
     def log(user, message):
         try:
             message = message + "\n"
-            path = "/var/log/DEW/" + user + "/"
-            #path = "C:/Users/allan/Desktop/ISI Work/DEW GitHub Repo/STEELISI - DEW/backend/logs/DEW/" + user + "/"
+            #path = "/var/log/DEW/" + user + "/"
+            path = "C:/Users/allan/Desktop/ISI Work/DEW GitHub Repo/STEELISI - DEW/backend/logs/DEW/" + user + "/"
             if (not os.path.exists(path)):
                 os.makedirs(path)
             path = path + "dew_" + str(date.today()) + "_logs.log"
@@ -24,8 +24,8 @@ class Logger(object):
             log = dt_string + " | BACKEND ERROR: "
             message = log + str(message)
             message = message + "\n"
-            path = "/var/log/DEW/" + user + "/"
-            #path = "C:/Users/allan/Desktop/ISI Work/DEW GitHub Repo/STEELISI - DEW/backend/logs/DEW/" + user + "/"
+            #path = "/var/log/DEW/" + user + "/"
+            path = "C:/Users/allan/Desktop/ISI Work/DEW GitHub Repo/STEELISI - DEW/backend/logs/DEW/" + user + "/"
             if (not os.path.exists(path)):
                 os.makedirs(path)
             path = path + "dew_" + str(date.today()) + "_logs.log"
@@ -43,8 +43,8 @@ class Logger(object):
             log = dt_string + " | BACKEND INFO: (CLASS: " + function + ") "
             message = log + str(message)
             message = message + "\n"
-            path = "/var/log/DEW/" + user + "/"
-            #path = "C:/Users/allan/Desktop/ISI Work/DEW GitHub Repo/STEELISI - DEW/backend/logs/DEW/" + user + "/"
+            #path = "/var/log/DEW/" + user + "/"
+            path = "C:/Users/allan/Desktop/ISI Work/DEW GitHub Repo/STEELISI - DEW/backend/logs/DEW/" + user + "/"
             if (not os.path.exists(path)):
                 os.makedirs(path)
             path = path + "dew_" + str(date.today()) + "_logs.log"
