@@ -55,7 +55,6 @@ export class HlbComponent implements OnInit, AfterViewInit {
   private dependencyCycleNetworkInstance: any;
   addNodeType: "Node" | "LAN";
   isKeyPressed: boolean = false;
-  dependencyGraphLegends: Array<{ actor: String, color: String }> = [];
   graphItemParametersList: Map<any, GraphItemParameters>;
   actorService: EditorService;
   behaviorService: EditorService;
@@ -69,6 +68,32 @@ export class HlbComponent implements OnInit, AfterViewInit {
   dependencyGraphNodes: DataSet<any>;
   dependencyGraphEdges: DataSet<any>;
   dependencyGraphCyclePath: null | Array<Array<String>>;
+  actorsGroup: Map<string, number> = new Map();
+  graphColors = ["#F0C929",
+    "#F48B29",
+    "#AC0D0D",
+    "#693C72",
+    "#55B3B1",
+    "#F08A5D",
+    "#B83B5E",
+    "#54E346",
+    "#1F1D36",
+    "#420516",
+    "#91091E",
+    "#EE8572",
+    "#35495E",
+    "#347474",
+    "#480032",
+    "#FF4C29",
+    "#FB3640",
+    "#126E82",
+    "#05004E",
+    "#FF005C",
+    "#240041",
+    "#F4E557",
+    "#B983FF",
+    "#1DB9C3",
+    "#005F99"];
   filterBindingOptions = [
     "tcpdump -i expeth($node) -w $file",
     "ping $node",
@@ -729,12 +754,17 @@ export class HlbComponent implements OnInit, AfterViewInit {
         var temp;
         //Populate the Nodes in the Graph
         var actors = receivedData['actors'];
-        for(var data in actors) {
+        for (var data in actors) {
+          //Create actor group
+          if (!this.actorsGroup.has(data)) {
+            this.actorsGroup.set(data, this.actorsGroup.size);
+          }
           if (!id_of_node[data]) {
             id_of_node[data] = id_count;
             temp = {
               id: id_count++,
-              label: data.toString()
+              label: data.toString(),
+              group: "group" + this.actorsGroup.get(data)
             }
             temp_nodes.push(temp);
             temp = {}
@@ -793,39 +823,6 @@ export class HlbComponent implements OnInit, AfterViewInit {
         //Log Data
         this.logger.log(LogHeader.GRAPH_UPDATE, entry.printGraphParameterData(globalGraphItemParametersList, id_of_node, id_of_edge));
 
-        // data.parsedConstraints.forEach(element => {
-        //   switch (element[0]) {
-        //     case 'link':
-        //     case "['link', 'all']":
-        //       temp = {
-        //         from: id_of_node[element[1][0]],
-        //         to: id_of_node[element[1][1]]
-        //       }
-        //       temp_edges.push(temp);
-        //       //console.log(temp_edges);
-        //       break;
-        //     case 'lan':
-        //       temp = {
-        //         from: id_of_node[element[1][0]],
-        //         to: id_of_node[element[1][1]]
-        //       }
-        //       temp_edges.push(temp);
-        //       break;
-        //     case 'num':
-        //       if (typeof id_of_node[element[1]] === "undefined") {
-        //         id_of_node[element[1]] = id_count;
-        //         temp = {
-        //           id: id_count++,
-        //           label: element[1].toString()
-        //         }
-        //         temp_nodes.push(temp);
-        //       }
-        //       break;
-        //     default:
-        //     //Do nothing
-        //   }
-        // });
-
         // Create an array with nodes
         this.topologyGraphNodes = new DataSet<any>(
           temp_nodes
@@ -846,10 +843,16 @@ export class HlbComponent implements OnInit, AfterViewInit {
             enabled: false,
             initiallyActive: false,
             addNode: (nodeData, callback) => {
+              [nodeData.label, nodeData.id] = this.assignNewActorInTopologyGraph(nodeData.group == "LAN");
+              if (!this.actorsGroup.has(nodeData.label)) {
+                this.actorsGroup.set(nodeData.label, this.actorsGroup.size);
+              }
               if (this.addNodeType == "LAN") {
                 nodeData.group = "LAN";
-              } 
-              [nodeData.label, nodeData.id] = this.assignNewActorInTopologyGraph(nodeData.group == "LAN");
+                nodeData.label = "";
+              } else {
+                nodeData.group = "group" + this.actorsGroup.get(nodeData.label)
+              }
               this.clearMessage();
               this.onTopologyChange();
               callback(nodeData);
@@ -907,7 +910,8 @@ export class HlbComponent implements OnInit, AfterViewInit {
             LAN: {
               shape: 'circle',
               color: '#000000'
-            }
+            },
+            ...Object.assign({}, ...this.graphColors.map((color, index) => ({ ["group" + (index)]: { font: { color } } })))
           }
         });
 
@@ -987,18 +991,15 @@ export class HlbComponent implements OnInit, AfterViewInit {
             .subscribe((d) => {
             let nodes = []
             let links = []
-            var actors = {}
-            let groupCount = 1
             for (const n of d['nodes']) {
-              if (!actors.hasOwnProperty(n.actors[0])) {
-                actors[n.actors[0]] = groupCount++;
+              if (!this.actorsGroup.has(n.actors[0])) {
+                this.actorsGroup.set(n.actors[0], this.actorsGroup.size);
               }
-    
               var n2 = {
                 data: n,
                 id: n.id,
                 label: n.action,
-                group: "group" + actors[n.actors[0]]
+                group: "group" + this.actorsGroup.get(n.actors[0])
               }
               nodes.push(n2)
             }
@@ -1015,40 +1016,12 @@ export class HlbComponent implements OnInit, AfterViewInit {
               }
               links.push(e2)
             }
-    
-            const colors = ["#F0C929",
-              "#F48B29",
-              "#AC0D0D",
-              "#693C72",
-              "#55B3B1",
-              "#F08A5D",
-              "#B83B5E",
-              "#54E346",
-              "#1F1D36",
-              "#420516",
-              "#91091E",
-              "#EE8572",
-              "#35495E",
-              "#347474",
-              "#480032",
-              "#FF4C29",
-              "#FB3640",
-              "#126E82",
-              "#05004E",
-              "#FF005C",
-              "#240041",
-              "#F4E557",
-              "#B983FF",
-              "#1DB9C3",
-                "#005F99"]
               
-              const graphGroups = Object.assign({}, ...colors.map((color, index) => ({ ["group" + (index + 1)]: { color } })));
+            const graphGroups = Object.assign({}, ...this.graphColors.map((color, index) => ({ ["group" + (index)]: { color } })));
               
             this.dependencyGraphNodes = new DataSet<any>(nodes);
             this.dependencyGraphEdges = new DataSet<any>(links);
-    
-            this.dependencyGraphLegends = Object.keys(actors).map(actor => { return { actor: actor, color: colors[actors[actor] - 1] } })
-    
+        
             this.dependencyNetworkInstance = new Network(this.dependencyGraphNetwork.nativeElement, { nodes: this.dependencyGraphNodes, edges: this.dependencyGraphEdges }, {
               manipulation: {
                   enabled: false,
@@ -1140,7 +1113,7 @@ export class HlbComponent implements OnInit, AfterViewInit {
                   return {
                     id: index,
                     label: node[1].toString(),
-                    group: "group" + actors[node[0].toString()]
+                    group: "group" + this.actorsGroup.get(node[0].toString())
                   }
                 })
 
@@ -1164,7 +1137,7 @@ export class HlbComponent implements OnInit, AfterViewInit {
                     length: 200
                   },
                   nodes: {
-                    fixed: true,
+                    // fixed: true,
                     shape: "box",
                     font: {
                       color: '#FFFFFF'
