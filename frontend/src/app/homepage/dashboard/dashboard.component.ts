@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { StateService } from '../../state-service.service';
+import { LogService, LogEntry, LogHeader } from 'src/app/experiment/hlbparser/common/logging-service';
 
 @Component({
   selector: 'dashboard',
@@ -20,11 +21,11 @@ export class DashboardComponent implements OnInit{
       ];
 userDetails:any;
 
-        constructor(private state:StateService){}
+        constructor(private state:StateService, private logService: LogService){}
   ngOnInit(): void {
    
     this.userDetails =  this.state.getUserDetails()==null?{}:this.state.getUserDetails();
-    
+    this.logService.log(LogHeader.INFO, "User entered the dashboard");
   }
 
 }

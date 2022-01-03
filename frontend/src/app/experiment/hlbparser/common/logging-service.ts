@@ -23,8 +23,9 @@ export class LogService {
         this.writeToLog(msg, LogLevel.Warn, optionalParams);
     }
     
-    error(msg: string, ...optionalParams: any[]) {
-        this.writeToLog(msg, LogLevel.Error, optionalParams);
+    error(header: any, msg: any) {
+        console.error(msg);
+        this.writeToLog(msg, LogLevel.Error, header);
     }
     
     fatal(msg: string, ...optionalParams: any[]) {
@@ -80,7 +81,9 @@ export enum LogHeader {
     DATA_RECEIVED = "DATA_RECEIVED",
     DATA_SENT = "DATA_SENT",
     GRAPH_UPDATE = "GRAPH_UPDATE",
-    TEXT_UPDATED = "TEXT_UPDATED"
+    TEXT_UPDATED = "TEXT_UPDATED",
+    INFO = "INFO",
+    ERROR = "ERROR"
 }
 
 export class LogEntry {
