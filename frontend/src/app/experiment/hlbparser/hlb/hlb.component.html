@@ -382,7 +382,7 @@
               <label class="form-check-label" for="modal-action-trigger-checkbox">
                 Trigger
               </label>
-              <select multiple class="form-control flex-grow-1" id="modal-action-trigger-selections">
+              <select multiple class="form-control flex-grow-1" id="modal-action-trigger-selections" disabled>
                 <option>1</option>
                 <option>2</option>
                 <option>3</option>
@@ -397,7 +397,12 @@
               <label class="form-check-label" for="modal-action-wait-checkbox">
                 Wait
               </label>
-              <input type="text" class="form-control flex-grow-1" placeholder="Wait Time" id="modal-action-wait-input">
+              <div class="input-group">
+                <input type="number" class="form-control flex-grow-1" placeholder="Wait Time" id="modal-action-wait-input" disabled>
+                <div class="input-group-append">
+                  <span class="input-group-text" id="basic-addon2">ms</span>
+                </div>
+              </div>
             </div>
           </div>
           <div class="d-flex flex-grow-1">
@@ -406,7 +411,7 @@
               <label class="form-check-label" for="modal-action-emit-checkbox">
                 Emit
               </label>
-              <input type="text" class="form-control flex-grow-1" placeholder="Emit Event" id="modal-action-emit-input">
+              <input type="text" class="form-control flex-grow-1" placeholder="Emit Event" id="modal-action-emit-input" disabled>
             </div>
           </div>
         </div>

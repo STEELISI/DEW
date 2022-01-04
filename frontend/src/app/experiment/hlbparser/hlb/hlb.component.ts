@@ -383,6 +383,19 @@ export class HlbComponent implements OnInit, AfterViewInit {
             this.logger.log(LogHeader.DATA_RECEIVED, "Error converting constraints");
           });
     });
+
+    $('#modal-action-wait-checkbox').on('change', (event)=> {
+      $('#modal-action-wait-input').attr('disabled', !event.currentTarget.checked)
+    });
+
+    $('#modal-action-emit-checkbox').on('change', (event)=> {
+      $('#modal-action-emit-input').attr('disabled', !event.currentTarget.checked)
+    });
+
+    $('#modal-action-trigger-checkbox').on('change', (event)=> {
+      $('#modal-action-trigger-selections').attr('disabled', !event.currentTarget.checked)
+    });
+
     this.toggleTopologyView();
   }
 
@@ -931,7 +944,7 @@ export class HlbComponent implements OnInit, AfterViewInit {
             accessibleLogger.log(LogHeader.KEY_PRESS, "User Clicked on a Node");
             $('.dialog-box-action-button').removeClass('hide');
             var nodeGroup = clickedNodes[0]['group'];
-            nodeGroup.includes('group') && $('.dialog-box-action-button, .modal-add-button').css('background-color', graphColors[nodeGroup.replace('group', '')]);
+            nodeGroup.includes('group') && $('.dialog-box-action-button, .modal-add-button').css('background-color', graphColors[nodeGroup.replace('group', '')]) && setActionTriggersInModal();
             $('.modal-title').html('Add Action - ' + clickedNodes[0].label);
             $('#dialog-box-title').html(clickedNodes[0].label) && (currentGraphItemSelection['id'] = clickedNodes[0].id) && (currentGraphItemSelection['type'] = 'node');
             for(var i in id_of_node) {
@@ -1586,9 +1599,19 @@ export class HlbComponent implements OnInit, AfterViewInit {
       }
     });
     this.extractEvents(trigger);
+    this.extractTriggers(trigger);
 
     // this.loadBindings();
     this.changeDetection.detectChanges();
+  }
+
+  extractTriggers(triggers) {
+    triggerSignals = []
+    for(var item of triggers) {
+      if(item['category']=='t_event') {
+        triggerSignals.push(item['key']);
+      }
+    }
   }
 
   isEmpty(binding): boolean {
@@ -1860,6 +1883,7 @@ var id_of_edge = {};
 let accessibleLogger;
 let entry = new LogEntry();
 var graphColors;
+var triggerSignals;
 
 function swapJSON(data) {
   var temp = {};
@@ -1867,6 +1891,14 @@ function swapJSON(data) {
     temp[data[i]] = i;
   }
   return temp;
+}
+
+function setActionTriggersInModal() {
+  var content;
+  content = triggerSignals.map((item) => { return ('<option>' + item + '</option>') });
+  content = content.reduce((prevVal, curVal) => prevVal + curVal)
+  console.log(content)
+  $('#modal-action-trigger-selections').html(content);
 }
 
 function showRelevantContentInDialogBox() {

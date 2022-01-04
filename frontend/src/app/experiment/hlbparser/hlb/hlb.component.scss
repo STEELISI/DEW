@@ -331,10 +331,11 @@ ul {
     padding-bottom: 10px;
   }
 
-  .modal-action-headers > label,  .modal-action-headers > span{
+  .modal-action-headers > label,  .modal-action-headers > span {
     font-size: 20px;
     font-weight: bold;
     margin-left: 5px;
+    min-width: 70px;
   }
 
   .modal-action-headers > input[type='checkbox']:not(checked) + label {
@@ -355,9 +356,13 @@ ul {
     padding: 10px;
   }
 
-  .modal-action-headers > input[type='text'], .modal-action-headers > select {
+  .modal-action-headers > input[type='text'], .modal-action-headers > select, .modal-action-headers > .input-group {
     margin-left: 20px;
     width: 100%;
+  }
+
+  .modal-action-headers > .input-group > .input-group-append > span {
+    font-weight: bold;
   }
 
 
