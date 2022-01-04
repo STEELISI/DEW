@@ -286,6 +286,14 @@ ul {
     font-size: 20px;
   }
 
+  .dialog-box-action-button {
+    background-color: orange;
+    color: white;
+    font-weight: bold;
+    font-size: 15px;
+    min-height: 0px;
+  }
+
   .toastBox {
     position: fixed;
     bottom: 0;

@@ -170,6 +170,7 @@ export class HlbComponent implements OnInit, AfterViewInit {
   ) {
     this.graphItemParametersList = GRAPH_ITEM_PARAMETERS_LIST;
     accessibleLogger = logger;
+    graphColors = this.graphColors;
   }
 
   resetFilterList() {
@@ -928,11 +929,16 @@ export class HlbComponent implements OnInit, AfterViewInit {
           //Show Node/Link Content
           if(clickedNodes.length) {
             accessibleLogger.log(LogHeader.KEY_PRESS, "User Clicked on a Node");
+            $('.dialog-box-action-button').removeClass('hide');
+            var nodeGroup = clickedNodes[0]['group'];
+            console.log(clickedNodes[0]['group'])
+            nodeGroup.includes('group') && $('.dialog-box-action-button').css('background-color', graphColors[nodeGroup.replace('group', '')]);
             $('#dialog-box-title').html(clickedNodes[0].label) && (currentGraphItemSelection['id'] = clickedNodes[0].id) && (currentGraphItemSelection['type'] = 'node');
             for(var i in id_of_node) {
               if(id_of_node[i] == currentGraphItemSelection['id'] && i.includes('lan')) {
                 accessibleLogger.log(LogHeader.KEY_PRESS, "User Clicked on a LAN");
                 $('#dialog-box-title').html('LAN') && (currentGraphItemSelection['type'] = 'lan');
+                $('.dialog-box-action-button').addClass('hide');
                 break;
               }
             }
@@ -940,6 +946,7 @@ export class HlbComponent implements OnInit, AfterViewInit {
           if(items.length && (clickedNodes.length == 0)) {
             accessibleLogger.log(LogHeader.KEY_PRESS, "User Clicked on a Link");
             $('#dialog-box-title').html('Link') && (currentGraphItemSelection['id'] = items[0].edgeId) && (currentGraphItemSelection['type'] = 'link');
+            $('.dialog-box-action-button').addClass('hide');
             var selectedEdge = items[0]['edgeId'];
             var id_of_nodes_rev = swapJSON(id_of_node);
             for(var i in id_of_edge) {
@@ -1852,6 +1859,7 @@ var id_of_node = {};
 var id_of_edge = {};
 let accessibleLogger;
 let entry = new LogEntry();
+var graphColors;
 
 function swapJSON(data) {
   var temp = {};
