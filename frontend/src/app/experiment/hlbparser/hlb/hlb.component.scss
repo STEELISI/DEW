@@ -315,6 +315,50 @@ ul {
     height: 100%;
   }
 
+  /* Modal */
+
+  .modal-dialog {
+    margin-top: 14%;
+  }
+
+  .modal-add-button {
+    color: white;
+    font-weight: bold;
+  }
+
+  .modal-action-headers {
+    padding-top: 10px;
+    padding-bottom: 10px;
+  }
+
+  .modal-action-headers > label,  .modal-action-headers > span{
+    font-size: 20px;
+    font-weight: bold;
+    margin-left: 5px;
+  }
+
+  .modal-action-headers > input[type='checkbox']:not(checked) + label {
+    color: rgb(119, 119, 119);
+  }
+
+  .modal-action-headers > input[type='checkbox']:checked + label {
+    color: black;
+  }
+
+  .modal-action-headers > input[type='checkbox'] {
+    /* Double-sized Checkboxes */
+    -ms-transform: scale(1.5); /* IE */
+    -moz-transform: scale(1.5); /* FF */
+    -webkit-transform: scale(1.5); /* Safari and Chrome */
+    -o-transform: scale(1.5); /* Opera */
+    transform: scale(1.5);
+    padding: 10px;
+  }
+
+  .modal-action-headers > input[type='text'], .modal-action-headers > select {
+    margin-left: 20px;
+    width: 100%;
+  }
 
 
   /* Toggle between Dependency and Topology Icons */
