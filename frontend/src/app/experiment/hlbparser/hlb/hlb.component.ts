@@ -931,7 +931,6 @@ export class HlbComponent implements OnInit, AfterViewInit {
             accessibleLogger.log(LogHeader.KEY_PRESS, "User Clicked on a Node");
             $('.dialog-box-action-button').removeClass('hide');
             var nodeGroup = clickedNodes[0]['group'];
-            console.log(clickedNodes[0]['group'])
             nodeGroup.includes('group') && $('.dialog-box-action-button').css('background-color', graphColors[nodeGroup.replace('group', '')]);
             $('#dialog-box-title').html(clickedNodes[0].label) && (currentGraphItemSelection['id'] = clickedNodes[0].id) && (currentGraphItemSelection['type'] = 'node');
             for(var i in id_of_node) {
