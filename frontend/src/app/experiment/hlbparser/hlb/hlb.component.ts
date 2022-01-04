@@ -1896,8 +1896,7 @@ function swapJSON(data) {
 function setActionTriggersInModal() {
   var content;
   content = triggerSignals.map((item) => { return ('<option>' + item + '</option>') });
-  content = content.reduce((prevVal, curVal) => prevVal + curVal)
-  console.log(content)
+  content = content.reduce((prevVal, curVal) => prevVal + curVal);
   $('#modal-action-trigger-selections').html(content);
 }
 
