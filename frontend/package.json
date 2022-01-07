@@ -37,6 +37,7 @@
     "angular-user-idle": "^2.2.4",
     "bootstrap": "^4.6.1",
     "bootstrap-autocomplete": "^2.3.7",
+    "bootstrap-multiselect": "^1.1.0",
     "file-saver": "^2.0.5",
     "fsevents": "^2.1.2",
     "httpclient": "^0.1.0",

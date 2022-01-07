@@ -414,6 +414,16 @@ export class HlbComponent implements OnInit, AfterViewInit {
     this.toggleTopologyView();
   }
 
+  clearModalContent(): void {
+    $('#modal-action-name-input').val('');
+    $('#modal-action-binding-input').val('');
+    $('#modal-action-wait-input').val('');
+    $('#modal-action-emit-input').val('');
+    $('#modal-event-binding-input').val('');
+    $("#modal-action-trigger-selections option:selected").prop("selected", false);
+    $(".modal-action-headers > input[type='checkbox']:checked").prop('checked', false).change();
+  }
+
   addActionFromUI(): void {
     var actionData = {};
     var name = $('#modal-action-name-input').val().trim();
@@ -425,8 +435,8 @@ export class HlbComponent implements OnInit, AfterViewInit {
         $('.modal-add-action-error').addClass('hide');
       }, 3000);
     } else {
-      console.log(actionData);
-      $('.modal').modal('toggle')
+      $('.modal').modal('toggle');
+      //TODO: Add code to populate bindings and scenario
     }
   }
 
