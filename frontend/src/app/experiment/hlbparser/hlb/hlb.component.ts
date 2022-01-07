@@ -436,8 +436,32 @@ export class HlbComponent implements OnInit, AfterViewInit {
       }, 3000);
     } else {
       $('.modal').modal('toggle');
-      //TODO: Add code to populate bindings and scenario
+      actionData['actionBinding'] = $('#modal-action-binding-input').val().trim();
+      actionData['doesActionBindingExist'] = (actionData['actionBinding']!='');
+      actionData['emit'] = $('#modal-action-emit-input').val().trim();
+      actionData['doesEmitExist'] = (actionData['emit'] != '') && $('#modal-action-emit-checkbox').prop('checked');
+      actionData['wait'] = $('#modal-action-wait-input').val().trim();
+      actionData['doesWaitExist'] = (actionData['wait'] != '') && $('#modal-action-wait-checkbox').prop('checked');
+      actionData['eventBinding'] = $('#modal-event-binding-input').val().trim();
+      actionData['doesEventBindingExist'] = (actionData['eventBinding'] != '') && $('#modal-action-event-checkbox').prop('checked');
+      var triggers = []
+      for(var item of $("#modal-action-trigger-selections option:selected")) {
+        triggers.push(item.innerHTML);
+      }
+      actionData['triggers'] = triggers;
+      actionData['doesTriggerExist'] = (actionData['triggers'].length > 0) && $('#modal-action-trigger-checkbox').prop('checked');
+      var newLine = this.buildScenarioLine(actionData);
+      var scenario = this.getScenariosFromEditor();
+      scenario.push(newLine);
+      this.stateservice.setBehavior(scenario);
     }
+  }
+
+  buildScenarioLine(action: any): string {
+    var result = "";
+    //TODO: Build Scenario String
+    result = "fdsfdsafdsa"
+    return result;
   }
 
 
