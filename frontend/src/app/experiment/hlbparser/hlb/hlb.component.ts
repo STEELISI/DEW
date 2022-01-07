@@ -62,6 +62,7 @@ export class HlbComponent implements OnInit, AfterViewInit {
   filteredBindingHandleForEvent: Observable<string[]>;
   topologyGraphNodes: DataSet<any>;
   topologyGraphEdges: DataSet<any>;
+  topologyGraphSelectedNodeData: { actions: Array<{ action: string, topologyLabel: number }> };
   graph_data: any;
   graph_container: any;
   graphDescription: string;
@@ -961,6 +962,40 @@ export class HlbComponent implements OnInit, AfterViewInit {
             //$(".custom-menu").is(':visible') && $(".custom-menu").finish().toggle(100);
           });
 
+          //Show legends in topology graph
+          this.topologyNetworkInstance.on("afterDrawing", (ctx) => {
+
+            this.topologyGraphNodes.forEach((node) => {
+              if (node.group != "LAN") {
+                var nodePosition = this.topologyNetworkInstance.getPosition(node.id);
+
+                let x = nodePosition.x;
+                let y = nodePosition.y;
+
+                this.dependencyGraphNodes.get({
+                  filter: (item) => item.data.actors[0] == node.label
+                }).forEach((dependencyNode, dependencyIndex) => {
+                  ctx.strokeStyle = "#294475";
+                  ctx.lineWidth = 2;
+                  ctx.fillStyle = "#A6D5F7";
+
+                  ctx.beginPath();
+                  ctx.fillRect(x + 10 + (30 * (dependencyIndex + 1)) - 10, y - 10, 20, 20);
+                  ctx.closePath();
+
+                  ctx.fill();
+                  ctx.stroke();
+
+                  ctx.font = "10px Arial";
+                  ctx.fillStyle = "#000000";
+                  ctx.textAlign = "center";
+                  ctx.textBaseline = "middle";
+                  ctx.fillText(dependencyNode.topologyLabel + "", x + 10 + (30 * (dependencyIndex + 1)), y);
+                });
+              }
+            });
+          });
+
           this.topologyNetworkInstance.on('oncontext', function (properties) {
             properties.event.preventDefault();
             // if (!properties.nodes.length) {
@@ -993,6 +1028,7 @@ export class HlbComponent implements OnInit, AfterViewInit {
             .subscribe((d) => {
               let nodes = []
               let links = []
+              let topologyLabel = 1;
               for (const n of d['nodes']) {
                 if (!this.actorsGroup.has(n.actors[0])) {
                   this.actorsGroup.set(n.actors[0], this.actorsGroup.size);
@@ -1001,6 +1037,7 @@ export class HlbComponent implements OnInit, AfterViewInit {
                   data: n,
                   id: n.id,
                   label: n.action,
+                  topologyLabel: topologyLabel++,
                   group: "group" + this.actorsGroup.get(n.actors[0])
                 }
                 nodes.push(n2)
@@ -1023,6 +1060,12 @@ export class HlbComponent implements OnInit, AfterViewInit {
 
               this.dependencyGraphNodes = new DataSet<any>(nodes);
               this.dependencyGraphEdges = new DataSet<any>(links);
+
+              this.dependencyGraphNodes.on("*", () => {
+                this.topologyNetworkInstance.fit();
+              });
+
+              this.topologyNetworkInstance.fit();
 
               this.dependencyNetworkInstance = new Network(this.dependencyGraphNetwork.nativeElement, { nodes: this.dependencyGraphNodes, edges: this.dependencyGraphEdges }, {
                 manipulation: {
@@ -1107,7 +1150,34 @@ export class HlbComponent implements OnInit, AfterViewInit {
                 groups: graphGroups
               });
 
+              //Show legends in dependency graph
+              this.dependencyNetworkInstance.on("afterDrawing", (ctx) => {
 
+                this.dependencyGraphNodes.forEach((node) => {
+                  var nodePosition = this.dependencyNetworkInstance.getPosition(node.id);
+                  var boundingBox = this.dependencyNetworkInstance.getBoundingBox(node.id);
+
+                  let x = boundingBox.right;
+                  let y = nodePosition.y;
+
+                  ctx.strokeStyle = "#294475";
+                  ctx.lineWidth = 2;
+                  ctx.fillStyle = "#A6D5F7";
+
+                  ctx.beginPath();
+                  ctx.fillRect(x + 10 - 10, y - 10, 20, 20);
+                  ctx.closePath();
+
+                  ctx.fill();
+                  ctx.stroke();
+
+                  ctx.font = "10px Arial";
+                  ctx.fillStyle = "#000000";
+                  ctx.textAlign = "center";
+                  ctx.textBaseline = "middle";
+                  ctx.fillText(node.topologyLabel + "", x + 10, y);
+                });
+              });
               //Show dependency cycle if any
               if (this.dependencyGraphCyclePath) {
                 $('#dependencyGraphCycleContainer').show();
