@@ -111,6 +111,11 @@ export class HlbComponent implements OnInit, AfterViewInit {
     'pexists($action) - process exists that performs action in the binding',
     'psuccess($action) - process completed w success for the given action'
   ];
+
+  filterBindingOptionsForEventCleaned = this.filterBindingOptionsForEvent.map((value) => {
+    return value.split(' - ')[0];
+  });
+
   specialFunctions = [
     { name: 'expIP', value: 'experimental IP on the node' },
     { name: 'ctlIP', value: 'control IP on the node' },
@@ -389,16 +394,28 @@ export class HlbComponent implements OnInit, AfterViewInit {
     });
 
     $('#modal-action-emit-checkbox').on('change', (event)=> {
-      $('#modal-action-emit-input').attr('disabled', !event.currentTarget.checked)
+      $('#modal-action-emit-input').attr('disabled', !event.currentTarget.checked);
+      if(!event.currentTarget.checked) {
+        $('#modal-action-event-checkbox').prop('checked', false);
+        $('#modal-event-binding-input').attr('disabled', true);
+      }
+      $('#modal-action-event-checkbox').attr('disabled', !event.currentTarget.checked);
     });
 
     $('#modal-action-trigger-checkbox').on('change', (event)=> {
-      $('#modal-action-trigger-selections').attr('disabled', !event.currentTarget.checked)
+      $('#modal-action-trigger-selections').attr('disabled', !event.currentTarget.checked);
+    });
+
+    $('#modal-action-event-checkbox').on('change', (event)=> {
+      $('#modal-event-binding-input').attr('disabled', !event.currentTarget.checked)
     });
 
     this.toggleTopologyView();
   }
 
+  addActionFromUI(): void {
+    console.log("Here");
+  }
 
 
   isExperimentDisabled(): boolean {

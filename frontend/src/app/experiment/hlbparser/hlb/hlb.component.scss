@@ -317,8 +317,17 @@ ul {
 
   /* Modal */
 
+  .disabled {
+    color: #777777;
+  }
+
+  .modal-content {
+    width: 700px;
+    margin-left: calc(50% - 350px);
+  }
+
   .modal-dialog {
-    margin-top: 14%;
+    margin-top: 5%;
   }
 
   .modal-add-button {
@@ -335,7 +344,7 @@ ul {
     font-size: 20px;
     font-weight: bold;
     margin-left: 5px;
-    min-width: 70px;
+    min-width: 150px;
   }
 
   .modal-action-headers > input[type='checkbox']:not(checked) + label {
