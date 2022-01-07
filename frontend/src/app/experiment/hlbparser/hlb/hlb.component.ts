@@ -429,6 +429,7 @@ export class HlbComponent implements OnInit, AfterViewInit {
     var name = $('#modal-action-name-input').val().trim();
     $('#modal-action-name-input').val(name);
     actionData['name'] = name;
+    actionData['actor'] = $('.modal-title').html().split('Add Action - ')[1]; 
     if(actionData['name']=='') {
       $('.modal-add-action-error').removeClass('hide');
       setTimeout(()=> {
@@ -458,9 +459,27 @@ export class HlbComponent implements OnInit, AfterViewInit {
   }
 
   buildScenarioLine(action: any): string {
+    //TODO: Update Bindings too!!
     var result = "";
-    //TODO: Build Scenario String
-    result = "fdsfdsafdsa"
+    var triggerStmt = "when "
+    var waitStmt = "wait "
+    var emitStmt = "emit "
+    if(action['doesTriggerExist']) {
+      result = result + triggerStmt;
+      for(var item of action['triggers']) {
+        result = result + item + ", "
+      }
+      result = result.substring(0, result.length-2);
+      result += " "
+    }
+    if(action['doesWaitExist']) {
+      result += waitStmt + action['wait'] + " ";
+    }
+    result += action['actor'] + " " + action['name'] + " "
+    if(action['doesEmitExist']) {
+      result += emitStmt + action['emit'] + " "
+    }
+    result = result.substring(0, result.length-1);
     return result;
   }
 
