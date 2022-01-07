@@ -21,7 +21,7 @@ import {
 import { HttpService } from "src/app/http-service.service";
 import { Observable, of } from "rxjs";
 import * as _ from 'lodash';
-import * as $ from 'jquery';
+// import * as $ from 'jquery';
 import { DataSet } from 'vis-data';
 import { Network } from 'vis-network';
 import { GRAPH_ITEM_PARAMETERS_LIST } from '../../graph-data/graph-item-parameters-list';
@@ -30,6 +30,7 @@ import { NULL_EXPR } from "@angular/compiler/src/output/output_ast";
 import { type } from "os";
 import { LogService, LogHeader, LogEntry } from '../common/logging-service';
 import { GoogleDriveService } from "src/app/google-drive-service.service";
+declare let $:any;
 
 Quill.register("modules/counter", EditorService);
 
@@ -414,7 +415,19 @@ export class HlbComponent implements OnInit, AfterViewInit {
   }
 
   addActionFromUI(): void {
-    console.log("Here");
+    var actionData = {};
+    var name = $('#modal-action-name-input').val().trim();
+    $('#modal-action-name-input').val(name);
+    actionData['name'] = name;
+    if(actionData['name']=='') {
+      $('.modal-add-action-error').removeClass('hide');
+      setTimeout(()=> {
+        $('.modal-add-action-error').addClass('hide');
+      }, 3000);
+    } else {
+      console.log(actionData);
+      $('.modal').modal('toggle')
+    }
   }
 
 
