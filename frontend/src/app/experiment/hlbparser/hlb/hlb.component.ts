@@ -426,11 +426,11 @@ export class HlbComponent implements OnInit, AfterViewInit {
 
   addActionFromUI(): void {
     var actionData = {};
-    var name = $('#modal-action-name-input').val().trim();
-    $('#modal-action-name-input').val(name);
-    actionData['name'] = name;
+    var action = $('#modal-action-name-input').val().trim();
+    $('#modal-action-name-input').val(action);
+    actionData['action'] = action;
     actionData['actor'] = $('.modal-title').html().split('Add Action - ')[1]; 
-    if(actionData['name']=='') {
+    if(actionData['action']=='') {
       $('.modal-add-action-error').removeClass('hide');
       setTimeout(()=> {
         $('.modal-add-action-error').addClass('hide');
@@ -459,7 +459,6 @@ export class HlbComponent implements OnInit, AfterViewInit {
   }
 
   buildScenarioLine(action: any): string {
-    //TODO: Update Bindings too!!
     var result = "";
     var triggerStmt = "when "
     var waitStmt = "wait "
@@ -475,11 +474,24 @@ export class HlbComponent implements OnInit, AfterViewInit {
     if(action['doesWaitExist']) {
       result += waitStmt + action['wait'] + " ";
     }
-    result += action['actor'] + " " + action['name'] + " "
+    result += action['actor'] + " " + action['action'] + " "
     if(action['doesEmitExist']) {
       result += emitStmt + action['emit'] + " "
     }
     result = result.substring(0, result.length-1);
+    var eventBinding = eventBinding = {
+      'key': action['emit'],
+      'category': 'event',
+      'value': action['doesEventBindingExist'] ? action['eventBinding'] : ''
+    };
+    var actionBinding = {
+      'key': action['action'],
+      'category': 'action',
+      'value': action['doesActionBindingExist'] ? action['actionBinding'] : ''
+    };
+    this.bindingList.push(actionBinding);
+    action['doesEmitExist'] && this.bindingList.push(eventBinding);
+    this.stateservice.setBindings(this.bindingList);
     return result;
   }
 
