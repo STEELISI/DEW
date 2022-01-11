@@ -62,7 +62,7 @@ export class HlbComponent implements OnInit, AfterViewInit {
   filteredBindingHandleForEvent: Observable<string[]>;
   topologyGraphNodes: DataSet<any>;
   topologyGraphEdges: DataSet<any>;
-  topologyGraphSelectedNodeData: { actions: Array<{ action: string, topologyLabel: number }> };
+  topologyGraphSelectedNodeData: { actions: Array<{ id: any, action: string, topologyLabel: number }> };
   graph_data: any;
   graph_container: any;
   graphDescription: string;
@@ -918,7 +918,7 @@ export class HlbComponent implements OnInit, AfterViewInit {
             }
           });
 
-          this.topologyNetworkInstance.on('click', function (properties) {
+          this.topologyNetworkInstance.on('click', (properties) => {
             var ids = properties.nodes;
             var clickedNodes = nodes.get(ids);
             var items = properties.items;
@@ -956,6 +956,24 @@ export class HlbComponent implements OnInit, AfterViewInit {
             } else if (clickedNodes.length) {
               $('.dialog-box-fields:not(is-node)').addClass('hide');
               $('.dialog-box-fields.is-node').removeClass('hide');
+            }
+            if (ids[0]) {
+              const selectedNode: any = this.topologyGraphNodes.get(ids[0]);
+              if (selectedNode.group != 'LAN') {
+                this.topologyGraphSelectedNodeData = {
+                  actions: this.dependencyGraphNodes.get({
+                    filter: (item) => item.data.actors[0] == selectedNode.label
+                  }).map(item => {
+                    return {
+                      id: item.id,
+                      action: item.label,
+                      topologyLabel: item.topologyLabel
+                    }
+                  })
+                };
+              } else {
+                this.topologyGraphSelectedNodeData = { actions: [] };
+              }
             }
             showRelevantContentInDialogBox(); //Content to Display on the Context Menu
             //Hide dialogBox and customMenu

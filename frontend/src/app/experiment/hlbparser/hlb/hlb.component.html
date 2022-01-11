@@ -278,6 +278,22 @@
             <mat-label>Number of Nodes</mat-label>
             <input type="text" id="node-num" onkeypress="return (event.charCode !=8 && event.charCode ==0 || (event.charCode >= 48 && event.charCode <= 57))" value="1" aria-label="string" (change)="onTopologyParametersChange($event)" matInput>
           </mat-form-field>
+          <div class="mt-2" *ngIf="topologyGraphSelectedNodeData && topologyGraphSelectedNodeData.actions && topologyGraphSelectedNodeData.actions.length">
+            <h5>Actions</h5>
+            <div>
+              <div class="topology-actor-action" *ngFor="let action of topologyGraphSelectedNodeData.actions">
+                <div class="topology-actor-action-label">
+                  {{action.topologyLabel}}
+                </div>
+                <div class="topology-actor-action-name">
+                  {{action.action}}
+                </div>
+                <div class="topology-actor-action-edit">
+                  <i class="fas fa-edit"></i>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
 
         <!--Link/LAN Fields-->
