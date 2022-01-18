@@ -95,27 +95,10 @@ export class HlbComponent implements OnInit, AfterViewInit {
     "#B983FF",
     "#1DB9C3",
     "#005F99"];
-  filterBindingOptions = [
-    "tcpdump -i expeth($node) -w $file",
-    "ping $node",
-    "iperf -s",
-    "iperf -c $node",
-    "nmap $node",
-    "wget $node",
-    "dig $name",
-    "sudo service apache2 start",
-    "sudo service bind9 start"
-  ];
-  filterBindingOptionsForEvent = [
-    'fexists($file) - file exists',
-    'fmod($file) - file was modified',
-    'pexists($action) - process exists that performs action in the binding',
-    'psuccess($action) - process completed w success for the given action'
-  ];
+  filterBindingOptions: any;
+  filterBindingOptionsForEvent: any;
 
-  filterBindingOptionsForEventCleaned = this.filterBindingOptionsForEvent.map((value) => {
-    return value.split(' - ')[0];
-  });
+  filterBindingOptionsForEventCleaned: any;
 
   specialFunctions = [
     { name: 'expIP', value: 'experimental IP on the node' },
@@ -180,8 +163,18 @@ export class HlbComponent implements OnInit, AfterViewInit {
   }
 
   resetFilterList() {
-    this.filteredBindingHandle = of(this.filterBindingOptions);
-    this.filteredBindingHandleForEvent = of(this.filterBindingOptionsForEvent);
+    this.logger.log(LogHeader.INFO, "Retreiving binding data from server");
+    this.http
+      .put('v1/pr/hlb/getBindingOptions', null, { withCredential: true })
+      .subscribe((receivedData: ParseApiBean) => {
+        this.filterBindingOptions = receivedData['event'];
+        this.filterBindingOptionsForEvent = receivedData['trigger'];
+        this.filterBindingOptionsForEventCleaned = this.filterBindingOptionsForEvent.map((value) => {
+          return value.split(' - ')[0];
+        });
+        this.filteredBindingHandle = of(this.filterBindingOptions);
+        this.filteredBindingHandleForEvent = of(this.filterBindingOptionsForEvent);
+      });
   }
   searchFilter(value: any, category: any) {
     if (category === 'event' || category === 't_event') {

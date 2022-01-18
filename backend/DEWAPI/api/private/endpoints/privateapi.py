@@ -75,6 +75,41 @@ class HandleHLBParser(Resource):
         except BaseException:
           Logger.backendErrorLog(user, traceback.format_exc())
           raise Exception("Error Occured on the Server")
+
+@ns.route('/hlb/getBindingOptions')
+class GetBindingOptions(Resource):
+
+    def put(self):
+        """
+         Get the bindings options for an event/trigger
+        """
+        try:
+          user = userObj.getEmailId()
+          Logger.backendLog(user,"GetBindingOptions()", "Entered Class")
+          data = {
+            'event': [
+              "tcpdump -i expeth($node) -w $file",
+              "ping $node",
+              "iperf -s",
+              "iperf -c $node",
+              "nmap $node",
+              "wget $node",
+              "dig $name",
+              "sudo service apache2 start",
+              "sudo service bind9 start"
+            ],
+            'trigger': [
+              'fexists($file) - file exists',
+              'fmod($file) - file was modified',
+              'pexists($action) - process exists that performs action in the binding',
+              'psuccess($action) - process completed w success for the given action'
+            ]
+          }
+          Logger.backendLog(user,"GetBindingOptions()", "Successfully Retreived Binding Options")
+          return data
+        except BaseException:
+          Logger.backendErrorLog(user, traceback.format_exc())
+          raise Exception("Error Occured on the Server")
         
 
 @ns.route('/convert/dew1to2')
