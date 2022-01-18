@@ -308,6 +308,28 @@ class HandleDependencyGraphHasCycle(Resource):
         cycle_path = hlb.HandleDependencyGraphHasCycle(scenarios)
         return {"status": "success", "cycle_path": cycle_path}
 
+@ns.route('/hlb/dependency-graph/node-delete')
+class HandleDependencyGraphNodeDelete(Resource):
+    @api.expect(dependency_graph_node_delete)
+    def put(self):
+        """
+          Update Scenarios and Bindings by removing a node
+        """
+        try:
+          json_data = request.get_json(force=True)
+          user = userObj.getEmailId()
+          Logger.backendLog(user,"HandleDependencyGraphNodeDelete()", "Entered Class")
+          scenarios = json_data['scenarios']
+          bindings = json.loads(json_data['bindings'][0])
+          actor = json_data['actor']
+          action = json_data['action']
+          updated_scenarios, updated_bindings = hlb.HandleDependencyGraphNodeDelete(actor, action, scenarios, bindings)
+          Logger.backendLog(user,"HandleDependencyGraphNodeDelete()", "Successfully updated scenarios and bindings")
+          return {"status": "success", "scenarios": updated_scenarios, "bindings": updated_bindings }
+        except BaseException:
+            Logger.backendErrorLog(user, traceback.format_exc())
+            raise Exception("Error Occured on the Server")
+
 
 @ns.route('/hlb/dependency-graph/update-edge')
 class HandleDependencyGraphUpdateEdge(Resource):

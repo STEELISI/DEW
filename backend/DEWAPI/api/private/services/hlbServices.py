@@ -664,7 +664,61 @@ class HLBService():
                 if path != None:
                     return path
         return None
-            
+
+    def HandleDependencyGraphNodeDelete(self, actor, action, scenarios, bindings):
+        gen = bashGenerator(scenario=scenarios,constraints="",bindings=[])
+        gen.generate()
+        parsed_scenarios = gen.scenario_parsed
+        updated_scenarios = []
+        updated_bindings = []
+
+        scenario_parse_index = {
+            "when": 0,
+            "actor": 1,
+            "action": 2,
+            "emit": 3,
+            "wait": 4
+        }
+
+        def generateScenarioSentence(scenario):
+            sentence = []
+            if scenario[scenario_parse_index["when"]] != None and len(scenario[scenario_parse_index["when"]]) != 0: #when
+                sentence.append("when " + ", ".join(scenario[scenario_parse_index["when"]]))
+            if scenario[scenario_parse_index["wait"]] != None: #when
+                sentence.append("wait " + scenario[scenario_parse_index["wait"]])
+            sentence.append(scenario[scenario_parse_index["actor"]][0]) #actor
+            sentence.append(scenario[scenario_parse_index["action"]][0]) #action
+            if scenario[scenario_parse_index["emit"]] != None: #emit
+                sentence.append("emit " + ", ".join(scenario[scenario_parse_index["emit"]]))
+
+            return " ".join(sentence)
+
+        deleted_events = []
+        filtered_parsed_scenarios = []
+        
+        #Filter scenarios and get all deleted events
+        for scenario in parsed_scenarios:
+            if actor in scenario[scenario_parse_index["actor"]] and action in scenario[scenario_parse_index["action"]]:
+                if scenario[scenario_parse_index["emit"]] != None:
+                    deleted_events += scenario[scenario_parse_index["emit"]]
+                continue
+            filtered_parsed_scenarios.append(scenario)
+
+        #remove all deleted events from when
+        for scenario in filtered_parsed_scenarios:
+            if scenario[scenario_parse_index["when"]] != None:
+                for event in deleted_events:
+                    if event in scenario[scenario_parse_index["when"]]:
+                        scenario[scenario_parse_index["when"]].remove(event)
+            updated_scenarios.append(generateScenarioSentence(scenario))
+        
+        #filter Bindings
+        for binding in bindings:
+            if binding["key"] not in action and binding["key"] not in deleted_events:
+                updated_bindings.append(binding)
+                    
+        return (updated_scenarios, updated_bindings)
+     
     def HandleDependencyGraphUpdateEdge(self, update_type, actor_from, action_from, actor_to, action_to, scenarios, bindings):
         gen = bashGenerator(scenario=scenarios,constraints="",bindings=[])
         gen.generate()

@@ -1114,7 +1114,12 @@ export class HlbComponent implements OnInit, AfterViewInit {
                   enabled: false,
                   initiallyActive: false,
                   addNode: (data, callback) => { return; },
-                  deleteNode: (data, callback) => { return; },
+                  deleteNode: (data, callback) => {
+                    const actor = this.dependencyGraphNodes.get(data.nodes[0])["data"].actors[0];
+                    const action = this.dependencyGraphNodes.get(data.nodes[0])["data"].action;
+                    this.onDependencyNodeDelete(actor, action);
+                    callback(data);
+                  },
                   addEdge: (edgeData, callback) => {
 
                     if (edgeData.from == edgeData.to) {
@@ -1500,6 +1505,23 @@ export class HlbComponent implements OnInit, AfterViewInit {
     globalGraphItemParametersList = this.graphItemParametersList;
     this.logger.log(LogHeader.GRAPH_UPDATE, entry.printGraphParameterData(globalGraphItemParametersList, id_of_node, id_of_edge));
     this.onTopologyChange();
+  }
+
+  onDependencyNodeDelete(actor, action) {
+    this.logger.log(LogHeader.GRAPH_UPDATE, "User deleted actor - " + actor + ", action - " + action);
+    var request = {
+      scenarios: this.getScenariosFromEditor(),
+      bindings: [JSON.stringify(this.bindingList)],
+      actor: actor,
+      action: action,
+    };
+    this.http
+      .put('v1/pr/hlb/dependency-graph/node-delete', request, { withCredential: true })
+      .subscribe((receivedData: ParseApiBean) => {
+        this.stateservice.setBehavior(receivedData['scenarios']);
+        this.stateservice.setBindings(receivedData['bindings']);
+      });
+    
   }
 
   onDependencyUpdateEdge(updateType, actorFrom, actionFrom, actorTo, actionTo) {

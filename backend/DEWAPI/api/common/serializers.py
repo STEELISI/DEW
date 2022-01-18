@@ -100,6 +100,13 @@ dependency_graph_has_cycle = api.model('Check if there exists a cycle in the giv
   'scenarios': fields.List(fields.String,description="Scenario of the experiment",required=True),
   })
 
+dependency_graph_node_delete = api.model('Dependency graph delete node', {
+  'scenarios': fields.List(fields.String,description="Scenario of the experiment",required=True),
+  'bindings': fields.List(fields.String,description="Bindings of the experiment",required=True),
+  'actor': fields.String(description="Name of actor which is deleted",required=True),
+  'action': fields.String(description="Name of action which is deleted",required=True),
+  })
+
 dependency_graph_update_edge = api.model('Dependency graph update edge', {
   'scenarios': fields.List(fields.String,description="Scenario of the experiment",required=True),
   'bindings': fields.List(fields.String,description="Bindings of the experiment",required=True),
