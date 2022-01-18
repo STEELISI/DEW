@@ -231,6 +231,29 @@ class HandleTopologyParse(Resource):
             Logger.backendErrorLog(user, traceback.format_exc())
             raise Exception("Error Occured on the Server")
 
+@ns.route('/hlb/topology/node-rename')
+class HandleTopologyNodeRename(Resource):
+    @api.expect(topology_node_rename_text)
+    def put(self):
+        """
+          Update Scenarios and Constraints on renaming node in topology
+        """
+        try:
+          json_data = request.get_json(force=True)
+          user = userObj.getEmailId()
+          Logger.backendLog(user,"HandleTopologyNodeRename()", "Entered Class")
+          constraints = json_data['constraints']
+          scenarios = json_data['scenarios']
+          old_name = json_data['old_name']
+          new_name = json_data['new_name']
+          updated_constraints, updated_scenarios = hlb.HandleTopologyNodeRename(old_name, new_name, constraints, scenarios)
+          Logger.backendLog(user,"HandleTopologyNodeRename()", "Successfully updated scenarios and constraints")
+          return {"status": "success", "scenarios": updated_scenarios, "constraints": updated_constraints }
+        except BaseException:
+            Logger.backendErrorLog(user, traceback.format_exc())
+            raise Exception("Error Occured on the Server")
+
+
 @ns.route('/hlb/topology/graph-remove')
 class HandleTopologyGraphRemove(Resource):
     @api.expect(topology_remove_text)

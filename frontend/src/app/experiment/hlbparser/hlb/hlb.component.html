@@ -256,7 +256,18 @@
 
     <div class="dialog-box hide">
       <div class="dialog-box-content d-flex flex-column">
-        <span id="dialog-box-title" class="p-2"></span>
+        <div>
+          <div [hidden]="!(!topologyGraphSelectedNodeData || !topologyGraphSelectedNodeData.nameEditable)">
+            <span id="dialog-box-title" class="p-2"></span>
+            <i class="fas fa-edit topology-actor-name-action edit" *ngIf="topologyGraphSelectedNodeData && topologyGraphSelectedNodeData.nodeType == 'NODE'" (click)="topologyGraphSelectedNodeData.nameEditable = true"></i>
+          </div>
+          <div *ngIf="topologyGraphSelectedNodeData && topologyGraphSelectedNodeData.nameEditable">
+            <input [(ngModel)]="topologyGraphSelectedNodeData.name" (keyup)="onTopologyNodeChange()"/> 
+            <i class="fas fa-check topology-actor-name-action save" (click)="onTopologyNodeSave()" [class.disabled]="!!topologyGraphSelectedNodeData.nameEditableError"></i>
+            <i class="fas fa-times topology-actor-name-action cancel" (click)="onTopologyNodeCancel()"></i>
+            <div *ngIf="topologyGraphSelectedNodeData.nameEditableError" class="topology-actor-name-action-error">{{topologyGraphSelectedNodeData.nameEditableError}}</div>
+          </div>
+        </div>
         <hr>
         <div class="dialog-box-fields d-flex flex-column is-node">
 

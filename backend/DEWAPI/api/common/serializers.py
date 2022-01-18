@@ -82,6 +82,13 @@ topology_remove_text = api.model('Toplogy remove', {
   'deleted_node': fields.String(description="Deleted node label of the graph",required=True),
   })
 
+topology_node_rename_text = api.model('Toplogy node rename', {
+  'constraints': fields.List(fields.String,description="Constraints of the experiment",required=True),
+  'scenarios': fields.List(fields.String,description="Scenario of the experiment",required=True),
+  'old_name': fields.String(description="Old name of the node",required=True),
+  'new_name': fields.String(description="New name of the node",required=True),
+  })
+
 topology_graph_generate_constraints = api.model('Toplogy graph generate constraints', {
   'nodes': fields.List(fields.String,description="Nodes of graphs",required=True),
   'edges': fields.List(fields.String,description="Edges of graphs",required=True),

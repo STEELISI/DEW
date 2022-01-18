@@ -62,7 +62,14 @@ export class HlbComponent implements OnInit, AfterViewInit {
   filteredBindingHandleForEvent: Observable<string[]>;
   topologyGraphNodes: DataSet<any>;
   topologyGraphEdges: DataSet<any>;
-  topologyGraphSelectedNodeData: { actions: Array<{ id: any, action: string, topologyLabel: number }> };
+  topologyGraphSelectedNodeData: {
+    id: any,
+    name: string,
+    nameEditable: boolean,
+    nameEditableError: string,
+    nodeType: string,
+    actions: Array<{ id: any, action: string, topologyLabel: number }>
+  };
   graph_data: any;
   graph_container: any;
   graphDescription: string;
@@ -931,7 +938,7 @@ export class HlbComponent implements OnInit, AfterViewInit {
               accessibleLogger.log(LogHeader.KEY_PRESS, "User Clicked on a Node");
               $('#dialog-box-title').html(clickedNodes[0].label) && (currentGraphItemSelection['id'] = clickedNodes[0].id) && (currentGraphItemSelection['type'] = 'node');
               for (var i in id_of_node) {
-                if (id_of_node[i] == currentGraphItemSelection['id'] && i.includes('lan')) {
+                if (id_of_node[i] == currentGraphItemSelection['id'] && clickedNodes[0].group == 'LAN') {
                   accessibleLogger.log(LogHeader.KEY_PRESS, "User Clicked on a LAN");
                   $('#dialog-box-title').html('LAN') && (currentGraphItemSelection['type'] = 'lan');
                   break;
@@ -959,21 +966,28 @@ export class HlbComponent implements OnInit, AfterViewInit {
             }
             if (ids[0]) {
               const selectedNode: any = this.topologyGraphNodes.get(ids[0]);
-              if (selectedNode.group != 'LAN') {
-                this.topologyGraphSelectedNodeData = {
-                  actions: this.dependencyGraphNodes.get({
-                    filter: (item) => item.data.actors[0] == selectedNode.label
-                  }).map(item => {
-                    return {
-                      id: item.id,
-                      action: item.label,
-                      topologyLabel: item.topologyLabel
-                    }
-                  })
-                };
-              } else {
-                this.topologyGraphSelectedNodeData = { actions: [] };
+              const selectedNodeData = {
+                id: selectedNode.id,
+                name: String(selectedNode.label),
+                nameEditable: false,
+                nameEditableError: null,
+                nodeType: selectedNode.group == 'LAN' ? 'LAN' : 'NODE',
+                actions: Array<{ id: any, action: string, topologyLabel: number }>()
               }
+              if (selectedNode.group != 'LAN') {
+                selectedNodeData.actions= this.dependencyGraphNodes.get({
+                  filter: (item) => item.data.actors[0] == selectedNode.label
+                }).map(item => {
+                  return {
+                    id: item.id,
+                    action: item.label,
+                    topologyLabel: item.topologyLabel
+                  }
+                });
+              }
+              this.topologyGraphSelectedNodeData = selectedNodeData;
+            } else {
+              this.topologyGraphSelectedNodeData = null;
             }
             showRelevantContentInDialogBox(); //Content to Display on the Context Menu
             //Hide dialogBox and customMenu
@@ -1280,6 +1294,60 @@ export class HlbComponent implements OnInit, AfterViewInit {
     $("#graphActionButtonList").show();
     $("#actionMessage").html("<span>Press <kbd>Ctrl</kbd> to edit edges, Select a node/edge and press <kbd>Del</kbd> to delete</span>");
     // $("#actionMessage").hide();
+  }
+
+  onTopologyNodeChange = () => {
+    if (!this.topologyGraphSelectedNodeData.name) {
+      this.topologyGraphSelectedNodeData.nameEditableError = "Required";
+      return;
+    }
+    const duplicateNodes = this.topologyGraphNodes.get({
+      filter: (node => node.id != this.topologyGraphSelectedNodeData.id && node.label == this.topologyGraphSelectedNodeData.name)
+    });
+    if (duplicateNodes.length) {
+      this.topologyGraphSelectedNodeData.nameEditableError = "Duplicate node name";
+    } else {
+      this.topologyGraphSelectedNodeData.nameEditableError = null;
+    }
+  }
+
+  onTopologyNodeSave = () => {
+    if (!this.topologyGraphSelectedNodeData.nameEditableError) {
+      const new_name = this.topologyGraphSelectedNodeData.name;
+      const old_name = this.topologyGraphNodes.get(this.topologyGraphSelectedNodeData.id)['label'];
+      var request = {
+        constraints: this.getConstraintsFromEditor(),
+        scenarios: this.getScenariosFromEditor(),
+        old_name: old_name,
+        new_name: new_name
+      };
+      this.http
+        .put('v1/pr/hlb/topology/node-rename', request, { withCredential: true })
+        .subscribe((receivedData: ParseApiBean) => {
+
+          this.actorsGroup.set(new_name, this.actorsGroup.get(old_name));
+          this.actorsGroup.delete(old_name);
+
+          this.stateservice.setBehavior(receivedData['scenarios']);
+          this.stateservice.setConstraints(receivedData['constraints']);
+
+
+          this.topologyGraphNodes.update({
+            id: this.topologyGraphSelectedNodeData.id,
+            label: new_name
+          });
+          $('#dialog-box-title').html(new_name);
+          this.topologyGraphSelectedNodeData.nameEditable = false;
+          setTimeout(() => {
+            this.updateGraph(false, true);
+          }, 500)
+        });
+    }
+  }
+
+  onTopologyNodeCancel = () => {
+    this.topologyGraphSelectedNodeData.nameEditable = false;
+    this.topologyGraphSelectedNodeData.name = this.topologyGraphNodes.get(this.topologyGraphSelectedNodeData.id)['label'];
   }
 
   onAddNodeClick = (type) => {
