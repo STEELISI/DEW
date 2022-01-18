@@ -194,8 +194,8 @@
                       <mat-option *ngFor="let option of
                       (item.category ==='event' ?
                       (filteredBindingHandleForEvent | async) :
-                      (filteredBindingHandle | async))" [value]="option">
-                        {{option}}
+                      (filteredBindingHandle | async))" [value]="option.replace('$action', item.key)">
+                        {{option.replace('$action', item.key)}}
                       </mat-option>
                     </mat-autocomplete>
                   </mat-form-field>
@@ -432,7 +432,7 @@
               </label>
               <input type="text" class="form-control flex-grow-1" placeholder="Binding" id="modal-event-binding-input" list="event-bindings" disabled>
               <datalist id="event-bindings">
-                <option *ngFor="let item of filterBindingOptionsForEventCleaned">{{item}}</option>
+                <option *ngFor="let item of filterBindingOptionsForEventCleaned">{{currentActionNameInModal ? item.replace('$action', currentActionNameInModal) : item}}</option>
              </datalist>
             </div>
           </div>

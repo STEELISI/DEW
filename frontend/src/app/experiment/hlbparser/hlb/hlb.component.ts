@@ -95,23 +95,14 @@ export class HlbComponent implements OnInit, AfterViewInit {
     "#B983FF",
     "#1DB9C3",
     "#005F99"];
+
   filterBindingOptions: any;
   filterBindingOptionsForEvent: any;
-
   filterBindingOptionsForEventCleaned: any;
+  actionInBindingHelper: any;
+  currentActionNameInModal = "";
 
-  specialFunctions = [
-    { name: 'expIP', value: 'experimental IP on the node' },
-    { name: 'ctlIP', value: 'control IP on the node' },
-    { name: 'expeth', value: 'experimental interface on the node' },
-    { name: 'expIP(A)', value: 'experimental IP on this node leading to A' },
-    { name: 'expeth(A)', value: 'experimental interface on this node leading to A' },
-    { name: 'IP(A)', value: 'IP address of node A' },
-    { name: 'pid', value: 'project name' },
-    { name: 'eid', value: 'experiment name' },
-    { name: 'nid', value: 'node name' },
-    { name: 'epoch', value: 'epoch time' }
-  ];
+  specialFunctions: any;
 
   scenariosObjFormat = [];
   constraintsObjFormat = [];
@@ -172,6 +163,7 @@ export class HlbComponent implements OnInit, AfterViewInit {
         this.filterBindingOptionsForEventCleaned = this.filterBindingOptionsForEvent.map((value) => {
           return value.split(' - ')[0];
         });
+        this.specialFunctions = receivedData['specialFunctions'];
         this.filteredBindingHandle = of(this.filterBindingOptions);
         this.filteredBindingHandleForEvent = of(this.filterBindingOptionsForEvent);
       });
@@ -402,6 +394,10 @@ export class HlbComponent implements OnInit, AfterViewInit {
 
     $('#modal-action-event-checkbox').on('change', (event)=> {
       $('#modal-event-binding-input').attr('disabled', !event.currentTarget.checked)
+    });
+
+    $('#modal-action-name-input').on('change', (event) => {
+      this.currentActionNameInModal = event.target.value;
     });
 
     this.toggleTopologyView();
@@ -762,11 +758,20 @@ export class HlbComponent implements OnInit, AfterViewInit {
   }
 
   extractInfo(data: ParseApiBean) {
+    this.getActionBindingDataFromScenario(data['parsedScenario']);
     this.logger.log(LogHeader.TEXT_UPDATED, "Constraints/Scenario Updated");
     this.logger.log(LogHeader.DATA_RECEIVED, "Parsed Scenario - " + data.parsedScenario + " | Parsed Constraints - " + data.parsedConstraints);
     this.updateGraph();
     this.extractScenario(data.parsedScenario);
     this.storeBinding(undefined);
+  }
+
+  getActionBindingDataFromScenario(data) {
+    this.actionInBindingHelper = {};
+    data.forEach(element => {
+      this.actionInBindingHelper[element[3]] = element[2][0];
+    });
+    console.log(this.actionInBindingHelper);
   }
 
   assignNewActorInTopologyGraph(isLAN) {

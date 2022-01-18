@@ -103,6 +103,18 @@ class GetBindingOptions(Resource):
               'fmod($file) - file was modified',
               'pexists($action) - process exists that performs action in the binding',
               'psuccess($action) - process completed w success for the given action'
+            ],
+            'specialFunctions': [
+              { 'name': 'expIP', 'value': 'experimental IP on the node' },
+              { 'name': 'ctlIP', 'value': 'control IP on the node' },
+              { 'name': 'expeth', 'value': 'experimental interface on the node' },
+              { 'name': 'expIP(A)', 'value': 'experimental IP on this node leading to A' },
+              { 'name': 'expeth(A)', 'value': 'experimental interface on this node leading to A' },
+              { 'name': 'IP(A)', 'value': 'IP address of node A' },
+              { 'name': 'pid', 'value': 'project name' },
+              { 'name': 'eid', 'value': 'experiment name' },
+              { 'name': 'nid', 'value': 'node name' },
+              { 'name': 'epoch', 'value': 'epoch time' }
             ]
           }
           Logger.backendLog(user,"GetBindingOptions()", "Successfully Retreived Binding Options")
