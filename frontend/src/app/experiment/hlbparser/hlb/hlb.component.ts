@@ -685,10 +685,20 @@ export class HlbComponent implements OnInit, AfterViewInit {
       max_count = Math.max(max_count, id_of_edge[i]['id']);
     }
     name = isLAN ? "lan" + (max_count + 1) : "actor" + (max_count + 1);
+    while (true) {
+      let counter = max_count + 1;
+      const duplicateNodes = this.topologyGraphNodes.get({
+        filter: (node => node.label == name)
+      });
+      if (duplicateNodes.length) {
+        counter++;
+        name = "actor" + counter;
+      } else {
+        break;
+      }
+    }
     id_of_node[name] = max_count + 1;
-    var temp = this.stateservice.getConstraints().source['_value'];
-    isLAN ? temp.push("lan [ bw 1, delay 0 ]") : temp.push(name + " [ num 1 ]");
-    // this.stateservice.setConstraints(temp);
+    
     this.createNewGraphTypeObject(isLAN, name);
     return [isLAN ? "" : name, max_count+1];
   }
