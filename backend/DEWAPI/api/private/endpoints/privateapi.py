@@ -99,8 +99,6 @@ class GetBindingOptions(Resource):
               "sudo service bind9 start"
             ],
             'trigger': [
-              'fexists($file) - file exists',
-              'fmod($file) - file was modified',
               'pexists($action) - process exists that performs action in the binding',
               'psuccess($action) - process completed w success for the given action'
             ],
