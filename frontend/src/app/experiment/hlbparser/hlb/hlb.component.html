@@ -342,6 +342,13 @@
             <div id="dependencyGraphCycleNetwork" #dependencyGraphCycleNetwork></div>
           </div>
       </div>
+      <div class="graph-buttons d-flex flex-column noselect" style="text-align: center;">
+        <div class="flex-grow-1">
+          <div class="d-flex flex-row justify-content-center">
+            <div class="graph-action-button" (click)="onAddActionDependencyClick()">Add Action</div>
+          </div>
+        </div>
+    </div>
       <div id="dependencyGraphNetwork" #dependencyGraphNetwork></div>
     </div>
   </div>
@@ -358,16 +365,26 @@
 
 <!-- Modal -->
 <div class="modal fade" id="add-action-modal" role="dialog" aria-labelledby="add-action-modal-label" aria-hidden="true">
-  <div class="modal-dialog" role="document">
+  <div class="modal-dialog modal-dialog-centered" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="add-action-modal-label">Modal title</h5>
+        <h5 class="modal-title" id="add-action-modal-label">Add Action</h5>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
       <div class="modal-body">
         <div class="d-flex flex-column p-2">
+          <div class="d-flex flex-grow-1">
+            <div class="form-check modal-action-headers d-flex align-items-center flex-grow-1">
+              <span class="form-check-label">
+                Actor
+              </span>
+              <select class="form-select form-control" aria-label="modal-actor-input" id="modal-actor-input">
+                <option *ngFor="let item of actorsList">{{item.text}}</option>
+              </select>
+            </div>
+          </div>
           <div class="d-flex flex-grow-1">
             <div class="form-check modal-action-headers d-flex align-items-center flex-grow-1">
               <span class="form-check-label">
@@ -398,6 +415,7 @@
                 Trigger
               </label>
               <select multiple class="form-control flex-grow-1" id="modal-action-trigger-selections" disabled>
+                <option *ngFor="let item of triggerSignals">{{item}}</option>
               </select>
             </div>
           </div>

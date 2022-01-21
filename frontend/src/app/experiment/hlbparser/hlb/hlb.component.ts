@@ -101,7 +101,7 @@ export class HlbComponent implements OnInit, AfterViewInit {
   filterBindingOptionsForEventCleaned: any;
   actionInBindingHelper: any;
   currentActionNameInModal = "";
-
+  triggerSignals = [];
   specialFunctions: any;
 
   scenariosObjFormat = [];
@@ -411,6 +411,11 @@ export class HlbComponent implements OnInit, AfterViewInit {
     $('#modal-event-binding-input').val('');
     $("#modal-action-trigger-selections option:selected").prop("selected", false);
     $(".modal-action-headers > input[type='checkbox']:checked").prop('checked', false).change();
+    $("#modal-actor-input > option:selected").prop("selected", false);
+    $("#modal-actor-input > option").filter(function() {
+      return $(this).html() === swapJSON(id_of_node)[currentGraphItemSelection['id']];
+    }).prop("selected", true);
+    $("#modal-actor-input").attr('disabled', $('.graph-box-dependency').hasClass('hide'));
   }
 
   addActionFromUI(): void {
@@ -418,7 +423,7 @@ export class HlbComponent implements OnInit, AfterViewInit {
     var action = $('#modal-action-name-input').val().trim();
     $('#modal-action-name-input').val(action);
     actionData['action'] = action;
-    actionData['actor'] = $('.modal-title').html().split('Add Action - ')[1]; 
+    actionData['actor'] = $("#modal-actor-input > option:selected").html(); 
     if(actionData['action']=='') {
       $('.modal-add-action-error').removeClass('hide');
       setTimeout(()=> {
@@ -444,6 +449,10 @@ export class HlbComponent implements OnInit, AfterViewInit {
       var scenario = this.getScenariosFromEditor();
       scenario.push(newLine);
       this.stateservice.setBehavior(scenario);
+      this.logger.log(LogHeader.GRAPH_UPDATE, "User added a new scenario line from UI - " + newLine);
+      setTimeout(()=> {
+        this.updateActorsConstraint()
+      }, 2000);
     }
   }
 
@@ -1037,8 +1046,7 @@ export class HlbComponent implements OnInit, AfterViewInit {
             accessibleLogger.log(LogHeader.KEY_PRESS, "User Clicked on a Node");
             $('.dialog-box-action-button').removeClass('hide');
             var nodeGroup = clickedNodes[0]['group'];
-            nodeGroup.includes('group') && $('.dialog-box-action-button, .modal-add-button').css('background-color', graphColors[nodeGroup.replace('group', '')]) && setActionTriggersInModal();
-            $('.modal-title').html('Add Action - ' + clickedNodes[0].label);
+            nodeGroup.includes('group') && $('.dialog-box-action-button, .modal-add-button').css('background-color', graphColors[nodeGroup.replace('group', '')]);
             $('#dialog-box-title').html(clickedNodes[0].label) && (currentGraphItemSelection['id'] = clickedNodes[0].id) && (currentGraphItemSelection['type'] = 'node');
             for(var i in id_of_node) {
               if(id_of_node[i] == currentGraphItemSelection['id'] && i.includes('lan')) {
@@ -1318,6 +1326,12 @@ export class HlbComponent implements OnInit, AfterViewInit {
     }
     this.topologyNetworkInstance.addNodeMode();
     $("#graph-container").focus();
+  }
+
+  onAddActionDependencyClick() {
+    this.clearModalContent();
+    $('.dialog-box-action-button, .modal-add-button').css('background-color', '#04aa6d');
+    $('.modal').modal('toggle');
   }
 
   toggleTopologyView() {
@@ -1699,10 +1713,12 @@ export class HlbComponent implements OnInit, AfterViewInit {
   }
 
   extractTriggers(triggers) {
-    triggerSignals = []
+    this.triggerSignals = []
     for(var item of triggers) {
-      if(item['category']=='t_event') {
-        triggerSignals.push(item['key']);
+      if(item['category']!='action') {
+        if(!this.triggerSignals.includes(item['key'])) {
+          this.triggerSignals.push(item['key']);
+        }
       }
     }
   }
@@ -1976,7 +1992,6 @@ var id_of_edge = {};
 let accessibleLogger;
 let entry = new LogEntry();
 var graphColors;
-var triggerSignals;
 
 function swapJSON(data) {
   var temp = {};
@@ -1986,12 +2001,6 @@ function swapJSON(data) {
   return temp;
 }
 
-function setActionTriggersInModal() {
-  var content;
-  content = triggerSignals.map((item) => { return ('<option>' + item + '</option>') });
-  content = content.reduce((prevVal, curVal) => prevVal + curVal);
-  $('#modal-action-trigger-selections').html(content);
-}
 
 function showRelevantContentInDialogBox() {
   try {
