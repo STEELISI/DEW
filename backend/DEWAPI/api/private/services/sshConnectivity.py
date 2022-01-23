@@ -265,8 +265,10 @@ class SSHConnection():
                 for data in jo:
                     for id in data:
                         if (id == 'data'):
+                            print("One element is ", data[id])
                             results.append(data[id])
                             cnt += 1
+                print("Result ", results)
                 result['data'] = results
                 result['startIndex'] = 0
                 result['batchSize'] = cnt

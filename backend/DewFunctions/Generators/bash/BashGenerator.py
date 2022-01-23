@@ -175,6 +175,16 @@ class BashGenerator(Generator):
                         if (event is not None):
                             count[event] = sid
                         sid += 1
+                        
+        for w in actors:
+            if w in self.num.keys():
+                found = True
+                for i in range(0,self.num[w]):
+                    self.clear[label] += "execute_stop \"" + w + "-" + str(i)+ "\"  \"all\" 0 all &\n"
+            else:
+                self.clear[label] += "execute_stop \"" + w + "\" \"all\" 0 all &\n"
+
+
 
     def generateCmd(self, actor1, i, actor2 , j, sid, action, label):
         print("Generate command ", action)
@@ -204,10 +214,8 @@ class BashGenerator(Generator):
 
         if i is not None:
             self.run[label] += "execute_fork \"" + actor1 + "-" + str(i)+ "\" \"" + naction +"\" " + str(sid) + " " + action +" &\n"
-            self.clear[label] += "execute_stop \"" + actor1 + "-" + str(i)+ "\" \" \"all\" 0 all &\n"
         else:
             self.run[label] += "execute_fork \"" + actor1 + "\" \"" + naction +"\" " + str(sid) + " " + action + " &\n"
-            self.clear[label] += "execute_stop \"" + actor1 + "\" \"all\" 0 all &\n"
 
     def collectConds(self):
         self.conditions = dict()
