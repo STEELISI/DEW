@@ -17,6 +17,7 @@ import {
 import { HttpService } from "src/app/http-service.service";
 import { Observable, of } from "rxjs";
 import * as _ from 'lodash';
+import { AuthService } from '../../../@auth/auth.service';
 
 Quill.register("modules/counter", EditorService);
 
@@ -26,6 +27,7 @@ Quill.register("modules/counter", EditorService);
   styleUrls: ["./hlb.component.scss"],
 })
 export class HlbComponent implements OnInit {
+  authService: AuthService;
   actorService: EditorService;
   behaviorService: EditorService;
   filteredBindingHandle: Observable<string[]>;
@@ -99,8 +101,11 @@ export class HlbComponent implements OnInit {
     public dialog: MatDialog,
     private stateservice: StateService,
     private _snackBar: MatSnackBar,
-    private changeDetection: ChangeDetectorRef
-  ) {}
+    private changeDetection: ChangeDetectorRef,
+    authService: AuthService
+  ) {
+    this.authService = authService;
+  }
 
   resetFilterList() {
     this.filteredBindingHandle = of(this.filterBindingOptions);
@@ -181,6 +186,7 @@ export class HlbComponent implements OnInit {
     return textArray
   }
   ngOnInit(): void {
+    this.authService.setRefreshTokenIntervals();
     this.resetFilterList();
     this.bindingMap = new Map<String, any>();
     this.behaviorList = [];

@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { StateService } from '../../state-service.service';
+import { AuthService } from 'src/app/@auth/auth.service';
 
 @Component({
   selector: 'dashboard',
@@ -9,7 +10,7 @@ import { StateService } from '../../state-service.service';
 export class DashboardComponent implements OnInit{
   
   
-
+  authService: AuthService;
 
     menuList:any=[
      {
@@ -20,11 +21,13 @@ export class DashboardComponent implements OnInit{
       ];
 userDetails:any;
 
-        constructor(private state:StateService){}
+        constructor(private state:StateService, authService: AuthService){
+          this.authService = authService;
+        }
+        
   ngOnInit(): void {
-   
     this.userDetails =  this.state.getUserDetails()==null?{}:this.state.getUserDetails();
-    
+    this.authService.setRefreshTokenIntervals();
   }
 
 }

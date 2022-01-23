@@ -8,6 +8,9 @@ import { RouterModule } from '@angular/router';
 import { HttpService } from './http-service.service';
 import { AuthModule } from './@auth/auth.module';
 import { StateService } from './state-service.service';
+import { SocialLoginModule, SocialAuthServiceConfig } from 'angularx-social-login';
+import { GoogleLoginProvider } from 'angularx-social-login';
+import { environment } from "environments/environment.prod";
 
 @NgModule({
   declarations: [
@@ -21,9 +24,26 @@ import { StateService } from './state-service.service';
     BrowserAnimationsModule,
     RouterModule,
     AppRoutingModule,
-    HttpClientModule
+    HttpClientModule,
+    SocialLoginModule
   ],
-  providers: [HttpService, StateService
+  providers: [
+    HttpService, 
+    StateService,
+    {
+      provide: "SocialAuthServiceConfig",
+      useValue: {
+        autoLogin: true,
+        providers: [
+          {
+            id: GoogleLoginProvider.PROVIDER_ID,
+            provider: new GoogleLoginProvider(
+              environment.googleClientId
+            )
+          }
+        ]
+      } as SocialAuthServiceConfig
+    }
   ],
   bootstrap: [AppComponent]
 })
