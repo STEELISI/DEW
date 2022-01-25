@@ -873,6 +873,13 @@ export class HlbComponent implements OnInit, AfterViewInit {
                 } else {
                   nodeData.group = "group" + this.actorsGroup.get(nodeData.label)
                 }
+                setTimeout(() => {
+                  this.topologyNetworkInstance.selectNodes([nodeData.id]);
+                  setTimeout(async () => {
+                    await this.onTopologyClick({ nodes: [nodeData.id], items: [], edges: [] });
+                    this.topologyGraphSelectedNodeData.nameEditable = true;
+                  }, 100);
+                }, 100);
                 this.clearMessage();
                 this.onTopologyChange();
                 callback(nodeData);
@@ -936,72 +943,7 @@ export class HlbComponent implements OnInit, AfterViewInit {
           });
 
           this.topologyNetworkInstance.on('click', (properties) => {
-            var ids = properties.nodes;
-            var clickedNodes = nodes.get(ids);
-            var items = properties.items;
-            //Show Dialog Box
-            var $dialogBox = $('.dialog-box');
-            $dialogBox.hasClass('hide') && $dialogBox.toggleClass('hide');
-            clickedNodes.length || items.length || $dialogBox.toggleClass('hide');
-            //Show Node/Link Content
-            if (clickedNodes.length) {
-              accessibleLogger.log(LogHeader.KEY_PRESS, "User Clicked on a Node");
-              $('#dialog-box-title').html(clickedNodes[0].label) && (currentGraphItemSelection['id'] = clickedNodes[0].id) && (currentGraphItemSelection['type'] = 'node');
-              for (var i in id_of_node) {
-                if (id_of_node[i] == currentGraphItemSelection['id'] && clickedNodes[0].group == 'LAN') {
-                  accessibleLogger.log(LogHeader.KEY_PRESS, "User Clicked on a LAN");
-                  $('#dialog-box-title').html('LAN') && (currentGraphItemSelection['type'] = 'lan');
-                  break;
-                }
-              }
-            }
-            if (items.length && (clickedNodes.length == 0)) {
-              accessibleLogger.log(LogHeader.KEY_PRESS, "User Clicked on a Link");
-              $('#dialog-box-title').html('Link') && (currentGraphItemSelection['id'] = items[0].edgeId) && (currentGraphItemSelection['type'] = 'link');
-              var selectedEdge = items[0]['edgeId'];
-              var id_of_nodes_rev = swapJSON(id_of_node);
-              for (var i in id_of_edge) {
-                if (id_of_edge[i]['id'] == selectedEdge && id_of_nodes_rev[id_of_edge[i]['to']].includes('lan')) {
-                  $dialogBox.toggleClass('hide');
-                  break;
-                }
-              }
-            }
-            if ((items.length && clickedNodes.length == 0) || currentGraphItemSelection['type'] == 'lan') {
-              $('.dialog-box-fields:not(is-node)').removeClass('hide');
-              $('.dialog-box-fields.is-node').addClass('hide');
-            } else if (clickedNodes.length) {
-              $('.dialog-box-fields:not(is-node)').addClass('hide');
-              $('.dialog-box-fields.is-node').removeClass('hide');
-            }
-            if (ids[0]) {
-              const selectedNode: any = this.topologyGraphNodes.get(ids[0]);
-              const selectedNodeData = {
-                id: selectedNode.id,
-                name: String(selectedNode.label),
-                nameEditable: false,
-                nameEditableError: null,
-                nodeType: selectedNode.group == 'LAN' ? 'LAN' : 'NODE',
-                actions: Array<{ id: any, action: string, topologyLabel: number }>()
-              }
-              if (selectedNode.group != 'LAN') {
-                selectedNodeData.actions= this.dependencyGraphNodes.get({
-                  filter: (item) => item.data.actors[0] == selectedNode.label
-                }).map(item => {
-                  return {
-                    id: item.id,
-                    action: item.label,
-                    topologyLabel: item.topologyLabel
-                  }
-                });
-              }
-              this.topologyGraphSelectedNodeData = selectedNodeData;
-            } else {
-              this.topologyGraphSelectedNodeData = null;
-            }
-            showRelevantContentInDialogBox(); //Content to Display on the Context Menu
-            //Hide dialogBox and customMenu
-            //$(".custom-menu").is(':visible') && $(".custom-menu").finish().toggle(100);
+            this.onTopologyClick(properties);
           });
 
           //Show legends in topology graph
@@ -1309,6 +1251,75 @@ export class HlbComponent implements OnInit, AfterViewInit {
     $("#graphActionButtonList").show();
     $("#actionMessage").html("<span>Press <kbd>Ctrl</kbd> to edit edges, Select a node/edge and press <kbd>Del</kbd> to delete</span>");
     // $("#actionMessage").hide();
+  }
+
+  onTopologyClick = async (properties) => {
+    var ids = properties.nodes;
+    var clickedNodes = this.topologyGraphNodes.get(ids);
+    var items = properties.items;
+    //Show Dialog Box
+    var $dialogBox = $('.dialog-box');
+    $dialogBox.hasClass('hide') && $dialogBox.toggleClass('hide');
+    clickedNodes.length || items.length || $dialogBox.toggleClass('hide');
+    //Show Node/Link Content
+    if (clickedNodes.length) {
+      accessibleLogger.log(LogHeader.KEY_PRESS, "User Clicked on a Node");
+      $('#dialog-box-title').html(clickedNodes[0].label) && (currentGraphItemSelection['id'] = clickedNodes[0].id) && (currentGraphItemSelection['type'] = 'node');
+      for (var i in id_of_node) {
+        if (id_of_node[i] == currentGraphItemSelection['id'] && clickedNodes[0].group == 'LAN') {
+          accessibleLogger.log(LogHeader.KEY_PRESS, "User Clicked on a LAN");
+          $('#dialog-box-title').html('LAN') && (currentGraphItemSelection['type'] = 'lan');
+          break;
+        }
+      }
+    }
+    if (items.length && (clickedNodes.length == 0)) {
+      accessibleLogger.log(LogHeader.KEY_PRESS, "User Clicked on a Link");
+      $('#dialog-box-title').html('Link') && (currentGraphItemSelection['id'] = items[0].edgeId) && (currentGraphItemSelection['type'] = 'link');
+      var selectedEdge = items[0]['edgeId'];
+      var id_of_nodes_rev = swapJSON(id_of_node);
+      for (var i in id_of_edge) {
+        if (id_of_edge[i]['id'] == selectedEdge && id_of_nodes_rev[id_of_edge[i]['to']].includes('lan')) {
+          $dialogBox.toggleClass('hide');
+          break;
+        }
+      }
+    }
+    if ((items.length && clickedNodes.length == 0) || currentGraphItemSelection['type'] == 'lan') {
+      $('.dialog-box-fields:not(is-node)').removeClass('hide');
+      $('.dialog-box-fields.is-node').addClass('hide');
+    } else if (clickedNodes.length) {
+      $('.dialog-box-fields:not(is-node)').addClass('hide');
+      $('.dialog-box-fields.is-node').removeClass('hide');
+    }
+    if (ids[0]) {
+      const selectedNode: any = this.topologyGraphNodes.get(ids[0]);
+      const selectedNodeData = {
+        id: selectedNode.id,
+        name: String(selectedNode.label),
+        nameEditable: false,
+        nameEditableError: null,
+        nodeType: selectedNode.group == 'LAN' ? 'LAN' : 'NODE',
+        actions: Array<{ id: any, action: string, topologyLabel: number }>()
+      }
+      if (selectedNode.group != 'LAN') {
+        selectedNodeData.actions = this.dependencyGraphNodes.get({
+          filter: (item) => item.data.actors[0] == selectedNode.label
+        }).map(item => {
+          return {
+            id: item.id,
+            action: item.label,
+            topologyLabel: item.topologyLabel
+          }
+        });
+      }
+      this.topologyGraphSelectedNodeData = selectedNodeData;
+    } else {
+      this.topologyGraphSelectedNodeData = null;
+    }
+    showRelevantContentInDialogBox(); //Content to Display on the Context Menu
+    //Hide dialogBox and customMenu
+    //$(".custom-menu").is(':visible') && $(".custom-menu").finish().toggle(100);
   }
 
   onTopologyNodeChange = () => {
