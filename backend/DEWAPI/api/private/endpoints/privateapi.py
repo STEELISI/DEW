@@ -1543,6 +1543,7 @@ class HandleProjectRunLog(Resource):
       try:
         user = userObj.getEmailId()
         Logger.backendLog(user,"HandleProjectRunLog()", "Entered Class")
+        print("In deter project run")
         content = request.get_json(force=True)
         if 'eid' not in content:
           return {"error":"eid is missing"} , 200
@@ -1600,17 +1601,26 @@ class HandleProjectRunLog(Resource):
                     result['error'] = "Parameters are missing" 
                     result['label'] = {'label':label,'variable':variable_list}
                 if 'error' not in result:
-                  ssh = SSHConnection(details['username'],details['password'])
-                  result_log = ssh.runFile(mapping['project_name'],mapping['experiment_name'],run_content,variables)
-                  if 'error' not in result_log:
-                    unique_name = result_log['filename']
-                    variable_data = None
-                    if len(variables)!=0:
-                      variable_data = json.dumps(data)
-                    dm.addLog(eid, details['id'], uid, transaction_id, unique_name, variable_data)
-                    result['success'] = True
-                  else:
-                    result = result_log
+                    unique_name = mapping['experiment_name']+"_run"
+                    print("Unique name ",unique_name)
+                    status = dm.getStatus(eid, uid, unique_name)
+                    print("Status ", status)
+                    if status == "start":
+                        result['success'] = False
+                        print("Exp already running")
+                        result = {"error":"Experiment is running already and must be stopped first"}
+                    else:
+                        ssh = SSHConnection(details['username'],details['password'])
+                        result_log = ssh.runFile(mapping['project_name'],mapping['experiment_name'],run_content,variables, unique_name, "start")
+                        print("Result log ", result_log)
+                        if 'error' not in result_log:
+                            variable_data = None
+                            if len(variables)!=0:
+                                variable_data = json.dumps(data)
+                            dm.addLog(eid, details['id'], uid, transaction_id, unique_name, variable_data,"start")
+                            result['success'] = True
+                        else:
+                            result = result_log
               else:
                 result = mapping
             else:
@@ -1631,54 +1641,84 @@ class HandleProjectStopLog(Resource):
       try:
         user = userObj.getEmailId()
         Logger.backendLog(user,"HandleProjectStopLog()", "Entered Class")
+        print("In deter project stop")
         content = request.get_json(force=True)
+
         print("Content is ", content)
-        if 'rid' not in content:
-          return {"error":"rid is missing"} , 200
+        if 'eid' not in content:
+          return {"error":"eid is missing"} , 200
+
         if 'account_id' not in content:
           return {"error":"account_id is missing"}, 200
-        
+
         label = None
         if 'label' in content:
           label = content['label']
-        rid = content['rid']
+        eid = content['eid']
         daid = content['account_id']
+        data = dict()
+        if 'data' in content:
+          data = content['data']
         
         uid = userObj.getUserId()
         try:
           result = {}
-          version_id = dm.getVersion(rid,uid,daid)
-          if version_id is None:
-            result['error'] = 'User does not have access to this script'
-          else:
+
+          if not dm.user_can(uid,eid):
+            result['error'] = "User does not have access to this experiment"
+          else: 
             details = ps.get(uid,daid)
             if str(details['username']).strip() !='' and str(details['password']).strip() !='':
-              experiment = next(item for item in list(em.get_experiment(version_id.eid, uid).versions) if item.transaction_id == version_id.version_id)
-              script = hlb.HandleBASH(json.loads(experiment.content), "job")
-              flag = True
-
-              if label is not None:
-                for x in script:
-                  if x['label'] == label:
-                    cleanup_content = x['clean']['content']
-                    flag = False
-                    break
-              else:
+              mapping = dm.getMapping(details['id'],eid)
+              if 'error' not in mapping:
+                experiment = list(em.get_experiment(eid, uid).versions)[-1]
+                transaction_id = experiment.transaction_id
+                script = hlb.HandleBASH(json.loads(experiment.content), "job")
+                
+                variables = []
+                variable_list = []
+                flag = True
+                if label is not None:
+                    for x in script:
+                        if x['label'] == label:
+                            variable_list += x['variables']
+                            run_content = x['clean']['content']
+                            print(run_content)
+                            flag = False
+                            break
+                if flag:
                   r = []
                   for x in script:
-                    r.append(x['label'])
+                    l = {}
+                    v = []
+                    l['label'] = x['label']
+                    v = v+x['variables']
+                    l['variable'] = v
+                    r.append(l)
                   return {"error":"Please select label","labels":r}, 200
-              if flag:
-                return {"error":"label doesn't exist"}, 200
-              mapping = dm.getMapping(details['id'],version_id.eid)
-              if 'error' not in mapping:
-                
-                ssh = SSHConnection(details['username'],details['password'])
-                result = ssh.cleanFile(mapping['project_name'],mapping['experiment_name'],cleanup_content)
+
+              unique_name = mapping['experiment_name']+"_run"
+              print("Unique name ",unique_name)
+              status = dm.getStatus(eid, uid, unique_name)
+              print("Status ", status)
+              if status == "stop":
+                  result['success'] = False
+                  print("Exp already stopped")
+                  result = {"error":"Experiment was already stopped"}
               else:
-                result = mapping
+                  ssh = SSHConnection(details['username'],details['password'])
+                  result_log = ssh.runFile(mapping['project_name'],mapping['experiment_name'],run_content,variables, unique_name, "stop")
+                  print("Result log ", result_log)
+                  if 'error' not in result_log:
+                      variable_data = None
+                      if len(variables)!=0:
+                          variable_data = json.dumps(data)
+                      dm.addLog(eid, details['id'], uid, transaction_id, unique_name, variable_data, "stop")
+                      result['success'] = True
+                  else:
+                      result = result_log
             else:
-              result = {'error':'username or password doesnot exists'}
+              result = {'error':'username or password does not exists'}
           Logger.backendLog(user,"HandleProjectStopLog()", "Stopped log with result - " + str(result))
           return result, 200
         except ValueError as e:

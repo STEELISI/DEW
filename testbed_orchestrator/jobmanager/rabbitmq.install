@@ -1,0 +1,5 @@
+sudo apt install rabbitmq-server -y
+sudo apt install python3-pip -y
+pip3 install -i https://fbsd-build.isi.deterlab.net/pypi/web/simple pika
+sudo rabbitmqctl add_user 'dew' 'dew'
+sudo rabbitmqctl set_permissions -p "/" "dew" ".*" ".*" ".*"

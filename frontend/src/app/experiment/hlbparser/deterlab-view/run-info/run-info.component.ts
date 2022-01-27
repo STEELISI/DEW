@@ -51,7 +51,8 @@ export class RunInfoComponent implements OnInit, OnChanges {
             .subscribe(data => {
                 if(data.logs!=undefined && data.logs.length!=0){
                 this.logList = data.logs
-                this.logid = data.logs[0].id 
+                this.logid = data.logs[0].id
+		
                 } else{
                 this.error = data.error
                 this.errorFlag = true

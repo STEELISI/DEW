@@ -74,19 +74,6 @@ class ExperimentManager(object):
             dew_file_id = self.get_or_create_file_id(experiment_id,current_user_id,experimentFolderId, "dew_file.txt", "dew",token,create_new_file)
             self.update_file_in_drive(dew_data,dew_file_id,token)
 
-            hlbService = HLBService()
-            ns_data = hlbService.HandleNS(json.loads(experiment.content))
-            ns_file_id = self.get_or_create_file_id(experiment_id,current_user_id,experimentFolderId,"ns_file.ns", "ns",token,create_new_file)
-            self.update_file_in_drive(ns_data, ns_file_id, token)
-
-            bash_data = hlbService.HandleBASH(json.loads(experiment.content))
-            bash_file_id = self.get_or_create_file_id(experiment_id, current_user_id, experimentFolderId, "bash_script.sh",
-                                                    "bash", token, create_new_file)
-            self.update_file_in_drive(bash_data, bash_file_id, token)
-
-
-
-
     def dew_content(self, experiment_id, current_user_id):
         if self.user_can(experiment_id,current_user_id,AccessControlEnum.read.value) is not None:
             return self.get_content_in_dew_format(Experiment.query.get(experiment_id).content)

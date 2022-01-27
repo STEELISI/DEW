@@ -31,6 +31,7 @@ import { type } from "os";
 import { LogService, LogHeader, LogEntry } from '../common/logging-service';
 import { GoogleDriveService } from "src/app/google-drive-service.service";
 declare let $:any;
+import { AuthService } from '../../../@auth/auth.service';
 
 Quill.register("modules/counter", EditorService);
 
@@ -54,6 +55,7 @@ export class HlbComponent implements OnInit, AfterViewInit {
   private dependencyNetworkInstance: any;
   private selectedNetworkInstance: any;
   private dependencyCycleNetworkInstance: any;
+  authService: AuthService;
   addNodeType: "Node" | "LAN";
   isKeyPressed: boolean = false;
   graphItemParametersList: Map<any, GraphItemParameters>;
@@ -154,8 +156,10 @@ export class HlbComponent implements OnInit, AfterViewInit {
     private stateservice: StateService,
     private _snackBar: MatSnackBar,
     private changeDetection: ChangeDetectorRef,
-    private logger: LogService
+    private logger: LogService,
+    authService: AuthService
   ) {
+    this.authService = authService;
     this.graphItemParametersList = GRAPH_ITEM_PARAMETERS_LIST;
     accessibleLogger = logger;
     graphColors = this.graphColors;
@@ -259,6 +263,7 @@ export class HlbComponent implements OnInit, AfterViewInit {
   }
   ngOnInit(): void {
     this.logger.log(LogHeader.INFO, "User entered the experiment page")
+    this.authService.setRefreshTokenIntervals();
     this.resetFilterList();
     this.bindingMap = new Map<String, any>();
     this.behaviorList = [];
@@ -300,11 +305,18 @@ export class HlbComponent implements OnInit, AfterViewInit {
     this.stateservice.getBindings().subscribe((data) => {
       if (data != null) {
         this.bindingList = [];
+	this.filterBindingOptionsForEvent=[];
         this.bindingMap = new Map<String, any>();
 
         data.forEach((element) => {
           this.bindingMap.set(element.key, element);
           this.bindingList.push(element);
+	  if (element.category != 'event' && element.category != 't_event')
+	  {
+	  	// Jelena
+		this.filterBindingOptionsForEvent.push('pexists('+element.key+')')
+		this.filterBindingOptionsForEvent.push('psuccess('+element.key+')')	
+	  };
         });
       }
     });

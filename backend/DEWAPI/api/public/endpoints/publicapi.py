@@ -57,7 +57,6 @@ class HandleUserValidate(Resource):
             # json_data = request.get_json(force=True)
             # print(token)
             json_data = request.get_json(force=True)
-        
             print(json_data)
             Logger.backendLog("HandleUserValidate()", "Validated User")
             return login.validate(json_data["token"])

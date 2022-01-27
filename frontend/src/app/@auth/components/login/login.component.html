@@ -1,45 +1,61 @@
-<div class="row" *ngIf="alive">
-  <div class="col-md-12">
-    <p>Authenticating User...</p>
+
+<div class="d-flex flex-column justify-content-center SignInOrContent hide">
+  <div class="d-flex justify-content-center">
+    <div class="spinner-border text-primary" style="width: 3rem; height: 3rem;" role="status">
+      <span class="sr-only">Signing In...</span>
+    </div>
+  </div>
+  <div class="d-flex justify-content-center" style="margin-top: 20px;">
+    <div>
+      Signing In
+    </div>
   </div>
 </div>
 
-<div class="container-fluid">
-  <div class="row">
-    <div class="col-md-2">
-      <a class="navbar-brand" href="#">
-        <img src="./assets/isi-logo.jpg" style="border:none;height: 80px;" alt="logo" class="img-thumbnail" />
-      </a>
-    </div>
-    <div class="col-md-7 center-aligned">
-      <h1 class="title">DISTRIBUTED EXPERIMENT WORKFLOWS</h1>
-    </div>
-    <div class="col-md-3 center-aligned">
-      <button mat-stroked-button (click)="login()">
-        Login using Google!
-      </button>
+<div class="SignInOrContent">
+  <div class="row" *ngIf="alive">
+    <div class="col-md-12">
+      <p>Authenticating User...</p>
     </div>
   </div>
-  <div class="row justify-content-center">
-    <div class=" col-md-10">
-      <p>Welcome to DEW - distributed experiment workflow portal. DEW complements current testbeds by helping users design experiments from top down. Currently, DEW focuses on supporting experiment design and running, but in the near future we hope to add support for monitoring, ananlysis, and storage, too. </p>
+
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col-md-2">
+        <a class="navbar-brand" href="#">
+          <img src="./assets/isi-logo.jpg" style="border:none;height: 80px;" alt="logo" class="img-thumbnail" />
+        </a>
+      </div>
+      <div class="col-md-7 center-aligned">
+        <h1 class="title">DISTRIBUTED EXPERIMENT WORKFLOWS</h1>
+      </div>
+      <div class="col-md-3 center-aligned">
+        <button mat-stroked-button (click)="login()">
+          Login using Google!
+        </button>
+      </div>
     </div>
-  </div>
-  <div class="row">
-    <div class="col-md-5 center-aligned">
-      <img src="./assets/dew-description.jpg" height="400px" alt="description-infographic" class="description-image" />
+    <div class="row justify-content-center">
+      <div class=" col-md-10">
+        <p>Welcome to DEW - distributed experiment workflow portal. DEW complements current testbeds by helping users design experiments from top down. Currently, DEW focuses on supporting experiment design and running, but in the near future we hope to add support for monitoring, ananlysis, and storage, too. </p>
+      </div>
     </div>
-    <div class="col-md-7">
-      <p>
-        DEW views an experiment as a collection of <b>scenario</b>(who does what and when), <b>bindings</b>(how is each action performed) and <b>constraints</b>(topology/hardware specifics guiding experiment materialization).Our portal enables you to design an experiment using these abstractions and visualize it. You can then export it as a topology file (NS file) and a runnable script (Bash script) and deploy it on a testbed. This is illustrated in the figure on the left.
-      </p>
-      <p>DEW is currently closely coupled with the <a href="https://www.isi.deterlab.net/">Deterlab testbed</a>, but we are looking forward to support more testbeds in the near future.</p>
-      <p>Please click on the button at the top right to login using your Google credentials. Feel free to <a href="/docs">view the documentation</a> and/or <a href="/docs/contact_us">contact us</a> with your suggestions and feedback.</p>
+    <div class="row">
+      <div class="col-md-5 center-aligned">
+        <img src="./assets/dew-description.jpg" height="400px" alt="description-infographic" class="description-image" />
+      </div>
+      <div class="col-md-7">
+        <p>
+          DEW views an experiment as a collection of <b>scenario</b>(who does what and when), <b>bindings</b>(how is each action performed) and <b>constraints</b>(topology/hardware specifics guiding experiment materialization).Our portal enables you to design an experiment using these abstractions and visualize it. You can then export it as a topology file (NS file) and a runnable script (Bash script) and deploy it on a testbed. This is illustrated in the figure on the left.
+        </p>
+        <p>DEW is currently closely coupled with the <a href="https://www.isi.deterlab.net/">Deterlab testbed</a>, but we are looking forward to support more testbeds in the near future.</p>
+        <p>Please click on the button at the top right to login using your Google credentials. Feel free to <a href="/docs">view the documentation</a> and/or <a href="/docs/contact_us">contact us</a> with your suggestions and feedback.</p>
+      </div>
     </div>
-  </div>
-  <div class="row">
-    <div class="col-md-12 center-aligned">
-      <p>This work is supported by the National Science Foundation (award #1835608)</p>
+    <div class="row">
+      <div class="col-md-12 center-aligned">
+        <p>This work is supported by the National Science Foundation (award #1835608)</p>
+      </div>
     </div>
   </div>
 </div>

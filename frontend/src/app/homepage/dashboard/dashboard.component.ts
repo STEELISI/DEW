@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { StateService } from '../../state-service.service';
 import { LogService, LogEntry, LogHeader } from 'src/app/experiment/hlbparser/common/logging-service';
+import { AuthService } from 'src/app/@auth/auth.service';
 
 @Component({
   selector: 'dashboard',
@@ -10,7 +11,7 @@ import { LogService, LogEntry, LogHeader } from 'src/app/experiment/hlbparser/co
 export class DashboardComponent implements OnInit{
   
   
-
+  authService: AuthService;
 
     menuList:any=[
      {
@@ -21,11 +22,14 @@ export class DashboardComponent implements OnInit{
       ];
 userDetails:any;
 
-        constructor(private state:StateService, private logService: LogService){}
+        constructor(private state:StateService, authService: AuthService, private logService: LogService){
+          this.authService = authService;
+        }
+        
   ngOnInit(): void {
-   
     this.userDetails =  this.state.getUserDetails()==null?{}:this.state.getUserDetails();
     this.logService.log(LogHeader.INFO, "User entered the dashboard");
+    this.authService.setRefreshTokenIntervals();
   }
 
 }

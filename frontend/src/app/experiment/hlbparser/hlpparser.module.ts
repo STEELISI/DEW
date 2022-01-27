@@ -139,7 +139,7 @@ import { RunInfoComponent } from "./deterlab-view/run-info/run-info.component";
     UpdateSlideMapping,
     DesignPageComponent,
     RunVariablePopUp
-  ],
+    ],
   providers: [StateService],
   bootstrap: [HLBParserComponent],
 })

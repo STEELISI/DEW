@@ -10,6 +10,9 @@ import { AuthModule } from './@auth/auth.module';
 import { StateService } from './state-service.service';
 import { LogService } from "./experiment/hlbparser/common/logging-service";
 import { ErrorInterceptor } from "./error-interceptor";
+import { SocialLoginModule, SocialAuthServiceConfig } from 'angularx-social-login';
+import { GoogleLoginProvider } from 'angularx-social-login';
+import { environment } from "environments/environment.prod";
 
 @NgModule({
   declarations: [
@@ -23,15 +26,30 @@ import { ErrorInterceptor } from "./error-interceptor";
     BrowserAnimationsModule,
     RouterModule,
     AppRoutingModule,
-    HttpClientModule
+    HttpClientModule,
+    SocialLoginModule
   ],
   providers: [
     HttpService, 
-    StateService, 
+    StateService,
     LogService,
     {
       provide: ErrorHandler,
       useClass: ErrorInterceptor
+    },
+    {
+      provide: "SocialAuthServiceConfig",
+      useValue: {
+        autoLogin: true,
+        providers: [
+          {
+            id: GoogleLoginProvider.PROVIDER_ID,
+            provider: new GoogleLoginProvider(
+              environment.googleClientId
+            )
+          }
+        ]
+      } as SocialAuthServiceConfig
     }
   ],
   bootstrap: [AppComponent]

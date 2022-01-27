@@ -40,6 +40,7 @@ class BashGenerator(Generator):
         self.generatePreamble(mode)        
         self.collectConds()        
         self.generateActions()
+        self.generatePostamble(mode)
 
     def collectLabels(self):
         self.labels = dict()
@@ -177,6 +178,16 @@ class BashGenerator(Generator):
                         if (event is not None):
                             count[event] = sid
                         sid += 1
+                        
+        for w in actors:
+            if w in self.num.keys():
+                found = True
+                for i in range(0,self.num[w]):
+                    self.clear[label] += "execute_stop \"" + w + "-" + str(i)+ "\"  \"all\" 0 all &\n"
+            else:
+                self.clear[label] += "execute_stop \"" + w + "\" \"all\" 0 all &\n"
+
+
 
     def generateCmd(self, actor1, i, actor2 , j, sid, action, label):
         print("Generate command ", action)
@@ -205,11 +216,9 @@ class BashGenerator(Generator):
                     rcnt += 1
 
         if i is not None:
-            self.run[label] += "execute_fork \"" + actor1 + "-" + str(i)+ "\" \"" + naction +"\" " + str(sid) + " &\n"
-            self.clear[label] += "execute_clear \"" + actor1 + "-" + str(i)+ "\" \"" + naction +"\" " + str(sid) + " &\n"
+            self.run[label] += "execute_fork \"" + actor1 + "-" + str(i)+ "\" \"" + naction +"\" " + str(sid) + " " + action +" &\n"
         else:
-            self.run[label] += "execute_fork \"" + actor1 + "\" \"" + naction +"\" " + str(sid) + " &\n"
-            self.clear[label] += "execute_clear \"" + actor1 + "\" \"" + naction +"\" " + str(sid) + " &\n"
+            self.run[label] += "execute_fork \"" + actor1 + "\" \"" + naction +"\" " + str(sid) + " " + action + " &\n"
 
     def collectConds(self):
         self.conditions = dict()
@@ -280,7 +289,12 @@ class BashGenerator(Generator):
 
             self.run[label] += argstring
         
-            
+
+    def generatePostamble(self, mode=None):
+        for label in self.labels:
+            if mode == "job":
+                self.clear[label] += open('./DewFunctions/Generators/bash/bash_job_clean_postamble.txt', 'r').read()
+                
     def generatePreamble(self, mode=None):
         for label in self.labels:
             if mode == "job":

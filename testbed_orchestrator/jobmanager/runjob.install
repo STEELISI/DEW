@@ -1,0 +1,7 @@
+sudo apt-get install sqlite3 -y
+touch /tmp/dew.db
+sqlite3 /tmp/dew.db < /share/shared/dew/createtable.sql
+sudo cp /share/shared/dew/runjob.service /etc/systemd/user
+systemctl --user daemon-reload
+systemctl --user enable runjob
+systemctl --user start runjob
