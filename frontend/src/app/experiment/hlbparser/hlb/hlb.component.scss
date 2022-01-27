@@ -562,3 +562,62 @@ ul {
   text-align: center;
   font-size: 18px;
 }
+
+.topology-actor-action {
+  display: flex;
+  width: 100%;
+  justify-content: space-between;
+  align-items: center;
+  margin: 10px 0px;
+  padding: 0px 10px;
+}
+
+.topology-actor-action .topology-actor-action-label {
+  width: 25px;
+  height: 25px;
+  background-color: #A6D5F7;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.topology-actor-action .topology-actor-action-name {
+  flex-grow: 1;
+  margin: 0px 10px;
+}
+
+.topology-actor-action .topology-actor-action-edit {
+  width: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #ffcc00;
+  font-size: 20px;
+  cursor: pointer;
+}
+
+.topology-actor-name-action {
+  font-size: 20px;
+  cursor: pointer;  
+}
+.topology-actor-name-action.edit{
+  color: #ffcc00;
+}
+.topology-actor-name-action.cancel{
+  color: rgb(219, 69, 0);
+  margin-left: 15px;
+}
+.topology-actor-name-action.save{
+  color: rgb(49, 209, 0);
+  margin-left: 15px;
+}
+
+.topology-actor-name-action.disabled {
+  cursor: not-allowed !important;
+  opacity: 0.5;
+}
+
+.topology-actor-name-action-error {
+  font-size: 12px;
+  color: rgb(219, 69, 0);
+}

@@ -82,6 +82,13 @@ topology_remove_text = api.model('Toplogy remove', {
   'deleted_node': fields.String(description="Deleted node label of the graph",required=True),
   })
 
+topology_node_rename_text = api.model('Toplogy node rename', {
+  'constraints': fields.List(fields.String,description="Constraints of the experiment",required=True),
+  'scenarios': fields.List(fields.String,description="Scenario of the experiment",required=True),
+  'old_name': fields.String(description="Old name of the node",required=True),
+  'new_name': fields.String(description="New name of the node",required=True),
+  })
+
 topology_graph_generate_constraints = api.model('Toplogy graph generate constraints', {
   'nodes': fields.List(fields.String,description="Nodes of graphs",required=True),
   'edges': fields.List(fields.String,description="Edges of graphs",required=True),
@@ -91,6 +98,13 @@ topology_graph_generate_constraints = api.model('Toplogy graph generate constrai
 
 dependency_graph_has_cycle = api.model('Check if there exists a cycle in the given scenario', {
   'scenarios': fields.List(fields.String,description="Scenario of the experiment",required=True),
+  })
+
+dependency_graph_node_delete = api.model('Dependency graph delete node', {
+  'scenarios': fields.List(fields.String,description="Scenario of the experiment",required=True),
+  'bindings': fields.List(fields.String,description="Bindings of the experiment",required=True),
+  'actor': fields.String(description="Name of actor which is deleted",required=True),
+  'action': fields.String(description="Name of action which is deleted",required=True),
   })
 
 dependency_graph_update_edge = api.model('Dependency graph update edge', {

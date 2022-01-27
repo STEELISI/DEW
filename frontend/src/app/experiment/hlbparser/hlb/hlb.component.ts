@@ -63,6 +63,14 @@ export class HlbComponent implements OnInit, AfterViewInit {
   filteredBindingHandleForEvent: Observable<string[]>;
   topologyGraphNodes: DataSet<any>;
   topologyGraphEdges: DataSet<any>;
+  topologyGraphSelectedNodeData: {
+    id: any,
+    name: string,
+    nameEditable: boolean,
+    nameEditableError: string,
+    nodeType: string,
+    actions: Array<{ id: any, action: string, topologyLabel: number }>
+  };
   graph_data: any;
   graph_container: any;
   graphDescription: string;
@@ -793,10 +801,20 @@ export class HlbComponent implements OnInit, AfterViewInit {
       max_count = Math.max(max_count, id_of_edge[i]['id']);
     }
     name = isLAN ? "lan" + (max_count + 1) : "actor" + (max_count + 1);
+    while (true) {
+      let counter = max_count + 1;
+      const duplicateNodes = this.topologyGraphNodes.get({
+        filter: (node => node.label == name)
+      });
+      if (duplicateNodes.length) {
+        counter++;
+        name = "actor" + counter;
+      } else {
+        break;
+      }
+    }
     id_of_node[name] = max_count + 1;
-    var temp = this.stateservice.getConstraints().source['_value'];
-    isLAN ? temp.push("lan [ bw 1, delay 0 ]") : temp.push(name + " [ num 1 ]");
-    // this.stateservice.setConstraints(temp);
+    
     this.createNewGraphTypeObject(isLAN, name);
     return [isLAN ? "" : name, max_count+1];
   }
@@ -861,225 +879,221 @@ export class HlbComponent implements OnInit, AfterViewInit {
     request.scenario = scenarios;
     if (updateTopology) {
       this.http
-      .put('v1/pr/hlb/topology/parse', request, { withCredential: true })
-      .subscribe((receivedData: ParseApiBean) => {
-        //Graph Operations
-        var temp_nodes = [];
-        var temp_edges = [];
-        id_of_node = {};
-        id_of_edge = {};
-        var id_count = 1;
-        var temp;
-        //Populate the Nodes in the Graph
-        var actors = receivedData['actors'];
-        for (var data in actors) {
-          //Create actor group
-          if (!this.actorsGroup.has(data)) {
-            this.actorsGroup.set(data, this.actorsGroup.size);
-          }
-          if (!id_of_node[data]) {
-            id_of_node[data] = id_count;
-            temp = {
-              id: id_count++,
-              label: data.toString(),
-              group: "group" + this.actorsGroup.get(data)
+        .put('v1/pr/hlb/topology/parse', request, { withCredential: true })
+        .subscribe((receivedData: ParseApiBean) => {
+          //Graph Operations
+          var temp_nodes = [];
+          var temp_edges = [];
+          id_of_node = {};
+          id_of_edge = {};
+          var id_count = 1;
+          var temp;
+          //Populate the Nodes in the Graph
+          var actors = receivedData['actors'];
+          for (var data in actors) {
+            //Create actor group
+            if (!this.actorsGroup.has(data)) {
+              this.actorsGroup.set(data, this.actorsGroup.size);
             }
-            temp_nodes.push(temp);
-            temp = {}
-            temp['bandwidth'] = '';
-            temp['delay'] = '';
-            temp['ipAddress'] = actors[data]['location'] == 'default' ? '' : actors[data]['location'];
-            temp['operatingSystem'] = actors[data]['os'] == 'default' ? '' : actors[data]['os'];
-            temp['hardwareType'] = actors[data]['nodeType'] == 'default' ? '' : actors[data]['nodeType'];
-            temp['nodeName'] = data;
-            temp['num'] = actors[data]['num'];
-            temp['type'] = GraphItemType.NODE;
-            this.graphItemParametersList[id_count-1] = temp;
+            if (!id_of_node[data]) {
+              id_of_node[data] = id_count;
+              temp = {
+                id: id_count++,
+                label: data.toString(),
+                group: "group" + this.actorsGroup.get(data)
+              }
+              temp_nodes.push(temp);
+              temp = {}
+              temp['bandwidth'] = '';
+              temp['delay'] = '';
+              temp['ipAddress'] = actors[data]['location'] == 'default' ? '' : actors[data]['location'];
+              temp['operatingSystem'] = actors[data]['os'] == 'default' ? '' : actors[data]['os'];
+              temp['hardwareType'] = actors[data]['nodeType'] == 'default' ? '' : actors[data]['nodeType'];
+              temp['nodeName'] = data;
+              temp['num'] = actors[data]['num'];
+              temp['type'] = GraphItemType.NODE;
+              this.graphItemParametersList[id_count - 1] = temp;
+              globalGraphItemParametersList = this.graphItemParametersList;
+            }
+          }
+          var received_lans = receivedData['lans'];
+          for (var i = 0; i < received_lans.length; i++) {
+            var name = received_lans[i]['type'] + received_lans[i]['lineNum']
+            if (!id_of_node[name]) {
+              id_of_node[name] = id_count;
+              temp = {
+                id: id_count++,
+                label: "",
+                group: "LAN"
+              }
+              temp_nodes.push(temp);
+            }
+          }
+
+
+          //Populate the Edges in the Graph
+          var received_edges = receivedData['edges'];
+          for (var i = 0; i < received_edges.length; i++) {
+            var source = received_edges[i]['source'];
+            var target = received_edges[i]['target'];
+            temp = {
+              from: id_of_node[source],
+              to: id_of_node[target],
+              id: id_count++
+            }
+            temp_edges.push(temp);
+            id_of_edge[source + '-' + target] = temp;
+            temp = {};
+            temp['bandwidth'] = received_edges[i]['bw'] == 'default' ? '1' : received_edges[i]['bw']; //Default Value
+            temp['delay'] = received_edges[i]['delay'] == 'default' ? '0' : received_edges[i]['delay']; //Default Value
+            temp['ipAddress'] = '';
+            temp['operatingSystem'] = '';
+            temp['hardwareType'] = '';
+            temp['nodeName'] = '';
+            temp['num'] = ''; //The value is empty to help with the backend parsing of graph to text
+            temp['type'] = target.includes('lan') ? GraphItemType.LAN : GraphItemType.LINK;
+            var pointer = temp['type'] == GraphItemType.LAN ? id_of_node[target] : id_count - 1;
+            this.graphItemParametersList[pointer] = temp;
             globalGraphItemParametersList = this.graphItemParametersList;
           }
-        }
-        var received_lans = receivedData['lans'];
-        for(var i = 0; i < received_lans.length; i++) {
-          var name = received_lans[i]['type'] + received_lans[i]['lineNum']
-          if (!id_of_node[name]) {
-            id_of_node[name] = id_count;
-            temp = {
-              id: id_count++,
-              label: "",
-              group: "LAN"
-            }
-            temp_nodes.push(temp);
-          }
-        }
+          //Log Data
+          this.logger.log(LogHeader.GRAPH_UPDATE, entry.printGraphParameterData(globalGraphItemParametersList, id_of_node, id_of_edge));
 
+          // Create an array with nodes
+          this.topologyGraphNodes = new DataSet<any>(
+            temp_nodes
+          );
 
-        //Populate the Edges in the Graph
-        var received_edges = receivedData['edges'];
-        for(var i = 0; i < received_edges.length; i++) {
-          var source = received_edges[i]['source'];
-          var target = received_edges[i]['target'];
-          temp = {
-            from: id_of_node[source],
-            to: id_of_node[target],
-            id: id_count++
-          }
-          temp_edges.push(temp);
-          id_of_edge[source + '-' + target] = temp;
-          temp = {};
-          temp['bandwidth'] = received_edges[i]['bw']=='default' ? '1' : received_edges[i]['bw']; //Default Value
-          temp['delay'] = received_edges[i]['delay']=='default' ? '0' : received_edges[i]['delay']; //Default Value
-          temp['ipAddress'] = '';
-          temp['operatingSystem'] = '';
-          temp['hardwareType'] = '';
-          temp['nodeName'] = '';
-          temp['num'] = ''; //The value is empty to help with the backend parsing of graph to text
-          temp['type'] = target.includes('lan') ? GraphItemType.LAN : GraphItemType.LINK;
-          var pointer = temp['type'] == GraphItemType.LAN ? id_of_node[target] : id_count-1;
-          this.graphItemParametersList[pointer] = temp;
-          globalGraphItemParametersList = this.graphItemParametersList;
-        }
-        //Log Data
-        this.logger.log(LogHeader.GRAPH_UPDATE, entry.printGraphParameterData(globalGraphItemParametersList, id_of_node, id_of_edge));
+          // Create an array with edges
+          this.topologyGraphEdges = new DataSet<any>(
+            temp_edges
+          );
 
-        // Create an array with nodes
-        this.topologyGraphNodes = new DataSet<any>(
-          temp_nodes
-        );
+          var nodes = this.topologyGraphNodes;
+          var edges = this.topologyGraphEdges;
 
-        // Create an array with edges
-        this.topologyGraphEdges = new DataSet<any>(
-          temp_edges
-        );
+          this.graph_data = { nodes, edges };
 
-        var nodes = this.topologyGraphNodes;
-        var edges = this.topologyGraphEdges;
+          this.topologyNetworkInstance = new Network(this.topologyGraphNetwork.nativeElement, this.graph_data, {
+            manipulation: {
+              enabled: false,
+              initiallyActive: false,
+              addNode: (nodeData, callback) => {
+                [nodeData.label, nodeData.id] = this.assignNewActorInTopologyGraph(nodeData.group == "LAN");
+                if (!this.actorsGroup.has(nodeData.label)) {
+                  this.actorsGroup.set(nodeData.label, this.actorsGroup.size);
+                }
+                if (this.addNodeType == "LAN") {
+                  nodeData.group = "LAN";
+                  nodeData.label = "";
+                } else {
+                  nodeData.group = "group" + this.actorsGroup.get(nodeData.label)
+                }
+                setTimeout(() => {
+                  this.topologyNetworkInstance.selectNodes([nodeData.id]);
+                  setTimeout(async () => {
+                    await this.onTopologyClick({ nodes: [nodeData.id], items: [], edges: [] });
+                    this.topologyGraphSelectedNodeData.nameEditable = true;
+                  }, 100);
+                }, 100);
+                this.clearMessage();
+                this.onTopologyChange();
+                callback(nodeData);
+              },
+              addEdge: (edgeData, callback) => {
+                //Check for self connection
+                if (edgeData.from == edgeData.to) {
+                  return;
+                }
+                //Check if such an edge already exists or 2 LANs are connected
+                const sameEdges = this.topologyGraphEdges.get({
+                  filter: (edge) =>
+                    (edge.from == edgeData.from && edge.to == edgeData.to) ||
+                    (edge.from == edgeData.to && edge.to == edgeData.from) ||
+                    (this.topologyGraphNodes.get(edgeData.from)["group"] == "LAN" && this.topologyGraphNodes.get(edgeData.to)["group"] == "LAN")
+                });
+                if (sameEdges.length) {
+                  return;
+                }
 
-        this.graph_data = { nodes, edges };
+                this.clearMessage();
+                edgeData.id = this.assignNewEdgeInTopologyGraph(edgeData.from, edgeData.to);
+                this.onTopologyChange();
+                callback(edgeData);
+              },
+              deleteNode: (data, callback) => {
+                //Remove node from id_of_node and all linked edges from id_of_edge
+                delete id_of_node[Object.keys(id_of_node).find(node_name => id_of_node[node_name] == data.nodes[0])]
+                delete globalGraphItemParametersList[data.nodes[0] + ""]
+                for (const deletedEdge of data.edges) {
+                  delete id_of_edge[Object.keys(id_of_edge).find(edge_name => id_of_edge[edge_name].id == deletedEdge)]
+                }
 
-        this.topologyNetworkInstance = new Network(this.topologyGraphNetwork.nativeElement, this.graph_data, {
-          manipulation: {
-            enabled: false,
-            initiallyActive: false,
-            addNode: (nodeData, callback) => {
-              [nodeData.label, nodeData.id] = this.assignNewActorInTopologyGraph(nodeData.group == "LAN");
-              if (!this.actorsGroup.has(nodeData.label)) {
-                this.actorsGroup.set(nodeData.label, this.actorsGroup.size);
+                this.onTopologyDelete(this.topologyGraphNodes.get(data.nodes[0])['label']);
+                this.onTopologyChange();
+                callback(data);
+              },
+              deleteEdge: (data, callback) => {
+                //Remove deleted edge from id_of_edge
+                delete id_of_edge[Object.keys(id_of_edge).find(edge_name => id_of_edge[edge_name].id == data.edges[0])]
+                delete globalGraphItemParametersList[data.edges[0] + ""]
+                const edge = this.topologyGraphEdges.get(data.edges[0]);
+                this.onTopologyChange();
+                callback(data);
               }
-              if (this.addNodeType == "LAN") {
-                nodeData.group = "LAN";
-                nodeData.label = "";
-              } else {
-                nodeData.group = "group" + this.actorsGroup.get(nodeData.label)
-              }
-              this.clearMessage();
-              this.onTopologyChange();
-              callback(nodeData);
             },
-            addEdge: (edgeData, callback) => {
-              //Check for self connection
-              if (edgeData.from == edgeData.to) {
-                return;
-              }
-              //Check if such an edge already exists or 2 LANs are connected
-              const sameEdges = this.topologyGraphEdges.get({
-                filter: (edge) =>
-                  (edge.from == edgeData.from && edge.to == edgeData.to) ||
-                  (edge.from == edgeData.to && edge.to == edgeData.from) ||
-                  (this.topologyGraphNodes.get(edgeData.from)["group"] == "LAN" && this.topologyGraphNodes.get(edgeData.to)["group"] == "LAN")
-              });
-              if (sameEdges.length) {
-                return;
-              }
-
-              this.clearMessage();
-              edgeData.id = this.assignNewEdgeInTopologyGraph(edgeData.from, edgeData.to);
-              this.onTopologyChange();
-              callback(edgeData);
+            edges: {
+              color: '#777777'
             },
-            deleteNode: (data, callback) => {
-              //Remove node from id_of_node and all linked edges from id_of_edge
-              delete id_of_node[Object.keys(id_of_node).find(node_name => id_of_node[node_name] == data.nodes[0])]
-              delete globalGraphItemParametersList[data.nodes[0] + ""]
-              for (const deletedEdge of data.edges) {
-                delete id_of_edge[Object.keys(id_of_edge).find(edge_name => id_of_edge[edge_name].id == deletedEdge)]
-              }
-
-              this.onTopologyDelete(this.topologyGraphNodes.get(data.nodes[0])['label']);
-              this.onTopologyChange();
-              callback(data);
+            nodes: {
+              image: "/assets/server.png",
+              shape: "image",
             },
-            deleteEdge: (data, callback) => {
-              //Remove deleted edge from id_of_edge
-              delete id_of_edge[Object.keys(id_of_edge).find(edge_name => id_of_edge[edge_name].id == data.edges[0])]
-              delete globalGraphItemParametersList[data.edges[0] + ""]
-              const edge = this.topologyGraphEdges.get(data.edges[0]);
-              this.onTopologyChange();
-              callback(data);
+            groups: {
+              LAN: {
+                shape: 'circle',
+                color: '#000000'
+              },
+              ...Object.assign({}, ...this.graphColors.map((color, index) => ({ ["group" + (index)]: { font: { color } } })))
             }
-          },
-          edges: {
-            color: '#777777'
-          },
-          nodes: {
-            image: "/assets/server.png",
-            shape: "image",
-          },
-          groups: {
-            LAN: {
-              shape: 'circle',
-              color: '#000000'
-            },
-            ...Object.assign({}, ...this.graphColors.map((color, index) => ({ ["group" + (index)]: { font: { color } } })))
-          }
-        });
+          });
 
-        this.topologyNetworkInstance.on('click', function (properties) {
-          var ids = properties.nodes;
-          var clickedNodes = nodes.get(ids);
-          var items = properties.items;
-          //Show Dialog Box
-          var $dialogBox = $('.dialog-box');
-          $dialogBox.hasClass('hide') && $dialogBox.toggleClass('hide');
-          clickedNodes.length || items.length || $dialogBox.toggleClass('hide');
-          //Show Node/Link Content
-          if(clickedNodes.length) {
-            accessibleLogger.log(LogHeader.KEY_PRESS, "User Clicked on a Node");
-            $('.dialog-box-action-button').removeClass('hide');
-            var nodeGroup = clickedNodes[0]['group'];
-            nodeGroup.includes('group') && $('.dialog-box-action-button, .modal-add-button').css('background-color', graphColors[nodeGroup.replace('group', '')]);
-            $('#dialog-box-title').html(clickedNodes[0].label) && (currentGraphItemSelection['id'] = clickedNodes[0].id) && (currentGraphItemSelection['type'] = 'node');
-            for(var i in id_of_node) {
-              if(id_of_node[i] == currentGraphItemSelection['id'] && i.includes('lan')) {
-                accessibleLogger.log(LogHeader.KEY_PRESS, "User Clicked on a LAN");
-                $('#dialog-box-title').html('LAN') && (currentGraphItemSelection['type'] = 'lan');
-                $('.dialog-box-action-button').addClass('hide');
-                break;
+          this.topologyNetworkInstance.on('click', (properties) => {
+            this.onTopologyClick(properties);
+          });
+
+          //Show legends in topology graph
+          this.topologyNetworkInstance.on("afterDrawing", (ctx) => {
+
+            this.topologyGraphNodes.forEach((node) => {
+              if (node.group != "LAN") {
+                var nodePosition = this.topologyNetworkInstance.getPosition(node.id);
+
+                let x = nodePosition.x;
+                let y = nodePosition.y;
+
+                this.dependencyGraphNodes.get({
+                  filter: (item) => item.data.actors[0] == node.label
+                }).forEach((dependencyNode, dependencyIndex) => {
+                  ctx.strokeStyle = "#294475";
+                  ctx.lineWidth = 2;
+                  ctx.fillStyle = "#A6D5F7";
+
+                  ctx.beginPath();
+                  ctx.fillRect(x + 10 + (30 * (dependencyIndex + 1)) - 10, y - 10, 20, 20);
+                  ctx.closePath();
+
+                  ctx.fill();
+                  ctx.stroke();
+
+                  ctx.font = "10px Arial";
+                  ctx.fillStyle = "#000000";
+                  ctx.textAlign = "center";
+                  ctx.textBaseline = "middle";
+                  ctx.fillText(dependencyNode.topologyLabel + "", x + 10 + (30 * (dependencyIndex + 1)), y);
+                });
               }
-            }
-          }
-          if(items.length && (clickedNodes.length == 0)) {
-            accessibleLogger.log(LogHeader.KEY_PRESS, "User Clicked on a Link");
-            $('#dialog-box-title').html('Link') && (currentGraphItemSelection['id'] = items[0].edgeId) && (currentGraphItemSelection['type'] = 'link');
-            $('.dialog-box-action-button').addClass('hide');
-            var selectedEdge = items[0]['edgeId'];
-            var id_of_nodes_rev = swapJSON(id_of_node);
-            for(var i in id_of_edge) {
-              if(id_of_edge[i]['id']==selectedEdge && id_of_nodes_rev[id_of_edge[i]['to']].includes('lan')) {
-                $dialogBox.toggleClass('hide');
-                break;
-              }
-            }
-          }
-          if ((items.length && clickedNodes.length == 0) || currentGraphItemSelection['type'] == 'lan') {
-            $('.dialog-box-fields:not(is-node)').removeClass('hide');
-            $('.dialog-box-fields.is-node').addClass('hide');
-          } else if (clickedNodes.length) {
-            $('.dialog-box-fields:not(is-node)').addClass('hide');
-            $('.dialog-box-fields.is-node').removeClass('hide');
-          }
-          showRelevantContentInDialogBox(); //Content to Display on the Context Menu
-          //Hide dialogBox and customMenu
-          //$(".custom-menu").is(':visible') && $(".custom-menu").finish().toggle(100);
+            });
           });
 
           this.topologyNetworkInstance.on('oncontext', function (properties) {
@@ -1098,61 +1112,74 @@ export class HlbComponent implements OnInit, AfterViewInit {
             //   });
             // }
           });
-        
+
           if (!this.selectedNetworkInstance) {
             this.selectedNetworkInstance = this.topologyNetworkInstance;
           }
-      });
+        });
     }
 
     if (updateDependency) {
-      this.http.put("v1/pr/hlb/dependency-graph/has-cycle", {scenarios: scenarios}, { withCredential: true })
+      this.http.put("v1/pr/hlb/dependency-graph/has-cycle", { scenarios: scenarios }, { withCredential: true })
         .subscribe((d) => {
           const cyclePath = d["cycle_path"];
           this.dependencyGraphCyclePath = cyclePath;
           this.http.put("v1/pr/hlb/dependency_graph/parse", request, { withCredential: true })
             .subscribe((d) => {
-            let nodes = []
-            let links = []
-            for (const n of d['nodes']) {
-              if (!this.actorsGroup.has(n.actors[0])) {
-                this.actorsGroup.set(n.actors[0], this.actorsGroup.size);
+              let nodes = []
+              let links = []
+              let topologyLabel = 1;
+              for (const n of d['nodes']) {
+                if (!this.actorsGroup.has(n.actors[0])) {
+                  this.actorsGroup.set(n.actors[0], this.actorsGroup.size);
+                }
+                var n2 = {
+                  data: n,
+                  id: n.id,
+                  label: n.action,
+                  topologyLabel: topologyLabel++,
+                  group: "group" + this.actorsGroup.get(n.actors[0])
+                }
+                nodes.push(n2)
               }
-              var n2 = {
-                data: n,
-                id: n.id,
-                label: n.action,
-                group: "group" + this.actorsGroup.get(n.actors[0])
+
+              for (const e of d['edges']) {
+                var e2 = e
+                e2.from = e2.source;
+                e2.to = e2.target;
+                e2.arrows = {
+                  to: {
+                    enabled: true,
+                    type: "arrow",
+                  },
+                }
+                links.push(e2)
               }
-              nodes.push(n2)
-            }
-    
-            for (const e of d['edges']) {
-              var e2 = e
-              e2.from = e2.source;
-              e2.to = e2.target;
-              e2.arrows = {
-                to: {
-                  enabled: true,
-                  type: "arrow",
-                },
-              }
-              links.push(e2)
-            }
-              
-            const graphGroups = Object.assign({}, ...this.graphColors.map((color, index) => ({ ["group" + (index)]: { color } })));
-              
-            this.dependencyGraphNodes = new DataSet<any>(nodes);
-            this.dependencyGraphEdges = new DataSet<any>(links);
-        
-            this.dependencyNetworkInstance = new Network(this.dependencyGraphNetwork.nativeElement, { nodes: this.dependencyGraphNodes, edges: this.dependencyGraphEdges }, {
-              manipulation: {
+
+              const graphGroups = Object.assign({}, ...this.graphColors.map((color, index) => ({ ["group" + (index)]: { color } })));
+
+              this.dependencyGraphNodes = new DataSet<any>(nodes);
+              this.dependencyGraphEdges = new DataSet<any>(links);
+
+              this.dependencyGraphNodes.on("*", () => {
+                this.topologyNetworkInstance.fit();
+              });
+
+              this.topologyNetworkInstance.fit();
+
+              this.dependencyNetworkInstance = new Network(this.dependencyGraphNetwork.nativeElement, { nodes: this.dependencyGraphNodes, edges: this.dependencyGraphEdges }, {
+                manipulation: {
                   enabled: false,
                   initiallyActive: false,
                   addNode: (data, callback) => { return; },
-                  deleteNode: (data, callback) => { return; },
+                  deleteNode: (data, callback) => {
+                    const actor = this.dependencyGraphNodes.get(data.nodes[0])["data"].actors[0];
+                    const action = this.dependencyGraphNodes.get(data.nodes[0])["data"].action;
+                    this.onDependencyNodeDelete(actor, action);
+                    callback(data);
+                  },
                   addEdge: (edgeData, callback) => {
-                    
+
                     if (edgeData.from == edgeData.to) {
                       return;
                     }
@@ -1165,7 +1192,7 @@ export class HlbComponent implements OnInit, AfterViewInit {
                     if (sameEdges.length) {
                       return;
                     }
-    
+
                     edgeData.arrows = {
                       to: {
                         enabled: true,
@@ -1174,7 +1201,7 @@ export class HlbComponent implements OnInit, AfterViewInit {
                     };
                     const actorFrom = this.dependencyGraphNodes.get(edgeData.from)["data"].actors[0];
                     const actionFrom = this.dependencyGraphNodes.get(edgeData.from)["data"].action;
-    
+
                     const actorTo = this.dependencyGraphNodes.get(edgeData.to)["data"].actors[0];
                     const actionTo = this.dependencyGraphNodes.get(edgeData.to)["data"].action;
                     this.onDependencyUpdateEdge("INSERT", actorFrom, actionFrom, actorTo, actionTo).then((result: any) => {
@@ -1184,7 +1211,7 @@ export class HlbComponent implements OnInit, AfterViewInit {
                       if (!cyclePath) {
                         edgeData.label = eventName;
                         callback(edgeData);
-                      }else{
+                      } else {
                         alert("Cannot add this dependency, as it will create cyclic dependency");
                       }
 
@@ -1193,43 +1220,70 @@ export class HlbComponent implements OnInit, AfterViewInit {
                   },
                   deleteEdge: (data, callback) => {
                     const edgeData = this.dependencyGraphEdges.get(data.edges[0]);
-                    
+
                     const actorFrom = this.dependencyGraphNodes.get(edgeData["from"])["data"].actors[0];
                     const actionFrom = this.dependencyGraphNodes.get(edgeData["from"])["data"].action;
-    
+
                     const actorTo = this.dependencyGraphNodes.get(edgeData["to"])["data"].actors[0];
                     const actionTo = this.dependencyGraphNodes.get(edgeData["to"])["data"].action;
                     this.onDependencyUpdateEdge("REMOVE", actorFrom, actionFrom, actorTo, actionTo)
                     this.clearMessage();
                     callback(data);
                   }
-              },
-              layout: {
-                hierarchical: {
-                  sortMethod: "directed",
-                  shakeTowards: "leaves",
-                  treeSpacing: 150,
-                  levelSeparation: 100,
-                  nodeSpacing: 200,
-                  edgeMinimization: false,
-                  blockShifting: false
                 },
-              },
-              edges: {
-                color: '#999999',
-                length: 200
-              },
-              nodes: {
-                shape: "box",
-                font: {
-                  color: '#FFFFFF'
-                }
-              },
-              groups: graphGroups
-            });
+                layout: {
+                  hierarchical: {
+                    sortMethod: "directed",
+                    shakeTowards: "leaves",
+                    treeSpacing: 150,
+                    levelSeparation: 100,
+                    nodeSpacing: 200,
+                    edgeMinimization: false,
+                    blockShifting: false
+                  },
+                },
+                edges: {
+                  color: '#999999',
+                  length: 200
+                },
+                nodes: {
+                  shape: "box",
+                  font: {
+                    color: '#FFFFFF'
+                  }
+                },
+                groups: graphGroups
+              });
 
+              //Show legends in dependency graph
+              this.dependencyNetworkInstance.on("afterDrawing", (ctx) => {
 
-            //Show dependency cycle if any
+                this.dependencyGraphNodes.forEach((node) => {
+                  var nodePosition = this.dependencyNetworkInstance.getPosition(node.id);
+                  var boundingBox = this.dependencyNetworkInstance.getBoundingBox(node.id);
+
+                  let x = boundingBox.right;
+                  let y = nodePosition.y;
+
+                  ctx.strokeStyle = "#294475";
+                  ctx.lineWidth = 2;
+                  ctx.fillStyle = "#A6D5F7";
+
+                  ctx.beginPath();
+                  ctx.fillRect(x + 10 - 10, y - 10, 20, 20);
+                  ctx.closePath();
+
+                  ctx.fill();
+                  ctx.stroke();
+
+                  ctx.font = "10px Arial";
+                  ctx.fillStyle = "#000000";
+                  ctx.textAlign = "center";
+                  ctx.textBaseline = "middle";
+                  ctx.fillText(node.topologyLabel + "", x + 10, y);
+                });
+              });
+              //Show dependency cycle if any
               if (this.dependencyGraphCyclePath) {
                 $('#dependencyGraphCycleContainer').show();
                 const cycleNodes = this.dependencyGraphCyclePath.map((node, index) => {
@@ -1241,7 +1295,7 @@ export class HlbComponent implements OnInit, AfterViewInit {
                 })
 
                 const cycleEdge = [];
-                for (let i = 0; i < this.dependencyGraphCyclePath.length; i++){
+                for (let i = 0; i < this.dependencyGraphCyclePath.length; i++) {
                   cycleEdge.push({
                     from: i,
                     to: (i + 1) % this.dependencyGraphCyclePath.length,
@@ -1272,10 +1326,10 @@ export class HlbComponent implements OnInit, AfterViewInit {
               } else {
                 $('#dependencyGraphCycleContainer').hide();
               }
-          })
-      })
+            })
+        })
     }
-    
+
     $("#graph-container").keyup((e) => {
       this.isKeyPressed = false;
       if (e.key === "Control") {
@@ -1313,6 +1367,134 @@ export class HlbComponent implements OnInit, AfterViewInit {
     $("#graphActionButtonList").show();
     $("#actionMessage").html("<span>Press <kbd>Ctrl</kbd> to edit edges, Select a node/edge and press <kbd>Del</kbd> to delete</span>");
     // $("#actionMessage").hide();
+  }
+
+  onTopologyClick = async (properties) => {
+    var ids = properties.nodes;
+    var clickedNodes = this.topologyGraphNodes.get(ids);
+    var items = properties.items;
+    //Show Dialog Box
+    var $dialogBox = $('.dialog-box');
+    $dialogBox.hasClass('hide') && $dialogBox.toggleClass('hide');
+    clickedNodes.length || items.length || $dialogBox.toggleClass('hide');
+    //Show Node/Link Content
+    if (clickedNodes.length) {
+      accessibleLogger.log(LogHeader.KEY_PRESS, "User Clicked on a Node");
+      $('.dialog-box-action-button').removeClass('hide');
+      var nodeGroup = clickedNodes[0]['group'];
+      nodeGroup.includes('group') && $('.dialog-box-action-button, .modal-add-button').css('background-color', graphColors[nodeGroup.replace('group', '')]);
+      $('#dialog-box-title').html(clickedNodes[0].label) && (currentGraphItemSelection['id'] = clickedNodes[0].id) && (currentGraphItemSelection['type'] = 'node');
+      for (var i in id_of_node) {
+        if (id_of_node[i] == currentGraphItemSelection['id'] && clickedNodes[0].group == 'LAN') {
+          accessibleLogger.log(LogHeader.KEY_PRESS, "User Clicked on a LAN");
+          $('#dialog-box-title').html('LAN') && (currentGraphItemSelection['type'] = 'lan');
+          $('.dialog-box-action-button').addClass('hide');
+          break;
+        }
+      }
+    }
+    if (items.length && (clickedNodes.length == 0)) {
+      accessibleLogger.log(LogHeader.KEY_PRESS, "User Clicked on a Link");
+      $('#dialog-box-title').html('Link') && (currentGraphItemSelection['id'] = items[0].edgeId) && (currentGraphItemSelection['type'] = 'link');
+      $('.dialog-box-action-button').addClass('hide');
+      var selectedEdge = items[0]['edgeId'];
+      var id_of_nodes_rev = swapJSON(id_of_node);
+      for (var i in id_of_edge) {
+        if (id_of_edge[i]['id'] == selectedEdge && id_of_nodes_rev[id_of_edge[i]['to']].includes('lan')) {
+          $dialogBox.toggleClass('hide');
+          break;
+        }
+      }
+    }
+    if ((items.length && clickedNodes.length == 0) || currentGraphItemSelection['type'] == 'lan') {
+      $('.dialog-box-fields:not(is-node)').removeClass('hide');
+      $('.dialog-box-fields.is-node').addClass('hide');
+    } else if (clickedNodes.length) {
+      $('.dialog-box-fields:not(is-node)').addClass('hide');
+      $('.dialog-box-fields.is-node').removeClass('hide');
+    }
+    if (ids[0]) {
+      const selectedNode: any = this.topologyGraphNodes.get(ids[0]);
+      const selectedNodeData = {
+        id: selectedNode.id,
+        name: String(selectedNode.label),
+        nameEditable: false,
+        nameEditableError: null,
+        nodeType: selectedNode.group == 'LAN' ? 'LAN' : 'NODE',
+        actions: Array<{ id: any, action: string, topologyLabel: number }>()
+      }
+      if (selectedNode.group != 'LAN') {
+        selectedNodeData.actions = this.dependencyGraphNodes.get({
+          filter: (item) => item.data.actors[0] == selectedNode.label
+        }).map(item => {
+          return {
+            id: item.id,
+            action: item.label,
+            topologyLabel: item.topologyLabel
+          }
+        });
+      }
+      this.topologyGraphSelectedNodeData = selectedNodeData;
+    } else {
+      this.topologyGraphSelectedNodeData = null;
+    }
+    showRelevantContentInDialogBox(); //Content to Display on the Context Menu
+    //Hide dialogBox and customMenu
+    //$(".custom-menu").is(':visible') && $(".custom-menu").finish().toggle(100);
+  }
+
+  onTopologyNodeChange = () => {
+    if (!this.topologyGraphSelectedNodeData.name) {
+      this.topologyGraphSelectedNodeData.nameEditableError = "Required";
+      return;
+    }
+    const duplicateNodes = this.topologyGraphNodes.get({
+      filter: (node => node.id != this.topologyGraphSelectedNodeData.id && node.label == this.topologyGraphSelectedNodeData.name)
+    });
+    if (duplicateNodes.length) {
+      this.topologyGraphSelectedNodeData.nameEditableError = "Duplicate node name";
+    } else {
+      this.topologyGraphSelectedNodeData.nameEditableError = null;
+    }
+  }
+
+  onTopologyNodeSave = () => {
+    if (!this.topologyGraphSelectedNodeData.nameEditableError) {
+      const new_name = this.topologyGraphSelectedNodeData.name;
+      const old_name = this.topologyGraphNodes.get(this.topologyGraphSelectedNodeData.id)['label'];
+      var request = {
+        constraints: this.getConstraintsFromEditor(),
+        scenarios: this.getScenariosFromEditor(),
+        old_name: old_name,
+        new_name: new_name
+      };
+      this.http
+        .put('v1/pr/hlb/topology/node-rename', request, { withCredential: true })
+        .subscribe((receivedData: ParseApiBean) => {
+
+          this.actorsGroup.set(new_name, this.actorsGroup.get(old_name));
+          this.actorsGroup.delete(old_name);
+
+          this.stateservice.setBehavior(receivedData['scenarios']);
+          this.stateservice.setConstraints(receivedData['constraints']);
+
+
+          this.topologyGraphNodes.update({
+            id: this.topologyGraphSelectedNodeData.id,
+            label: new_name
+          });
+          $('#dialog-box-title').html(new_name);
+          this.topologyGraphSelectedNodeData.nameEditable = false;
+          setTimeout(() => {
+            this.updateGraph(false, true);
+          }, 500)
+        });
+    }
+  }
+
+  onTopologyNodeCancel = () => {
+    this.topologyGraphSelectedNodeData.nameEditable = false;
+    this.topologyGraphSelectedNodeData.name = this.topologyGraphNodes.get(this.topologyGraphSelectedNodeData.id)['label'];
   }
 
   onAddNodeClick = (type) => {
@@ -1461,6 +1643,23 @@ export class HlbComponent implements OnInit, AfterViewInit {
     globalGraphItemParametersList = this.graphItemParametersList;
     this.logger.log(LogHeader.GRAPH_UPDATE, entry.printGraphParameterData(globalGraphItemParametersList, id_of_node, id_of_edge));
     this.onTopologyChange();
+  }
+
+  onDependencyNodeDelete(actor, action) {
+    this.logger.log(LogHeader.GRAPH_UPDATE, "User deleted actor - " + actor + ", action - " + action);
+    var request = {
+      scenarios: this.getScenariosFromEditor(),
+      bindings: [JSON.stringify(this.bindingList)],
+      actor: actor,
+      action: action,
+    };
+    this.http
+      .put('v1/pr/hlb/dependency-graph/node-delete', request, { withCredential: true })
+      .subscribe((receivedData: ParseApiBean) => {
+        this.stateservice.setBehavior(receivedData['scenarios']);
+        this.stateservice.setBindings(receivedData['bindings']);
+      });
+    
   }
 
   onDependencyUpdateEdge(updateType, actorFrom, actionFrom, actorTo, actionTo) {
