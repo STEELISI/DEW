@@ -116,6 +116,9 @@ export class HlbComponent implements OnInit, AfterViewInit {
   specialFunctions: any;
 
   selectedDependencyNodeData: any;
+  oldActor: any;
+  oldAction: any;
+  oldEmit: any;
 
   scenariosObjFormat = [];
   constraintsObjFormat = [];
@@ -428,6 +431,7 @@ export class HlbComponent implements OnInit, AfterViewInit {
   }
 
   clearModalContent(): void {
+    $('.modal-title').html('Add Action');
     $('#modal-action-name-input').val('');
     $('#modal-action-binding-input').val('');
     $('#modal-action-wait-input').val('');
@@ -469,15 +473,36 @@ export class HlbComponent implements OnInit, AfterViewInit {
       }
       actionData['triggers'] = triggers;
       actionData['doesTriggerExist'] = (actionData['triggers'].length > 0) && $('#modal-action-trigger-checkbox').prop('checked');
-      var newLine = this.buildScenarioLine(actionData);
-      var scenario = this.getScenariosFromEditor();
-      scenario.push(newLine);
-      this.stateservice.setBehavior(scenario);
-      this.logger.log(LogHeader.GRAPH_UPDATE, "User added a new scenario line from UI - " + newLine);
-      setTimeout(()=> {
-        this.updateActorsConstraint()
-      }, 2000);
+      if($('.modal-title').html()=='Edit Action') {
+        // if(this.oldEmit!=actionData['emit'] || actionData['emit']=="") {
+        //   this.onDependencyNodeDelete(this.oldActor, this.oldAction);
+        // } else {
+        //   var scenario = this.getScenariosFromEditor();
+        //   var filtered = [];
+        //   for(var i = 0; i<scenario.length; i++) {
+        //     if(!(scenario[i].includes(" " + this.oldActor + " ") && scenario[i].includes(" " + this.oldAction + " ") && scenario[i].includes(" " + this.oldEmit)))
+        //       filtered.push(scenario[i]);
+        //   }
+        //   this.stateservice.setBehavior(filtered);
+        // }
+        // setTimeout(()=> {
+        //   this.updateScenarioFromAddActionUI(actionData);
+        // }, 1000);
+      } else {
+        this.updateScenarioFromAddActionUI(actionData);
+      }
     }
+  }
+
+  updateScenarioFromAddActionUI(actionData) {
+    var newLine = this.buildScenarioLine(actionData);
+    var scenario = this.getScenariosFromEditor();
+    scenario.push(newLine);
+    this.stateservice.setBehavior(scenario);
+    this.logger.log(LogHeader.GRAPH_UPDATE, "User added a new scenario line from UI - " + newLine);
+    setTimeout(()=> {
+      this.updateActorsConstraint()
+    }, 2000);
   }
 
   buildScenarioLine(action: any): string {
@@ -511,6 +536,16 @@ export class HlbComponent implements OnInit, AfterViewInit {
       'category': 'action',
       'value': action['doesActionBindingExist'] ? action['actionBinding'] : ''
     };
+    var temp = this.bindingList.filter((item)=>{ return item['category']=='action' && item['key']==action['action']});
+    if(temp.length) {
+      var index = this.bindingList.indexOf(temp[0]);
+      this.bindingList.splice(index, 1);
+    }
+    temp = this.bindingList.filter((item)=>{ return item['category']=='event' && item['key']==action['emit']});
+    if(temp.length) {
+      var index = this.bindingList.indexOf(temp[0]);
+      this.bindingList.splice(index, 1);
+    }
     this.bindingList.push(actionBinding);
     action['doesEmitExist'] && this.bindingList.push(eventBinding);
     this.stateservice.setBindings(this.bindingList);
@@ -1545,23 +1580,53 @@ export class HlbComponent implements OnInit, AfterViewInit {
 
   onEditActionDependencyClick() {
     $('.modal').modal('toggle');
-    console.log(this.selectedDependencyNodeData);
+    $('.modal-title').html('Edit Action');
     var nodeData = this.selectedDependencyNodeData;
     $("#modal-actor-input > option:selected").prop("selected", false);
     $("#modal-actor-input > option").filter(function() {
       return $(this).html() === nodeData['actors'][0];
     }).prop("selected", true);
+    this.oldActor = $("#modal-actor-input > option:selected").html();
     $("#modal-actor-input").attr('disabled', true);
     $('#modal-action-name-input').val(nodeData['action']);
-    $('#modal-action-binding-input').val('');
-    $('#modal-event-binding-input').val('');
-    $('#modal-action-wait-input').val(nodeData['waitTime']!="None" ? nodeData['waitTime']: "");
-    $('#modal-action-emit-input').val(nodeData['e_events'][0]);
+    this.oldAction = nodeData['action'];
+    if(nodeData['wait_time']!="None") {
+      $('#modal-action-wait-checkbox').prop('checked', true).change();
+      $('#modal-action-wait-input').val(nodeData['wait_time']);
+    } else {
+      $('#modal-action-wait-checkbox').prop('checked', false).change();
+      $('#modal-action-wait-input').val("");
+    }
+    if(nodeData['e_events'].length) {
+      this.oldEmit = nodeData['e_events'][0];
+      $('#modal-action-emit-checkbox').prop('checked', true).change();
+      $('#modal-action-emit-input').val(nodeData['e_events'][0]);
+      var tempEventBinding = this.bindingList.filter((item)=>{ return item['category']=='event' && item['key']==nodeData['e_events'][0]});
+      tempEventBinding = tempEventBinding[0]['value'];
+      if(tempEventBinding) {
+        $('#modal-action-event-checkbox').prop('checked', true).change();
+      } else {
+        $('#modal-action-event-checkbox').prop('checked', false).change();
+      }
+      $('#modal-event-binding-input').val(tempEventBinding);
+    } else {
+      $('#modal-action-emit-checkbox').prop('checked', false).change();
+      $('#modal-action-emit-input').val("");
+      this.oldEmit = "";
+    }
     $("#modal-action-trigger-selections option:selected").prop("selected", false);
-    $("#modal-action-trigger-selections option").filter(function() {
-      return nodeData['t_events'].includes($(this).html());
-    }).prop("selected", true);
-    $(".modal-action-headers > input[type='checkbox']:checked").prop('checked', true).change();
+    if(nodeData['t_events'].length) {
+      $("#modal-action-trigger-selections option").filter(function() {
+        return nodeData['t_events'].includes($(this).html());
+      }).prop("selected", true);
+      $('#modal-action-trigger-checkbox').prop('checked', true).change();
+    } else {
+      $('#modal-action-trigger-checkbox').prop('checked', false).change();
+    }
+
+    var tempBindings = this.bindingList.filter((item)=>{ return item['category']=='action' && item['key']==nodeData['action']});
+    tempBindings = tempBindings[0]['value'];
+    $('#modal-action-binding-input').val(tempBindings);
   }
 
   toggleTopologyView() {
