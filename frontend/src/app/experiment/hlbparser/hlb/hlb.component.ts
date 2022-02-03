@@ -32,6 +32,7 @@ import { LogService, LogHeader, LogEntry } from '../common/logging-service';
 import { GoogleDriveService } from "src/app/google-drive-service.service";
 declare let $:any;
 import { AuthService } from '../../../@auth/auth.service';
+import { async } from "@angular/core/testing";
 
 Quill.register("modules/counter", EditorService);
 
@@ -113,6 +114,8 @@ export class HlbComponent implements OnInit, AfterViewInit {
   currentActionNameInModal = "";
   triggerSignals = [];
   specialFunctions: any;
+
+  selectedDependencyNodeData: any;
 
   scenariosObjFormat = [];
   constraintsObjFormat = [];
@@ -314,8 +317,9 @@ export class HlbComponent implements OnInit, AfterViewInit {
 	  if (element.category != 'event' && element.category != 't_event')
 	  {
 	  	// Jelena
-		this.filterBindingOptionsForEvent.push('pexists('+element.key+')')
-		this.filterBindingOptionsForEvent.push('psuccess('+element.key+')')	
+      this.filterBindingOptionsForEvent = [];
+      this.filterBindingOptionsForEvent.push('pexists('+element.key+')');
+      this.filterBindingOptionsForEvent.push('psuccess('+element.key+')');
 	  };
         });
       }
@@ -1109,7 +1113,7 @@ export class HlbComponent implements OnInit, AfterViewInit {
           });
 
           this.topologyNetworkInstance.on('oncontext', function (properties) {
-            properties.event.preventDefault();
+            // properties.event.preventDefault();
             // if (!properties.nodes.length) {
             //   $('.toastBox').fadeIn(200);
             //   setTimeout(() => {
@@ -1267,6 +1271,11 @@ export class HlbComponent implements OnInit, AfterViewInit {
                 groups: graphGroups
               });
 
+              //Dependency Graph Click Event
+              this.dependencyNetworkInstance.on('click', (properties) => {
+                this.onDependencyClick(properties);
+              });
+
               //Show legends in dependency graph
               this.dependencyNetworkInstance.on("afterDrawing", (ctx) => {
 
@@ -1379,6 +1388,12 @@ export class HlbComponent implements OnInit, AfterViewInit {
     $("#graphActionButtonList").show();
     $("#actionMessage").html("<span>Press <kbd>Ctrl</kbd> to edit edges, Select a node/edge and press <kbd>Del</kbd> to delete</span>");
     // $("#actionMessage").hide();
+  }
+
+  onDependencyClick = async(properties) => {
+    var ids = properties.nodes;
+    var clickedNodes = this.dependencyGraphNodes.get(ids);
+    (clickedNodes.length) ? $('.dialog-box-action-button, .modal-add-button, .dependency-edit-action-button').css('background-color', graphColors[clickedNodes[0]['group'].replace('group', '')]) && (this.selectedDependencyNodeData = clickedNodes[0]['data']) && $('.dependency-edit-action-button').removeClass('hide'): $('.dependency-edit-action-button').addClass('hide');
   }
 
   onTopologyClick = async (properties) => {
@@ -1526,6 +1541,27 @@ export class HlbComponent implements OnInit, AfterViewInit {
     this.clearModalContent();
     $('.dialog-box-action-button, .modal-add-button').css('background-color', '#04aa6d');
     $('.modal').modal('toggle');
+  }
+
+  onEditActionDependencyClick() {
+    $('.modal').modal('toggle');
+    console.log(this.selectedDependencyNodeData);
+    var nodeData = this.selectedDependencyNodeData;
+    $("#modal-actor-input > option:selected").prop("selected", false);
+    $("#modal-actor-input > option").filter(function() {
+      return $(this).html() === nodeData['actors'][0];
+    }).prop("selected", true);
+    $("#modal-actor-input").attr('disabled', true);
+    $('#modal-action-name-input').val(nodeData['action']);
+    $('#modal-action-binding-input').val('');
+    $('#modal-event-binding-input').val('');
+    $('#modal-action-wait-input').val(nodeData['waitTime']!="None" ? nodeData['waitTime']: "");
+    $('#modal-action-emit-input').val(nodeData['e_events'][0]);
+    $("#modal-action-trigger-selections option:selected").prop("selected", false);
+    $("#modal-action-trigger-selections option").filter(function() {
+      return nodeData['t_events'].includes($(this).html());
+    }).prop("selected", true);
+    $(".modal-action-headers > input[type='checkbox']:checked").prop('checked', true).change();
   }
 
   toggleTopologyView() {
