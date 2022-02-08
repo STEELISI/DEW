@@ -432,6 +432,7 @@ export class HlbComponent implements OnInit, AfterViewInit {
 
   clearModalContent(): void {
     $('.modal-title').html('Add Action');
+    $('.modal-add-button').html('Add');
     $('#modal-action-name-input').val('');
     $('#modal-action-binding-input').val('');
     $('#modal-action-wait-input').val('');
@@ -474,20 +475,24 @@ export class HlbComponent implements OnInit, AfterViewInit {
       actionData['triggers'] = triggers;
       actionData['doesTriggerExist'] = (actionData['triggers'].length > 0) && $('#modal-action-trigger-checkbox').prop('checked');
       if($('.modal-title').html()=='Edit Action') {
-        // if(this.oldEmit!=actionData['emit'] || actionData['emit']=="") {
-        //   this.onDependencyNodeDelete(this.oldActor, this.oldAction);
-        // } else {
-        //   var scenario = this.getScenariosFromEditor();
-        //   var filtered = [];
-        //   for(var i = 0; i<scenario.length; i++) {
-        //     if(!(scenario[i].includes(" " + this.oldActor + " ") && scenario[i].includes(" " + this.oldAction + " ") && scenario[i].includes(" " + this.oldEmit)))
-        //       filtered.push(scenario[i]);
-        //   }
-        //   this.stateservice.setBehavior(filtered);
-        // }
-        // setTimeout(()=> {
-        //   this.updateScenarioFromAddActionUI(actionData);
-        // }, 1000);
+        if(this.oldEmit!=actionData['emit'] && actionData['emit']=="") {
+          this.onDependencyNodeDelete(this.oldActor, this.oldAction);
+        } else {
+          var scenario = this.getScenariosFromEditor();
+          var filtered = [];
+          for(var i = 0; i<scenario.length; i++) {
+            if(!(scenario[i].includes(this.oldActor + " ") && scenario[i].includes(" " + this.oldAction + " "))) {
+              if(this.oldEmit!="") {
+                scenario[i] = scenario[i].replace(this.oldEmit, actionData['emit']);
+              }
+              filtered.push(scenario[i]);
+            }
+          }
+          this.stateservice.setBehavior(filtered);
+        }
+        setTimeout(()=> {
+          this.updateScenarioFromAddActionUI(actionData);
+        }, 1000);
       } else {
         this.updateScenarioFromAddActionUI(actionData);
       }
@@ -502,7 +507,7 @@ export class HlbComponent implements OnInit, AfterViewInit {
     this.logger.log(LogHeader.GRAPH_UPDATE, "User added a new scenario line from UI - " + newLine);
     setTimeout(()=> {
       this.updateActorsConstraint()
-    }, 2000);
+    }, 1000);
   }
 
   buildScenarioLine(action: any): string {
@@ -1581,6 +1586,7 @@ export class HlbComponent implements OnInit, AfterViewInit {
   onEditActionDependencyClick() {
     $('.modal').modal('toggle');
     $('.modal-title').html('Edit Action');
+    $('.modal-add-button').html('Edit');
     var nodeData = this.selectedDependencyNodeData;
     $("#modal-actor-input > option:selected").prop("selected", false);
     $("#modal-actor-input > option").filter(function() {
