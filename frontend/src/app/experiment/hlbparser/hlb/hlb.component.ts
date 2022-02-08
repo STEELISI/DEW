@@ -119,6 +119,7 @@ export class HlbComponent implements OnInit, AfterViewInit {
   oldActor: any;
   oldAction: any;
   oldEmit: any;
+  allDependencyNodeData: any;
 
   scenariosObjFormat = [];
   constraintsObjFormat = [];
@@ -445,6 +446,11 @@ export class HlbComponent implements OnInit, AfterViewInit {
       return $(this).html() === swapJSON(id_of_node)[currentGraphItemSelection['id']];
     }).prop("selected", true);
     $("#modal-actor-input").attr('disabled', $('.graph-box-dependency').hasClass('hide'));
+  }
+
+  onEditActionFromTopologyClick(data) {
+    var nodeData = (this.allDependencyNodeData.filter(item => parseInt(item.id)==parseInt(data)))[0]['data']
+    this.populateAndShowEditActionModal(nodeData);
   }
 
   addActionFromUI(): void {
@@ -1214,6 +1220,8 @@ export class HlbComponent implements OnInit, AfterViewInit {
 
               const graphGroups = Object.assign({}, ...this.graphColors.map((color, index) => ({ ["group" + (index)]: { color } })));
 
+              this.allDependencyNodeData = nodes;
+
               this.dependencyGraphNodes = new DataSet<any>(nodes);
               this.dependencyGraphEdges = new DataSet<any>(links);
 
@@ -1584,10 +1592,13 @@ export class HlbComponent implements OnInit, AfterViewInit {
   }
 
   onEditActionDependencyClick() {
+    this.populateAndShowEditActionModal(this.selectedDependencyNodeData);
+  }
+
+  populateAndShowEditActionModal(nodeData) {
     $('.modal').modal('toggle');
     $('.modal-title').html('Edit Action');
     $('.modal-add-button').html('Edit');
-    var nodeData = this.selectedDependencyNodeData;
     $("#modal-actor-input > option:selected").prop("selected", false);
     $("#modal-actor-input > option").filter(function() {
       return $(this).html() === nodeData['actors'][0];
@@ -1629,7 +1640,6 @@ export class HlbComponent implements OnInit, AfterViewInit {
     } else {
       $('#modal-action-trigger-checkbox').prop('checked', false).change();
     }
-
     var tempBindings = this.bindingList.filter((item)=>{ return item['category']=='action' && item['key']==nodeData['action']});
     tempBindings = tempBindings[0]['value'];
     $('#modal-action-binding-input').val(tempBindings);
