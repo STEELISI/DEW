@@ -1,6 +1,7 @@
 import configparser, sys
+from ensurepip import version
 sys.path.append('./DewFunctions/UI/HighLevelBehaviorLanguage/')
-from hlb_parser import HLBParser, ConstraintVersionOneParser
+from hlb_parser import HLBParser, ConstraintVersionOneParser, ConstraintParser
 
 class DEWParser(object):
     def get_behaviors_and_constraints(self, dew_text):
@@ -49,4 +50,18 @@ class DEWParser(object):
             temp = temp + " ]"
             converted_constraints.append(temp)
         return converted_constraints
+
+    def dew_version_detector(self, constraints):
+        version = -1
+        constraintParsers = [ConstraintVersionOneParser(), ConstraintParser()] 
+        for index,parser in enumerate(constraintParsers):
+            try:
+                for line in constraints:
+                    parsed_stmt = parser.parse_stmt(line)
+                    if (all(item is None for item in parsed_stmt)):
+                        raise Exception()
+                version = index + 1
+            except:
+                pass
+        return version
         

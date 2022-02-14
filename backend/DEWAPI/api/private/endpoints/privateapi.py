@@ -141,6 +141,25 @@ class ConvertDEW1To2(Resource):
         Logger.backendErrorLog(user, traceback.format_exc())
         raise Exception("Error Occured on the Server")
 
+@ns.route('/convert/detectDEWVersion')
+class DetectDEWVersion(Resource):
+  @api.expect(constraint_text)
+  def put(self):
+      """
+        Detects DEW Version based on Constraints
+      """
+      try:
+        json_data = request.get_json(force=True)
+        user = userObj.getEmailId()
+        Logger.backendLog(user,"DetectDEWVersion()", "Entered Class")
+        constraints = json_data['constraints']
+        dewVersion = dew_parser.dew_version_detector(constraints)
+        Logger.backendLog(user,"DetectDEWVersion()", "Successfully detected DEW version! DEW Version - " + str(dewVersion))
+        return {"status": "success", "version": dewVersion }
+      except BaseException:
+        Logger.backendErrorLog(user, traceback.format_exc())
+        raise Exception("Error Occured on the Server")
+
 @ns.route('/log/user-logging')
 class LogData(Resource):
   @api.expect(log_message)

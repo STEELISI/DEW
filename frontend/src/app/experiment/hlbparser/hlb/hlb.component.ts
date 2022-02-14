@@ -283,28 +283,6 @@ export class HlbComponent implements OnInit, AfterViewInit {
           textArray = [...textArray, ...this.convertStringToJsonObject(element), { insert: '\n' }]
           text += element + "<br>";
         });
-
-        // let test = [{
-        //   text:"trigger",
-        //   row:"1",
-        //   occurence:1,
-        //   color:"pink"
-        // },{
-        //   text:"trigger",
-        //   row:"2",
-        //   occurence:-1,
-        //   color:"red"
-        // },{
-        //   text:"trigg",
-        //   row:"1",
-        //   occurence:1,
-        //   color:"red"
-        // },{
-        //   text:"actor2",
-        //   row:"2",
-        //   occurence:1,
-        //   color:"red"
-        // }]
         this.scenariosObjFormat = textArray
         instance.behaviorText = text;
       }
@@ -357,17 +335,10 @@ export class HlbComponent implements OnInit, AfterViewInit {
   }
 
   ngAfterViewInit(): void {
+    //JQuery Functions
     $('.convert-btn > div').on('click', ()=>{
-      var $span = $('.convert-btn > span');
-      if($span.html().includes("DEW 1.0 to 2.0")) {
-        $span.html("Click again to convert...");
-        setTimeout(()=> {
-          $span.html("Convert from DEW 1.0 to 2.0");
-        }, 2000);
-        return true;
-      }
+      var $convertButtonDiv = $('.convert-btn').parent();
       this.logger.log(LogHeader.KEY_PRESS, "User tried converting the constraints from DEW 1.0 to 2.0");
-      $span.html("Convert from DEW 1.0 to 2.0");
       //Animate Button
       $('.convert-btn > div').animate(
         { deg: '+=360' },
@@ -392,12 +363,13 @@ export class HlbComponent implements OnInit, AfterViewInit {
             this.stateservice.setConstraints(receivedData.parsedConstraints);
             this.logger.log(LogHeader.DATA_RECEIVED, receivedData.parsedConstraints);
             setTimeout(()=> {
-              this.updateActorsConstraint()
-            }, 2000);
+              this.updateActorsConstraint();
+              $convertButtonDiv.addClass('hide');
+            }, 1000);
           }, (error: any) => {
-            $('.error-text').removeClass('hide');
+            $convertButtonDiv.find('.error-text').removeClass('hide');
             setTimeout(()=> {
-              $('.error-text').addClass('hide');
+              $convertButtonDiv.find('.error-text').addClass('hide');
             }, 3000);
             this.logger.log(LogHeader.DATA_RECEIVED, "Error converting constraints");
           });
@@ -429,6 +401,27 @@ export class HlbComponent implements OnInit, AfterViewInit {
     });
 
     this.toggleTopologyView();
+  }
+
+  detectDEWVersion(): void {
+    const data = {
+      constraints: []
+    };
+    var constraints = this.getConstraintsFromEditor();
+    this.logger.log(LogHeader.INFO, 'Attempting to detect the DEW version');
+    data.constraints = constraints;
+    this.http
+      .put('v1/pr/convert/detectDEWVersion', data, { withCredential: true })
+      .subscribe((receivedData: ParseApiBean) => {
+        var $convertDEWDiv = $('.convert-btn').parent();
+        switch (receivedData['version']) {
+          case 1:
+            $convertDEWDiv.removeClass('hide');
+            break;
+        }
+      }, (error: any) => {
+        this.logger.log(LogHeader.DATA_RECEIVED, "Error detecting DEW version");
+      });
   }
 
   clearModalContent(): void {
@@ -769,6 +762,7 @@ export class HlbComponent implements OnInit, AfterViewInit {
     //   this.actorsList = [];
     //   return;
     // }
+    this.detectDEWVersion();
     const data = {
       ParseType: 'bash',
       Scenario: [],
