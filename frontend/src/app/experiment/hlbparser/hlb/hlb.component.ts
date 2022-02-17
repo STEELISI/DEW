@@ -1081,10 +1081,9 @@ export class HlbComponent implements OnInit, AfterViewInit {
                 //Remove node from id_of_node and all linked edges from id_of_edge
                 delete id_of_node[Object.keys(id_of_node).find(node_name => id_of_node[node_name] == data.nodes[0])]
                 delete globalGraphItemParametersList[data.nodes[0] + ""]
-                for (const deletedEdge of data.edges) {
+                for (var deletedEdge of data.edges) {
                   delete id_of_edge[Object.keys(id_of_edge).find(edge_name => id_of_edge[edge_name].id == deletedEdge)]
                 }
-
                 this.onTopologyDelete(this.topologyGraphNodes.get(data.nodes[0])['label']);
                 this.onTopologyChange();
                 callback(data);
@@ -1677,7 +1676,6 @@ export class HlbComponent implements OnInit, AfterViewInit {
       nodes: [JSON.stringify(id_of_node)],
       edges: [JSON.stringify(id_of_edge)]
     };
-    console.log(request)
     this.http
     .put('v1/pr/hlb/topology-graph/generate-constraints', request, { withCredential: true })
       .subscribe((receivedData: ParseApiBean) => {

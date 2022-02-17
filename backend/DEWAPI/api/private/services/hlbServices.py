@@ -324,6 +324,7 @@ class HLBService():
 
     def HandleTopologyParse(self,sceanrios,constraints):
         actors = dict()
+        actor_list = []
         lans = []
         edges = []
         gen = bashGenerator(scenario=sceanrios,constraints=constraints,bindings=[])
@@ -337,42 +338,42 @@ class HLBService():
         actor_num = {}
         for const in parsed_constraints:
             if(const[0]=='config'):
-                temp_os = 'default'
-                temp_location = 'default'
-                temp_nodetype = 'default'
-                temp_interfaces = 'default'
-                temp_num = 1
-                for i in range(0, len(const[2]), 2):
-                    if(const[2][i]=='os'):
-                        temp_os = const[2][i+1]
-                    if(const[2][i]=='location'):
-                        temp_location = const[2][i+1]
-                    if(const[2][i]=='nodetype'):
-                        temp_nodetype = const[2][i+1]
-                    if(const[2][i]=='interfaces'):
-                        temp_interfaces = const[2][i+1]
-                    if(const[2][i]=='num'):
-                        temp_num = const[2][i+1]
-                for i in const[1]:
-                    actor_os[i] = temp_os
-                    actor_location[i] = temp_location
-                    actor_nodetype[i] = temp_nodetype
-                    actor_interfaces[i] = temp_interfaces
-                    actor_num[i] = temp_num
+                for act in const[1]:
+                    if act not in actor_list:
+                        actor_list.append(act)
+                    for i in range(0, len(const[2]), 2):
+                        if(const[2][i]=='os'):
+                            actor_os[act]  = const[2][i+1]
+                        if(const[2][i]=='location'):
+                            actor_location[act] = const[2][i+1]
+                        if(const[2][i]=='nodetype'):
+                            actor_nodetype[act] = const[2][i+1]
+                        if(const[2][i]=='interfaces'):
+                            actor_interfaces[act] = const[2][i+1]
+                        if(const[2][i]=='num'):
+                            actor_num[act] = const[2][i+1]
             else:
                 continue
+
         for s in parsed_scenario:
-            if(s[1][0] not in actor_nodetype.keys()):
-                  actor_nodetype[s[1][0]] = 'default'
-            if(s[1][0] not in actor_location.keys()):
-                  actor_location[s[1][0]] = 'default'
-            if(s[1][0] not in actor_interfaces.keys()):
-                  actor_interfaces[s[1][0]] = 'default'
-            if(s[1][0] not in actor_os.keys()):
-                  actor_os[s[1][0]] = 'default'
-            if(s[1][0] not in actor_num.keys()):
-                  actor_num[s[1][0]] = 1
-            actors[s[1][0]] = dict({ 'num': str(actor_num[s[1][0]]), 'os': actor_os[s[1][0]], 'nodeType': actor_nodetype[s[1][0]], 'location': actor_location[s[1][0]], 'interfaces': actor_interfaces[s[1][0]] })
+            if s[1][0] not in actor_list:
+                actor_list.append(s[1][0])
+        
+        for act in actor_list:
+            if(act not in actor_os):
+                actor_os[act] = 'default'
+            if(act not in actor_location):
+                actor_location[act] = 'default'
+            if(act not in actor_nodetype):
+                actor_nodetype[act] = 'default'
+            if(act not in actor_interfaces):
+                actor_interfaces[act] = 'default'
+            if(act not in actor_num):
+                actor_num[act] = 1
+
+        for i in actor_list:
+            actors[i] = dict({ 'num': str(actor_num[i]), 'os': actor_os[i], 'nodeType': actor_nodetype[i], 'location': actor_location[i], 'interfaces': actor_interfaces[i] })
+
         for i, const in enumerate(parsed_constraints):
             if const[0] is not None:
                 if "link" in const[0]:
