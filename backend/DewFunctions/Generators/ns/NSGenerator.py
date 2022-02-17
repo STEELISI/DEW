@@ -13,7 +13,7 @@ class NSGenerator(Generator):
     
     def __init__(self, *args, **kwargs):
         super().__init__(*args, name="ns", **kwargs)
-        self.evars = [];
+        self.evars = []
 
     def generate(self, mode=None):
         super().generate(mode)

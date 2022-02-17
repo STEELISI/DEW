@@ -1677,8 +1677,9 @@ export class HlbComponent implements OnInit, AfterViewInit {
       nodes: [JSON.stringify(id_of_node)],
       edges: [JSON.stringify(id_of_edge)]
     };
+    console.log(request)
     this.http
-    .put('v1/pr/hlb/topology-graph/generate-constrains', request, { withCredential: true })
+    .put('v1/pr/hlb/topology-graph/generate-constraints', request, { withCredential: true })
       .subscribe((receivedData: ParseApiBean) => {
         this.stateservice.setConstraints(receivedData['constraints']);
         this.logger.log(LogHeader.DATA_RECEIVED, "Updated constraints - " + receivedData['constraints']);

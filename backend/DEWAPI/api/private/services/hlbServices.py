@@ -516,7 +516,7 @@ class HLBService():
                     
         return (updated_scenarios, updated_bindings)
 
-    def HandleTopologyGraphGenerateConstrains(self, nodes, edges, parameters):
+    def HandleTopologyGraphGenerateConstraints(self, nodes, edges, parameters):
 
         def generateConstrainSentence(constraint):
             def generateParameterSentence(parameters):
@@ -555,8 +555,8 @@ class HLBService():
                 #Group nodes by their properties
                 for (prop, value) in properties.items():
                     if prop in node_parameters and value != "":
-                        if prop == "num" and value == "1":
-                            continue
+                        # if prop == "num" and value == "1":
+                        #     continue
                         nodes_group_by_param[(node_parameters[prop], value)].add(id)
             elif properties["type"] == 1: #Edge
                 #Do nothing

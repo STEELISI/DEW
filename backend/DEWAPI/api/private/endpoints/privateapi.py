@@ -339,8 +339,8 @@ class HandleTopologyGraphRemove(Resource):
             Logger.backendErrorLog(user, traceback.format_exc())
             raise Exception("Error Occured on the Server")
 
-@ns.route('/hlb/topology-graph/generate-constrains')
-class HandleTopologyGraphGenerateConstrains(Resource):
+@ns.route('/hlb/topology-graph/generate-constraints')
+class HandleTopologyGraphGenerateConstraints(Resource):
     @api.expect(topology_graph_generate_constraints)
     def put(self):
         """
@@ -349,12 +349,12 @@ class HandleTopologyGraphGenerateConstrains(Resource):
         try:
           json_data = request.get_json(force=True)
           user = userObj.getEmailId()
-          Logger.backendLog(user,"HandleTopologyGraphGenerateConstrains()", "Entered Class")
+          Logger.backendLog(user,"HandleTopologyGraphGenerateConstraints()", "Entered Class")
           nodes = json.loads(json_data['nodes'][0])
           edges = json.loads(json_data['edges'][0])
           parameters = json.loads(json_data['parameters'][0])
-          constraints = hlb.HandleTopologyGraphGenerateConstrains(nodes, edges, parameters)
-          Logger.backendLog(user,"HandleTopologyGraphGenerateConstrains()", "Successfully generated constraints from topology graph")
+          constraints = hlb.HandleTopologyGraphGenerateConstraints(nodes, edges, parameters)
+          Logger.backendLog(user,"HandleTopologyGraphGenerateConstraints()", "Successfully generated constraints from topology graph")
           return {"status": "success", "constraints": constraints }
         except BaseException:
             Logger.backendErrorLog(user, traceback.format_exc())
