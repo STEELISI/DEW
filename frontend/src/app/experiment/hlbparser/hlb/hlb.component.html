@@ -262,9 +262,9 @@
             <i class="fas fa-edit topology-actor-name-action edit" *ngIf="topologyGraphSelectedNodeData && topologyGraphSelectedNodeData.nodeType == 'NODE'" (click)="topologyGraphSelectedNodeData.nameEditable = true"></i>
           </div>
           <div *ngIf="topologyGraphSelectedNodeData && topologyGraphSelectedNodeData.nameEditable">
-            <input [(ngModel)]="topologyGraphSelectedNodeData.name" (keyup)="onTopologyNodeChange()"/> 
-            <i class="fas fa-check topology-actor-name-action save" (click)="onTopologyNodeSave()" [class.disabled]="!!topologyGraphSelectedNodeData.nameEditableError"></i>
-            <i class="fas fa-times topology-actor-name-action cancel" (click)="onTopologyNodeCancel()"></i>
+            <input [(ngModel)]="topologyGraphSelectedNodeData.name" (keyup)="onTopologyNodeChange()" (change)="onTopologyNodeSave()"/> 
+            <!-- <i class="fas fa-check topology-actor-name-action save" (click)="onTopologyNodeSave()" [class.disabled]="!!topologyGraphSelectedNodeData.nameEditableError"></i>
+            <i class="fas fa-times topology-actor-name-action cancel" (click)="onTopologyNodeCancel()"></i> -->
             <div *ngIf="topologyGraphSelectedNodeData.nameEditableError" class="topology-actor-name-action-error">{{topologyGraphSelectedNodeData.nameEditableError}}</div>
           </div>
           <button type="button" class="btn dialog-box-action-button" data-toggle="modal" data-target="#add-action-modal" (click)="clearModalContent()">Add Action</button>
