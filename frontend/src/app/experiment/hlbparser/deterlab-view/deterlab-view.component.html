@@ -127,7 +127,7 @@
                                     (click)="activateModal('swapout')">Swap Out Experiment
                             </button>
                         </li>
-                        <li>
+                        <li *ngIf="runStatus == 'stop'">
                             <button type="button" class="btn btn-outline-success swap-dt"
                             data-toggle="modal" data-target="#exampleModal"
                                     [disabled]="deactivateSwapOut"
@@ -135,7 +135,7 @@
                                    >Run Experiment
                             </button>
                         </li>
-			<li>
+			            <li *ngIf="runStatus == 'start'">
                             <button type="button" class="btn btn-outline-success swap-dt"
                             data-toggle="modal" data-target="#exampleModal"
                                     [disabled]="deactivateSwapOut"

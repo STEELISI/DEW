@@ -1748,6 +1748,44 @@ class HandleProjectStopLog(Resource):
         Logger.backendErrorLog(user, traceback.format_exc())
         raise Exception("Error Occured on the Server") 
 
+@ns.route('/deter/project/getRunStatus')
+class HandleProjectGetRunStatus(Resource):
+    def get(self):
+      try:
+        user = userObj.getEmailId()
+        Logger.backendLog(user,"HandleProjectGetRunStatus()", "Entered Class")
+        eid = request.args.get('eid')
+        daid = request.args.get('account_id')
+        
+        uid = userObj.getUserId()
+        try:
+          result = {}
+          if not dm.user_can(uid,eid):
+            result['error'] = "User does not have access to this experiment"
+          else: 
+            details = ps.get(uid,daid)
+            if str(details['username']).strip() !='' and str(details['password']).strip() !='':
+              mapping = dm.getMapping(details['id'],eid)
+              if 'error' not in mapping:
+                unique_name = mapping['experiment_name']+"_run"
+                print("Unique name ",unique_name)
+                status = dm.getStatus(eid, uid, unique_name)
+                result['success'] = True
+                result['status'] = status
+              else:
+                result = mapping
+            else:
+              result = {'error':'username or password does not exists'}
+          Logger.backendLog(user,"HandleProjectGetRunStatus()", "Got run status - " + str(result))
+          return result, 200
+        except ValueError as e:
+            if str(e) == "Forbidden":
+              Logger.backendLog(user,"HandleProjectGetRunStatus()", "Unable to get run status")
+              return {}, 403
+      except BaseException:
+        Logger.backendErrorLog(user, traceback.format_exc())
+        raise Exception("Error Occured on the Server") 
+
 @ns.route('/deter/project/run/get')
 class HandleProjectGetLog(Resource):
     def post(self):
