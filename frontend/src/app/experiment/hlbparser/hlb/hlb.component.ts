@@ -1537,6 +1537,9 @@ export class HlbComponent implements OnInit, AfterViewInit {
     if (!this.topologyGraphSelectedNodeData.nameEditableError) {
       const new_name = this.topologyGraphSelectedNodeData.name;
       const old_name = this.topologyGraphNodes.get(this.topologyGraphSelectedNodeData.id)['label'];
+
+      this.actorsList[this.actorsList.findIndex( item => item['text']==old_name )]['text'] = new_name;
+      
       var request = {
         constraints: this.getConstraintsFromEditor(),
         scenarios: this.getScenariosFromEditor(),
