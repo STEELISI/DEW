@@ -831,6 +831,7 @@ export class HlbComponent implements OnInit, AfterViewInit {
   }
 
   extractInfo(data: ParseApiBean) {
+    this.actorsList = [];
     this.getActionBindingDataFromScenario(data['parsedScenario']);
     this.logger.log(LogHeader.TEXT_UPDATED, "Constraints/Scenario Updated");
     this.logger.log(LogHeader.DATA_RECEIVED, "Parsed Scenario - " + data.parsedScenario + " | Parsed Constraints - " + data.parsedConstraints);
@@ -937,6 +938,10 @@ export class HlbComponent implements OnInit, AfterViewInit {
       this.http
         .put('v1/pr/hlb/topology/parse', request, { withCredential: true })
         .subscribe((receivedData: ParseApiBean) => {
+          console.log(receivedData)
+          for(var item of Object.keys(receivedData['actors'])) {
+            this.extractActors([item]);
+          }
           //Graph Operations
           var temp_nodes = [];
           var temp_edges = [];
@@ -1036,6 +1041,7 @@ export class HlbComponent implements OnInit, AfterViewInit {
               initiallyActive: false,
               addNode: (nodeData, callback) => {
                 [nodeData.label, nodeData.id] = this.assignNewActorInTopologyGraph(nodeData.group == "LAN");
+                this.extractActors([nodeData.label]);
                 if (!this.actorsGroup.has(nodeData.label)) {
                   this.actorsGroup.set(nodeData.label, this.actorsGroup.size);
                 }
@@ -1997,7 +2003,6 @@ export class HlbComponent implements OnInit, AfterViewInit {
   extractScenario(scenario) {
     // console.log(scenario);
     // this.bindingMap = new Map<String,any>();
-    this.actorsList = [];
     this.bindingList = [];
     const trigger = [];
     scenario.forEach((element) => {
