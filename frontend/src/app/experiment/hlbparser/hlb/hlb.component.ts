@@ -1168,9 +1168,8 @@ export class HlbComponent implements OnInit, AfterViewInit {
             // }
           });
 
-          if (!this.selectedNetworkInstance) {
-            this.selectedNetworkInstance = this.topologyNetworkInstance;
-          }
+          $('.dependency-topology-toggle-icon-topology').hasClass('active') && (this.selectedNetworkInstance = this.topologyNetworkInstance);
+
         });
     }
 
@@ -1389,7 +1388,9 @@ export class HlbComponent implements OnInit, AfterViewInit {
                 $('#dependencyGraphCycleContainer').hide();
               }
             })
-        })
+
+            $('.dependency-topology-toggle-icon-dependency').hasClass('active') && (this.selectedNetworkInstance = this.dependencyNetworkInstance);
+        });
     }
 
     $("#graph-container").keyup((e) => {
