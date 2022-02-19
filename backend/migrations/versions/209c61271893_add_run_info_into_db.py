@@ -17,9 +17,11 @@ depends_on = None
 
 
 def upgrade():
-    op.add_column('deterlab_run_script_log',
-     sa.Column('action', sa.Text))
+    pass
+    # op.add_column('deterlab_run_script_log',
+    #  sa.Column('action', sa.Text))
 
 
 def downgrade():
-    op.drop_column('deterlab_run_script_log', 'action')
+    pass
+    # op.drop_column('deterlab_run_script_log', 'action')
