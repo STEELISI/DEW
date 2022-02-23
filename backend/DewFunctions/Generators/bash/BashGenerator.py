@@ -142,7 +142,7 @@ class BashGenerator(Generator):
                     self.run[label] += ctext + " ; then \n\t exit 1\nfi\n"
                                 
             if wait is not None:
-                self.run[label] += "sleep "+str(wait)+"\n";
+                self.run[label] += "sleep "+str(wait)+"\n"
 
             if action in self.bindings_parsed:                
                 words = re.split(' |\(|\)', self.bindings_parsed[action])
