@@ -93,8 +93,9 @@ class ConstraintParser():
     actor_pair = actor + wsp + actor
     strValue = (not_akeyword + Word(alphanums+'_'))
     numValue = (not_akeyword + Word(nums))
+    ipValue = (not_akeyword + Word(nums+'.'))
 
-    entity_param_value_stmt = (os_keyword+ wsp + strValue("value")) | (nodetype_keyword + wsp + strValue("value")) | (location_keyword + wsp + strValue("value")) | (interfaces_keyword + wsp + strValue("value")) | (num_keyword + wsp + numValue("value"))
+    entity_param_value_stmt = (os_keyword+ wsp + strValue("value")) | (nodetype_keyword + wsp + strValue("value")) | (location_keyword + wsp + ipValue("value")) | (interfaces_keyword + wsp + strValue("value")) | (num_keyword + wsp + numValue("value"))
     multiple_entity_param_value_stmt = (entity_param_value_stmt + ZeroOrMore(ZeroOrMore(wsp) + comma + ZeroOrMore(wsp) + entity_param_value_stmt))
     entity_param_stmt = open_bracket + ZeroOrMore(wsp) + multiple_entity_param_value_stmt + ZeroOrMore(wsp) + close_bracket
     entity_stmt = actors("target") + wsp + entity_param_stmt("value")
