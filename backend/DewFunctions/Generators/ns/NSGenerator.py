@@ -4,6 +4,7 @@ from os import link
 import os.path
 import sys
 from functools import reduce
+import re
 
 cwd = os.path.dirname(os.path.realpath(__file__))
 parentDir = os.path.abspath(os.path.join(cwd, os.pardir))
@@ -37,7 +38,10 @@ class NSGenerator(Generator):
         # Collect all actors
         actors = dict()
         os = dict()
+        ip = dict()
         links = dict()
+        link_lines = []
+        lan_lines = []
 
         for s in self.scenario_parsed:
             actors[s[1][0]] = 1
@@ -48,6 +52,13 @@ class NSGenerator(Generator):
                 config_os = c[2][c[2].index('os') + 1]
                 for act in c[1]:
                     os[act] = config_os
+
+        # Collect IP Address Constraints
+        for c in self.constraints_parsed:
+            if (c[0] == 'config') and ('location' in c[2]):
+                config_ip = c[2][c[2].index('location') + 1]
+                for act in c[1]:
+                    ip[act] = config_ip
 
         # Collect link constraints
         cl = 0
@@ -123,10 +134,14 @@ class NSGenerator(Generator):
                             current_delay = str(current_delay) + 'ms' 
                         if b in self.num.keys():
                             for j in range (1,self.num[b]+1):
-                                self.run[label] += "set link"+str(cnt)+" [$ns duplex-link "+a+"-"+str(i)+" "+b+"-"+str(j)+" " + str(current_bw) + " " + str(current_delay) + " DropTail]\n"
+                                line = "set link"+str(cnt)+" [$ns duplex-link "+a+"-"+str(i)+" "+b+"-"+str(j)+" " + str(current_bw) + " " + str(current_delay) + " DropTail]\n"
+                                self.run[label] += line
+                                link_lines.append(line)
                                 cnt += 1
                         else:
-                            self.run[label] += "set link"+str(cnt)+" [$ns duplex-link "+a+"-"+str(i)+" "+b+" " + str(current_bw) + " " + str(current_delay) + " DropTail]\n"
+                            line = "set link"+str(cnt)+" [$ns duplex-link "+a+"-"+str(i)+" "+b+" " + str(current_bw) + " " + str(current_delay) + " DropTail]\n"
+                            self.run[label] += line
+                            link_lines.append(line)
                             cnt += 1
             else:
                  for b in links[a].keys():
@@ -140,21 +155,57 @@ class NSGenerator(Generator):
                         current_delay = str(current_delay) + 'ms' 
                     if b in self.num.keys():
                         for j in range (1,self.num[b]+1):
-                            self.run[label] += "set link"+str(cnt)+" [$ns duplex-link "+a+" "+b+"-"+str(j)+" " + str(current_bw) + " " + str(current_delay) + " DropTail]\n"
+                            line = "set link"+str(cnt)+" [$ns duplex-link "+a+" "+b+"-"+str(j)+" " + str(current_bw) + " " + str(current_delay) + " DropTail]\n"
+                            self.run[label] += line
+                            link_lines.append(line)
                             cnt += 1
                     else:
-                        self.run[label] += "set link"+str(cnt)+" [$ns duplex-link "+a+" "+b+" 100Mb 0ms DropTail]\n"
+                        line = "set link"+str(cnt)+" [$ns duplex-link "+a+" "+b+" 100Mb 0ms DropTail]\n"
+                        self.run[label] += line
+                        link_lines.append(line)
                         cnt += 1
         # Generate lans
         for l in lans.keys():
-            self.run[label] += "set lan"+str(l)+" [$ns make-lan \""
+            line = "set lan"+str(l)+" [$ns make-lan \""
             bw_index = reduce(lambda x,y: x if x != None else y, [x if (set(x.split(' ')) == set([y.split('-')[0] for y in lans[l]])) else None for x in bw.keys()])
             delay_index = reduce(lambda x,y: x if x != None else y, [x if (set(x.split(' ')) == set([y.split('-')[0] for y in lans[l]])) else None for x in delay.keys()])
             current_bw = '100Mb' if bw_index == None else str(bw[bw_index]) + 'Mb'
             current_delay = '0ms' if delay_index == None else str(delay[delay_index]) + 'ms'
             for n in lans[l]:
-                self.run[label] += n+ " "
-            self.run[label] += "\" " + str(current_bw) + " " + str(current_delay) + "]\n"
+                line += n+ " "
+            line += "\" " + str(current_bw) + " " + str(current_delay) + "]\n"
+            self.run[label] += line
+            lan_lines.append(line)
+
+        self.run[label] += '\n\n'
+
+        #Generate IP Addresses
+        for line in link_lines:
+            # nodes = re.findall(r'(?<=duplex-line\s)\w', line)
+            nodes = re.findall('(?<=duplex-link\s)(([a-zA-Z0-9-]+\s)+)(?=[0-9.]+Mb)', line)
+            nodes = (nodes[0][0][:-1]).split(' ')
+            regex_links = re.findall('link[0-9]+', line)
+            for node in nodes:
+                node_name = '-'.join((node.split('-'))[:-1])
+                if node_name in ip:
+                    line = f'tb-set-ip-link {node} {regex_links[0]} {ip[node_name]}\n'
+                    self.run[label] += line
+
+        self.run[label] += '\n\n'
+
+        for line in lan_lines:
+            # nodes = re.findall(r'(?<=duplex-line\s)\w', line)
+            nodes = re.findall('(?<=make-lan\s")(([a-zA-Z0-9-]+\s)+)(?=")', line)
+            nodes = (nodes[0][0][:-1]).split(' ')
+            regex_lan = re.findall('lan[0-9]+', line)
+            for node in nodes:
+                node_name = '-'.join((node.split('-'))[:-1])
+                if node_name in ip:
+                    line = f'tb-set-ip-lan {node} {regex_lan[0]} {ip[node_name]}\n'
+                    self.run[label] += line
+            
+
+
             
     def generatePreamble(self, label):
         self.run[label] = '# generated by DEW 1.0\nset ns [new Simulator]\nsource tb_compat.tcl\n\n'
