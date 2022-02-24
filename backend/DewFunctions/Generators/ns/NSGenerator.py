@@ -39,6 +39,7 @@ class NSGenerator(Generator):
         actors = dict()
         os = dict()
         ip = dict()
+        hw = dict()
         links = dict()
         link_lines = []
         lan_lines = []
@@ -59,6 +60,14 @@ class NSGenerator(Generator):
                 config_ip = c[2][c[2].index('location') + 1]
                 for act in c[1]:
                     ip[act] = config_ip
+
+        # Collect Hardware Type Constraints
+        for c in self.constraints_parsed:
+            if (c[0] == 'config') and ('nodetype' in c[2]):
+                config_hw = c[2][c[2].index('nodetype') + 1]
+                for act in c[1]:
+                    hw[act] = config_hw
+
 
         # Collect link constraints
         cl = 0
@@ -104,18 +113,27 @@ class NSGenerator(Generator):
             if a in self.num.keys():
                 self.run[label] +=  "set NODES " + str(self.num[a]) + "\n"
                 self.run[label] += "for {set i 1} {$i <= $NODES} {incr i} {\n"
-                self.run[label] += "\t set "+a+"($i) [$ns node]\n"
+                self.run[label] += "\t set "+a+"($i) [$ns node]"
                 if (a in os.keys()):
-                    self.run[label] += "\t tb-set-node-os [set "+a+"($i)] " + os[a] + "\n"
+                    self.run[label] += "\n\t tb-set-node-os $" + a + "($i) " + os[a]
                 else:
-                    self.run[label] += "\t tb-set-node-os [set "+a+"($i)] Ubuntu-DEW\n"
-                self.run[label] += "}\n"
+                    self.run[label] += "\n\t tb-set-node-os $" + a + "($i) Ubuntu-DEW"
+                if (a in hw.keys()):
+                    self.run[label] += "\n\t tb-set-hardware $" + a + "($i) " + hw[a]
+                # else: # Default Condition
+                #     self.run[label] += "\n\t tb-set-hardware [set "+a+"($i)] " + hw[a]
+                self.run[label] += "\n}\n"
             else:
-                self.run[label] += "set "+a+" [$ns node]\n"
+                self.run[label] += "set "+ a +" [$ns node]"
                 if (a in os.keys()):
-                    self.run[label] += "tb-set-node-os "+a+" "+ os[a] + "\n"
+                    self.run[label] += "\ntb-set-node-os $" + a + " "+ os[a]
                 else:
-                    self.run[label] += "tb-set-node-os "+a+" Ubuntu-DEW\n"
+                    self.run[label] += "\ntb-set-node-os $" + a + " Ubuntu-DEW"
+                if (a in hw.keys()):
+                    self.run[label] += "\ntb-set-hardware $" + a + " "+ hw[a]
+                # else: # Default Condition
+                #     self.run[label] += self.run[label] += "\ntb-set-node-os "+ a +" "+ hw[a]
+                self.run[label] += "\n"
 
 
         # Generate links 
@@ -134,12 +152,12 @@ class NSGenerator(Generator):
                             current_delay = str(current_delay) + 'ms' 
                         if b in self.num.keys():
                             for j in range (1,self.num[b]+1):
-                                line = "set link"+str(cnt)+" [$ns duplex-link "+a+"-"+str(i)+" "+b+"-"+str(j)+" " + str(current_bw) + " " + str(current_delay) + " DropTail]\n"
+                                line = "set link"+str(cnt)+" [$ns duplex-link $"+a+"("+str(i)+") $"+b+"("+str(j)+") " + str(current_bw) + " " + str(current_delay) + " DropTail]\n"
                                 self.run[label] += line
                                 link_lines.append(line)
                                 cnt += 1
                         else:
-                            line = "set link"+str(cnt)+" [$ns duplex-link "+a+"-"+str(i)+" "+b+" " + str(current_bw) + " " + str(current_delay) + " DropTail]\n"
+                            line = "set link"+str(cnt)+" [$ns duplex-link $"+a+"("+str(i)+") $"+b+" " + str(current_bw) + " " + str(current_delay) + " DropTail]\n"
                             self.run[label] += line
                             link_lines.append(line)
                             cnt += 1
@@ -155,12 +173,12 @@ class NSGenerator(Generator):
                         current_delay = str(current_delay) + 'ms' 
                     if b in self.num.keys():
                         for j in range (1,self.num[b]+1):
-                            line = "set link"+str(cnt)+" [$ns duplex-link "+a+" "+b+"-"+str(j)+" " + str(current_bw) + " " + str(current_delay) + " DropTail]\n"
+                            line = "set link"+str(cnt)+" [$ns duplex-link $"+a+" $"+b+"("+str(j)+") " + str(current_bw) + " " + str(current_delay) + " DropTail]\n"
                             self.run[label] += line
                             link_lines.append(line)
                             cnt += 1
                     else:
-                        line = "set link"+str(cnt)+" [$ns duplex-link "+a+" "+b+" 100Mb 0ms DropTail]\n"
+                        line = "set link"+str(cnt)+" [$ns duplex-link $"+a+" $"+b+" 100Mb 0ms DropTail]\n"
                         self.run[label] += line
                         link_lines.append(line)
                         cnt += 1
@@ -172,43 +190,53 @@ class NSGenerator(Generator):
             current_bw = '100Mb' if bw_index == None else str(bw[bw_index]) + 'Mb'
             current_delay = '0ms' if delay_index == None else str(delay[delay_index]) + 'ms'
             for n in lans[l]:
-                line += n+ " "
+                single = re.findall('-[0-9]+$', n)
+                if single == []:
+                    line += f'${n} '
+                else:
+                    line += f'${"-".join(n.split("-")[:-1])}({single[0][1:]}) '
             line += "\" " + str(current_bw) + " " + str(current_delay) + "]\n"
             self.run[label] += line
             lan_lines.append(line)
 
         self.run[label] += '\n\n'
 
-        #Generate IP Addresses
+        # Generate IP Addresses
+
         for line in link_lines:
-            # nodes = re.findall(r'(?<=duplex-line\s)\w', line)
-            nodes = re.findall('(?<=duplex-link\s)(([a-zA-Z0-9-]+\s)+)(?=[0-9.]+Mb)', line)
+            nodes = re.findall('(?<=duplex-link\s)(([\$\(\)a-zA-Z0-9-]+\s)+)(?=[0-9.]+Mb)', line)
             nodes = (nodes[0][0][:-1]).split(' ')
             regex_links = re.findall('link[0-9]+', line)
             for node in nodes:
-                node_name = '-'.join((node.split('-'))[:-1])
+                if (re.findall('^\$.+\([0-9]+\)$', node) == []):
+                    node_name = node_name[1:]
+                else:
+                    node_name = '('.join((node.split('('))[:-1])[1:]
                 if node_name in ip:
-                    line = f'tb-set-ip-link {node} {regex_links[0]} {ip[node_name]}\n'
+                    line = f'tb-set-ip-link {node} ${regex_links[0]} {ip[node_name]}\n'
                     self.run[label] += line
+                    
 
         self.run[label] += '\n\n'
 
         for line in lan_lines:
-            # nodes = re.findall(r'(?<=duplex-line\s)\w', line)
-            nodes = re.findall('(?<=make-lan\s")(([a-zA-Z0-9-]+\s)+)(?=")', line)
+            nodes = re.findall('(?<=make-lan\s")(([\$\(\)a-zA-Z0-9-]+\s)+)(?=")', line)
             nodes = (nodes[0][0][:-1]).split(' ')
             regex_lan = re.findall('lan[0-9]+', line)
             for node in nodes:
-                node_name = '-'.join((node.split('-'))[:-1])
+                if (re.findall('^\$.+\([0-9]+\)$', node) == []):
+                    node_name = node_name[1:]
+                else:
+                    node_name = '('.join((node.split('('))[:-1])[1:]
                 if node_name in ip:
-                    line = f'tb-set-ip-lan {node} {regex_lan[0]} {ip[node_name]}\n'
+                    line = f'tb-set-ip-lan {node} ${regex_lan[0]} {ip[node_name]}\n'
                     self.run[label] += line
             
 
 
             
     def generatePreamble(self, label):
-        self.run[label] = '# generated by DEW 1.0\nset ns [new Simulator]\nsource tb_compat.tcl\n\n'
+        self.run[label] = '# generated by DEW 2.0\nset ns [new Simulator]\nsource tb_compat.tcl\n\n'
 
     def generatePostamble(self, label):
         self.run[label] += '\n$ns rtproto Static\n$ns run\n\n'
