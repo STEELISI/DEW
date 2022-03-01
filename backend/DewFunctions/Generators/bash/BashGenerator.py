@@ -128,7 +128,7 @@ class BashGenerator(Generator):
                         for c in count:
                             r1 = re.findall(cond+'\.\d+',c)
                             if len(r1) > 0:
-                                if (self.conditions[cond][0] == "psuccess"):
+                                if (cond in self.conditions and self.conditions[cond][0] == "psuccess"):
                                     if ctext != "":
                                         ctext +=  "|| [ $status" +str(count[c])+" -ne 0 ] "
                                     else:
