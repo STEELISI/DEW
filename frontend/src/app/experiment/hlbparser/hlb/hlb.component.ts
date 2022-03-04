@@ -480,7 +480,7 @@ export class HlbComponent implements OnInit, AfterViewInit {
           var scenario = this.getScenariosFromEditor();
           var filtered = [];
           for(var i = 0; i<scenario.length; i++) {
-            if(!(scenario[i].includes(this.oldActor + " ") && scenario[i].includes(" " + this.oldAction + " "))) {
+            if(!(scenario[i].includes(this.oldActor + " ") && scenario[i].includes(" " + this.oldAction))) {
               if(this.oldEmit!="") {
                 scenario[i] = scenario[i].replace(this.oldEmit, actionData['emit']);
               }
@@ -1039,8 +1039,11 @@ export class HlbComponent implements OnInit, AfterViewInit {
             manipulation: {
               enabled: false,
               initiallyActive: false,
-              addNode: (nodeData, callback) => {
+              addNode: (nodeData, callback) => { 
                 [nodeData.label, nodeData.id] = this.assignNewActorInTopologyGraph(nodeData.group == "LAN");
+
+                this.createGraphItemEntry(nodeData);
+
                 this.extractActors([nodeData.label]);
                 if (!this.actorsGroup.has(nodeData.label)) {
                   this.actorsGroup.set(nodeData.label, this.actorsGroup.size);
@@ -1085,6 +1088,8 @@ export class HlbComponent implements OnInit, AfterViewInit {
               },
               deleteNode: (data, callback) => {
                 //Remove node from id_of_node and all linked edges from id_of_edge
+                var tempActorsList = this.actorsList;
+                this.actorsList.splice(tempActorsList.map(element => element.text).indexOf(globalGraphItemParametersList[data.nodes[0]]['nodeName']), 1); 
                 delete id_of_node[Object.keys(id_of_node).find(node_name => id_of_node[node_name] == data.nodes[0])]
                 delete globalGraphItemParametersList[data.nodes[0] + ""]
                 for (var deletedEdge of data.edges) {
@@ -1426,6 +1431,20 @@ export class HlbComponent implements OnInit, AfterViewInit {
     this.logger.log(LogHeader.GRAPH_UPDATE, "Graph update completed");
   }
 
+  createGraphItemEntry(nodeData) {
+    var temp = {}
+    temp['bandwidth'] = '';
+    temp['delay'] = '';
+    temp['ipAddress'] = '';
+    temp['operatingSystem'] = '';
+    temp['hardwareType'] = '';
+    temp['nodeName'] = nodeData.label;
+    temp['num'] = '1';
+    temp['type'] = GraphItemType.NODE;
+    this.graphItemParametersList[nodeData.id] = temp;
+    globalGraphItemParametersList = this.graphItemParametersList;
+  }
+
   displayMessage = (message) => {
     $("#graphActionButtonList").hide();
     $("#actionMessage").html(message);
@@ -1539,6 +1558,14 @@ export class HlbComponent implements OnInit, AfterViewInit {
       const old_name = this.topologyGraphNodes.get(this.topologyGraphSelectedNodeData.id)['label'];
 
       this.actorsList[this.actorsList.findIndex( item => item['text']==old_name )]['text'] = new_name;
+
+      let index = Object.keys(this.graphItemParametersList).find(key => this.graphItemParametersList[key]['nodeName'] === old_name);
+      this.graphItemParametersList[index]['nodeName'] = new_name;
+      globalGraphItemParametersList = this.graphItemParametersList;
+
+      let temp = swapJSON(id_of_node);
+      temp[currentGraphItemSelection['id']] = new_name;
+      id_of_node = swapJSON(temp);
       
       var request = {
         constraints: this.getConstraintsFromEditor(),
