@@ -62,6 +62,7 @@ import { BrowserModule } from '@angular/platform-browser';
 import { UserIdleModule } from 'angular-user-idle';
 import {DeterLabViewComponent, RunVariablePopUp} from './deterlab-view/deterlab-view.component';
 import { RunInfoComponent } from "./deterlab-view/run-info/run-info.component";
+import { CurrentInfoComponent } from "./deterlab-view/current-info/current-info.component";
 
 @NgModule({
   exports: [HLBParserComponent],
@@ -92,6 +93,7 @@ import { RunInfoComponent } from "./deterlab-view/run-info/run-info.component";
     DesignPageComponent,
     RunVariablePopUp,
     RunInfoComponent,
+    CurrentInfoComponent
   ],
   imports: [
     CommonModule,

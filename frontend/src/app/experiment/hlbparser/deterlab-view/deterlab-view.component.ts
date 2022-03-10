@@ -4,6 +4,7 @@ import {Router} from '@angular/router';
 import {HttpParams} from '@angular/common/http';
 import {MatDialog, MatDialogRef, MatSnackBar, MAT_DIALOG_DATA} from '@angular/material';
 import { RunInfoComponent } from './run-info/run-info.component';
+import { CurrentInfoComponent } from './current-info/current-info.component';
 
 @Component({
     selector: 'app-deterlab',
@@ -13,6 +14,7 @@ import { RunInfoComponent } from './run-info/run-info.component';
 
 export class DeterLabViewComponent implements OnInit {
     @ViewChild(RunInfoComponent, { static: false }) runInfoComponent: RunInfoComponent;
+    @ViewChild(CurrentInfoComponent, { static: false }) currentInfoComponent: CurrentInfoComponent;
     userId;
     userNameObj = {username: '', created_date: '', id: null};
     showWarning = false;
@@ -73,6 +75,11 @@ export class DeterLabViewComponent implements OnInit {
         });
         this.projName = '';
         this.expName = '';
+        setInterval(() => {
+            if(this.runStatus == "start"){
+                this.currentInfoComponent.showDetails();
+            }
+        }, 5000)
     }
 
     getRefreshedStatus() {
@@ -82,6 +89,7 @@ export class DeterLabViewComponent implements OnInit {
         this.getExperimentStatus(params);
         this.getExperimentActivity(params);
         this.runInfoComponent.ngOnInit();
+        this.currentInfoComponent.ngOnInit();
     }
 
     getProjectMapping(params) {
