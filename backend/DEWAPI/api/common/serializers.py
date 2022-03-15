@@ -117,6 +117,12 @@ dependency_graph_update_edge = api.model('Dependency graph update edge', {
   'update_type': fields.String(description="INSERT/REMOVE; Update the graph by adding/deleting and edge",required=True),
   })
 
+dependency_graph_get_node_count = api.model('Get node count of each action in Dependency graph', {
+  'constraints': fields.List(fields.String,description="Constraints of the experiment",required=True),
+  'scenarios': fields.List(fields.String,description="Scenario of the experiment",required=True),
+  'bindings': fields.Nested(binding_val, as_list=True)
+  })
+
 experiment_detail = api.model('get experiment request', {
   'id':fields.String(description="Id of experiment", required=True)
   })

@@ -195,19 +195,17 @@ export class CurrentInfoComponent implements OnInit, OnChanges {
                         this.dependencyGraphNodes = new DataSet<any>(nodes);
                         this.dependencyGraphEdges = new DataSet<any>(links);
 
-                        this.http
-                            .put('v1/pr/hlb/topology/parse', request, { withCredential: true })
-                            .subscribe((receivedData: ParseApiBean) => {
-                                var actors = receivedData['actors'];
-                                for (var data in actors) {
-                                    actors[data] = actors[data]['num'];
-                                }
+                        this.http.put("v1/pr/hlb/dependency-graph/get-node-count", {
+                            scenarios: data.behaviors,
+                            constraints: data.constraints,
+                            bindings: data.bindings,
+                        }, { withCredential: true })
+                            .subscribe((receivedData) => {
                                 this.dependencyGraphNodes.forEach((node) => {
-                                    const num = actors[node.data.actors[0]];
+                                    const num = receivedData.nodeCountData[node.label];
                                     this.dependencyGraphNodes.update({ id: node.id, totalNode: num })
                                 })
-
-                            });
+                            })
 
                         this.dependencyNetworkInstance = new Network(this.dependencyGraphNetwork.nativeElement, { nodes: this.dependencyGraphNodes, edges: this.dependencyGraphEdges }, {
                             layout: {
@@ -283,11 +281,11 @@ export class CurrentInfoComponent implements OnInit, OnChanges {
 
                         //On click
                         this.dependencyNetworkInstance.on('click', (properties) => {
-                            if(properties.nodes && properties.nodes.length){
+                            if (properties.nodes && properties.nodes.length) {
                                 const id = properties.nodes[0];
                                 const node = this.dependencyGraphNodes.get(id)
                                 this.filteredExecutionScript = this.executionScript.filter(script => node['label'] == script.node)
-                            }else{
+                            } else {
                                 this.filteredExecutionScript = [];
                             }
                         });

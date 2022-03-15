@@ -420,6 +420,28 @@ class HandleDependencyGraphUpdateEdge(Resource):
             Logger.backendErrorLog(user, traceback.format_exc())
             raise Exception("Error Occured on the Server")
 
+@ns.route('/hlb/dependency-graph/get-node-count')
+class HandleDependencyGraphGetNodeCount(Resource):
+    @api.expect(dependency_graph_get_node_count)
+    def put(self):
+        """
+          Get node count of each action in dependency graph
+        """
+        try:
+          json_data = request.get_json(force=True)
+          user = userObj.getEmailId()
+          Logger.backendLog(user,"HandleDependencyGraphGetNodeCount()", "Entered Class")
+          constraints = json_data['constraints']
+          scenarios = json_data['scenarios']
+          bindings = json_data['bindings']
+          node_count_data = hlb.HandleDependencyGraphGetNodeCount(constraints, scenarios, bindings)
+          Logger.backendLog(user,"HandleDependencyGraphGetNodeCount()", "Successfully fetched node count data")
+          return {"status": "success", "nodeCountData": node_count_data }
+        except BaseException:
+            Logger.backendErrorLog(user, traceback.format_exc())
+            raise Exception("Error Occured on the Server")
+
+
 @ns.route('/nlp/behavior')
 class HandleNLPTranslator(Resource):
 
