@@ -44,121 +44,96 @@
             File
           </a>
 
-          <div class="dropdown-menu" aria-labelledby="navbarDropdown1">
-            <a
+          <ul class="dropdown-menu" aria-labelledby="navbarDropdown1">
+            <li>
+              <a
               class="dropdown-item"
               (click)="save()"
               *ngIf="experimentControl > 2"
               >Save</a>
-            <div class="dropdown-divider" *ngIf="id == -1" ></div>
-            <a class="dropdown-item disabled" aria-disabled="true" *ngIf="id == -1">You need to save the experiment to perform more file related operations</a>
-            <div class="dropdown-divider" *ngIf="id == -1" ></div>
+            </li>
+            <li class="dropdown-divider" *ngIf="id == -1" ></li>
+            <li>
+              <a class="dropdown-item disabled" aria-disabled="true" *ngIf="id == -1">You need to save the experiment to perform more file related operations</a>
+            </li>
+            <li class="dropdown-divider" *ngIf="id == -1" ></li>
             <!-- <a class="dropdown-item" aria-disabled="true" *ngIf="id != -1">Save As...</a> -->
-            <a class="dropdown-item" (click)="saveDrive()" *ngIf="id != -1"
-              >Save To Google Drive</a
-            >
-            <a
-              class="dropdown-item"
-              (click)="delete()"
-              *ngIf="experimentControl > 3 && id!=-1"
-              >Delete</a
-            >
-            <div class="dropdown-divider" *ngIf="id != -1"></div>
-            <a
-              class="dropdown-item"
-              (click)="showVersionsPopup()"
-              *ngIf="experimentControl > 3 && id!=-1"
-              >View version history</a
-            >
+            <li>
+              <a class="dropdown-item" (click)="saveDrive()" *ngIf="id != -1">Save To Google Drive</a>
+            </li>
+            <li>
+              <a
+                class="dropdown-item"
+                (click)="delete()"
+                *ngIf="experimentControl > 3 && id!=-1"
+                >Delete</a
+              >
+            </li>
+            <li class="dropdown-divider" *ngIf="id != -1"></li>
+            <li>
+              <a class="dropdown-item" (click)="uploadInput()" href="#">Upload</a>
+            </li>
+            <li class="dropdown-submenu">
+              <a
+                class="dropdown-item"
+                href="#"
+                tabindex="-1"
+              >
+                Export
+              </a>
+              <ul class="dropdown-menu">
+                <li class="dropdown-item"><a class="dropdown-item" (click)="addBindings()">NS File</a></li>
+                <li class="dropdown-item"><a class="dropdown-item" (click)="bashGen()">BASH File</a></li>
+                <li class="dropdown-item"><a class="dropdown-item" (click)="exportToDEW()">DEW</a></li>
+              </ul>
+            </li>
+            <li class="dropdown-divider" *ngIf="id != -1"></li>
+            <li>
+              <a
+                class="dropdown-item"
+                (click)="showVersionsPopup()"
+                *ngIf="experimentControl > 3 && id!=-1"
+                >View version history</a
+              >
+            </li>
 
-            <div class="dropdown-divider" *ngIf="id != -1"></div>
-            <a
-              class="dropdown-item"
-              *ngIf="experimentControl > 3 && id!=-1"
-              (click)="addUserPopUp()"
-              >Share to User</a
-            >
-            <a
-              class="dropdown-item"
-              *ngIf="experimentControl > 3 && id!=-1"
-              (click)="listUserPopUp()"
-              >List of Users
-            </a>
+            <li class="dropdown-divider" *ngIf="id != -1"></li>
+            <li>
+              <a
+                class="dropdown-item"
+                *ngIf="experimentControl > 3 && id!=-1"
+                (click)="addUserPopUp()"
+                >Share to User</a
+              >
+            </li>
+            <li>
+              <a
+                class="dropdown-item"
+                *ngIf="experimentControl > 3 && id!=-1"
+                (click)="listUserPopUp()"
+                >List of Users
+              </a>
+            </li>
             <!-- <a class="dropdown-item" *ngIf="experimentControl > 3 && id!=-1"
               >Share link
             </a> -->
-            <a class="dropdown-item" (click)="closeExperiment()">Close</a>
-          </div>
-        </li>
-
-        <li class="nav-item dropdown">
-          <a
-              class="nav-link"
-              href="#"
-              id="navbarDropdown6"
-              role="button"
-              data-toggle="dropdown"
-              aria-haspopup="true"
-              aria-expanded="false">
-              View
-            </a>
-            <div class="dropdown-menu" aria-labelledby="navbarDropdown6">
-              <a class="dropdown-item" (click)="show(2)">Dependency graph</a>
-            </div>
-        </li>
-
-        <li class="nav-item dropdown" *ngIf="experimentControl > 2">
-          <a
-            class="nav-link"
-            href="#"
-            id="navbarDropdown2"
-            role="button"
-            data-toggle="dropdown"
-            aria-haspopup="true"
-            aria-expanded="false"
-          >
-            Input
-          </a>
-          <div class="dropdown-menu" aria-labelledby="navbarDropdown2">
-            <a class="dropdown-item" (click)="uploadInput()">Upload</a>
-            <!-- <a class="dropdown-item" (click)="nlpInput()">NLP</a> -->
-          </div>
+            <li>
+              <a class="dropdown-item" (click)="closeExperiment()">Close</a>
+            </li>
+            
+          </ul>
         </li>
 
         <li class="nav-item dropdown">
           <a
             class="nav-link"
             href="#"
-            id="navbarDropdown3"
+            id="navbarDropdown4"
             role="button"
             data-toggle="dropdown"
             aria-haspopup="true"
             aria-expanded="false"
-          >
-            Export
-          </a>
-          <div class="dropdown-menu" aria-labelledby="navbarDropdown3">
-            <a class="dropdown-item" (click)="addBindings()">NS File</a>
-            <a class="dropdown-item" (click)="bashGen()">BASH File</a>
-            <a class="dropdown-item" (click)="exportToDEW()">DEW</a>
-          </div>
-        </li>
-       
-        <li class="nav-item dropdown">
-            <a
-              class="nav-link"
-              href="#"
-              id="navbarDropdown4"
-              role="button"
-              data-toggle="dropdown"
-              aria-haspopup="true"
-              aria-expanded="false">
-              Design
-            </a>
-              <div class="dropdown-menu" aria-labelledby="navbarDropdown4">
-                <a class="dropdown-item"  (click)="show(7)">Graphical view</a>
-                <a class="dropdown-item" (click)="show(1)">Text view</a>
-              </div>
+            (click)="show(1)">Design</a>
         </li>
 
         <li class="nav-item dropdown">
@@ -178,19 +153,25 @@
               </div>
          
         </li>
-	<li class="nav-item dropdown">
+        <li class="nav-item dropdown">
+          
           <a
             class="nav-link"
             href="#"
-            id="navbarDropdown5"
+            id="navbarDropdown6"
             role="button"
             data-toggle="dropdown"
             aria-haspopup="true"
-            aria-expanded="false"
-            (click)="show(3)">Deterlab</a>
-        </li>
-        <li class="nav-item"><a class="nav-link" href="/docs">Help</a></li>
-        <li class="nav-item"><a class="nav-link" href="/docs/contact_us">Contact us</a></li>
+            aria-expanded="false">
+            Help
+          </a>
+            <ul class="dropdown-menu" aria-labelledby="navbarDropdown6">
+              <li><a class="dropdown-item" href="/docs">Docs</a></li>
+              <li><a class="dropdown-item" href="/docs/contact_us">Contact us</a></li>
+            </ul>
+       
+      </li>
+        
       </ul>
     </div>
   </nav>
