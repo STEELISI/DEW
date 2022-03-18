@@ -51,7 +51,7 @@ A few general views of the page and its various components are shown below.
 View video tutorials on using the experiment page below: <br><br>
 <iframe width="560" height="315" src="https://www.youtube.com/embed/JNOLuf4gwUc" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
 
-<iframe width="560" height="315" src="https://www.youtube.com/embed/5q8fAJtRyUA" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe> 
+<iframe width="560" height="315" src="https://www.youtube.com/embed/5q8fAJtRyUA" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe> <br>
 
 <!-- Upto here - 1-->
 
@@ -180,9 +180,15 @@ As mentioned previously in the document, the _Visual Representation Section_ com
         * _Note that you can access the same **Add Action Popup** when you click on the `Add Action` button in the **Topology Node/Link Parameter Definition** popup that shows up when you click on a node in the network topology graph._
         * Using the _Add Action Popup_, you can create an action by assigning an **action name**, **trigger event**, **emit event**, **wait time**, **action binding**, and **event binding**; and then clicking on the `Add Action` button.
         * You can also **edit an action** by clicking on the `Edit Action` button that shows up in the bottom portion of the screen when you click on the respective action.
+        * The _Add Action Popup_ is shown in the image below.<br><br>
+        ![Dependency Add Action](./img/dependency_add_action.png)<br><br>
+        * The `Action Number` towards the side of the action icon denotes the _action sequence numbers_ of the actions associated with the actors (nodes in the graph legend).
         * Any changes made to the dependency graph also reflects in the scenario and bindings in the _Experiment Definition Section_ of the page.
+        * The dependency graph components and their symbols are shown below.<br><br>
+        ![Dependency Graph Sample](./img/dependency_graph_sample.png)<br><br>
 
-## Dependency graph
+
+<!-- ## Dependency graph
 
 
 * In order to understand the experiment better, we have a graph view which displays the experiment as a flowchart of actions. The nodes denote actions, with the color of the node denoting the actor that performs the given action. Edges denote a dependency, where one action results in an event and a following action waits for that event. You can create new edges (dependencies) between nodes or delete existing edges (dependencies). As you modify the dependency graph the modifications are propagated to the Experiment view. 
@@ -204,7 +210,7 @@ As mentioned previously in the document, the _Visual Representation Section_ com
 
 ### Zoom and scroll
 * To zoom in or zoom out, use the (+) and (-) buttons to increase or decrease the zoom level
-* Please use the panning functionality instead of scrolling. (Click on the white area and drag in the desired direction)
+* Please use the panning functionality instead of scrolling. (Click on the white area and drag in the desired direction) -->
 
 ## Behavior, Constraints, and Bindings
 
