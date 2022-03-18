@@ -125,7 +125,7 @@
                 </ul>
                 <ng-template #showSwapOut>
                     <ul class="ul-style">
-                        <li>
+                        <li *ngIf="runStatus == 'stop'">
                             <button type="button" class="btn btn-outline-success swap-dt"
                                     data-toggle="modal" data-target="#exampleModal"
                                     [disabled]="deactivateSwapOut"
