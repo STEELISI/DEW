@@ -1,5 +1,7 @@
 # Experiment page
 
+
+<!-- TODO: Change this content -->
 This is the main page used to create new or edit existing experiments.
 
 ![Experiment page](./img/experiment_page_main.png)
@@ -9,11 +11,12 @@ View video tutorials on using the experiment page below -
 
 <iframe width="560" height="315" src="https://www.youtube.com/embed/5q8fAJtRyUA" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
 
+<!-- Upto here -->
 
 ## Experiment name
 * The name of the experiment is displayed on the top left corner of the page.
-* To edit the name, click on the name and update the text. (just like Google docs)
-* The name can be a maximum of 101 characters. The number of characters remaining is shown to the right of the name.
+* To edit the name, click on the name and update the text. (just like Google Docs)
+* The name can be a maximum of 101 characters. The number of characters remaining is shown towards the right of the name.
 ![Experiment name](./img/experiment_page_experiment_name.png)
 
 ## Menu bar
