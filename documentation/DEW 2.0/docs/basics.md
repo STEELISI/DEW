@@ -5,9 +5,9 @@ This guide provides a quick introduction to Distributed Experiment Workflows (DE
 
 ## What is DEW?
 
-DEW is an attempt to encode behavior and toplogical constraints which help with realization on testbeds. DEW consists of 3 major components. They are Actors, Scenario/Behavior, Constraints, and Bindings.
+DEW is an attempt to encode behavior and toplogical constraints which help with realization on testbeds. DEW consists of 4 major components. They are Actors, Scenario/Behavior, Constraints, and Bindings.
 
-DEW helps users encode behavior of an experiment, and uses that encoding to generate topology and runnable scripts. DEW representation has three major components: scenario, constraints and bindings.
+DEW helps users encode behavior of an experiment, and uses that encoding to generate topology and runnable scripts. DEW representation has three major components: scenario, constraints, and bindings.
 
 ## Scenario
 
@@ -46,33 +46,117 @@ Now, the user can run `install.sh` once and focus on the execution of `test.sh`.
 
 ## Constraints
 
-Constraints section defines how actors should be realized on a testbed, i.e., it describes topological constraints for actors. If no constraints are specified all actors will be materialized in a disconnected topology, with a default OS.
+Constraints section defines how actors should be realized on a testbed, i.e., it describes topological constraints for actors. If no constraints are specified, all actors will be materialized in a disconnected topology; with a default OS, hardware type, and IP Address, with only one node per actor.
 
-### os
-OS Constraint defines the operating system of the actor. The format of the constraint is 
+### Actor Configuration Parameters
+Each Actor can be configured according to the requirements of the experiment. 
+The general syntax to configure the actor parameters is given below:
 ```
-os actor os_name
-```
-
-### num
-num constraint defines the number of instances of an actor. The format of the constraint is
-```
-num actor number_of_instances
-```
-### link
-Link constraint denotes that there is a link between two actors. If there are multiple number of instances, you need to define the keyword `ALL` or `ANY` to indicate whether all instances need to be linked or any instance needs to be linked.
- The format of the constraint is
-```
-link [ALL/ANY] actor1 [ALL/ANY] actor2
+<actor list> [ <parameter> <value>, <parameter> <value>, ... ]
 ```
 
-### lan
+where `<actor list>` is the comma-separated list of actors to be configured (can also be a single actor), `<parameter>` is the actor parameter to be configured, and `<value>` is the correponding parameter value where each `<parameter> <value>` constitutes a parameter-value pair for a given actor or list of actors. 
 
-LAN constraint creates a LAN between specified actors. The format of the statement is
+The parameter-value pairs are optional. If the parameter-value pairs aren't specified in the constraints, the default values will be used for the corresponding actors.
 
+_**Example:**_ `actor1, actor2 [ os Ubuntu, num 2 ]`, `actor1 [ nodeType pc ]`
+
+The parameters that can be configured are as follows:
+
+* #### os
+  
+    The `os` parameter defines the operating system of the actor(s). The format of the constraint is:
+    ```
+    <actor list> [ os <alphanumerical value> ]
+    ```
+    <br><br>
+
+* #### num
+  
+    The `num` parameter defines the number of instances of the actor(s). The format of the constraint is:
+    ```
+    <actor list> [ num <numerical value> ]
+    ```
+    <br><br>
+
+* #### nodeType
+  
+    The `nodeType` parameter defines the hardware type of the actor(s). The format of the constraint is: 
+    ```
+    <actor list> [ nodeType <alphanumerical value> ]
+    ```
+    <br><br>
+
+* #### location
+  
+    The `location` parameter defines the IP Address of the actor(s). The format of the constraint is: 
+    ```
+    <actor list> [ location <IP Address> ]
+    ```
+    <br><br>
+
+### Link/LAN Configuration Parameters
+Each link/LAN can be configured according to the requirements of the experiment. 
+The general syntax to configure the link/LAN parameters is given below:
 ```
-lan actor [actor] ...
+<link/lan> <actor list> [ <parameter> <value>, <parameter> <value>, ... ]
 ```
+
+where `<link/lan>` denotes the placement of a link or LAN between a set of actors, `<actor list>` is the space-separated list of actors to be configured, `<parameter>` is the link/LAN parameter to be configured, and `<value>` is the correponding parameter value where each `<parameter> <value>` constitutes a parameter-value pair for the link/LAN between the set of actors.
+
+The parameter-value pairs are optional. If the parameter-value pairs aren't specified in the constraints, the default values will be used for the corresponding links and LANs.
+
+_**Example:**_ `link actor1 actor2 [ bw 100 ]`, `lan actor1 actor2 actor3 [ bw 20, delay 4 ]`
+
+#### The Link/LAN Keyword
+
+The keywords `link` and `lan` are explained below:
+
+* ##### link
+  
+    The Link constraint denotes that there is a link between two actors. If there are multiple number of instances, you need to define the keyword `ALL` or `ANY` to indicate whether all instances need to be linked or any instance needs to be linked.
+    The format of the constraint is
+
+    `link [ALL/ANY] actor1 [ALL/ANY] actor2 [ <parameter> <value>, <parameter> <value>, ... ]`
+    <br><br>
+
+* ##### lan
+  
+    The LAN constraint creates a LAN between specified actors. The format of the statement is
+
+    `lan <actor list> [ <parameter> <value>, <parameter> <value>, ...]`
+
+
+#### Link/LAN Parameters
+
+The parameters that can be configured for any link/LAN are as follows:
+
+* ##### bw
+  
+    The `bw` parameter defines the bandwidth of the corresponding link or LAN. The format of the constraint is:
+
+    ```
+    <link/lan> <actor list> [ bw <value> ]
+    ```
+
+    The unit of measurement of the bandwidth is __Gbps__. 
+    
+    (Do not mention the unit in the value. Example: `link actor1 actor2 [ bw 1 ]`)
+    <br><br>
+
+* ##### delay
+  
+    The `delay` parameter defines the latency/delay of the corresponding link or LAN. The format of the constraint is:
+
+    ```
+    <link/lan> <actor list> [ delay <value> ]
+    ```
+
+    The unit of measurement of the latency/delay is __ms__. 
+    
+    (Do not mention the unit in the value. Example: `lan actor1 actor2 actor3 [ delay 100 ]`)
+    <br><br>
+
 
 ## Bindings
 
