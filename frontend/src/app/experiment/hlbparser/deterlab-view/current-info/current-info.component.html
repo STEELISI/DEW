@@ -2,6 +2,11 @@
     <div style="margin:0.5em; display: flex; " *ngIf="!errorFlag">
         <div style="flex-grow: 1">
             <div class="graph-box-dependency">
+                <div style="width: 200px; margin-top: 20px; margin-left: 40px; position: absolute;">
+                    <div class="row" *ngFor="let actor of actorsGroup | keyvalue">
+                      <div class="col-md-3 mt-1" [ngStyle]="{'background-color': graphColors[actor.value]}"></div><div class="col-md-9 mt-1">{{actor.key}}</div>
+                    </div>
+                </div>
                 <div id="dependencyGraphNetwork" #dependencyGraphNetwork></div>
             </div>
         </div>
