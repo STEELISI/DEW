@@ -5,8 +5,9 @@ nav:
 - UI:
   - First time setup: 'first_time.md'
   - Dashboard: 'dashboard.md'
-  - Experiment page: 'experiment_page.md'
-  - Deterlab page: 'run_deterlab_experiment.md'
+  - Profile Page: 'profile_page.md'
+  - Experiment Page: 'experiment_page.md'
+  - Deterlab Page: 'run_deterlab_experiment.md'
 - DEW concepts:
   - Basics: 'basics.md'
   - Sharing and Collaboration: 'sharing_and_collaboration.md'
