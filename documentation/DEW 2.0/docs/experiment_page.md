@@ -93,6 +93,21 @@ View video tutorials on using the experiment page below: <br><br>
         #### Delete
         * Deletes the experiment in the DEW portal. This is a **non-recoverable** action. But, the experiment will still remain on your Google Drive, if you have saved it there.
         <br><br>
+        #### Upload
+        * It allows the user to upload an experiment saved locally or on Google Drive in the DEW format.
+        * We hope to support more experiment formats in the near future.
+        <br><br>
+        ![Upload dialog](./img/experiment_page_upload_dialog.png)
+        <br><br>
+        #### Export
+        * It is used to export the experiment to different formats <br><br>
+            ![Export menu](./img/experiment_page_export_menu.png) <br><br>
+            - **NS file:** Download the NS file for the current experiment.
+            - **BASH file:** Download the Bash script or scripts for the experiment. Currently the scripts should be run on Deterlab, from the users machine. Runningthe script without arguments will display a help message to tell you which input parameters you need to specify.
+            - **DEW:** Download the DEW file of the current experiment.
+        <!--TODO: See what this line does: ![Export popup](./img/experiment_page_export_popup.png) -->
+        <!--TODO: Add indentation - 4-->
+        <br><br>
         #### Version history
         * View the changes made previously to the experiment. 
         * To revert to a particular version, click on the revert button. <br><br>
@@ -121,36 +136,7 @@ View video tutorials on using the experiment page below: <br><br>
 
     * _This menu option is used to save the experiment to the database. Other file operations cannot be performed until the user has saved the experiment._
     <br><br>
-    ### Input
-
-    This menu option allows the user to upload an experiment saved locally in the DEW format or as a bash script. We hope to support more experiment formats in the near future.
-    <br><br>
-    ![Input menu](./img/experiment_page_input_menu.png)
-    <br><br> <!--TODO: Add indentation here - 3-->
-    #### Upload
-    Upload DEW files to load the experiment. For example, the DEW file saved in Google Drive can be used for upload.
-
-    ![Upload dialog](./img/experiment_page_upload_dialog.png)
-    <!--Upto here - 3-->
-    <br><br>
-    ### Export
     
-    This menu is used to export the experiment to different formats
-
-    ![Export menu](./img/experiment_page_export_menu.png)
-
-    <!--TODO: See what this line does: ![Export popup](./img/experiment_page_export_popup.png) -->
-    <!--TODO: Add indentation - 4-->
-    #### NS file
-    * Download the NS file for the current experiment
-    <br><br>
-    #### BASH file
-    * Download the Bash script or scripts for the experiment. Currently the scripts should be run on Deterlab, from the users machine. Running the script without arguments will display a help message to tell you which input parameters you need to specify.
-    <br><br>
-    #### DEW
-    * Download the DEW file of the current experiment.
-    <!--Upto here - 4-->
-
 ## Graph Views and Manipulation
 
 As mentioned previously in the document, the _Visual Representation Section_ comprises of the **Network Topology Graph** and the **Dependency Graph**. The steps to create and manipulate the graphs are shown below:
