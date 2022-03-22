@@ -4,6 +4,7 @@ import {Router} from '@angular/router';
 import {HttpParams} from '@angular/common/http';
 import {MatDialog, MatDialogRef, MatSnackBar, MAT_DIALOG_DATA} from '@angular/material';
 import { RunInfoComponent } from './run-info/run-info.component';
+import { CurrentInfoComponent } from './current-info/current-info.component';
 
 @Component({
     selector: 'app-deterlab',
@@ -13,6 +14,7 @@ import { RunInfoComponent } from './run-info/run-info.component';
 
 export class DeterLabViewComponent implements OnInit {
     @ViewChild(RunInfoComponent, { static: false }) runInfoComponent: RunInfoComponent;
+    @ViewChild(CurrentInfoComponent, { static: false }) currentInfoComponent: CurrentInfoComponent;
     userId;
     userNameObj = {username: '', created_date: '', id: null};
     showWarning = false;
@@ -35,6 +37,7 @@ export class DeterLabViewComponent implements OnInit {
     activityMessages = [];
     activateSwapIn = true;
     deactivateSwapOut = false;
+    runStatus = null;
     userCreatedDate;
     userNamesList = [];
     showLoader = false;
@@ -72,6 +75,11 @@ export class DeterLabViewComponent implements OnInit {
         });
         this.projName = '';
         this.expName = '';
+        setInterval(() => {
+            if(this.runStatus == "start"){
+                this.currentInfoComponent.showDetails();
+            }
+        }, 5000)
     }
 
     getRefreshedStatus() {
@@ -81,6 +89,7 @@ export class DeterLabViewComponent implements OnInit {
         this.getExperimentStatus(params);
         this.getExperimentActivity(params);
         this.runInfoComponent.ngOnInit();
+        this.currentInfoComponent.ngOnInit();
     }
 
     getProjectMapping(params) {
@@ -115,6 +124,7 @@ export class DeterLabViewComponent implements OnInit {
                     if (this.experimentStatus === 'active') {
                         this.activateSwapIn = false;
                         this.deactivateSwapOut = false;
+                        this.getRunStatus();
                     } else {
                         this.activateSwapIn = true;
                     }
@@ -396,6 +406,7 @@ export class DeterLabViewComponent implements OnInit {
                     this._snackBar.open('Successfully started', 'close', {
                         duration: 2000,
                     });
+                    this.runStatus = 'start';
                 } else {
 		
 	          const dialogRef = this.dialog.open(RunVariablePopUp, {
@@ -444,6 +455,7 @@ export class DeterLabViewComponent implements OnInit {
                     this._snackBar.open('Successfully stopped', 'close', {
                         duration: 2000,
                     });
+                    this.runStatus = 'stop';
                 } else {
                     const dialogRef = this.dialog.open(RunVariablePopUp, {
                         width: '30%',
@@ -455,6 +467,42 @@ export class DeterLabViewComponent implements OnInit {
                             this.showLoader = true;
                             console.log(result)
                             this.stop(result);
+                        }
+                    });
+                }
+            }, error => {
+                this.showLoader = false;
+                this._snackBar.open('Something went wrong please try again later!', 'close', {
+                    duration: 2000,
+                });
+            });
+    }
+
+    getRunStatus() {
+        const params = {
+            eid: this.experimentId,
+            account_id: this.userId,
+        };
+
+        this.http.get('v1/pr/deter/project/getRunStatus', { params, withCredentials: true })
+
+            .subscribe(data1 => {
+                this.showLoader = false;
+
+                if (data1.success) {
+                    this.runStatus = data1.status;
+                } else {
+
+                    const dialogRef = this.dialog.open(RunVariablePopUp, {
+                        width: '30%',
+                        data: data1.labels,
+                    });
+
+                    dialogRef.afterClosed().subscribe((result) => {
+                        if (result !== undefined) {
+                            this.showLoader = true;
+                            console.log(result)
+                            this.run(result);
                         }
                     });
                 }

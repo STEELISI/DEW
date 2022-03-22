@@ -1,0 +1,48 @@
+<div class="container p-0" style="height: 100%;">
+    <div style="margin:0.5em; display: flex; " *ngIf="!errorFlag">
+        <div style="flex-grow: 1">
+            <div class="graph-box-dependency">
+                <div id="dependencyGraphNetwork" #dependencyGraphNetwork></div>
+            </div>
+        </div>
+        <div style="margin-left: 10px; width: 40%" *ngIf="filteredExecutionScript && filteredExecutionScript.length">
+            <mat-accordion>
+                <mat-expansion-panel (opened)="panelOpenState = true"
+                                     (closed)="panelOpenState = false"
+                                     *ngFor="let s of filteredExecutionScript;let i=index">
+                  <mat-expansion-panel-header>
+                    <mat-panel-title>
+                      {{s.node}} : <span style="color:blue">{{s.action}}</span>
+                    </mat-panel-title>
+                    <mat-panel-description>
+                        
+                    <span style="color:green" *ngIf="(s.status=='0')">
+                      Status: Successful
+          <!-- <span style="color:red" *ngIf="(s.error!='')">
+                            {{' (with Error)'}}
+                        </span>-->
+                    </span>
+                    <span style="color:green" *ngIf="( s.status!='0')">
+                        Status: Unsuccessfull <span style="color:red" *ngIf="(s.error!='')">
+                            {{' (with Error)'}}
+                        </span>
+                    </span>
+                    </mat-panel-description>
+                  </mat-expansion-panel-header>
+                  <div class="col-md-12" >
+                    <span style="color:red" *ngIf="(s.error!='')">
+                        {{'Error: *'+s.error+'*' }}
+                    </span>
+                    <div class="col-md-12" style="background-color: black;color: white;">
+                    <p 
+                        >{{s.output}}</p>
+                    </div>
+                </div>
+                </mat-expansion-panel>
+            </mat-accordion>
+        </div>
+    </div>
+    <div [hidden]="!errorFlag">
+        <p>{{error}}</p>
+    </div>
+</div>

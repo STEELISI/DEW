@@ -786,6 +786,21 @@ class HLBService():
 
         return (updated_scenarios, updated_bindings, event_name, None)
 
+    def HandleDependencyGraphGetNodeCount(self, constraints, scenarios, bindings):
+        gen = bashGenerator(scenario=scenarios,constraints=constraints,bindings=bindings)
+        gen.generate()
+        labelScript = gen.run
+        
+        nodeCountData = defaultdict(int)
+        for (_, script) in labelScript.items():
+            commands = script.split("\n")
+
+            for command in commands:
+                if command.startswith("execute_fork") and command[-1] == "&":
+                    nodeCountData[command.split(" ")[-2]] += 1
+
+        return nodeCountData
+
     #Handle generateNS
     def HandleNS(self,json_data):
         errors = []
