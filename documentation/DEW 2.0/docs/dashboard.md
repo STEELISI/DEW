@@ -6,8 +6,14 @@
     
     ![main page](img/dashboard_main_page.png)
 
-* Clicking on the menu bar (≡) shows your name, picture, and the logout button. Clicking on the close button removes the menu bar. 
-
+* Clicking on the menu bar (≡) displays your name, profile picture, and the following menu options - `Dashboard`, `Documentation`, `Profile`, `Contact Us`, and `Logout`. The functionality of each menu option is described below:
+    * `Dashboard` - Displays the Dashboard Page
+    * `Documentation` - Displays the Documentation Page
+    * `Profile` - Displays the Profile Page
+    * `Contact Us` - Displays the Contact Us Page
+    * `Logout` - Logout from your current DEW session
+    * Clicking on the close button closes the menu bar.
+    <br><br>
     ![menu bar](img/dashboard_menu.png) <br><br>
 
 * Click on an experiment to open the experiment page. Each experiment list item contains the name, creation date, last updated date, and the role you have in the experiment. ![experiment item](img/dashboard_single_experiment.png)

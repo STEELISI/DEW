@@ -1,6 +1,5 @@
 # Experiment page
 
-<!-- //TODO: Change this portion - 1-->
 ## General Layout of the Page
 ![Experiment page layout](./img/experiment_page_layout.png)
 
@@ -36,30 +35,17 @@ A few general views of the page and its various components are shown below.
 
 ![Experiment page opened](./img/experiment_page_toggled_annotated.png)
 
-<!-- ![Experiment page topology options](./img/experiment_page_topology_options_annotated.png) -->
 
 ## Navigating the Page
 
 * The initial page that opens once you create/open an experiment depicts the network topology of the experiment.
 * You can click on the `Graph Selector` to toggle between the **topology network** and the **dependency graph** views.
 * You can click on the `Experiment Definition Section Toggle` to toggle the **Experiment Definition Section** view.
-<!-- * Clicking on any of the nodes in the network topology view opens up a `Topology Node/Link Parameter Definition` popup menu, where you can define certain parameter values of the node/link. -->
-
-
-## Tutorials
-
-View video tutorials on using the experiment page below: <br><br>
-<iframe width="560" height="315" src="https://www.youtube.com/embed/JNOLuf4gwUc" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-
-<iframe width="560" height="315" src="https://www.youtube.com/embed/5q8fAJtRyUA" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe> <br>
-
-<!-- Upto here - 1-->
-
 
 ## Experiment Name
 * The name of the experiment is displayed on the top left corner of the page.
 * To edit the name, click on the name and update the text. (just like Google docs)
-* The name can be a maximum of 101 characters. The number of characters remaining is shown to the right of the name. <br><br> <!---->
+* The name can be a maximum of 101 characters. The number of characters remaining is shown to the right of the name. <br><br> 
 ![Experiment name](./img/experiment_page_experiment_name.png)
 
 ## Menu Bar
@@ -242,30 +228,11 @@ Names of actors will eventually correspond to names of nodes in your experiments
 
 ### Constraints
 
-* The constraints section helps define any constraints about the topology of the experiment, as it will be materialized on a testbed.
-* The statements are in the form of
-```
-constraint_type actor1 [actor2|value]
-```
-* The allowed constraint types are
-    * os
-    * num
-    * link
-    * lan
-    * interfaces
-    * location
-    * nodetype
-* For example:
-```
-os server ubuntu
-num attacker 3
-lan client attacker
-link router server 
-```
-
-* As you start typing there will be auto-suggestion displayed near the top of the text area.
-* Press tab to use the first auto suggested word. It will append the word near the cursor in the textarea.
-* There will also be suggestion displayed along with suggested text. This will help you to write the next word or phrase. 
+* The constraints section helps the user define constraints with regards to the topology of the experiment, as the experiment will be materialized on a testbed.
+* You can find the list of constraints and the general syntax of the constraints in the `Basics` section of the documentation.
+* As you start typing, you will find the auto-suggestion displayed near the top of the text area.
+* Press tab to use the first auto suggested word. It will append the word at the cursor location in the textarea.
+* There will also be sentence suggestion displayed along with suggested text. This will help you write the next word or phrase. 
 
 ### Bindings
 
@@ -281,3 +248,11 @@ start_server iperf -s
 * As you start typing behavior above this area will be populated with the terms which require definition for the experiment to execute. 
 
 We have provided some suggestions for action and event bindings. Please look at the [binding suggestions](/binding_suggestions) page for more information.
+
+
+## Tutorials
+
+View video tutorials on using the experiment page below: <br><br>
+<iframe width="560" height="315" src="https://www.youtube.com/embed/JNOLuf4gwUc" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+
+<iframe width="560" height="315" src="https://www.youtube.com/embed/5q8fAJtRyUA" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe> <br>
