@@ -7,6 +7,11 @@
                       <div class="col-md-3 mt-1" [ngStyle]="{'background-color': graphColors[actor.value]}"></div><div class="col-md-9 mt-1">{{actor.key}}</div>
                     </div>
                 </div>
+                <div style="width: 150px; position: absolute; bottom: 20px; margin-left: 20px;">
+                    <div  class="mt-1" *ngFor="let legend of statusLegends">
+                      <img [src]="legend.img" style="width: 15px; height: 15px; margin-right: 7px;">{{legend.label}}
+                    </div>
+                </div>
                 <div id="dependencyGraphNetwork" #dependencyGraphNetwork></div>
             </div>
         </div>

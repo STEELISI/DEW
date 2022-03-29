@@ -61,6 +61,13 @@ export class CurrentInfoComponent implements OnInit, OnChanges {
         inProgressImage: null,
         waitingImage: null
     }
+
+    statusLegends = [
+        { label: 'Success', img: '/assets/checked.png' },
+        { label: 'Error', img: '/assets/warning.png' },
+        { label: 'In Progress', img: '/assets/inprogress.png' },
+        { label: 'Waiting', img: '/assets/stopwatch.png' }
+    ]
     constructor(private http: HttpService
         , private _snackBar: MatSnackBar
 
