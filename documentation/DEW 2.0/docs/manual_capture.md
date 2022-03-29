@@ -1,4 +1,4 @@
-# From testbed to DEW
+# From Testbed to DEW
 
 Some users may develop their experiment manually and then desire to create scripts to run it automatically.
 Since experiment development may span several weeks or even months it is challenging for a user to recall

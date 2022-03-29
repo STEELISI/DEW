@@ -1,6 +1,12 @@
-# From DEW to testbed
+# From DEW to Testbed
 
-## Deterlab (Manual Deployment)
+## Deterlab
+
+### UI Deployment and Monitoring
+
+Kindly refer to the [Testbed Page](run_deterlab_experiment.md) to deploy the DEW experiment onto Deterlab and monitor the experiment.
+
+### Manual Deployment
 
 View a video tutorial for running on deterlab - 
 <iframe width="560" height="315" src="https://www.youtube.com/embed/3b0nP--op_M" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
@@ -10,6 +16,6 @@ To deploy your experiment on Deterlab please save it as NS file and as Bash scri
 
 If you omit to specify something in your DEW format (e.g., bindings) the scripts may be incomplete and will not run. You can manually edit the scripts to provide missing information.
 
-## Other testbeds
+## Other Testbeds
 
-Coming soon
+_Coming Soon_
