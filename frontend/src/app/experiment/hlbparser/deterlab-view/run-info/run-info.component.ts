@@ -50,7 +50,10 @@ export class RunInfoComponent implements OnInit, OnChanges {
         this.http.get(url, {withCredentials: true})
             .subscribe(data => {
                 if(data.logs!=undefined && data.logs.length!=0){
-                this.logList = data.logs
+                this.logList = data.logs.reverse().map(obj => {
+                    obj.started_at = (new Date(obj.started_at)).toString();
+                    return obj;
+                })
                 this.logid = data.logs[0].id
 		
                 } else{

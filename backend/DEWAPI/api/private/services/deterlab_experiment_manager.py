@@ -78,7 +78,7 @@ class DeterLabExperimentManager(object):
             for x in d:
                 r = {}
                 r['id'] = x.rsid
-                r['started_at'] = x.created_at.strftime("%d %B, %Y")
+                r['started_at'] = x.created_at.strftime("%Y-%m-%dT%H:%M:%S") + ".000Z"
                 r['filename'] = x.unique_name
                 result.append(r)
         return result
