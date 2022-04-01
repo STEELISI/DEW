@@ -57,7 +57,11 @@
                     </li>
                     <li class="toctree-l1"><a class="reference internal" href="../dashboard/">Dashboard</a>
                     </li>
-                    <li class="toctree-l1"><a class="reference internal" href="../experiment_page/">Experiment page</a>
+                    <li class="toctree-l1"><a class="reference internal" href="../profile_page/">Profile Page</a>
+                    </li>
+                    <li class="toctree-l1"><a class="reference internal" href="../experiment_page/">Experiment Page</a>
+                    </li>
+                    <li class="toctree-l1"><a class="reference internal" href="../run_deterlab_experiment/">Deterlab Page</a>
                     </li>
                 </ul>
                 <p class="caption"><span class="caption-text">DEW concepts</span></p>
@@ -74,13 +78,25 @@
     </li>
     <li class="toctree-l2"><a class="reference internal" href="#constraints">Constraints</a>
         <ul>
-    <li class="toctree-l3"><a class="reference internal" href="#os">os</a>
+    <li class="toctree-l3"><a class="reference internal" href="#actor-configuration-parameters">Actor Configuration Parameters</a>
+        <ul>
+    <li class="toctree-l4"><a class="reference internal" href="#os">os</a>
     </li>
-    <li class="toctree-l3"><a class="reference internal" href="#num">num</a>
+    <li class="toctree-l4"><a class="reference internal" href="#num">num</a>
     </li>
-    <li class="toctree-l3"><a class="reference internal" href="#link">link</a>
+    <li class="toctree-l4"><a class="reference internal" href="#nodetype">nodeType</a>
     </li>
-    <li class="toctree-l3"><a class="reference internal" href="#lan">lan</a>
+    <li class="toctree-l4"><a class="reference internal" href="#location">location</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#linklan-configuration-parameters">Link/LAN Configuration Parameters</a>
+        <ul>
+    <li class="toctree-l4"><a class="reference internal" href="#the-linklan-keyword">The Link/LAN Keyword</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#linklan-parameters">Link/LAN Parameters</a>
+    </li>
+        </ul>
     </li>
         </ul>
     </li>
@@ -155,8 +171,8 @@
                 <h1 id="basics">Basics</h1>
 <p>This guide provides a quick introduction to Distributed Experiment Workflows (DEW).</p>
 <h2 id="what-is-dew">What is DEW?</h2>
-<p>DEW is an attempt to encode behavior and toplogical constraints which help with realization on testbeds. DEW consists of 3 major components. They are Actors, Scenario/Behavior, Constraints, and Bindings.</p>
-<p>DEW helps users encode behavior of an experiment, and uses that encoding to generate topology and runnable scripts. DEW representation has three major components: scenario, constraints and bindings.</p>
+<p>DEW is an attempt to encode behavior and toplogical constraints which help with realization on testbeds. DEW consists of 4 major components. They are Actors, Scenario/Behavior, Constraints, and Bindings.</p>
+<p>DEW helps users encode behavior of an experiment, and uses that encoding to generate topology and runnable scripts. DEW representation has three major components: scenario, constraints, and bindings.</p>
 <h2 id="scenario">Scenario</h2>
 <p>Scenario defines the behavior of the the experiment. Each statement consists of the action (command or script being executed) and the actor (the machine or identical group of machines executing the action).</p>
 <p>To enforce the order of execution of actions, we use events. An actor can emit one or more events (e.g., when an action is completed). We use the emit keyword for this. Similarly, an actor can wait for one for more events to perform an action. The when keyword is used for this.</p>
@@ -180,24 +196,86 @@ server run_wget_script
 <p>Upon exporting to bash, you get two scripts - <code>install.sh</code> and <code>test.sh</code> 
 Now, the user can run <code>install.sh</code> once and focus on the execution of <code>test.sh</code>. If it was a single script, the user must wait till the installation is finished everytime it is run.</p>
 <h2 id="constraints">Constraints</h2>
-<p>Constraints section defines how actors should be realized on a testbed, i.e., it describes topological constraints for actors. If no constraints are specified all actors will be materialized in a disconnected topology, with a default OS.</p>
-<h3 id="os">os</h3>
-<p>OS Constraint defines the operating system of the actor. The format of the constraint is </p>
-<pre><code>os actor os_name
+<p>Constraints section defines how actors should be realized on a testbed, i.e., it describes topological constraints for actors. If no constraints are specified, all actors will be materialized in a disconnected topology; with a default OS, hardware type, and IP Address, with only one node per actor.</p>
+<h3 id="actor-configuration-parameters">Actor Configuration Parameters</h3>
+<p>Each Actor can be configured according to the requirements of the experiment. 
+The general syntax to configure the actor parameters is given below:</p>
+<pre><code>&lt;actor list&gt; [ &lt;parameter&gt; &lt;value&gt;, &lt;parameter&gt; &lt;value&gt;, ... ]
 </code></pre>
-<h3 id="num">num</h3>
-<p>num constraint defines the number of instances of an actor. The format of the constraint is</p>
-<pre><code>num actor number_of_instances
+<p>where <code>&lt;actor list&gt;</code> is the comma-separated list of actors to be configured (can also be a single actor), <code>&lt;parameter&gt;</code> is the actor parameter to be configured, and <code>&lt;value&gt;</code> is the correponding parameter value where each <code>&lt;parameter&gt; &lt;value&gt;</code> constitutes a parameter-value pair for a given actor or list of actors. </p>
+<p>The parameter-value pairs are optional. If the parameter-value pairs aren't specified in the constraints, the default values will be used for the corresponding actors.</p>
+<p><em><strong>Example:</strong></em> <code>actor1, actor2 [ os Ubuntu, num 2 ]</code>, <code>actor1 [ nodeType pc ]</code></p>
+<p>The parameters that can be configured are as follows:</p>
+<ul>
+<li>
+<h4 id="os">os</h4>
+<p>The <code>os</code> parameter defines the operating system of the actor(s). The format of the constraint is:
+<code>&lt;actor list&gt; [ os &lt;alphanumerical value&gt; ]</code>
+<br><br></p>
+</li>
+<li>
+<h4 id="num">num</h4>
+<p>The <code>num</code> parameter defines the number of instances of the actor(s). The format of the constraint is:
+<code>&lt;actor list&gt; [ num &lt;numerical value&gt; ]</code>
+<br><br></p>
+</li>
+<li>
+<h4 id="nodetype">nodeType</h4>
+<p>The <code>nodeType</code> parameter defines the hardware type of the actor(s). The format of the constraint is: 
+<code>&lt;actor list&gt; [ nodeType &lt;alphanumerical value&gt; ]</code>
+<br><br></p>
+</li>
+<li>
+<h4 id="location">location</h4>
+<p>The <code>location</code> parameter defines the IP Address of the actor(s). The format of the constraint is: 
+<code>&lt;actor list&gt; [ location &lt;IP Address&gt; ]</code>
+<br><br></p>
+</li>
+</ul>
+<h3 id="linklan-configuration-parameters">Link/LAN Configuration Parameters</h3>
+<p>Each link/LAN can be configured according to the requirements of the experiment. 
+The general syntax to configure the link/LAN parameters is given below:</p>
+<pre><code>&lt;link/lan&gt; &lt;actor list&gt; [ &lt;parameter&gt; &lt;value&gt;, &lt;parameter&gt; &lt;value&gt;, ... ]
 </code></pre>
-<h3 id="link">link</h3>
-<p>Link constraint denotes that there is a link between two actors. If there are multiple number of instances, you need to define the keyword <code>ALL</code> or <code>ANY</code> to indicate whether all instances need to be linked or any instance needs to be linked.
- The format of the constraint is</p>
-<pre><code>link [ALL/ANY] actor1 [ALL/ANY] actor2
-</code></pre>
-<h3 id="lan">lan</h3>
-<p>LAN constraint creates a LAN between specified actors. The format of the statement is</p>
-<pre><code>lan actor [actor] ...
-</code></pre>
+<p>where <code>&lt;link/lan&gt;</code> denotes the placement of a link or LAN between a set of actors, <code>&lt;actor list&gt;</code> is the space-separated list of actors to be configured, <code>&lt;parameter&gt;</code> is the link/LAN parameter to be configured, and <code>&lt;value&gt;</code> is the correponding parameter value where each <code>&lt;parameter&gt; &lt;value&gt;</code> constitutes a parameter-value pair for the link/LAN between the set of actors.</p>
+<p>The parameter-value pairs are optional. If the parameter-value pairs aren't specified in the constraints, the default values will be used for the corresponding links and LANs.</p>
+<p><em><strong>Example:</strong></em> <code>link actor1 actor2 [ bw 100 ]</code>, <code>lan actor1 actor2 actor3 [ bw 20, delay 4 ]</code></p>
+<h4 id="the-linklan-keyword">The Link/LAN Keyword</h4>
+<p>The keywords <code>link</code> and <code>lan</code> are explained below:</p>
+<ul>
+<li>
+<h5 id="link">link</h5>
+<p>The Link constraint denotes that there is a link between two actors. If there are multiple number of instances, you need to define the keyword <code>ALL</code> or <code>ANY</code> to indicate whether all instances need to be linked or any instance needs to be linked.
+The format of the constraint is</p>
+<p><code>link [ALL/ANY] actor1 [ALL/ANY] actor2 [ &lt;parameter&gt; &lt;value&gt;, &lt;parameter&gt; &lt;value&gt;, ... ]</code>
+<br><br></p>
+</li>
+<li>
+<h5 id="lan">lan</h5>
+<p>The LAN constraint creates a LAN between specified actors. The format of the statement is</p>
+<p><code>lan &lt;actor list&gt; [ &lt;parameter&gt; &lt;value&gt;, &lt;parameter&gt; &lt;value&gt;, ...]</code></p>
+</li>
+</ul>
+<h4 id="linklan-parameters">Link/LAN Parameters</h4>
+<p>The parameters that can be configured for any link/LAN are as follows:</p>
+<ul>
+<li>
+<h5 id="bw">bw</h5>
+<p>The <code>bw</code> parameter defines the bandwidth of the corresponding link or LAN. The format of the constraint is:</p>
+<p><code>&lt;link/lan&gt; &lt;actor list&gt; [ bw &lt;value&gt; ]</code></p>
+<p>The unit of measurement of the bandwidth is <strong>Gbps</strong>. </p>
+<p>(Do not mention the unit in the value. Example: <code>link actor1 actor2 [ bw 1 ]</code>)
+<br><br></p>
+</li>
+<li>
+<h5 id="delay">delay</h5>
+<p>The <code>delay</code> parameter defines the latency/delay of the corresponding link or LAN. The format of the constraint is:</p>
+<p><code>&lt;link/lan&gt; &lt;actor list&gt; [ delay &lt;value&gt; ]</code></p>
+<p>The unit of measurement of the latency/delay is <strong>ms</strong>. </p>
+<p>(Do not mention the unit in the value. Example: <code>lan actor1 actor2 actor3 [ delay 100 ]</code>)
+<br><br></p>
+</li>
+</ul>
 <h2 id="bindings">Bindings</h2>
 <p>Bindings provide the actual commands to be run on the nodes in the experiment to achieve actions and to detect events. </p>
 <h2 id="dew-file-format">DEW file format</h2>
@@ -236,7 +314,7 @@ Now, the user can run <code>install.sh</code> once and focus on the execution of
         <a href="../sharing_and_collaboration/" class="btn btn-neutral float-right" title="Sharing and Collaboration">Next <span class="icon icon-circle-arrow-right"></span></a>
       
       
-        <a href="../experiment_page/" class="btn btn-neutral" title="Experiment page"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href="../run_deterlab_experiment/" class="btn btn-neutral" title="Deterlab Page"><span class="icon icon-circle-arrow-left"></span> Previous</a>
       
     </div>
   
@@ -262,7 +340,7 @@ Now, the user can run <code>install.sh</code> once and focus on the execution of
   <span class="rst-current-version" data-toggle="rst-current-version">
     
     
-      <span><a href="../experiment_page/" style="color: #fcfcfc">&laquo; Previous</a></span>
+      <span><a href="../run_deterlab_experiment/" style="color: #fcfcfc">&laquo; Previous</a></span>
     
     
       <span><a href="../sharing_and_collaboration/" style="color: #fcfcfc">Next &raquo;</a></span>
