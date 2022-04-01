@@ -59,10 +59,10 @@ A few general views of the page and its various components are shown below.
 
     ### Back button
     * Click on the back button to go to the dashboard. Alternatively, you can use the back button in the browser.
-    <!-- //TODO: Change this portion - 2-->
+    
     <br><br>
     ### File menu
-    ![File for existing experiment](./img/experiment_page_file_menu_existing.png)
+    ![File for existing experiment](./img/experiment_page_file_menu_existing.png)<br><br>
 
     * This menu contains a number of file related operations. They are:
 
@@ -85,19 +85,19 @@ A few general views of the page and its various components are shown below.
         ![Version history](./img/experiment_page_version_history.png)
         <br><br>
         #### Share to User
-        * Share the experiment with another DEW user for access. To learn more about sharing and access levels, visit the [Sharing and Collaboration page](./sharing_and_collaboration/)
+        * Share the experiment with another DEW user for access. To learn more about sharing and access levels, visit the [Sharing and Collaboration page](./sharing_and_collaboration.md).<br><br>
         ![Share to user](./img/experiment_page_share_user.png)
         <br><br>
         #### List of users
-        * View and manage the list of users who can access the experiment. To learn more about sharing and access levels, visit [Sharing and Collaboration page](./sharing_and_collaboration/).
+        * View and manage the list of users who can access the experiment. To learn more about sharing and access levels, visit [Sharing and Collaboration page](./sharing_and_collaboration.md).
         <br><br>
         ![List of users](./img/experiment_page_list_users.png)
         <br><br>
         #### Close
         * Close the experiment and go back to the dashboard.
-        <!--Upto here -2-->
+        
     <br><br>
-    <!--TODO: Indent this part-->
+    
 
     _Note: If the user has not saved the file, the file menu would have a restricted set of options as shown below._
     <br><br>
@@ -109,33 +109,32 @@ A few general views of the page and its various components are shown below.
     <br><br>
     ### Input
 
-    This menu option allows the user to upload an experiment saved locally in the DEW format or as a bash script. We hope to support more experiment formats in the near future.
+    This menu option allows the user to upload an experiment saved locally in the DEW format or as a Bash script. We hope to support more experiment formats in the near future.
     <br><br>
     ![Input menu](./img/experiment_page_input_menu.png)
-    <br><br> <!--TODO: Add indentation here - 3-->
+    <br><br> 
     #### Upload
     Upload DEW files to load the experiment. For example, the DEW file saved in Google Drive can be used for upload.
 
     ![Upload dialog](./img/experiment_page_upload_dialog.png)
-    <!--Upto here - 3-->
+    
     <br><br>
     ### Export
     
-    This menu is used to export the experiment to different formats
+    This menu is used to export the experiment to different formats.
 
-    ![Export menu](./img/experiment_page_export_menu.png)
+    ![Export menu](./img/experiment_page_export_menu.png)<br><br>
 
-    <!--TODO: See what this line does: ![Export popup](./img/experiment_page_export_popup.png) -->
-    <!--TODO: Add indentation - 4-->
+    
     #### NS file
-    * Download the NS file for the current experiment
+    * Download the NS file for the current experiment.
     <br><br>
     #### BASH file
-    * Download the Bash script or scripts for the experiment. Currently the scripts should be run on Deterlab, from the users machine. Running the script without arguments will display a help message to tell you which input parameters you need to specify.
+    * Download the Bash script(or scripts) for the experiment. Currently, the scripts should be run on Deterlab from the users machine. Running the script without arguments will display a help message to tell you which input parameters you need to specify.
     <br><br>
     #### DEW
     * Download the DEW file of the current experiment.
-    <!--Upto here - 4-->
+    
 
 ## Graph Views and Manipulation
 
@@ -149,8 +148,8 @@ As mentioned previously in the document, the _Visual Representation Section_ com
         * You can add a LAN to the network by clicking on the `Add LAN` button on the bottom portion of the screen. LANS are represented as black dots in the graph.
         * You can add links between the nodes by clicking and holding `Ctrl + Left Mouse Button` between the 2 nodes that need to be linked. Links are represented as black lines in the graph.
         * The `Action Number` towards the side of the node icon denotes the _action sequence numbers_ of the actions associated with the actors (nodes).
-        * The network topology components and their symbols are shown below.
-        ![Network Topology Icons](./img/network_topology_sample_annotated.png)
+        * The network topology components and their symbols are shown below.<br><br>
+        ![Network Topology Icons](./img/network_topology_sample_annotated.png)<br><br>
         * You can define the parameters of a network node such as the **Operating System**, **IP Address/Location**, **Number of Nodes**, and **Hardware Type** by clicking on a node and modifying the fields in the popup that displays on the top-right portion of the screen.
         * You can also define the parameters of a link/LAN such as the **Bandwidth** and **Delay** by clicking on the link/LAN and modifying the fields in the popup that displays on the top-right portion of the screen.
         * The Topology Node/Link Parameter Definition popup is shown below.<br><br>
@@ -198,14 +197,14 @@ As mentioned previously in the document, the _Visual Representation Section_ com
 * To zoom in or zoom out, use the (+) and (-) buttons to increase or decrease the zoom level
 * Please use the panning functionality instead of scrolling. (Click on the white area and drag in the desired direction) -->
 
-## Behavior, Constraints, and Bindings
+## Scenario, Constraints, and Bindings
 
- * In DEW, an experiment consists of a scenario (who does what and when), constraints (how experiment should be materialized on a testbed) and bindings (specific commands to run on nodes for each action). 
+ * In DEW, an experiment consists of a **Scenario** (who does what, and when), **Constraints** (how should the experiment be materialized on a testbed), and **Bindings** (specific commands to run on the nodes). 
 
-### Behavior
+### Scenario
 
-* Behavior defines the actions to be executed by actors during the experiment. You can think of an actor as a node in an experiment, or as many nodes that perform the same set of actions. You can think of an action as one or more commands executed on a node in an experiment. An action can result in an event (we say that it emits an event) and a later action will occur only when that event is generated. For example you may want to install an Apache application on the “server” node, and then generate traffic to it from a “client” node when the installation is completed. Two actions that are not connected by emit-when rules occur independently and in parallel. Please explore our [examples](/examples) to get familiar with some common uses of DEW language.
-* Behavior statements are in the form of
+* _Scenario_ defines the actions to be executed by actors during the experiment. You can think of an actor as a node in an experiment, or as many nodes that perform the same set of actions. You can think of an action as one or more commands executed on a node in an experiment. An action can result in an event (we say that it emits an event) and a later action will occur only when that event is generated. For example you may want to install an Apache application on the “server” node, and then generate traffic to it from a “client” node when the installation is completed. Two actions that are not connected by emit-when rules occur independently and in parallel. Please explore our [examples](/examples) to get familiar with some common uses of the DEW language.
+* _Scenario_ statements are of the form
 ```
 [when <event>][wait <time>] actor action [emit <event>]
 ```
@@ -220,24 +219,24 @@ Conversely if you wanted **A and B to ping each other in parallel** you would wr
 A start_ping1
 B start_ping2
 ```
-Names of actors will eventually correspond to names of nodes in your experiments. Names of actions are chosen by you. You will get to define what they mean in the bindings section.
+Names of actors will eventually correspond to names of nodes in your experiments. Names of actions are chosen by you. You will get to define what they mean in the _Bindings_ section.
 
-* As you start typing there will be auto-suggestion displayed near the top of the text area.
-* Press tab to use the first auto suggested word. It will append the word near the cursor in the textarea.
-* There will also be suggestion displayed along with suggested text. This will help you to write the next word or phrase. 
+* As you start typing, there will be auto-suggestions displayed near the top of the text area.
+* Press `tab` to use the first auto suggested word. It will append the word at the cursor location in the textarea.
+* There will also be a sentence suggestion displayed along with suggested text. This will help you write the next word or phrase. 
 
 ### Constraints
 
-* The constraints section helps the user define constraints with regards to the topology of the experiment, as the experiment will be materialized on a testbed.
-* You can find the list of constraints and the general syntax of the constraints in the `Basics` section of the documentation.
+* The _Constraints_ section helps the user define _Constraints_ with regards to the topology of the experiment, as the experiment will be materialized on a testbed.
+* You can find the list of _Constraints_ and the general syntax of the _Constraints_ in the `Basics` section of the documentation.
 * As you start typing, you will find the auto-suggestion displayed near the top of the text area.
-* Press tab to use the first auto suggested word. It will append the word at the cursor location in the textarea.
-* There will also be sentence suggestion displayed along with suggested text. This will help you write the next word or phrase. 
+* Press `tab` to use the first auto suggested word. It will append the word at the cursor location in the textarea.
+* There will also be a sentence suggestion displayed along with suggested text. This will help you write the next word or phrase. 
 
 ### Bindings
 
-* The bindings section defines the commands to be executed on testbed nodes for the given action or event in your experiment.
-* Choose an option from drop-down boxes or input your own commands. Variables are preceded by `$` to indicate that their values should be replaced by constants in the design stage, or specified by user at run-time on the command line.
+* The _Bindings_ section defines the commands to be executed on testbed nodes for the given action or event in your experiment.
+* Choose an option from the drop-down boxes, or input your own commands. Variables are preceded by `$` to indicate that their values should be replaced by constants in the design stage, or specified by user at run-time on the command line.
 * For example:
 ```
 install_iperf apt-get install iperf -y
@@ -245,14 +244,13 @@ run_tcpdump tcpdump -i expIP -w $file
 install_flooder /scripts/common/install_flooder.sh
 start_server iperf -s 
 ```
-* As you start typing behavior above this area will be populated with the terms which require definition for the experiment to execute. 
+* As you start typing the _Scenario_ above, the _Bindings_ area will be populated with the terms which require definition in order to execute the experiment. 
 
-We have provided some suggestions for action and event bindings. Please look at the [binding suggestions](/binding_suggestions) page for more information.
+<!--TODO: //Check with Dr. Mirkovic about this.// We have provided some suggestions for _action and event Bindings_. Please look at the [binding suggestions](/binding_suggestions) page for more information. -->
 
 
 ## Tutorials
-
-View video tutorials on using the experiment page below: <br><br>
+View video tutorials on using the experiment page below: <br>
 <iframe width="560" height="315" src="https://www.youtube.com/embed/JNOLuf4gwUc" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-
+<br>
 <iframe width="560" height="315" src="https://www.youtube.com/embed/5q8fAJtRyUA" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe> <br>

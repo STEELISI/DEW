@@ -38,7 +38,7 @@ view is illustrated below.
 Use *help* command to list the available commands. At the end you should have a runnable bash script in
 the folder you have specified.
 
-## From bash scripts to DEW
+## From Bash Scripts to DEW
 
-Coming soon
+_Coming soon_
 
