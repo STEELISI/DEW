@@ -118,7 +118,6 @@ export class InfoComponent implements OnInit {
     });
 
     this.state.getCurrentViewId().subscribe((id) => {
-        console.log("Got event - ", id)
         this.viewid = id
         this.changeRef.detectChanges();
     });
@@ -298,7 +297,6 @@ export class InfoComponent implements OnInit {
       alert("Please Enter Name to save the experiment.");
       this.nameControl.markAsTouched();
     }
-    console.log(this.experiment);
   }
 
   unsetShowAlertMessage() {
@@ -467,7 +465,6 @@ export class InfoComponent implements OnInit {
       alert("Please Enter Name to save the experiment.");
       this.nameControl.markAsTouched();
     }
-    console.log(this.experiment);
     })}
 
   updateDrive() {
@@ -515,14 +512,12 @@ export class InfoComponent implements OnInit {
 
   addUserPopUp(){
     let t:string = this.auth.getCookie('userId')
-    console.log(t)
       var dialogRef = this.dialog.open(AddUserPopUp, {
         width: "40%",
         data: t
       });
 
       dialogRef.afterClosed().subscribe((result) => {
-        console.log(result);
         if (result!=undefined)
           this.addUser(result)
       });
@@ -548,7 +543,6 @@ export class InfoComponent implements OnInit {
     }
 
     this.http.post("api/v1/pr/persist/experiment/grantaccess",params,{withCredential:true}).subscribe(data=>{
-      console.log(data);
       if(data.error != undefined && data.error != null)
       alert("Error in granting access.")
     },error=>{
@@ -592,7 +586,6 @@ export class InfoComponent implements OnInit {
 }
 
   showVersionsPopup(){
-    console.log("this.experiment: ", this.experiment)
     var dialogRef = this.dialog.open(VersionsPopUp, {
       width: "80%",
       data: this.experiment['id']
@@ -791,22 +784,18 @@ export class InfoComponent implements OnInit {
     if (flag) return;
     this.http.put("v1/pr/hlb/generateBash", data, {withCredential:true}).subscribe(
       (result) => {
-      console.log(result)
         let message = "Error in Downloading."
       let data = {}
       for(let x of result){
-          console.log(x)
           data[x.run.fileName] = x.run.content
           data[x.clean.fileName] = x.clean.content
       }
       
       if (Object.keys(data).length !=0){
       var keys = Object.keys(data)
-      console.log(keys)
       var zip = new JSZip();
       var bashFolder = zip.folder("Bash Files");
       keys.forEach((key)=> {
-        console.log(key,data[key])
         bashFolder.file(key, data[key]);
       })
       zip.generateAsync({ type: "blob" })

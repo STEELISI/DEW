@@ -22,11 +22,12 @@ from hlb_parser import HLBParser, ConstraintParser, BindingParser
 
 class Generator(object):
     # scenario and constraints given as a list.
-    def __init__(self,   constraints, scenario, bindings, inputFileName=None,name='Generic Class'):
+    def __init__(self,   constraints, scenario, bindings, experimentName='', inputFileName=None,name='Generic Class'):
 
         self.constraints = constraints
         self.scenario = scenario
         self.bindings = bindings
+        self.experimentName = experimentName
        
         # For debugging. Subclass should set this to something meaningful. e.g. "bash"
         self.name = name
@@ -115,4 +116,4 @@ class Generator(object):
 
     def generate(self, mode=None):
         # Parse scenario, constraints and bindings
-        self.parse(mode)
+        self.parse()
