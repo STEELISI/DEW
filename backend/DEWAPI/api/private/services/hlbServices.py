@@ -813,6 +813,19 @@ class HLBService():
         ns_script = generator.run['main']
         return ns_script
 
+    #Handle generateMergeTB
+    def HandleMergeTB(self,json_data):
+        errors = []
+        actors = json_data['actors']
+        scenario = json_data['behaviors']
+        constraints = json_data['constraints']
+        bindings = json_data['bindings']
+        experiment_name = json_data['name']
+        generator = mergeTBGenerator(constraints=constraints, scenario=scenario, bindings=bindings, experimentName=experiment_name)
+        generator.generate()
+        mergeTB_script = generator.run['main']
+        return mergeTB_script
+
     #Handle generateBASH
     def HandleBASH(self,json_data,mode=None):
         errors = []

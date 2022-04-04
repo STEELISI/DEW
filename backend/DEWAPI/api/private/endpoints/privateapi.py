@@ -76,6 +76,22 @@ class HandleHLBParser(Resource):
           Logger.backendErrorLog(user, traceback.format_exc())
           raise Exception("Error Occured on the Server")
 
+@ns.route('/hlb/generateMergeTB')
+class HandleHLBGeneratorMergeTB(Resource):
+
+    @api.expect(ns_object)
+    @api.representation('text/plain')
+    def put(self):
+        """
+          Generates MergeTB file for given behaviors, actors, and constraints
+        """
+        user = userObj.getEmailId()
+        Logger.backendLog(user,"HandleHLBGeneratorMergeTB()", "Entered Class")
+        json_data = request.get_json(force=True)
+        script = hlb.HandleMergeTB(json_data)
+        Logger.backendLog(user,"HandleHLBGeneratorMergeTB()", "Successfully created MergeTB file")
+        return {'script': script}
+
 @ns.route('/hlb/getBindingOptions')
 class GetBindingOptions(Resource):
 
