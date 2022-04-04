@@ -11,7 +11,8 @@
     "prod": "ng build --prod=true",
     "buildt1": "ng build -c=test1",
     "buildt2": "ng build -c=test2",
-    "buildt3": "ng build -c=test3"
+    "buildt3": "ng build -c=test3",
+    "open": "ng --open serve --proxy-config proxy.conf.json"
   },
   "private": true,
   "dependencies": {
