@@ -144,10 +144,10 @@ class NSGenerator(Generator):
                     for b in links[a].keys():
                         current_bw = '100Mb'
                         current_delay = '0ms'
-                        if(set(a,b) == set(x.split(' ')) for x in bw.keys()):
+                        if(set([a,b]) in [set(x.split(' ')) for x in list(bw.keys())]):
                             current_bw = bw[a + ' ' + b] if ((a + ' ' + b) in bw) else bw[b + ' ' + a]
                             current_bw = str(current_bw) + 'Mb' 
-                        if(set(a,b) == set(x.split(' ')) for x in delay.keys()):
+                        if(set([a,b]) in [set(x.split(' ')) for x in list(delay.keys())]):
                             current_delay = delay[a + ' ' + b] if ((a + ' ' + b) in delay) else delay[b + ' ' + a] 
                             current_delay = str(current_delay) + 'ms' 
                         if b in self.num.keys():
@@ -165,10 +165,10 @@ class NSGenerator(Generator):
                  for b in links[a].keys():
                     current_bw = '100Mb'
                     current_delay = '0ms'
-                    if(set(a,b) == set(x.split(' ')) for x in bw.keys()):
+                    if(set([a,b]) in [set(x.split(' ')) for x in list(bw.keys())]):
                         current_bw = bw[a + ' ' + b] if ((a + ' ' + b) in bw) else bw[b + ' ' + a]
                         current_bw = str(current_bw) + 'Mb'  
-                    if(set(a,b) == set(x.split(' ')) for x in delay.keys()):
+                    if(set([a,b]) in [set(x.split(' ')) for x in list(delay.keys())]):
                         current_delay = delay[a + ' ' + b] if ((a + ' ' + b) in delay) else delay[b + ' ' + a]
                         current_delay = str(current_delay) + 'ms' 
                     if b in self.num.keys():
@@ -185,8 +185,8 @@ class NSGenerator(Generator):
         # Generate lans
         for l in lans.keys():
             line = "set lan"+str(l)+" [$ns make-lan \""
-            bw_index = reduce(lambda x,y: x if x != None else y, [x if (set(x.split(' ')) == set([y.split('-')[0] for y in lans[l]])) else None for x in bw.keys()])
-            delay_index = reduce(lambda x,y: x if x != None else y, [x if (set(x.split(' ')) == set([y.split('-')[0] for y in lans[l]])) else None for x in delay.keys()])
+            bw_index = reduce(lambda x,y: x if x != None else y, [x if (set(x.split(' ')) in set([y.split('-')[0] for y in lans[l]])) else None for x in list(bw.keys())]) if len(list(bw.keys()))!=0 else None
+            delay_index = reduce(lambda x,y: x if x != None else y, [x if (set(x.split(' ')) in set([y.split('-')[0] for y in lans[l]])) else None for x in list(delay.keys())]) if len(list(delay.keys()))!=0 else None
             current_bw = '100Mb' if bw_index == None else str(bw[bw_index]) + 'Mb'
             current_delay = '0ms' if delay_index == None else str(delay[delay_index]) + 'ms'
             for n in lans[l]:
@@ -208,6 +208,7 @@ class NSGenerator(Generator):
             nodes = (nodes[0][0][:-1]).split(' ')
             regex_links = re.findall('link[0-9]+', line)
             for node in nodes:
+                node_name = ''
                 if (re.findall('^\$.+\([0-9]+\)$', node) == []):
                     node_name = node_name[1:]
                 else:
