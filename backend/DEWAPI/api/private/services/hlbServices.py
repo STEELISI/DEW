@@ -16,6 +16,7 @@ from parsebash import GeneralParseBash
 from generator import Generator
 from BashGenerator import BashGenerator as bashGenerator
 from NSGenerator import NSGenerator as nSGenerator
+from MergeTBGenerator import MergeTBGenerator as mergeTBGenerator
 from hlb_parser import HLBParser, HLBHintType
 from magiparser import GeneralParseMagi
 import werkzeug
