@@ -4,6 +4,7 @@ from collections import defaultdict
 sys.path.append('./DewFunctions/Generators/')
 sys.path.append('./DewFunctions/Generators/ns')
 sys.path.append('./DewFunctions/Generators/bash')
+sys.path.append('./DewFunctions/Generators/mergeTB')
 sys.path.append('./DewFunctions/UI/HighLevelBehaviorLanguage/')
 sys.path.append('./DewFunctions/UI/')
 sys.path.append('./DewFunctions/Translators/bash')
