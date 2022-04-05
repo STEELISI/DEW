@@ -72,7 +72,7 @@ class DeterLabExperimentManager(object):
         return result
                   
     def getLogs(self, eid, daid, uid):
-        d = DeterlabRunScriptLogs.query.filter(DeterlabRunScriptLogs.daid == daid, DeterlabRunScriptLogs.eid == eid, DeterlabRunScriptLogs.uid == uid,DeterlabRunScriptLogs.isdeleted == False)
+        d = DeterlabRunScriptLogs.query.filter(DeterlabRunScriptLogs.daid == daid, DeterlabRunScriptLogs.eid == eid, DeterlabRunScriptLogs.uid == uid,DeterlabRunScriptLogs.isdeleted == False, DeterlabRunScriptLogs.action == 'start')
         result = []
         if d is not None:
             for x in d:
