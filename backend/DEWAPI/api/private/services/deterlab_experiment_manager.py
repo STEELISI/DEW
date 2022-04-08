@@ -70,6 +70,18 @@ class DeterLabExperimentManager(object):
             for x in d:
                 result = x.action
         return result
+
+    def updateRunLogLogs(self, eid, uid, unique_name, logs):
+        d = DeterlabRunScriptLogs.query.filter(DeterlabRunScriptLogs.unique_name == unique_name, DeterlabRunScriptLogs.eid == eid, DeterlabRunScriptLogs.uid == uid,DeterlabRunScriptLogs.isdeleted == False).order_by(DeterlabRunScriptLogs.created_at.desc()).first()
+        result = ""
+        if d is not None:
+            if d.action == "start":
+                print(logs)
+                d.logs = logs
+                db.session.add(d)
+        db.session.commit()    
+
+        return "Successful"
                   
     def getLogs(self, eid, daid, uid):
         d = DeterlabRunScriptLogs.query.filter(DeterlabRunScriptLogs.daid == daid, DeterlabRunScriptLogs.eid == eid, DeterlabRunScriptLogs.uid == uid,DeterlabRunScriptLogs.isdeleted == False, DeterlabRunScriptLogs.action == 'start')
@@ -82,6 +94,14 @@ class DeterLabExperimentManager(object):
                 r['filename'] = x.unique_name
                 result.append(r)
         return result
+
+    def getLogLogs(self, eid, uid, unique_name, rsid):
+        d = DeterlabRunScriptLogs.query.filter(DeterlabRunScriptLogs.unique_name == unique_name, DeterlabRunScriptLogs.eid == eid, DeterlabRunScriptLogs.uid == uid,DeterlabRunScriptLogs.isdeleted == False,DeterlabRunScriptLogs.rsid == rsid).first()
+        if d is not None:
+            return d.logs
+
+        return ""
+        
     def getVersion(self, rsid, uid,daid):
         d = DeterlabRunScriptLogs.query.filter(DeterlabRunScriptLogs.rsid == rsid, DeterlabRunScriptLogs.uid == uid, DeterlabRunScriptLogs.daid == daid,DeterlabRunScriptLogs.isdeleted == False).first()
         if d is None:

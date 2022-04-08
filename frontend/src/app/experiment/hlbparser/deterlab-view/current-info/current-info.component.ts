@@ -126,6 +126,7 @@ export class CurrentInfoComponent implements OnInit, OnChanges {
         let params = {
             rid: this.logid,
             account_id: this.account_id,
+            eid: this.experiment_id,
             b: 20,
         }
         this.http.post('/api/v1/pr/deter/project/run/get', params, { withCredentials: true })

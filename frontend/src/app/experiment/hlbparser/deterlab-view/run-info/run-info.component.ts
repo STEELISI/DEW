@@ -13,7 +13,8 @@ import {MatDialog, MatDialogRef, MatSnackBar, MAT_DIALOG_DATA} from '@angular/ma
 export class RunInfoComponent implements OnInit, OnChanges {
     @Input() experiment_id:Number
     @Input() account_id:Number
-    logList: []
+    @Input() run_status:string
+    logList = []
     error:String
     errorFlag:boolean = false
     logid:String
@@ -71,7 +72,15 @@ export class RunInfoComponent implements OnInit, OnChanges {
         let params = {
             rid:this.logid,
             account_id:this.account_id,
+            eid: this.experiment_id,
             b:20,
+        }
+        if(this.run_status == "start"){
+            if(this.logList && this.logList.length && this.logid != this.logList[0]['id']){
+                params['rsid'] = this.logid;
+            }
+        }else{
+            params['rsid'] = this.logid
         }
         this.http.post('/api/v1/pr/deter/project/run/get', params, {withCredentials: true})
             .subscribe(data1 => {

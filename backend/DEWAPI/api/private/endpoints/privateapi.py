@@ -1819,8 +1819,12 @@ class HandleProjectGetLog(Resource):
           return {"error":"rid is missing"} , 200
         if 'account_id' not in content:
           return {"error":"account_id is missing"}, 200
+        if 'eid' not in content:
+          return {"error":"eid is missing"} , 200
         rid = content['rid']
         daid = content['account_id']
+        eid = content['eid']
+        rsid = content.get('rsid', None)
         # start index
         s = 0
         if 's' in content:
@@ -1837,12 +1841,24 @@ class HandleProjectGetLog(Resource):
           if version_id is None:
             result['error'] = 'User doesnot have access to this script'
           else:
-            details = ps.get(uid,daid)
-            if str(details['username']).strip() !='' and str(details['password']).strip() !='':
-              ssh = SSHConnection(details['username'],details['password'])
-              result = ssh.getRunFile(version_id.unique_name,s,b)
+            print("rsid")
+            if rsid != None:
+              print("----In")
+              result = dm.getLogLogs(eid, uid, version_id.unique_name, rsid)
+              print(result)
+              if result:
+                result = json.loads(result)
+              else:
+                result = {}
+              print(result)
             else:
-              result = {'error':'username or password doesnot exists'}
+              details = ps.get(uid,daid)
+              if str(details['username']).strip() !='' and str(details['password']).strip() !='':
+                ssh = SSHConnection(details['username'],details['password'])
+                result = ssh.getRunFile(version_id.unique_name,s,b)
+                dm.updateRunLogLogs(eid, uid, version_id.unique_name, json.dumps(result, separators=(',', ':')))
+              else:
+                result = {'error':'username or password doesnot exists'}
           Logger.backendLog(user,"HandleProjectGetLog()", "Retrieved log with result - " + str(result))
           return result, 200
         except ValueError as e:
