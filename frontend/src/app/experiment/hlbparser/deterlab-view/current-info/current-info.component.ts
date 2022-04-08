@@ -24,6 +24,7 @@ export class CurrentInfoComponent implements OnInit, OnChanges {
     filteredExecutionScript = []
     loader = false
     panelOpenState = false
+    refreshIntervalId = null
 
     private dependencyNetworkInstance: any;
 
@@ -117,6 +118,20 @@ export class CurrentInfoComponent implements OnInit, OnChanges {
                     this.errorFlag = true
                 }
             });
+    }
+
+    onSelectionChange (display) {
+        if(display){
+            setTimeout(() => {
+                this.dependencyNetworkInstance.fit();
+                this.showDetails();
+            },500);
+            this.refreshIntervalId = setInterval(() => {
+                this.showDetails();
+            }, 5000);
+        }else{
+            clearInterval(this.refreshIntervalId);
+        }
     }
 
     showDetails() {

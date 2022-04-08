@@ -49,6 +49,7 @@ export class DeterLabViewComponent implements OnInit {
         , private _snackBar: MatSnackBar,
                 public dialog: MatDialog) {
     }
+    activeTab = 'run_logs';
 
     ngOnInit() {
         const url = this.route.url.split('/');
@@ -75,11 +76,6 @@ export class DeterLabViewComponent implements OnInit {
         });
         this.projName = '';
         this.expName = '';
-        setInterval(() => {
-            if(this.runStatus == "start"){
-                this.currentInfoComponent.showDetails();
-            }
-        }, 5000)
     }
 
     getRefreshedStatus() {
@@ -524,6 +520,22 @@ export class DeterLabViewComponent implements OnInit {
                 console.log(data)
                 this.logList = data
             });
+    }
+
+    updateNavTabStatus(tab) {
+        console.log(tab);
+        if (tab == 'current') {
+            if (this.activeTab != 'current') {
+                console.log('show');
+                this.currentInfoComponent.onSelectionChange(true);
+            }
+        } else {
+            if (this.activeTab == 'current') {
+                console.log('hide')
+                this.currentInfoComponent.onSelectionChange(false);
+            }
+        }
+        this.activeTab = tab;
     }
 }
 
