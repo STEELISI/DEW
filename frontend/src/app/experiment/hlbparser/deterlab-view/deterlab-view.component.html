@@ -69,10 +69,10 @@
                         </div>
                     </div> -->
                     <div class="tab-pane fade show active" id="nav-contact" role="tabpanel" aria-labelledby="nav-contact-tab">
-                        <run-info [experiment_id]='experimentId' [account_id]='userId' [run_status]='runStatus'></run-info>
+                        <run-info [experiment_id]='experimentId' [account_id]='userId' [run_status]='runStatus' [doRefresh]="doRefresh"></run-info>
                     </div>
                     <div class="tab-pane fade" id="nav-current" role="tabpanel" aria-labelledby="nav-current-tab">
-                        <current-info [experiment_id]='experimentId' [account_id]='userId'></current-info>
+                        <current-info [experiment_id]='experimentId' [account_id]='userId' [doRefresh]="doRefresh"></current-info>
                     </div>
                 </div>
             </ng-template>

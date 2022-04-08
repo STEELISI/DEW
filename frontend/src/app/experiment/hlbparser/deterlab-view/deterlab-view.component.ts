@@ -5,6 +5,7 @@ import {HttpParams} from '@angular/common/http';
 import {MatDialog, MatDialogRef, MatSnackBar, MAT_DIALOG_DATA} from '@angular/material';
 import { RunInfoComponent } from './run-info/run-info.component';
 import { CurrentInfoComponent } from './current-info/current-info.component';
+declare let $:any;
 
 @Component({
     selector: 'app-deterlab',
@@ -50,6 +51,7 @@ export class DeterLabViewComponent implements OnInit {
                 public dialog: MatDialog) {
     }
     activeTab = 'run_logs';
+    doRefresh = true
 
     ngOnInit() {
         const url = this.route.url.split('/');
@@ -431,7 +433,7 @@ export class DeterLabViewComponent implements OnInit {
 
 
     stop(data = {}) {
-
+        this.doRefresh = false;
        const params = {
             eid: this.experimentId,
             account_id: this.userId,
@@ -445,13 +447,14 @@ export class DeterLabViewComponent implements OnInit {
 
         this.http.post('/api/v1/pr/deter/project/stop', params, {withCredentials: true})
             .subscribe(data1 => {
-		    
                 this.showLoader = false;
                 if (data1.success) {
                     this._snackBar.open('Successfully stopped', 'close', {
                         duration: 2000,
                     });
                     this.runStatus = 'stop';
+                    $('#nav-contact-tab').click();
+                    this.updateNavTabStatus('run_logs');
                 } else {
                     const dialogRef = this.dialog.open(RunVariablePopUp, {
                         width: '30%',
@@ -466,11 +469,13 @@ export class DeterLabViewComponent implements OnInit {
                         }
                     });
                 }
+                this.doRefresh = true;
             }, error => {
                 this.showLoader = false;
                 this._snackBar.open('Something went wrong please try again later!', 'close', {
                     duration: 2000,
                 });
+                this.doRefresh = true;
             });
     }
 
@@ -523,7 +528,6 @@ export class DeterLabViewComponent implements OnInit {
     }
 
     updateNavTabStatus(tab) {
-        console.log(tab);
         if (tab == 'current') {
             if (this.activeTab != 'current') {
                 console.log('show');

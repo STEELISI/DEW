@@ -14,6 +14,7 @@ export class RunInfoComponent implements OnInit, OnChanges {
     @Input() experiment_id:Number
     @Input() account_id:Number
     @Input() run_status:string
+    @Input() doRefresh: boolean
     logList = []
     error:String
     errorFlag:boolean = false
@@ -21,6 +22,7 @@ export class RunInfoComponent implements OnInit, OnChanges {
     executionScript = []
     loader = false
     panelOpenState = false
+    refreshIntervalId = null
     constructor(private http:HttpService
         , private _snackBar: MatSnackBar
     
@@ -56,7 +58,7 @@ export class RunInfoComponent implements OnInit, OnChanges {
                     return obj;
                 })
                 this.logid = data.logs[0].id
-		
+                this.onLogsSelectionChange();
                 } else{
                 this.error = data.error
                 this.errorFlag = true
@@ -64,9 +66,30 @@ export class RunInfoComponent implements OnInit, OnChanges {
             });
     }
 
+    onLogsSelectionChange() {
+        if(!this.logid){
+            return;
+        }
+        if(this.refreshIntervalId){
+            clearInterval(this.refreshIntervalId);
+        }
+        this.showDetails();
+        //Check if log is in running state, if so refresh every 5 seconds
+        if(this.run_status == 'start'){
+            if(this.logid == this.logList[0].id) {
+                this.refreshIntervalId = setInterval(() => {
+                    if(this.doRefresh){
+                        this.showDetails();
+                    }
+                }, 5000)
+            }
+        }
+    }
+
+    
+
     showDetails(){
         console.log(this.logid)
-        this.executionScript = []
         this.errorFlag = false
         this.loader = true
         let params = {
@@ -88,12 +111,14 @@ export class RunInfoComponent implements OnInit, OnChanges {
                 if (data1.error==undefined)
                 this.executionScript = data1.data
                 else{
+                    this.executionScript = []
                     console.log(data1.error)
                 this._snackBar.open(data1.error, 'close', {
                     duration: 2000,
                 });
                 }
             }, error => {
+                this.executionScript = []
                 this.loader = false
                 this._snackBar.open('Something went wrong please try again later!', 'close', {
                     duration: 2000,

@@ -15,6 +15,7 @@ import { Network } from 'vis-network';
 export class CurrentInfoComponent implements OnInit, OnChanges {
     @Input() experiment_id: Number
     @Input() account_id: Number
+    @Input() doRefresh: boolean
     @ViewChild('dependencyGraphNetwork', { static: false }) dependencyGraphNetwork!: ElementRef;
     logList: []
     error: String
@@ -127,7 +128,9 @@ export class CurrentInfoComponent implements OnInit, OnChanges {
                 this.showDetails();
             },500);
             this.refreshIntervalId = setInterval(() => {
-                this.showDetails();
+                if(this.doRefresh){
+                    this.showDetails();
+                }
             }, 5000);
         }else{
             clearInterval(this.refreshIntervalId);
