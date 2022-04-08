@@ -1,8 +1,8 @@
 # Examples
 
-This page contains DEW file contents of various scenarios.
+This page contains DEW file contents of various experiments.
 
-## Parallel ping
+## Parallel Ping
 
 ```
 [Scenario]
@@ -17,9 +17,9 @@ pingClient = ping -c 10 client
 link client server
 ```
 
-<iframe width="560" height="315" src="https://www.youtube.com/embed/JNOLuf4gwUc" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+<iframe width="560" height="315" src="https://www.youtube.com/embed/JNOLuf4gwUc" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe><br>
 
-## Sequential ping
+## Sequential Ping
 
 ```
 [Scenario]
@@ -35,9 +35,9 @@ clientRunpingServerSig = psuccess(pingServer)
 link server client
 ```
 
-<iframe width="560" height="315" src="https://www.youtube.com/embed/5q8fAJtRyUA" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+<iframe width="560" height="315" src="https://www.youtube.com/embed/5q8fAJtRyUA" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe><br>
 
-## Complex experiment
+## Complex Experiment
 
 ```
 [Scenario]

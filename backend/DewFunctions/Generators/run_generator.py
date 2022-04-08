@@ -4,6 +4,7 @@ import argparse
 import importlib
 from bash import BashGenerator
 from ns import NSGenerator
+from mergeTB import MergeTBGenerator
 import configparser
 import json
 

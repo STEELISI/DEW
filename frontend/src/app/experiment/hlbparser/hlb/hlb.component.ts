@@ -292,14 +292,13 @@ export class HlbComponent implements OnInit, AfterViewInit {
         this.bindingList = [];
 	this.filterBindingOptionsForEvent=[];
         this.bindingMap = new Map<String, any>();
-
+        this.filterBindingOptionsForEvent = [];
         data.forEach((element) => {
           this.bindingMap.set(element.key, element);
           this.bindingList.push(element);
 	  if (element.category != 'event' && element.category != 't_event')
 	  {
 	  	// Jelena
-      this.filterBindingOptionsForEvent = [];
       this.filterBindingOptionsForEvent.push('pexists('+element.key+')');
       this.filterBindingOptionsForEvent.push('psuccess('+element.key+')');
 	  };
