@@ -123,17 +123,26 @@ A few general views of the page and its various components are shown below.
     
     This menu is used to export the experiment to different formats.
 
-    ![Export menu](./img/experiment_page_export_menu.png)<br><br>
+    ![Export menu](./img/experiment_page_export_menu.png)<br>
 
     
-    #### NS file
-    * Download the NS file for the current experiment.
+    #### Topology
+    This option enables you to export the DEW experiment to various other _topology_ representation formats. The currently supported _topology_ export formats are described below.
+
+    * **NS File**
+        * Export and download the topology of the DEW experiment as a _NS_ file.
     <br><br>
-    #### BASH file
-    * Download the Bash script(or scripts) for the experiment. Currently, the scripts should be run on Deterlab from the users machine. Running the script without arguments will display a help message to tell you which input parameters you need to specify.
+    * **MergeTB File**
+        * Export and download the topology of the DEW experiment as a _MergeTB_ file.
+    <br><br>
+    #### Scripts
+    This option enables you to export the DEW experiment to various other _script_ representation formats. The currently supported _script_ export formats are described below.
+    
+    * **BASH File**
+        * Export and download the Bash Script(s) representation of the DEW experiment as a _zip_ file. If you choose to run the scripts locally, running the script without any arguments will display a help message mentioning the input parameters you need to specify.
     <br><br>
     #### DEW
-    * Download the DEW file of the current experiment.
+    This option enables you to export the _DEW_ representation of the experiment as a _txt_ file. This file can shared and uploaded to other DEW experiments too.
     
 
 ## Graph Views and Manipulation
