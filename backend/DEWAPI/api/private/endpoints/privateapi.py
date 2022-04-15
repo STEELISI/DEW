@@ -1764,6 +1764,8 @@ class HandleProjectStopLog(Resource):
                   result = {"error":"Experiment was already stopped"}
               else:
                   ssh = SSHConnection(details['username'],details['password'])
+                  run_logs = ssh.getRunFile(unique_name, 0, 5)
+                  dm.updateRunLogLogs(eid, uid, unique_name, json.dumps(run_logs, separators=(',', ':')))
                   result_log = ssh.runFile(mapping['project_name'],mapping['experiment_name'],run_content,variables, unique_name, "stop")
                   print("Result log ", result_log)
                   if 'error' not in result_log:
