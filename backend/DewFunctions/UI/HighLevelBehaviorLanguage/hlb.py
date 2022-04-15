@@ -249,11 +249,27 @@ def getSuggestionsForEvent(evtype):
             print("adding: ", s)
             suggestions.append(s)
     elif evtype == "constraints_enter":
-        suggestions = suggestions + ["num", "os","link","lan","interfaces","location","nodetype"]
+        suggestions = suggestions + ["link","lan"]
+        for a in globals.actors:
+            if a != "" and a not in globals.sbuttons:
+                print("add actor %s" % a)
+                suggestions.append(a)
+        #suggestions = suggestions + ["num", "os","link","lan","interfaces","location","nodetype"]
     elif evtype == "emit":
         suggestions.append("emit")
         # globals.sbuttons["emit"] = 1
         # globals.app.addButton("emit", pb)
+    elif evtype == "start_config":
+        suggestions.append("[")
+        for a in globals.actors:
+            if a != "" and a not in globals.sbuttons:
+                suggestions.append(a)
+    elif evtype == "in_config_link":
+        suggestions = suggestions + ["bw", "delay"]
+    elif evtype == "in_config_actor":
+        suggestions = suggestions + ["num", "os","location","nodetype"]
+    elif evtype == "constraints_end":
+        suggestions.append("]")
     else: # it was text to be displayed as label
         #suggestions.append(evtype)
         suggestion_text = evtype
