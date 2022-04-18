@@ -32,6 +32,12 @@ class NSGenerator(Generator):
                 number = c[2][c[2].index('num') + 1]
                 for act in c[1]:
                     self.num[act] = int(number)
+                continue
+            if ((c[0] in ['config', 'link', 'lan'])):
+                for act in c[1]:
+                    if act not in self.num.keys():
+                        self.num[act] = 1
+                continue
             
     def generateNS(self):
         
@@ -144,10 +150,10 @@ class NSGenerator(Generator):
                     for b in links[a].keys():
                         current_bw = '100Mb'
                         current_delay = '0ms'
-                        if(set(a,b) == set(x.split(' ')) for x in bw.keys()):
+                        if(set([a,b]) in [set(x.split(' ')) for x in bw.keys()]):
                             current_bw = bw[a + ' ' + b] if ((a + ' ' + b) in bw) else bw[b + ' ' + a]
                             current_bw = str(current_bw) + 'Mb' 
-                        if(set(a,b) == set(x.split(' ')) for x in delay.keys()):
+                        if(set([a,b]) in [set(x.split(' ')) for x in delay.keys()]):
                             current_delay = delay[a + ' ' + b] if ((a + ' ' + b) in delay) else delay[b + ' ' + a] 
                             current_delay = str(current_delay) + 'ms' 
                         if b in self.num.keys():
