@@ -84,7 +84,6 @@ export class HLBParserComponent implements OnInit {
 
   onKeyDown($event): void {
     // Detect platform
-    console.log("inside keydown")
     if(navigator.platform.match('Mac')){
         this.handleMacKeyEvents($event);
     }

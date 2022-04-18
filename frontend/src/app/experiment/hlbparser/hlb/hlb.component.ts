@@ -670,12 +670,12 @@ export class HlbComponent implements OnInit, AfterViewInit {
 
         this.constraintService.isTabPressed().subscribe((flag) => {
           if (flag) {
-            if (this.stateservice.getCurrentConstraintWord().trim() != "")
+            if (this.stateservice.getCurrentConstraintWord().trim() != "") {
               this.insertValueInConstraint(
                 this.stateservice.getCurrentConstraintWord(),
                 true
               );
-            //this.behaviorService
+            }
           }
         });
         this.constraintService.getSuggestionData().subscribe((data) => {

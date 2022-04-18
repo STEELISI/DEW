@@ -221,6 +221,7 @@ export class HlbComponent implements OnInit {
           }
         });
         this.constraintService.getSuggestionData().subscribe((data) => {
+          console.log("Blah!!")
           if (data != null) {
             var params = {
               type: "constraint",

@@ -135,30 +135,36 @@ class HLBService():
                     globals.events[events] = 1
             if v['action'] is not None:
                 globals.actions[v['action']] = 1
-        items = re.split("[\s,]",last_constraint.strip())
-        item = items.pop(0)
-        if item in ["num", "os","nodetype", "interfaces", "location", "link","lan"] and len(items) == 0:
-            return self.addSuggestions(["actors_only"])
-        elif len(items) >= 1:
-            if (item == "num" or item == "interfaces") and items[-1] in globals.actors:
+        items = re.split("[\s]",last_constraint.strip())
+        # if item in ["num", "os","nodetype", "interfaces", "location", "link","lan"] and len(items) == 0:
+        #     return self.addSuggestions(["actors_only"])
+        if len(items) >= 1:
+            item = items[-1]
+            if (item == "num" or item == "interfaces" or item == "bw" or item=="delay"):
                 return self.addSuggestions(["enter digit"])
-            elif item == "os" and (items[-1] in globals.actors):
+            elif item == "os":
                 # for os in globals.deploy_handler.getSuggestions(type='os'):
                     #addSuggestions(os, Centry)
                     # globals.app.addButton(os,Centry)
                     # globals.sbuttons[os]=1
                 return self.addSuggestions(["enter OS"])
-            elif item == "nodetype" and (items[-1] in globals.actors):
+            elif item == "nodeType":
                 # for nodetype in globals.deploy_handler.getSuggestions(type='nodetype'):
                 #     globals.app.addButton(nodetype,Centry)
                 #     globals.sbuttons[nodetype]=1
                 return self.addSuggestions(["enter node type"])
-            elif item == "link" and (items[-1] in globals.actors):
+            elif item == "link":
                 return self.addSuggestions(["actors_only"])
-            elif item == "lan" and (items[-1] in globals.actors):
+            elif item == "lan":
                 return self.addSuggestions(["actors_only"])
-            elif item == "location" and (items[-1] in globals.actors):
+            elif item == "location":
                 return self.addSuggestions(["enter testbed"])
+            elif item in globals.actors:
+                return self.addSuggestions(["start_config"])
+            elif (item == "[" or item==",") and (items[0]=="link" or items[0]=="lan"):
+                return self.addSuggestions(["in_config_link"])
+            elif (item == "[" or item==",") and items[0] in globals.actors:
+                return self.addSuggestions(["in_config_actor"])
             else:
                return self.addSuggestions(["constraints_enter"])
         else:

@@ -80,7 +80,7 @@ export default class EditorService {
                   instance.pressedEntered();
               if(element.insert == '\t')
                 tabFlag=true;  
-             
+              
             }
             if(element.delete!=undefined)
             delFlag =true;
@@ -116,8 +116,10 @@ export default class EditorService {
      currentSentence:sentence,
      remainingSentences:remainingSentences
    }
-    if(sentence.length==0 || sentence.charAt(sentence.length-1)==" ")
-     this.currentsentence.next(obj);
+    if(sentence.length==0 || sentence.charAt(sentence.length-1)==" " || sentence.charAt(sentence.length-1)==",") {
+      this.currentsentence.next(obj);
+    }
+     
    
   }
   getRemainingSentences (str, pos){
