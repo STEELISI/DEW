@@ -125,14 +125,14 @@
                 </ul>
                 <ng-template #showSwapOut>
                     <ul class="ul-style">
-                        <li *ngIf="runStatus == 'stop'">
+                        <li *ngIf="runStatus != 'start'">
                             <button type="button" class="btn btn-outline-success swap-dt"
                                     data-toggle="modal" data-target="#exampleModal"
                                     [disabled]="deactivateSwapOut"
                                     (click)="activateModal('swapout')">Swap Out Experiment
                             </button>
                         </li>
-                        <li *ngIf="runStatus == 'stop'">
+                        <li *ngIf="runStatus != 'start'">
                             <button type="button" class="btn btn-outline-success swap-dt"
                             data-toggle="modal" data-target="#exampleModal"
                                     [disabled]="deactivateSwapOut"
