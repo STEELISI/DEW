@@ -381,7 +381,7 @@ export class DeterLabViewComponent implements OnInit {
         this.getExperimentActivity(params);
     }
 
-    run(data = {}) {
+    run(data = {label: 'main'}) {
         
         const params = {
             eid: this.experimentId,
@@ -432,7 +432,7 @@ export class DeterLabViewComponent implements OnInit {
 
 
 
-    stop(data = {}) {
+    stop(data = {label: 'main'}) {
         this.doRefresh = false;
        const params = {
             eid: this.experimentId,
