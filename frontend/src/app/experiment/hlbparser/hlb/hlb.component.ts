@@ -147,6 +147,7 @@ export class HlbComponent implements OnInit, AfterViewInit {
   bindingList: any = [];
   suggestionbehaviorMessage: String;
   suggestionConstraintMessage: String;
+  canvasClickFlag: Boolean = true;
 
   bindingMap = new Map<String, any>();
   behaviorWordList: any = [];
@@ -1130,6 +1131,8 @@ export class HlbComponent implements OnInit, AfterViewInit {
           //Show legends in topology graph
           this.topologyNetworkInstance.on("afterDrawing", (ctx) => {
 
+            let actionNumberNodes = []
+
             this.topologyGraphNodes.forEach((node) => {
               if (node.group != "LAN") {
                 var nodePosition = this.topologyNetworkInstance.getPosition(node.id);
@@ -1156,7 +1159,45 @@ export class HlbComponent implements OnInit, AfterViewInit {
                   ctx.textAlign = "center";
                   ctx.textBaseline = "middle";
                   ctx.fillText(dependencyNode.topologyLabel + "", x + 10 + (30 * (dependencyIndex + 1)), y);
+                  var abs_pos = this.topologyNetworkInstance.canvasToDOM(
+                    this.topologyNetworkInstance.getPositions([node.id])[node.id]
+                  );
+                  actionNumberNodes.push({
+                    x: abs_pos.x + 10 + (30 * (dependencyIndex + 1)) - 10,
+                    y: abs_pos.y - 10,
+                    width: 20,
+                    height: 20,
+                    dependencyNode: dependencyNode
+                  });
                 });
+              }
+            });
+
+
+            function isIntersect(point, box) {
+              return point.x>=box.x && point.x<=box.x+box.width && point.y>=box.y && point.y<=box.y+box.height;
+            }
+
+            function getCursorPosition(canvas, event) {
+              const rect = canvas.getBoundingClientRect()
+              const x = event.clientX - rect.left
+              const y = event.clientY - rect.top
+              return {
+                x: x,
+                y: y
+              }
+            }
+            
+            ctx.canvas.addEventListener('click', (e) => {
+              if(this.canvasClickFlag) {
+                const pos = getCursorPosition(ctx.canvas, e);
+                actionNumberNodes.forEach(item => {
+                  if (isIntersect(pos, item)) {
+                    console.log(item.dependencyNode);
+                  }
+                });
+                this.canvasClickFlag = false;
+                setTimeout(()=> { this.canvasClickFlag = true }, 1000);
               }
             });
           });
