@@ -400,6 +400,8 @@ export class HlbComponent implements OnInit, AfterViewInit {
 
     $('#modal-action-name-input').on('change', (event) => {
       this.currentActionNameInModal = event.target.value;
+      let binding = this.bindingList.find(item => item.key === this.currentActionNameInModal);
+      binding && $('#modal-action-binding-input').val(binding.value);
     });
 
     this.toggleTopologyView();
