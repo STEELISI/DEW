@@ -493,7 +493,7 @@ export class HlbComponent implements OnInit, AfterViewInit {
         }
         setTimeout(()=> {
           this.updateScenarioFromAddActionUI(actionData);
-        }, 1000);
+        }, 500);
       } else {
         this.updateScenarioFromAddActionUI(actionData);
       }
@@ -1199,7 +1199,7 @@ export class HlbComponent implements OnInit, AfterViewInit {
                 const pos = getCursorPosition(ctx.canvas, e);
                 this.actionNumberNodes.forEach(item => {
                   if (isIntersect(pos, item)) {
-                    console.log(item.dependencyNode);
+                    this.onEditActionFromTopologyClick(item.dependencyNode.topologyLabel);
                   }
                 });
                 this.canvasClickFlag = false;
