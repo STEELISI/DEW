@@ -148,6 +148,8 @@ export class HlbComponent implements OnInit, AfterViewInit {
   suggestionbehaviorMessage: String;
   suggestionConstraintMessage: String;
   canvasClickFlag: Boolean = true;
+  actionNumberNodes: Array<any>;
+  canvasEventListener: any;
 
   bindingMap = new Map<String, any>();
   behaviorWordList: any = [];
@@ -1131,7 +1133,11 @@ export class HlbComponent implements OnInit, AfterViewInit {
           //Show legends in topology graph
           this.topologyNetworkInstance.on("afterDrawing", (ctx) => {
 
-            let actionNumberNodes = []
+            this.canvasEventListener && ctx.canvas.removeEventListener('click', this.canvasEventListener);
+
+            this.actionNumberNodes = []
+
+            let curScale = this.topologyNetworkInstance.getScale();
 
             this.topologyGraphNodes.forEach((node) => {
               if (node.group != "LAN") {
@@ -1162,11 +1168,11 @@ export class HlbComponent implements OnInit, AfterViewInit {
                   var abs_pos = this.topologyNetworkInstance.canvasToDOM(
                     this.topologyNetworkInstance.getPositions([node.id])[node.id]
                   );
-                  actionNumberNodes.push({
-                    x: abs_pos.x + 10 + (30 * (dependencyIndex + 1)) - 10,
-                    y: abs_pos.y - 10,
-                    width: 20,
-                    height: 20,
+                  this.actionNumberNodes.push({
+                    x: abs_pos.x + (10 + (30 * (dependencyIndex + 1)) - 10)*curScale,
+                    y: abs_pos.y - 10*curScale,
+                    width: 20*curScale,
+                    height: 20*curScale,
                     dependencyNode: dependencyNode
                   });
                 });
@@ -1175,7 +1181,7 @@ export class HlbComponent implements OnInit, AfterViewInit {
 
 
             function isIntersect(point, box) {
-              return point.x>=box.x && point.x<=box.x+box.width && point.y>=box.y && point.y<=box.y+box.height;
+              return point.x>=box.x && point.x<=box.x+(box.width) && point.y>=box.y && point.y<=box.y+(box.height);
             }
 
             function getCursorPosition(canvas, event) {
@@ -1188,10 +1194,10 @@ export class HlbComponent implements OnInit, AfterViewInit {
               }
             }
             
-            ctx.canvas.addEventListener('click', (e) => {
+            this.canvasEventListener = ctx.canvas.addEventListener('click', (e) => {
               if(this.canvasClickFlag) {
                 const pos = getCursorPosition(ctx.canvas, e);
-                actionNumberNodes.forEach(item => {
+                this.actionNumberNodes.forEach(item => {
                   if (isIntersect(pos, item)) {
                     console.log(item.dependencyNode);
                   }
