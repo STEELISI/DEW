@@ -125,20 +125,22 @@ class MergeTBGenerator(Generator):
         self.run[label] += "# create a topology named '" + experimentName + "'\n"
         self.run[label] += f"net = Network('{experimentName}', addressing==ipv4)\n"
         # Generate nodes
-        self.run[label] += "nodes = [net.node(name, image==2004) for name in ["
-        count = 0
-        for a in actors:
-            if a in os.keys():
-                continue
-            count += 1
-            if a in self.num.keys():
-                for i in range(1,self.num[a]+1):
-                    self.run[label] += " '"+ str(a) + "-" + str(i) + "'"
-                    nodeName_in_list.append(str(a) + "-" + str(i))
-                    #if i != self.num[a]:
-                    self.run[label] += ","
-        self.run[label] = self.run[label][:-1] + "]]\n"
-
+        if set(actors) != set(os.keys()):
+            self.run[label] += "nodes = [net.node(name, image==2004) for name in ["
+            count = 0
+            for a in actors:
+                if a in os.keys():
+                    continue
+                count += 1
+                if a in self.num.keys():
+                    for i in range(1,self.num[a]+1):
+                        self.run[label] += " '"+ str(a) + "-" + str(i) + "'"
+                        nodeName_in_list.append(str(a) + "-" + str(i))
+                        #if i != self.num[a]:
+                        self.run[label] += ","
+            self.run[label] = self.run[label][:-1] + "]]\n"
+        else:
+            self.run[label] += "nodes = []\n"
         count = 0
         for a in actors:
             if a not in os.keys():
@@ -226,7 +228,6 @@ class MergeTBGenerator(Generator):
         # Generate IP Addresses
 
         for act in ip.keys():
-            line = ""
             actor = []
             if act in self.num.keys():
                 for i in range(int(self.num[act])):
@@ -235,6 +236,7 @@ class MergeTBGenerator(Generator):
                 actor.append(act)
 
             for item in actor:
+                line = ""
                 link_item = []
                 lan_item = []
                 for link_line in link_lines:
@@ -260,7 +262,7 @@ class MergeTBGenerator(Generator):
 
     def generatePostamble(self, label):
         #self.run[label] += "# specify the net object as the experiment topology created by this script\n"
-        self.run[label] += "mx.experiment(net)\n"
+        self.run[label] += "experiment(net)\n"
 
     def parse(self):
         super().parse()
