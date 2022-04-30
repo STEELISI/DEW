@@ -174,24 +174,23 @@ export class DeterLabViewComponent implements OnInit {
         });
     }
 
-    createOrLinkToNewExperiment(link:boolean) {
-    if (link){
+    createOrLinkToNewExperiment(link: boolean) {
+        if (link) {
         this.http.post('/api/v1/pr/deterlab/experiment/exists',
-            {projectName: this.projName, experimentName: this.expName, account_id: this.userId},
-            {withCredentials: true}).subscribe(data => {
-                if(!data.isExists){
+                { projectName: this.projName, experimentName: this.expName, account_id: this.userId },
+                { withCredentials: true }).subscribe(data => {
+                    if (!data.isExists) {
                     var flag = confirm("Experiment doesn't exist. Do you want to create a new experiment with this name?");
-                    if(!flag)
+                        if (!flag)
                     return
                 }
-                        
                         
                         this.http.post('/api/v1/pr/deter/add/project/mapping',
                         {
                             projectName: this.projName, experimentName: this.expName,
                             experimentId: this.experimentId, account_id: this.userId
                         },
-        {withCredentials: true}).subscribe(data => {
+                        { withCredentials: true }).subscribe(data => {
         console.log(data);
         if (data === 'Successful') {
             this.alertMsg = this.showLinkWindow ? 'Successfully linked to experiment' :
@@ -208,6 +207,26 @@ export class DeterLabViewComponent implements OnInit {
     });
                     
                 
+                });
+        } else {
+            this.http.post('/api/v1/pr/deter/add/project/mapping',
+                {
+                    projectName: this.projName, experimentName: this.expName,
+                    experimentId: this.experimentId, account_id: this.userId
+                },
+                { withCredentials: true }).subscribe(data => {
+                    console.log(data);
+                    if (data === 'Successful') {
+                        this.alertMsg = 'Successfully created new experiment';
+                        this.alertType = 'alert-success';
+                        this.showAlert = true;
+                        setTimeout(() => {
+                            this.showAlert = false;
+                            this.showLinkWindow = false;
+                            this.showCreateWindow = false;
+                            this.ngOnInit();
+                        }, 3000);
+                    }
         });
     } 
    
