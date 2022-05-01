@@ -147,6 +147,9 @@ export class HlbComponent implements OnInit, AfterViewInit {
   bindingList: any = [];
   suggestionbehaviorMessage: String;
   suggestionConstraintMessage: String;
+  canvasClickFlag: Boolean = true;
+  actionNumberNodes: Array<any>;
+  canvasEventListener: any;
 
   bindingMap = new Map<String, any>();
   behaviorWordList: any = [];
@@ -397,6 +400,8 @@ export class HlbComponent implements OnInit, AfterViewInit {
 
     $('#modal-action-name-input').on('change', (event) => {
       this.currentActionNameInModal = event.target.value;
+      let binding = this.bindingList.find(item => item.key === this.currentActionNameInModal);
+      binding && $('#modal-action-binding-input').val(binding.value);
     });
 
     this.toggleTopologyView();
@@ -490,7 +495,7 @@ export class HlbComponent implements OnInit, AfterViewInit {
         }
         setTimeout(()=> {
           this.updateScenarioFromAddActionUI(actionData);
-        }, 1000);
+        }, 500);
       } else {
         this.updateScenarioFromAddActionUI(actionData);
       }
@@ -1130,6 +1135,12 @@ export class HlbComponent implements OnInit, AfterViewInit {
           //Show legends in topology graph
           this.topologyNetworkInstance.on("afterDrawing", (ctx) => {
 
+            this.canvasEventListener && ctx.canvas.removeEventListener('click', this.canvasEventListener);
+
+            this.actionNumberNodes = []
+
+            let curScale = this.topologyNetworkInstance.getScale();
+
             this.topologyGraphNodes.forEach((node) => {
               if (node.group != "LAN") {
                 var nodePosition = this.topologyNetworkInstance.getPosition(node.id);
@@ -1156,7 +1167,45 @@ export class HlbComponent implements OnInit, AfterViewInit {
                   ctx.textAlign = "center";
                   ctx.textBaseline = "middle";
                   ctx.fillText(dependencyNode.topologyLabel + "", x + 10 + (30 * (dependencyIndex + 1)), y);
+                  var abs_pos = this.topologyNetworkInstance.canvasToDOM(
+                    this.topologyNetworkInstance.getPositions([node.id])[node.id]
+                  );
+                  this.actionNumberNodes.push({
+                    x: abs_pos.x + (10 + (30 * (dependencyIndex + 1)) - 10)*curScale,
+                    y: abs_pos.y - 10*curScale,
+                    width: 20*curScale,
+                    height: 20*curScale,
+                    dependencyNode: dependencyNode
+                  });
                 });
+              }
+            });
+
+
+            function isIntersect(point, box) {
+              return point.x>=box.x && point.x<=box.x+(box.width) && point.y>=box.y && point.y<=box.y+(box.height);
+            }
+
+            function getCursorPosition(canvas, event) {
+              const rect = canvas.getBoundingClientRect()
+              const x = event.clientX - rect.left
+              const y = event.clientY - rect.top
+              return {
+                x: x,
+                y: y
+              }
+            }
+            
+            this.canvasEventListener = ctx.canvas.addEventListener('click', (e) => {
+              if(this.canvasClickFlag) {
+                const pos = getCursorPosition(ctx.canvas, e);
+                this.actionNumberNodes.forEach(item => {
+                  if (isIntersect(pos, item)) {
+                    this.onEditActionFromTopologyClick(item.dependencyNode.topologyLabel);
+                  }
+                });
+                this.canvasClickFlag = false;
+                setTimeout(()=> { this.canvasClickFlag = true }, 1000);
               }
             });
           });
