@@ -97,7 +97,7 @@
                     <button type="button" class="btn btn-danger" (click)="getRefreshedStatus()">Refresh</button>
                 </li>
             </ul>
-            <div *ngIf="showSwap && !showLoader">
+            <div *ngIf="showSwap && !showLoader && !isInTransition">
                 <ul class="ul-style" *ngIf="activateSwapIn; else showSwapOut">
                     <li>
                         <button type="button" class="btn btn-outline-success swap-dt"

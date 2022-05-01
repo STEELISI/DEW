@@ -29,6 +29,7 @@ export class DeterLabViewComponent implements OnInit {
     isValidExpName = false;
     experimentId;
     showSwap = false;
+    isInTransition = false;
     experimentStatus = '';
     // experimentName = '';
     alertType = '';
@@ -115,8 +116,10 @@ export class DeterLabViewComponent implements OnInit {
                     this.statusMessages = [];
                     this.activityMessages = [];
                     this.activateSwapIn = false;
-                    this.deactivateSwapOut = true;
+                    this.deactivateSwapOut = false;
+                    this.isInTransition = true;
                 } else {
+                    this.isInTransition = false;
                     this.statusMessages = data2.content.split('\n');
                     this.experimentStatus = this.statusMessages[1].replace(' ', '').split(':')[1].trim();
                     if (this.experimentStatus === 'active') {
@@ -176,37 +179,37 @@ export class DeterLabViewComponent implements OnInit {
 
     createOrLinkToNewExperiment(link: boolean) {
         if (link) {
-        this.http.post('/api/v1/pr/deterlab/experiment/exists',
+            this.http.post('/api/v1/pr/deterlab/experiment/exists',
                 { projectName: this.projName, experimentName: this.expName, account_id: this.userId },
                 { withCredentials: true }).subscribe(data => {
                     if (!data.isExists) {
-                    var flag = confirm("Experiment doesn't exist. Do you want to create a new experiment with this name?");
+                        var flag = confirm("Experiment doesn't exist. Do you want to create a new experiment with this name?");
                         if (!flag)
-                    return
-                }
-                        
-                        this.http.post('/api/v1/pr/deter/add/project/mapping',
+                            return
+                    }
+
+                    this.http.post('/api/v1/pr/deter/add/project/mapping',
                         {
                             projectName: this.projName, experimentName: this.expName,
                             experimentId: this.experimentId, account_id: this.userId
                         },
                         { withCredentials: true }).subscribe(data => {
-        console.log(data);
-        if (data === 'Successful') {
-            this.alertMsg = this.showLinkWindow ? 'Successfully linked to experiment' :
-                'Successfully created new experiment';
-            this.alertType = 'alert-success';
-            this.showAlert = true;
-            setTimeout(() => {
-                this.showAlert = false;
-                this.showLinkWindow = false;
-                this.showCreateWindow = false;
-                this.ngOnInit();
-            }, 3000);
-        }
-    });
-                    
-                
+                            console.log(data);
+                            if (data === 'Successful') {
+                                this.alertMsg = this.showLinkWindow ? 'Successfully linked to experiment' :
+                                    'Successfully created new experiment';
+                                this.alertType = 'alert-success';
+                                this.showAlert = true;
+                                setTimeout(() => {
+                                    this.showAlert = false;
+                                    this.showLinkWindow = false;
+                                    this.showCreateWindow = false;
+                                    this.ngOnInit();
+                                }, 3000);
+                            }
+                        });
+
+
                 });
         } else {
             this.http.post('/api/v1/pr/deter/add/project/mapping',
@@ -227,10 +230,10 @@ export class DeterLabViewComponent implements OnInit {
                             this.ngOnInit();
                         }, 3000);
                     }
-        });
-    } 
-   
-    
+                });
+        }
+
+
     }
 
     swapInOrSwapOutExperiment(type) {
