@@ -98,7 +98,7 @@ class NSGenerator(Generator):
                 lans[cl] = []
                 for n in c[1]:
                     actors[n] = 1
-                    if n in self.num.keys():
+                    if n in self.num.keys() and self.num[n]!=1:
                         for i in range (1, self.num[n]+1):
                             lans[cl].append(n+"-"+str(i))
                     else:
@@ -116,7 +116,7 @@ class NSGenerator(Generator):
         # Generate nodes
         label="main"
         for a in actors:
-            if a in self.num.keys():
+            if a in self.num.keys() and self.num[a]!=1:
                 self.run[label] +=  "set NODES " + str(self.num[a]) + "\n"
                 self.run[label] += "for {set i 1} {$i <= $NODES} {incr i} {\n"
                 self.run[label] += "\t set "+a+"($i) [$ns node]"
@@ -158,12 +158,22 @@ class NSGenerator(Generator):
                             current_delay = str(current_delay) + 'ms' 
                         if b in self.num.keys():
                             for j in range (1,self.num[b]+1):
-                                line = "set link"+str(cnt)+" [$ns duplex-link $"+a+"("+str(i)+") $"+b+"("+str(j)+") " + str(current_bw) + " " + str(current_delay) + " DropTail]\n"
+                                pointer_a = ""
+                                pointer_b = ""
+                                if self.num[a]!=1:
+                                    pointer_a = f"({str(i)})"
+                                if self.num[b]!=1:
+                                    pointer_b = f"({str(j)})"
+                                line = "set link"+str(cnt)+" [$ns duplex-link $"+a+pointer_a+" $"+b+pointer_b+" " + str(current_bw) + " " + str(current_delay) + " DropTail]\n"
                                 self.run[label] += line
                                 link_lines.append(line)
                                 cnt += 1
                         else:
-                            line = "set link"+str(cnt)+" [$ns duplex-link $"+a+"("+str(i)+") $"+b+" " + str(current_bw) + " " + str(current_delay) + " DropTail]\n"
+                            pointer_a = ""
+                            pointer_b = ""
+                            if self.num[a]!=1:
+                                pointer_a = f"({str(i)})"
+                            line = "set link"+str(cnt)+" [$ns duplex-link $"+a+pointer_a+" $"+b+" " + str(current_bw) + " " + str(current_delay) + " DropTail]\n"
                             self.run[label] += line
                             link_lines.append(line)
                             cnt += 1
@@ -179,11 +189,17 @@ class NSGenerator(Generator):
                         current_delay = str(current_delay) + 'ms' 
                     if b in self.num.keys():
                         for j in range (1,self.num[b]+1):
-                            line = "set link"+str(cnt)+" [$ns duplex-link $"+a+" $"+b+"("+str(j)+") " + str(current_bw) + " " + str(current_delay) + " DropTail]\n"
+                            pointer_a = ""
+                            pointer_b = ""
+                            if self.num[b]!=1:
+                                pointer_b = f"({str(j)})"
+                            line = "set link"+str(cnt)+" [$ns duplex-link $"+a+" $"+b+pointer_b+" " + str(current_bw) + " " + str(current_delay) + " DropTail]\n"
                             self.run[label] += line
                             link_lines.append(line)
                             cnt += 1
                     else:
+                        pointer_a = ""
+                        pointer_b = ""
                         line = "set link"+str(cnt)+" [$ns duplex-link $"+a+" $"+b+" 100Mb 0ms DropTail]\n"
                         self.run[label] += line
                         link_lines.append(line)
@@ -215,7 +231,7 @@ class NSGenerator(Generator):
             regex_links = re.findall('link[0-9]+', line)
             for node in nodes:
                 if (re.findall('^\$.+\([0-9]+\)$', node) == []):
-                    node_name = node_name[1:]
+                    node_name = node[1:]
                 else:
                     node_name = '('.join((node.split('('))[:-1])[1:]
                 if node_name in ip:
@@ -231,7 +247,7 @@ class NSGenerator(Generator):
             regex_lan = re.findall('lan[0-9]+', line)
             for node in nodes:
                 if (re.findall('^\$.+\([0-9]+\)$', node) == []):
-                    node_name = node_name[1:]
+                    node_name = node[1:]
                 else:
                     node_name = '('.join((node.split('('))[:-1])[1:]
                 if node_name in ip:
