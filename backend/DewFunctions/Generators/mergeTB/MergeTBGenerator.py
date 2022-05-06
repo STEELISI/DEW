@@ -99,7 +99,7 @@ class MergeTBGenerator(Generator):
                 lans[cl] = []
                 for n in c[1]:
                     actors[n] = 1
-                    if n in self.num.keys():
+                    if n in self.num.keys() and self.num[n]!=1:
                         for i in range (1, self.num[n]+1):
                             lans[cl].append(n+"-"+str(i))
                     else:
@@ -132,12 +132,16 @@ class MergeTBGenerator(Generator):
                 if a in os.keys():
                     continue
                 count += 1
-                if a in self.num.keys():
+                if a in self.num.keys() and self.num[a]!=1:
                     for i in range(1,self.num[a]+1):
                         self.run[label] += " '"+ str(a) + "-" + str(i) + "'"
                         nodeName_in_list.append(str(a) + "-" + str(i))
                         #if i != self.num[a]:
                         self.run[label] += ","
+                else:
+                    self.run[label] += " '"+ str(a) + "'"
+                    nodeName_in_list.append(str(a))
+                    self.run[label] += ","
             self.run[label] = self.run[label][:-1] + "]]\n"
         else:
             self.run[label] += "nodes = []\n"
@@ -147,12 +151,16 @@ class MergeTBGenerator(Generator):
                 continue
             self.run[label] += f"nodes = nodes + [net.node(name, image=={os[a]}) for name in ["
             count += 1
-            if a in self.num.keys():
+            if a in self.num.keys() and self.num[n]!=1:
                 for i in range(1,self.num[a]+1):
                     self.run[label] += " '"+ str(a) + "-" + str(i) + "'"
                     nodeName_in_list.append(str(a) + "-" + str(i))
                     #if i != self.num[a]:
                     self.run[label] += ","
+            else:
+                self.run[label] += " '"+ str(a) + "'"
+                nodeName_in_list.append(str(a))
+                self.run[label] += ","
             self.run[label] = self.run[label][:-1] + "]]\n"
 
 
@@ -172,12 +180,22 @@ class MergeTBGenerator(Generator):
                             current_delay = str(current_delay) 
                         if b in self.num.keys():
                             for j in range (1,self.num[b]+1):
-                                line = f"link{str(cnt)} = net.connect([nodes[{nodeName_in_list.index(f'{a}-{str(i)}')}], nodes[{nodeName_in_list.index(f'{b}-{str(j)}')}]], capacity=mbps({current_bw}), time=ms({current_delay}))\n"
+                                pointer_a = ""
+                                pointer_b = ""
+                                if self.num[a]!=1:
+                                    pointer_a = f"-{str(i)}"
+                                if self.num[b]!=1:
+                                    pointer_b = f"-{str(j)}"
+                                line = f"link{str(cnt)} = net.connect([nodes[{nodeName_in_list.index(f'{a}{pointer_a}')}], nodes[{nodeName_in_list.index(f'{b}{pointer_b}')}]], capacity=mbps({current_bw}), time=ms({current_delay}))\n"
                                 self.run[label] += line
                                 link_lines.append(line)
                                 cnt += 1
                         else:
-                            line = f"link{str(cnt)} = net.connect([nodes[{nodeName_in_list.index(f'{a}-{str(i)}')}], nodes[{nodeName_in_list.index(f'{b}')}]], capacity=mbps({current_bw}), time=ms({current_delay}))\n"
+                            pointer_a = ""
+                            pointer_b = ""
+                            if self.num[a]!=1:
+                                pointer_a = f"-{str(i)}"
+                            line = f"link{str(cnt)} = net.connect([nodes[{nodeName_in_list.index(f'{a}{pointer_a}')}], nodes[{nodeName_in_list.index(f'{b}')}]], capacity=mbps({current_bw}), time=ms({current_delay}))\n"
                             self.run[label] += line
                             link_lines.append(line)
                             cnt += 1
@@ -193,12 +211,18 @@ class MergeTBGenerator(Generator):
                         current_delay = str(current_delay)
                     if b in self.num.keys():
                         for j in range (1,self.num[b]+1):
-                            line = f"link{str(cnt)} = net.connect([nodes[{nodeName_in_list.index(f'{a}')}], nodes[{nodeName_in_list.index(f'{b}-{str(j)}')}]], capacity=mbps({current_bw}), time=ms({current_delay}))\n"
+                            pointer_a = ""
+                            pointer_b = ""
+                            if self.num[b]!=1:
+                                pointer_b = f"-{str(j)}"
+                            line = f"link{str(cnt)} = net.connect([nodes[{nodeName_in_list.index(f'{a}')}], nodes[{nodeName_in_list.index(f'{b}{pointer_b}')}]], capacity=mbps({current_bw}), time=ms({current_delay}))\n"
                             self.run[label] += line
                             link_lines.append(line)
                             cnt += 1
                     else:
-                        line = f"link{str(cnt)} = net.connect([nodes[{nodeName_in_list.index(f'{a}')}], nodes[{nodeName_in_list.index(f'{b}')}]], capacity=mbps({current_bw}), time=ms({current_delay}))\n"
+                        pointer_a = ""
+                        pointer_b = ""
+                        line = f"link{str(cnt)} = net.connect([nodes[{nodeName_in_list.index(f'{a}{pointer_a}')}], nodes[{nodeName_in_list.index(f'{b}{pointer_b}')}]], capacity=mbps({current_bw}), time=ms({current_delay}))\n"
                         self.run[label] += line
                         link_lines.append(line)
                         cnt += 1
@@ -229,7 +253,7 @@ class MergeTBGenerator(Generator):
 
         for act in ip.keys():
             actor = []
-            if act in self.num.keys():
+            if act in self.num.keys() and self.num[act]!=1:
                 for i in range(int(self.num[act])):
                     actor.append(f"{act}-{i+1}")
             else:
