@@ -244,7 +244,7 @@ export class DeterLabViewComponent implements OnInit {
             .subscribe(data => {
                 this.showLoader = false;
                 if (data) {
-                    this.alertMsg = type === 'swapin' ? 'Successfully swapped-in experiment' :
+                    this.alertMsg = type === 'swapin' ? 'Started swap-in experiment' :
                         'Successfully swapped-out experiment';
                     this.alertType = 'alert-success';
                     this.showAlert = true;
