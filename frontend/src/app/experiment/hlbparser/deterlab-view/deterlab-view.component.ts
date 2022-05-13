@@ -30,6 +30,7 @@ export class DeterLabViewComponent implements OnInit {
     experimentId;
     showSwap = false;
     isInTransition = false;
+    transitionInterval = null;
     experimentStatus = '';
     // experimentName = '';
     alertType = '';
@@ -106,9 +107,14 @@ export class DeterLabViewComponent implements OnInit {
     }
 
     getExperimentStatus(params) {
+        this.showLoader = true;
         this.http.get('v1/pr/deter/project/getstatus', {params, withCredentials: true})
             .subscribe(data2 => {
+                this.showLoader = false;
                 if (data2.error) {
+                    if(this.transitionInterval){
+                        clearInterval(this.transitionInterval);
+                    }
                     this.showSwap = false;
                     this.statusMessages = [data2.error];
                 } else if (data2.content === 'No information available.') {
@@ -118,7 +124,16 @@ export class DeterLabViewComponent implements OnInit {
                     this.activateSwapIn = false;
                     this.deactivateSwapOut = false;
                     this.isInTransition = true;
+                    if(!this.transitionInterval){
+                        this.transitionInterval = setInterval(() => {
+                            this.getExperimentStatus(params);
+                            this.getExperimentActivity(params);
+                        },15000)
+                    }
                 } else {
+                    if(this.transitionInterval){
+                        clearInterval(this.transitionInterval);
+                    }
                     this.isInTransition = false;
                     this.statusMessages = data2.content.split('\n');
                     this.experimentStatus = this.statusMessages[1].replace(' ', '').split(':')[1].trim();
