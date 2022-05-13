@@ -81,7 +81,7 @@ export class RunInfoComponent implements OnInit, OnChanges {
                     if(this.doRefresh){
                         this.showDetails();
                     }
-                }, 5000)
+                }, 30000)
             }
         }
     }
