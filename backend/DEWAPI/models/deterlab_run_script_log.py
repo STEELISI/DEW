@@ -17,6 +17,7 @@ class DeterlabRunScriptLogs(db.Model):
     isdeleted = db.Column(db.Boolean)
     action = db.Column(db.String)
     logs = db.Column(db.String, nullable=True)
+    run_script = db.Column(db.String, nullable=True)
 
     def to_dict(self):
         return {
@@ -31,5 +32,6 @@ class DeterlabRunScriptLogs(db.Model):
             'updated_at': self.updated_at,
             'isdeleted': self.isdeleted,
             'action': self.action,
-            'logs': self.logs
+            'logs': self.logs,
+            'run_script': self.run_script
             }

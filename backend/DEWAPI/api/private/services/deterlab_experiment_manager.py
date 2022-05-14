@@ -58,8 +58,8 @@ class DeterLabExperimentManager(object):
         
         return "Successful"
 
-    def addLog(self, eid, daid, uid, transaction_id, unique_name, variables,action):
-        d = DeterlabRunScriptLogs(daid=daid, eid=eid, uid=uid, version_id=transaction_id,unique_name=unique_name,isdeleted=False, run_variable_value=variables, action=action)
+    def addLog(self, eid, daid, uid, transaction_id, unique_name, variables,action, run_script):
+        d = DeterlabRunScriptLogs(daid=daid, eid=eid, uid=uid, version_id=transaction_id,unique_name=unique_name,isdeleted=False, run_variable_value=variables, action=action, run_script = run_script)
         db.session.add(d)
         db.session.commit()
 
@@ -99,6 +99,13 @@ class DeterLabExperimentManager(object):
         d = DeterlabRunScriptLogs.query.filter(DeterlabRunScriptLogs.unique_name == unique_name, DeterlabRunScriptLogs.eid == eid, DeterlabRunScriptLogs.uid == uid,DeterlabRunScriptLogs.isdeleted == False,DeterlabRunScriptLogs.rsid == rsid).first()
         if d is not None:
             return d.logs
+
+        return ""
+
+    def getRunScript(self, eid, uid, unique_name, rsid):
+        d = DeterlabRunScriptLogs.query.filter(DeterlabRunScriptLogs.unique_name == unique_name, DeterlabRunScriptLogs.eid == eid, DeterlabRunScriptLogs.uid == uid,DeterlabRunScriptLogs.isdeleted == False,DeterlabRunScriptLogs.rsid == rsid).first()
+        if d is not None:
+            return d.run_script
 
         return ""
         

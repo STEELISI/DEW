@@ -1674,7 +1674,7 @@ class HandleProjectRunLog(Resource):
                             variable_data = None
                             if len(variables)!=0:
                                 variable_data = json.dumps(data)
-                            dm.addLog(eid, details['id'], uid, transaction_id, unique_name, variable_data,"start")
+                            dm.addLog(eid, details['id'], uid, transaction_id, unique_name, variable_data,"start", run_content)
                             result['success'] = True
                         else:
                             result = result_log
@@ -1772,7 +1772,7 @@ class HandleProjectStopLog(Resource):
                       variable_data = None
                       if len(variables)!=0:
                           variable_data = json.dumps(data)
-                      dm.addLog(eid, details['id'], uid, transaction_id, unique_name, variable_data, "stop")
+                      dm.addLog(eid, details['id'], uid, transaction_id, unique_name, variable_data, "stop", None)
                       result['success'] = True
                   else:
                       result = result_log
@@ -1886,6 +1886,49 @@ class HandleProjectGetLog(Resource):
       except BaseException:
         Logger.backendErrorLog(user, traceback.format_exc())
         raise Exception("Error Occured on the Server") 
+
+@ns.route('/deter/project/run/script')
+class HandleProjectGetRunScript(Resource):
+    def post(self):
+      try:
+        user = userObj.getEmailId()
+        Logger.backendLog(user,"HandleProjectGetRunScript()", "Entered Class")
+        content = request.get_json(force=True)
+        if 'rid' not in content:
+          return {"error":"rid is missing"} , 200
+        if 'account_id' not in content:
+          return {"error":"account_id is missing"}, 200
+        if 'eid' not in content:
+          return {"error":"eid is missing"} , 200
+        if 'rsid' not in content:
+          return {"error":"rsid is missing"} , 200
+        rid = content['rid']
+        daid = content['account_id']
+        eid = content['eid']
+        rsid = content['rsid']
+          
+        uid = userObj.getUserId()
+        try:
+          result = {}
+          version_id = dm.getVersion(rid,uid,daid)
+          if version_id is None:
+            result['error'] = 'User doesnot have access to this script'
+          else:
+            print("rsid")
+            print("----In")
+            result['data'] = dm.getRunScript(eid, uid, version_id.unique_name, rsid)
+            print(result)
+          
+          Logger.backendLog(user,"HandleProjectGetRunScript()", "Retrieved run script with result - " + str(result))
+          return result, 200
+        except ValueError as e:
+            if str(e) == "Forbidden":
+                Logger.backendLog(user,"HandleProjectGetRunScript()", "Unable to get run script")
+                return {}, 403
+      except BaseException:
+        Logger.backendErrorLog(user, traceback.format_exc())
+        raise Exception("Error Occured on the Server") 
+
 
 @ns.route('/deter/project/run/logs')
 class HandleProjectGetRunLogs(Resource):
