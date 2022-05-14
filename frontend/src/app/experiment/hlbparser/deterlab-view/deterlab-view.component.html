@@ -52,9 +52,9 @@
                         <a class="nav-item nav-link" id="nav-profile-tab" data-toggle="tab" href="#nav-profile"
                            role="tab" aria-controls="nav-profile" aria-selected="false">Activity</a> -->
                         <a class="nav-item nav-link active" id="nav-contact-tab" data-toggle="tab" href="#nav-contact" (click)="updateNavTabStatus('run_logs')"
-                           role="tab" aria-controls="nav-contact" aria-selected="false">Run Logs</a>
+                           role="tab" aria-controls="nav-contact" aria-selected="false">Textual View</a>
                         <a class="nav-item nav-link" id="nav-current-tab" data-toggle="tab" href="#nav-current" (click)="updateNavTabStatus('current')" *ngIf="runStatus == 'start'"
-                            role="tab" aria-controls="nav-current" aria-selected="false" [ngClass]="{'disabled-tab': runStatus != 'start'}">Current</a>
+                            role="tab" aria-controls="nav-current" aria-selected="false" [ngClass]="{'disabled-tab': runStatus != 'start'}">Graphical View</a>
                     </div>
                 </nav>
                 <div class="tab-content" id="nav-tabContent">
