@@ -10,8 +10,8 @@ execute_fork()
     local cnt=$3
     local aname=$4
     
-    if [ ! -d ~/DEW/$id ] ; then
-	mkdir $path/DEW/$id
+    if [ ! -d $path/DEW/$id ] ; then
+	    mkdir -p $path/DEW/$id
     fi
     echo "date +\"%s\" > $path/DEW/$id/time.$cnt " > $path/DEW/$id/script.$cnt.$aname.$node.sh
     echo "$cmd 2>$path/DEW/$id/error.$cnt 1>$path/DEW/$id/output.$cnt &" >> $path/DEW/$id/script.$cnt.$aname.$node.sh
