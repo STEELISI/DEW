@@ -35,17 +35,18 @@
                             </mat-panel-title>
                             <mat-panel-description>
                                 
-                            <span style="color:green" *ngIf="(s.status=='0')">
+                            <span class="flex-grow-1" style="color:green" *ngIf="(s.status=='0')">
                               Status: Successful
 			      <!-- <span style="color:red" *ngIf="(s.error!='')">
                                     {{' (with Error)'}}
                                 </span>-->
                             </span>
-                            <span style="color:green" *ngIf="( s.status!='0')">
+                            <span class="flex-grow-1" style="color:green" *ngIf="( s.status!='0')">
                                 Status: Unsuccessfull <span style="color:red" *ngIf="(s.error!='')">
                                     {{' (with Error)'}}
                                 </span>
                             </span>
+                            <span style="color:gray;">{{getLocalTime(s.time)}}</span>
                             </mat-panel-description>
                           </mat-expansion-panel-header>
                           <div class="col-md-12" >
