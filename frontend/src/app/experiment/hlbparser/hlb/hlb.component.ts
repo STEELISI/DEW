@@ -6,7 +6,7 @@ import {
   ViewChild,
   ElementRef,
   AfterViewInit,
-  HostListener 
+  HostListener
 } from "@angular/core";
 import { CdkDragDrop, moveItemInArray } from "@angular/cdk/drag-drop";
 import * as Quill from "quill";
@@ -30,7 +30,7 @@ import { NULL_EXPR } from "@angular/compiler/src/output/output_ast";
 import { type } from "os";
 import { LogService, LogHeader, LogEntry } from '../common/logging-service';
 import { GoogleDriveService } from "src/app/google-drive-service.service";
-declare let $:any;
+declare let $: any;
 import { AuthService } from '../../../@auth/auth.service';
 import { async } from "@angular/core/testing";
 
@@ -47,7 +47,7 @@ export class HlbComponent implements OnInit, AfterViewInit {
   @ViewChild('dependencyGraphNetwork', { static: false }) dependencyGraphNetwork!: ElementRef;
   @ViewChild('dependencyGraphCycleNetwork', { static: false }) dependencyGraphCycleNetwork!: ElementRef;
   @HostListener('document:keydown.escape', ['$event'])
-  onKeydownHandler(event: KeyboardEvent) { 
+  onKeydownHandler(event: KeyboardEvent) {
     this.addNodeType = null;
     this.clearMessage();
     this.topologyNetworkInstance.disableEditMode();
@@ -293,18 +293,17 @@ export class HlbComponent implements OnInit, AfterViewInit {
     this.stateservice.getBindings().subscribe((data) => {
       if (data != null) {
         this.bindingList = [];
-	this.filterBindingOptionsForEvent=[];
+        this.filterBindingOptionsForEvent = [];
         this.bindingMap = new Map<String, any>();
         this.filterBindingOptionsForEvent = [];
         data.forEach((element) => {
           this.bindingMap.set(element.key, element);
           this.bindingList.push(element);
-	  if (element.category != 'event' && element.category != 't_event')
-	  {
-	  	// Jelena
-      this.filterBindingOptionsForEvent.push('pexists('+element.key+')');
-      this.filterBindingOptionsForEvent.push('psuccess('+element.key+')');
-	  };
+          if (element.category != 'event' && element.category != 't_event') {
+            // Jelena
+            this.filterBindingOptionsForEvent.push('pexists(' + element.key + ')');
+            this.filterBindingOptionsForEvent.push('psuccess(' + element.key + ')');
+          };
         });
       }
     });
@@ -338,7 +337,7 @@ export class HlbComponent implements OnInit, AfterViewInit {
 
   ngAfterViewInit(): void {
     //JQuery Functions
-    $('.convert-btn > div').on('click', ()=>{
+    $('.convert-btn > div').on('click', () => {
       var $convertButtonDiv = $('.convert-btn').parent();
       this.logger.log(LogHeader.KEY_PRESS, "User tried converting the constraints from DEW 1.0 to 2.0");
       //Animate Button
@@ -346,55 +345,55 @@ export class HlbComponent implements OnInit, AfterViewInit {
         { deg: '+=360' },
         {
           duration: 600,
-          step: function(now) {
+          step: function (now) {
             $(this).css({ transform: 'rotate(' + now + 'deg)' });
           }
         }
       );
       //Update DEW
-        const data = {
-          constraints: []
-        };
-        const constraints = this.getConstraintsFromEditor();
-        this.logger.log(LogHeader.DATA_SENT, constraints);
-        data.constraints = constraints;
-        this.http
-          .put('v1/pr/convert/dew1to2', data, { withCredential: true })
-          .subscribe((receivedData: ParseApiBean) => {
-            $('.error-text').addClass('hide');
-            this.stateservice.setConstraints(receivedData.parsedConstraints);
-            this.logger.log(LogHeader.DATA_RECEIVED, receivedData.parsedConstraints);
-            setTimeout(()=> {
-              this.updateActorsConstraint();
-              $convertButtonDiv.addClass('hide');
-            }, 1000);
-          }, (error: any) => {
-            $convertButtonDiv.find('.error-text').removeClass('hide');
-            setTimeout(()=> {
-              $convertButtonDiv.find('.error-text').addClass('hide');
-            }, 3000);
-            this.logger.log(LogHeader.DATA_RECEIVED, "Error converting constraints");
-          });
+      const data = {
+        constraints: []
+      };
+      const constraints = this.getConstraintsFromEditor();
+      this.logger.log(LogHeader.DATA_SENT, constraints);
+      data.constraints = constraints;
+      this.http
+        .put('v1/pr/convert/dew1to2', data, { withCredential: true })
+        .subscribe((receivedData: ParseApiBean) => {
+          $('.error-text').addClass('hide');
+          this.stateservice.setConstraints(receivedData.parsedConstraints);
+          this.logger.log(LogHeader.DATA_RECEIVED, receivedData.parsedConstraints);
+          setTimeout(() => {
+            this.updateActorsConstraint();
+            $convertButtonDiv.addClass('hide');
+          }, 1000);
+        }, (error: any) => {
+          $convertButtonDiv.find('.error-text').removeClass('hide');
+          setTimeout(() => {
+            $convertButtonDiv.find('.error-text').addClass('hide');
+          }, 3000);
+          this.logger.log(LogHeader.DATA_RECEIVED, "Error converting constraints");
+        });
     });
 
-    $('#modal-action-wait-checkbox').on('change', (event)=> {
+    $('#modal-action-wait-checkbox').on('change', (event) => {
       $('#modal-action-wait-input').attr('disabled', !event.currentTarget.checked)
     });
 
-    $('#modal-action-emit-checkbox').on('change', (event)=> {
+    $('#modal-action-emit-checkbox').on('change', (event) => {
       $('#modal-action-emit-input').attr('disabled', !event.currentTarget.checked);
-      if(!event.currentTarget.checked) {
+      if (!event.currentTarget.checked) {
         $('#modal-action-event-checkbox').prop('checked', false);
         $('#modal-event-binding-input').attr('disabled', true);
       }
       $('#modal-action-event-checkbox').attr('disabled', !event.currentTarget.checked);
     });
 
-    $('#modal-action-trigger-checkbox').on('change', (event)=> {
+    $('#modal-action-trigger-checkbox').on('change', (event) => {
       $('#modal-action-trigger-selections').attr('disabled', !event.currentTarget.checked);
     });
 
-    $('#modal-action-event-checkbox').on('change', (event)=> {
+    $('#modal-action-event-checkbox').on('change', (event) => {
       $('#modal-event-binding-input').attr('disabled', !event.currentTarget.checked)
     });
 
@@ -430,6 +429,7 @@ export class HlbComponent implements OnInit, AfterViewInit {
 
   clearModalContent(): void {
     $('.modal-title').html('Add Action');
+    $('.modal-delete-button').hide();
     $('.modal-add-button').html('Add');
     $('#modal-action-name-input').val('');
     $('#modal-action-binding-input').val('');
@@ -439,15 +439,25 @@ export class HlbComponent implements OnInit, AfterViewInit {
     $("#modal-action-trigger-selections option:selected").prop("selected", false);
     $(".modal-action-headers > input[type='checkbox']:checked").prop('checked', false).change();
     $("#modal-actor-input > option:selected").prop("selected", false);
-    $("#modal-actor-input > option").filter(function() {
+    $("#modal-actor-input > option").filter(function () {
       return $(this).html() === swapJSON(id_of_node)[currentGraphItemSelection['id']];
     }).prop("selected", true);
     $("#modal-actor-input").attr('disabled', $('.graph-box-dependency').hasClass('hide'));
   }
 
   onEditActionFromTopologyClick(data) {
-    var nodeData = (this.allDependencyNodeData.filter(item => parseInt(item.id)==parseInt(data)))[0]['data']
+    var nodeData = (this.allDependencyNodeData.filter(item => parseInt(item.id) == parseInt(data)))[0]['data']
     this.populateAndShowEditActionModal(nodeData);
+  }
+
+  deleteActionFromUI(): void {
+    const actor = $("#modal-actor-input > option:selected").html();
+    const action = $('#modal-action-name-input').val().trim();
+    this.onDependencyNodeDelete(actor, action);
+    setTimeout(() => {
+      this.updateActorsConstraint()
+    }, 500);
+    $('.modal').modal('toggle');
   }
 
   addActionFromUI(): void {
@@ -455,16 +465,16 @@ export class HlbComponent implements OnInit, AfterViewInit {
     var action = $('#modal-action-name-input').val().trim();
     $('#modal-action-name-input').val(action);
     actionData['action'] = action;
-    actionData['actor'] = $("#modal-actor-input > option:selected").html(); 
-    if(actionData['action']=='') {
+    actionData['actor'] = $("#modal-actor-input > option:selected").html();
+    if (actionData['action'] == '') {
       $('.modal-add-action-error').removeClass('hide');
-      setTimeout(()=> {
+      setTimeout(() => {
         $('.modal-add-action-error').addClass('hide');
       }, 3000);
     } else {
       $('.modal').modal('toggle');
       actionData['actionBinding'] = $('#modal-action-binding-input').val().trim();
-      actionData['doesActionBindingExist'] = (actionData['actionBinding']!='');
+      actionData['doesActionBindingExist'] = (actionData['actionBinding'] != '');
       actionData['emit'] = $('#modal-action-emit-input').val().trim();
       actionData['doesEmitExist'] = (actionData['emit'] != '') && $('#modal-action-emit-checkbox').prop('checked');
       actionData['wait'] = $('#modal-action-wait-input').val().trim();
@@ -472,20 +482,20 @@ export class HlbComponent implements OnInit, AfterViewInit {
       actionData['eventBinding'] = $('#modal-event-binding-input').val().trim();
       actionData['doesEventBindingExist'] = (actionData['eventBinding'] != '') && $('#modal-action-event-checkbox').prop('checked');
       var triggers = []
-      for(var item of $("#modal-action-trigger-selections option:selected")) {
+      for (var item of $("#modal-action-trigger-selections option:selected")) {
         triggers.push(item.innerHTML);
       }
       actionData['triggers'] = triggers;
       actionData['doesTriggerExist'] = (actionData['triggers'].length > 0) && $('#modal-action-trigger-checkbox').prop('checked');
-      if($('.modal-title').html()=='Edit Action') {
-        if(this.oldEmit!=actionData['emit'] && actionData['emit']=="") {
+      if ($('.modal-title').html() == 'Edit Action') {
+        if (this.oldEmit != actionData['emit'] && actionData['emit'] == "") {
           this.onDependencyNodeDelete(this.oldActor, this.oldAction);
         } else {
           var scenario = this.getScenariosFromEditor();
           var filtered = [];
-          for(var i = 0; i<scenario.length; i++) {
-            if(!(scenario[i].includes(this.oldActor + " ") && scenario[i].includes(" " + this.oldAction))) {
-              if(this.oldEmit!="") {
+          for (var i = 0; i < scenario.length; i++) {
+            if (!(scenario[i].includes(this.oldActor + " ") && scenario[i].includes(" " + this.oldAction))) {
+              if (this.oldEmit != "") {
                 scenario[i] = scenario[i].replace(this.oldEmit, actionData['emit']);
               }
               filtered.push(scenario[i]);
@@ -493,7 +503,7 @@ export class HlbComponent implements OnInit, AfterViewInit {
           }
           this.stateservice.setBehavior(filtered);
         }
-        setTimeout(()=> {
+        setTimeout(() => {
           this.updateScenarioFromAddActionUI(actionData);
         }, 500);
       } else {
@@ -508,7 +518,7 @@ export class HlbComponent implements OnInit, AfterViewInit {
     scenario.push(newLine);
     this.stateservice.setBehavior(scenario);
     this.logger.log(LogHeader.GRAPH_UPDATE, "User added a new scenario line from UI - " + newLine);
-    setTimeout(()=> {
+    setTimeout(() => {
       this.updateActorsConstraint()
     }, 1000);
   }
@@ -518,22 +528,22 @@ export class HlbComponent implements OnInit, AfterViewInit {
     var triggerStmt = "when "
     var waitStmt = "wait "
     var emitStmt = "emit "
-    if(action['doesTriggerExist']) {
+    if (action['doesTriggerExist']) {
       result = result + triggerStmt;
-      for(var item of action['triggers']) {
+      for (var item of action['triggers']) {
         result = result + item + ", "
       }
-      result = result.substring(0, result.length-2);
+      result = result.substring(0, result.length - 2);
       result += " "
     }
-    if(action['doesWaitExist']) {
+    if (action['doesWaitExist']) {
       result += waitStmt + action['wait'] + " ";
     }
     result += action['actor'] + " " + action['action'] + " "
-    if(action['doesEmitExist']) {
+    if (action['doesEmitExist']) {
       result += emitStmt + action['emit'] + " "
     }
-    result = result.substring(0, result.length-1);
+    result = result.substring(0, result.length - 1);
     var eventBinding = eventBinding = {
       'key': action['emit'],
       'category': 'event',
@@ -544,13 +554,13 @@ export class HlbComponent implements OnInit, AfterViewInit {
       'category': 'action',
       'value': action['doesActionBindingExist'] ? action['actionBinding'] : ''
     };
-    var temp = this.bindingList.filter((item)=>{ return item['category']=='action' && item['key']==action['action']});
-    if(temp.length) {
+    var temp = this.bindingList.filter((item) => { return item['category'] == 'action' && item['key'] == action['action'] });
+    if (temp.length) {
       var index = this.bindingList.indexOf(temp[0]);
       this.bindingList.splice(index, 1);
     }
-    temp = this.bindingList.filter((item)=>{ return item['category']=='event' && item['key']==action['emit']});
-    if(temp.length) {
+    temp = this.bindingList.filter((item) => { return item['category'] == 'event' && item['key'] == action['emit'] });
+    if (temp.length) {
       var index = this.bindingList.indexOf(temp[0]);
       this.bindingList.splice(index, 1);
     }
@@ -855,10 +865,10 @@ export class HlbComponent implements OnInit, AfterViewInit {
   assignNewActorInTopologyGraph(isLAN) {
     var name;
     var max_count = 0
-    for(var i in id_of_node) {
+    for (var i in id_of_node) {
       max_count = Math.max(max_count, id_of_node[i]);
     }
-    for(var i in id_of_edge) {
+    for (var i in id_of_edge) {
       max_count = Math.max(max_count, id_of_edge[i]['id']);
     }
     name = isLAN ? "lan" + (max_count + 1) : "actor" + (max_count + 1);
@@ -875,22 +885,22 @@ export class HlbComponent implements OnInit, AfterViewInit {
       }
     }
     id_of_node[name] = max_count + 1;
-    
+
     this.createNewGraphTypeObject(isLAN, name);
-    return [isLAN ? "" : name, max_count+1];
+    return [isLAN ? "" : name, max_count + 1];
   }
 
   assignNewEdgeInTopologyGraph(from, to) {
     var max_count = 0
-    for(var i in id_of_edge) {
+    for (var i in id_of_edge) {
       max_count = Math.max(max_count, id_of_edge[i]['id']);
     }
-    for(var i in id_of_node) {
+    for (var i in id_of_node) {
       max_count = Math.max(max_count, id_of_node[i]);
     }
     var swappedNodes = swapJSON(id_of_node);
     var name = swappedNodes[from] + '-' + swappedNodes[to];
-    id_of_edge[name] = {from: from, to: to, id: max_count + 1};
+    id_of_edge[name] = { from: from, to: to, id: max_count + 1 };
     console.log(id_of_edge)
     var temp = this.stateservice.getConstraints().source['_value'];
     temp.push('link ' + swappedNodes[from] + ' ' + swappedNodes[to] + " [ bw 1, delay 0 ]");
@@ -915,8 +925,8 @@ export class HlbComponent implements OnInit, AfterViewInit {
 
   createNewGraphTypeObject(isLAN, name) {
     var temp = {}
-    temp['bandwidth'] = isLAN ? '1': '';
-    temp['delay'] = isLAN ? '0': '';
+    temp['bandwidth'] = isLAN ? '1' : '';
+    temp['delay'] = isLAN ? '0' : '';
     temp['ipAddress'] = '';
     temp['operatingSystem'] = '';
     temp['hardwareType'] = '';
@@ -943,7 +953,7 @@ export class HlbComponent implements OnInit, AfterViewInit {
         .put('v1/pr/hlb/topology/parse', request, { withCredential: true })
         .subscribe((receivedData: ParseApiBean) => {
           console.log(receivedData)
-          for(var item of Object.keys(receivedData['actors'])) {
+          for (var item of Object.keys(receivedData['actors'])) {
             this.extractActors([item]);
           }
           //Graph Operations
@@ -1043,7 +1053,7 @@ export class HlbComponent implements OnInit, AfterViewInit {
             manipulation: {
               enabled: false,
               initiallyActive: false,
-              addNode: (nodeData, callback) => { 
+              addNode: (nodeData, callback) => {
                 [nodeData.label, nodeData.id] = this.assignNewActorInTopologyGraph(nodeData.group == "LAN");
 
                 this.createGraphItemEntry(nodeData);
@@ -1093,7 +1103,7 @@ export class HlbComponent implements OnInit, AfterViewInit {
               deleteNode: (data, callback) => {
                 //Remove node from id_of_node and all linked edges from id_of_edge
                 var tempActorsList = this.actorsList;
-                this.actorsList.splice(tempActorsList.map(element => element.text).indexOf(globalGraphItemParametersList[data.nodes[0]]['nodeName']), 1); 
+                this.actorsList.splice(tempActorsList.map(element => element.text).indexOf(globalGraphItemParametersList[data.nodes[0]]['nodeName']), 1);
                 delete id_of_node[Object.keys(id_of_node).find(node_name => id_of_node[node_name] == data.nodes[0])]
                 delete globalGraphItemParametersList[data.nodes[0] + ""]
                 for (var deletedEdge of data.edges) {
@@ -1171,10 +1181,10 @@ export class HlbComponent implements OnInit, AfterViewInit {
                     this.topologyNetworkInstance.getPositions([node.id])[node.id]
                   );
                   this.actionNumberNodes.push({
-                    x: abs_pos.x + (10 + (30 * (dependencyIndex + 1)) - 10)*curScale,
-                    y: abs_pos.y - 10*curScale,
-                    width: 20*curScale,
-                    height: 20*curScale,
+                    x: abs_pos.x + (10 + (30 * (dependencyIndex + 1)) - 10) * curScale,
+                    y: abs_pos.y - 10 * curScale,
+                    width: 20 * curScale,
+                    height: 20 * curScale,
                     dependencyNode: dependencyNode
                   });
                 });
@@ -1183,7 +1193,7 @@ export class HlbComponent implements OnInit, AfterViewInit {
 
 
             function isIntersect(point, box) {
-              return point.x>=box.x && point.x<=box.x+(box.width) && point.y>=box.y && point.y<=box.y+(box.height);
+              return point.x >= box.x && point.x <= box.x + (box.width) && point.y >= box.y && point.y <= box.y + (box.height);
             }
 
             function getCursorPosition(canvas, event) {
@@ -1195,9 +1205,9 @@ export class HlbComponent implements OnInit, AfterViewInit {
                 y: y
               }
             }
-            
+
             this.canvasEventListener = ctx.canvas.addEventListener('click', (e) => {
-              if(this.canvasClickFlag) {
+              if (this.canvasClickFlag) {
                 const pos = getCursorPosition(ctx.canvas, e);
                 this.actionNumberNodes.forEach(item => {
                   if (isIntersect(pos, item)) {
@@ -1205,7 +1215,7 @@ export class HlbComponent implements OnInit, AfterViewInit {
                   }
                 });
                 this.canvasClickFlag = false;
-                setTimeout(()=> { this.canvasClickFlag = true }, 1000);
+                setTimeout(() => { this.canvasClickFlag = true }, 1000);
               }
             });
           });
@@ -1448,7 +1458,7 @@ export class HlbComponent implements OnInit, AfterViewInit {
               }
             })
 
-            $('.dependency-topology-toggle-icon-dependency').hasClass('active') && (this.selectedNetworkInstance = this.dependencyNetworkInstance);
+          $('.dependency-topology-toggle-icon-dependency').hasClass('active') && (this.selectedNetworkInstance = this.dependencyNetworkInstance);
         });
     }
 
@@ -1505,10 +1515,10 @@ export class HlbComponent implements OnInit, AfterViewInit {
     // $("#actionMessage").hide();
   }
 
-  onDependencyClick = async(properties) => {
+  onDependencyClick = async (properties) => {
     var ids = properties.nodes;
     var clickedNodes = this.dependencyGraphNodes.get(ids);
-    (clickedNodes.length) ? $('.dialog-box-action-button, .modal-add-button, .dependency-edit-action-button').css('background-color', graphColors[clickedNodes[0]['group'].replace('group', '')]) && (this.selectedDependencyNodeData = clickedNodes[0]['data']) && $('.dependency-edit-action-button').removeClass('hide'): $('.dependency-edit-action-button').addClass('hide');
+    (clickedNodes.length) ? $('.dialog-box-action-button, .modal-add-button, .dependency-edit-action-button').css('background-color', graphColors[clickedNodes[0]['group'].replace('group', '')]) && (this.selectedDependencyNodeData = clickedNodes[0]['data']) && $('.dependency-edit-action-button').removeClass('hide') : $('.dependency-edit-action-button').addClass('hide');
   }
 
   onTopologyClick = async (properties) => {
@@ -1605,7 +1615,7 @@ export class HlbComponent implements OnInit, AfterViewInit {
       const new_name = this.topologyGraphSelectedNodeData.name;
       const old_name = this.topologyGraphNodes.get(this.topologyGraphSelectedNodeData.id)['label'];
 
-      this.actorsList[this.actorsList.findIndex( item => item['text']==old_name )]['text'] = new_name;
+      this.actorsList[this.actorsList.findIndex(item => item['text'] == old_name)]['text'] = new_name;
 
       let index = Object.keys(this.graphItemParametersList).find(key => this.graphItemParametersList[key]['nodeName'] === old_name);
       this.graphItemParametersList[index]['nodeName'] = new_name;
@@ -1614,7 +1624,7 @@ export class HlbComponent implements OnInit, AfterViewInit {
       let temp = swapJSON(id_of_node);
       temp[currentGraphItemSelection['id']] = new_name;
       id_of_node = swapJSON(temp);
-      
+
       var request = {
         constraints: this.getConstraintsFromEditor(),
         scenarios: this.getScenariosFromEditor(),
@@ -1676,29 +1686,30 @@ export class HlbComponent implements OnInit, AfterViewInit {
   populateAndShowEditActionModal(nodeData) {
     $('.modal').modal('toggle');
     $('.modal-title').html('Edit Action');
+    $('.modal-delete-button').show();
     $('.modal-add-button').html('Edit');
     $("#modal-actor-input > option:selected").prop("selected", false);
-    $("#modal-actor-input > option").filter(function() {
+    $("#modal-actor-input > option").filter(function () {
       return $(this).html() === nodeData['actors'][0];
     }).prop("selected", true);
     this.oldActor = $("#modal-actor-input > option:selected").html();
     $("#modal-actor-input").attr('disabled', true);
     $('#modal-action-name-input').val(nodeData['action']);
     this.oldAction = nodeData['action'];
-    if(nodeData['wait_time']!="None") {
+    if (nodeData['wait_time'] != "None") {
       $('#modal-action-wait-checkbox').prop('checked', true).change();
       $('#modal-action-wait-input').val(nodeData['wait_time']);
     } else {
       $('#modal-action-wait-checkbox').prop('checked', false).change();
       $('#modal-action-wait-input').val("");
     }
-    if(nodeData['e_events'].length) {
+    if (nodeData['e_events'].length) {
       this.oldEmit = nodeData['e_events'][0];
       $('#modal-action-emit-checkbox').prop('checked', true).change();
       $('#modal-action-emit-input').val(nodeData['e_events'][0]);
-      var tempEventBinding = this.bindingList.filter((item)=>{ return item['category']=='event' && item['key']==nodeData['e_events'][0]});
+      var tempEventBinding = this.bindingList.filter((item) => { return item['category'] == 'event' && item['key'] == nodeData['e_events'][0] });
       tempEventBinding = tempEventBinding[0]['value'];
-      if(tempEventBinding) {
+      if (tempEventBinding) {
         $('#modal-action-event-checkbox').prop('checked', true).change();
       } else {
         $('#modal-action-event-checkbox').prop('checked', false).change();
@@ -1710,15 +1721,15 @@ export class HlbComponent implements OnInit, AfterViewInit {
       this.oldEmit = "";
     }
     $("#modal-action-trigger-selections option:selected").prop("selected", false);
-    if(nodeData['t_events'].length) {
-      $("#modal-action-trigger-selections option").filter(function() {
+    if (nodeData['t_events'].length) {
+      $("#modal-action-trigger-selections option").filter(function () {
         return nodeData['t_events'].includes($(this).html());
       }).prop("selected", true);
       $('#modal-action-trigger-checkbox').prop('checked', true).change();
     } else {
       $('#modal-action-trigger-checkbox').prop('checked', false).change();
     }
-    var tempBindings = this.bindingList.filter((item)=>{ return item['category']=='action' && item['key']==nodeData['action']});
+    var tempBindings = this.bindingList.filter((item) => { return item['category'] == 'action' && item['key'] == nodeData['action'] });
     tempBindings = tempBindings[0]['value'];
     $('#modal-action-binding-input').val(tempBindings);
   }
@@ -1762,11 +1773,11 @@ export class HlbComponent implements OnInit, AfterViewInit {
       edges: [JSON.stringify(id_of_edge)]
     };
     this.http
-    .put('v1/pr/hlb/topology-graph/generate-constraints', request, { withCredential: true })
+      .put('v1/pr/hlb/topology-graph/generate-constraints', request, { withCredential: true })
       .subscribe((receivedData: ParseApiBean) => {
         this.stateservice.setConstraints(receivedData['constraints']);
         this.logger.log(LogHeader.DATA_RECEIVED, "Updated constraints - " + receivedData['constraints']);
-    });
+      });
   }
 
   onTopologyDelete(deletedNode: string) {
@@ -1778,7 +1789,7 @@ export class HlbComponent implements OnInit, AfterViewInit {
     };
     this.logger.log(LogHeader.DATA_SENT, "Scenario - " + request['scenarios'] + ",Bindings - " + request['bindings'] + ", Deleted Node - " + request['deleted_node']);
     this.http
-    .put('v1/pr/hlb/topology/graph-remove', request, { withCredential: true })
+      .put('v1/pr/hlb/topology/graph-remove', request, { withCredential: true })
       .subscribe((receivedData: ParseApiBean) => {
         this.stateservice.setBehavior(receivedData['scenarios']);
         this.stateservice.setBindings(receivedData['bindings']);
@@ -1786,7 +1797,7 @@ export class HlbComponent implements OnInit, AfterViewInit {
         setTimeout(() => {
           this.updateGraph(false, true);
         }, 500)
-    });
+      });
   }
 
   onTopologyParametersChange(event: any) {
@@ -1834,15 +1845,15 @@ export class HlbComponent implements OnInit, AfterViewInit {
         temp['hardwareType'] = currentValue;
         break;
       case 'node-num':
-        temp['num'] = currentValue=="" || (parseInt(currentValue)<=0) ? '1': currentValue;
+        temp['num'] = currentValue == "" || (parseInt(currentValue) <= 0) ? '1' : currentValue;
         $('#node-num').val(temp['num']);
         break;
       case 'link-bandwidth':
-        temp['bandwidth'] = currentValue=="" || (parseInt(currentValue)<0) ? '1': currentValue;
+        temp['bandwidth'] = currentValue == "" || (parseInt(currentValue) < 0) ? '1' : currentValue;
         $('#link-bandwidth').val(temp['bandwidth']);
         break;
       case 'link-delay':
-        temp['delay'] = currentValue=="" || (parseInt(currentValue)<0) ? '0': currentValue;
+        temp['delay'] = currentValue == "" || (parseInt(currentValue) < 0) ? '0' : currentValue;
         $('#link-delay').val(temp['delay']);
         break;
     }
@@ -1866,7 +1877,7 @@ export class HlbComponent implements OnInit, AfterViewInit {
         this.stateservice.setBehavior(receivedData['scenarios']);
         this.stateservice.setBindings(receivedData['bindings']);
       });
-    
+
   }
 
   onDependencyUpdateEdge(updateType, actorFrom, actionFrom, actorTo, actionTo) {
@@ -1886,10 +1897,10 @@ export class HlbComponent implements OnInit, AfterViewInit {
         .subscribe((receivedData: ParseApiBean) => {
           this.stateservice.setBehavior(receivedData['scenarios']);
           this.stateservice.setBindings(receivedData['bindings']);
-          resolve({ eventName: receivedData['event_name'], cyclePath: receivedData['cycle_path']});
+          resolve({ eventName: receivedData['event_name'], cyclePath: receivedData['cycle_path'] });
         });
     });
-    
+
   }
 
   removeConstraintSentences(data) {
@@ -2119,9 +2130,9 @@ export class HlbComponent implements OnInit, AfterViewInit {
 
   extractTriggers(triggers) {
     this.triggerSignals = []
-    for(var item of triggers) {
-      if(item['category']!='action') {
-        if(!this.triggerSignals.includes(item['key'])) {
+    for (var item of triggers) {
+      if (item['category'] != 'action') {
+        if (!this.triggerSignals.includes(item['key'])) {
           this.triggerSignals.push(item['key']);
         }
       }
@@ -2400,7 +2411,7 @@ var graphColors;
 
 function swapJSON(data) {
   var temp = {};
-  for(var i in data) {
+  for (var i in data) {
     temp[data[i]] = i;
   }
   return temp;
