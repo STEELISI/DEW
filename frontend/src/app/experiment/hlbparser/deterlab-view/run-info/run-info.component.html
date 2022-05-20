@@ -38,7 +38,7 @@
                                 Status:
                             </span>  
                             <span style="color:green" *ngIf="(s.status=='0')">
-                                Successful
+                                Successful <span style="color:gray;">{{getLocalTime(s.time)}}</span>
                             </span>
                             <span style="color:#17a2b8" *ngIf="s.status!='0' && s.error==''">
                                 In Progress
@@ -46,7 +46,7 @@
                             <span style="color:red" *ngIf="s.status!='0' && s.error!=''">
                                 Unsuccessful
                             </span>
-                            <span style="color:gray;">{{getLocalTime(s.time)}}</span>
+                            
                             </mat-panel-description>
                           </mat-expansion-panel-header>
                           <div class="col-md-12" >
