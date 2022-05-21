@@ -330,10 +330,10 @@ export class CurrentInfoComponent implements OnInit, OnChanges {
             if (script.status === "0") {
                 actionStats[script.node].success += 1;
             } else {
-                if (script.status === "") {
-                    actionStats[script.node].inProgress += 1
-                } else if (script.error) {
+                if (script.error) {
                     actionStats[script.node].error += 1;
+                } else {
+                    actionStats[script.node].inProgress += 1
                 }
             }
         }
