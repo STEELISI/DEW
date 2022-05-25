@@ -25,7 +25,7 @@ def main():
     channel.basic_publish(exchange='',
                           routing_key='experiment',
                           body=msg)
-    print(" [x] Sent ", msg)
+    print(" [x] Sent ", msg, " to ", host)
 
     connection.close()
 

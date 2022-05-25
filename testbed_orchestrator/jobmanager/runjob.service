@@ -3,13 +3,13 @@ Description=Run Jobs
 IgnoreOnIsolate=yes
 
 [Service]
+Type=forking
+RemainAfterExit=yes
 ExecStart=/share/shared/dew/runjob.sh start
 ExecStop=/share/shared/dew/runjob.sh stop
 PIDFile=/tmp/runjob.pid
 Restart=always
-RestartSec=1
-Type=simple
-StartLimitInterval=0
+RestartSec=1s
 
 [Install]
 WantedBy=default.target

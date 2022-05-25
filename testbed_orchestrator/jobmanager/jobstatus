@@ -33,6 +33,7 @@ for $f (@files)
 	$tasks{$id}{'node'} = $node;
 	$tasks{$id}{'action'} = $action;
 	$fh = new IO::File(glob("~/DEW/$label/$f"));
+	<$fh>;
 	$cmd = <$fh>;
 	close($fh);
 	@elems = split /2\>/, $cmd;
@@ -40,7 +41,8 @@ for $f (@files)
 	$tasks{$id}{'cmd'} = $cmd;
 	$tasks{$id}{'status'} = "";
 	$tasks{$id}{'ran'} = "";
-	$tasks{$id}{'error'} = "";	    
+	$tasks{$id}{'error'} = "";
+	$tasks{$id}{'output'} = "";	    
     }
     elsif($items[0] eq "status")
     {
@@ -58,18 +60,55 @@ for $f (@files)
 	close($fh);
 	$tasks{$id}{'ran'} = $ran;	
     }
+    elsif($items[0] eq "time")
+    {
+	$fh = new IO::File(glob("~/DEW/$label/$f"));
+	$time = <$fh>;
+	$time =~ s/\n//;
+	close($fh);
+	$tasks{$id}{'time'} = $time;	
+    }
     elsif($items[0] eq "error")
     {
 	$fh = new IO::File(glob("~/DEW/$label/$f"));
 	$error = <$fh>;
-	$error =~ s/\n//;
+	$error =~ s/\n//g;
 	close($fh);
 	$tasks{$id}{'error'} = $error;
     }
+    elsif($items[0] eq "output")
+    {
+	$fh = new IO::File(glob("~/DEW/$label/$f"));
+	$output = "";
+	while(<$fh>)
+	{
+	    $output .= $_;
+	}
+	$output =~ s/\n/\\n/g;
+	close($fh);
+	$tasks{$id}{'output'} = $output;
+    }
 }
+print "[\n";
+$start = 0;
 for $id (sort {$a <=> $b} keys %tasks)
 {
+    if ($start == 1)
+    {
+	print ",";
+    }
+    $start = 1;
     # id, node, action, cmd, ran, status, error
-    print "$id, $tasks{$id}{'node'}, $tasks{$id}{'action'}, $tasks{$id}{'cmd'}, $tasks{$id}{'ran'}, $tasks{$id}{'status'}, $tasks{$id}{'error'}\n";
+    print "{ \n";
+    print "\"id\" : \"$id\",\n";
+    print "\"data\": \n";
+    print "\t{\"node\" : \"$tasks{$id}{'node'}\",\n";
+    print "\t\"action\" : \"$tasks{$id}{'action'}\",\n";
+    print "\t\"cmd\" : \"$tasks{$id}{'cmd'}\",\n";
+    print "\t\"ran\" : \"$tasks{$id}{'ran'}\",\n";
+    print "\t\"status\" : \"$tasks{$id}{'status'}\",\n";
+    print "\t\"error\" : \"$tasks{$id}{'error'}\",\n";
+    print "\t\"output\" : \"$tasks{$id}{'output'}\",\n";
+    print "\t\"time\" : \"$tasks{$id}{'time'}\"\n}\n}\n";
 }
-
+print "]\n";

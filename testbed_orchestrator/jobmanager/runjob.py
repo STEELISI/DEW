@@ -5,6 +5,8 @@ import sqlite3
 import signal
 import collections
 import subprocess
+import time
+import threading
 
 children={}
 spawned={}
@@ -32,35 +34,53 @@ def pstree():
     children={}
     for f in files:
         if (tomatch.match(f)):
-            with open("/proc/"+f+"/stat") as myfile:
-                lines = myfile.readlines()
-                items = lines[0].split(' ')
-                pid = items[0]
-                cmd = items[1]
-                i = 2
-                if cmd.startswith("("):
-                    while not cmd.endswith(")"):
-                        cmd = cmd + " " + items[i]
-                        i += 1
-                state = items[i]
-                i += 1
-                ppid = items[i]
-                if ppid in children:
-                    children[ppid].append(pid)
-                else:
-                    children[ppid] = [pid]
-                    
-        #for ppid in children:
-        #    print("Children of ", ppid, " are ", children[ppid])
+            try:
+                with open("/proc/"+f+"/stat") as myfile:
+                    lines = myfile.readlines()
+                    items = lines[0].split(' ')
+                    pid = items[0]
+                    cmd = items[1]
+                    i = 2
+                    if cmd.startswith("("):
+                        while not cmd.endswith(")"):
+                            cmd = cmd + " " + items[i]
+                            i += 1
+                    state = items[i]
+                    i += 1
+                    ppid = items[i]
+                    if ppid in children:
+                        children[ppid].append(pid)
+                    else:
+                        children[ppid] = [pid]
+            except FileNotFoundError:
+                pass
 
+
+def cb(ch, method, properties, body):
+    global connection
+    if callback is not None:
+        t = threading.Thread(target=callback, args=(ch, method, properties, body))
+        t.daemon = True
+        t.start()
+        
+        while t.is_alive():
+            print("[INFO] heart beating")
+            connection.process_data_events()
+            #connection.sleep(5)
+
+            #ch.basic_ack(delivery_tag=method.delivery_tag)
+            
 def callback(ch, method, properties, body):
     global children
     received_data = body.decode()
         
-    f = open("/var/log/runjob.log", "a")
-    f.write(" [x] Received msg %r" % body.decode())
+    f = open("/tmp/runjob.log", "a") 
+    epoch=time.time()
+    timenow=time.strftime("%d %b %Y %H:%M:%S", time.localtime(epoch)) 
+    f.write(timenow + " received %r\n" % body.decode())
     print(" [x] Received msg %r" % body.decode())
     f.close()
+    
     elems = received_data.split()
     if (len(elems) != 3):
         return
@@ -71,19 +91,26 @@ def callback(ch, method, properties, body):
         return
 
     if cmd == "start":
-        #childpid = os.fork()
-        #if childpid == 0:
-            #process = subprocess.Popen([script], shell=True, stdin=None, stdout=None, stderr=None)
-        childpid=os.spawnlp(os.P_NOWAIT, '/bin/bash', '-c', script)
-        #    return
-        #else:
-        con = sqlite3.connect('/tmp/dew.db')
-        cur = con.cursor()
-        statement = "insert into processes values (" + str(childpid)+",\""+script+"\","+str(num)+")"
-        print(statement)
-        cur.execute(statement)
-        con.commit()
-        con.close()#	print "Got child pid $childpid\n";
+        childpid = os.fork()
+        if childpid == 0:
+            print("Starting child /bin/bash ", script)
+            process = subprocess.Popen(["/bin/bash",  script], stderr=subprocess.STDOUT, stdout=subprocess.PIPE)
+            f = open("/tmp/runjob.log", "a") 
+            epoch=time.time()
+            timenow=time.strftime("%d %b %Y %H:%M:%S", time.localtime(epoch)) 
+            f.write(timenow + " started child /bin/bash %s\n" % script)
+            f.close()
+            os.wait()
+            return
+        else:
+            con = sqlite3.connect('/tmp/dew.db')
+            cur = con.cursor()
+            statement = "insert into processes values (" + str(childpid)+",\""+script+"\","+str(num)+")"
+            print(statement)
+            cur.execute(statement)
+            con.commit()
+            con.close()#	print "Got child pid $childpid\n";
+            print("Finished parent ")
     elif cmd == 'stop':
         pstree()
         con = sqlite3.connect('/tmp/dew.db')
@@ -93,8 +120,7 @@ def callback(ch, method, properties, body):
         else:
             statement = "select pid from processes\n"
         print(statement)
-        #for ppid in children:
-        #    print("outside Children of ", ppid, " are ", children[ppid])
+
         for row in cur.execute(statement):
             pid = str(row[0])
             print("Got pid from DB ", pid)
@@ -120,31 +146,12 @@ def callback(ch, method, properties, body):
             cud.execute(statementd)
         con.commit()
         con.close()#
-#	if (exists($childpids{$script . "-" . $num}))
-#	{
-#	    my $pid =  $childpids{$script . "-" . $num};
-#	    if(exists($children{$pid}))
-#	    {		
-#		for $c (@{$children{$pid}})
-#		{
-#		    recursivekill($c);
-#		}
-#		#kill HUP, $pid;
-#		# should do this recursively
-#		$children{$pid} = "";
-#	    }
-#	    system("rm $script");
-#	}
-#	else
-#	{
-#	    print("No active script $script\n");
-#	    clean($script, $num);
-#	}
-
     return
 
     
 def main():
+
+    global connection
 
     hostname = socket.gethostname().split('.')
     myname = hostname[0]
@@ -154,7 +161,7 @@ def main():
     channel = connection.channel()
     channel.queue_declare(queue='experiment')
 
-    channel.basic_consume(queue='experiment', on_message_callback=callback, auto_ack=True)
+    channel.basic_consume(queue='experiment', on_message_callback=cb, auto_ack=True)
 
     print(' [*] Waiting for messages. To exit press CTRL+C')
     channel.start_consuming()
