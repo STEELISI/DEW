@@ -1627,7 +1627,7 @@ class HandleProjectRunLog(Resource):
               if 'error' not in mapping:
                 experiment = list(em.get_experiment(eid, uid).versions)[-1]
                 transaction_id = experiment.transaction_id
-                script = hlb.HandleBASH(json.loads(experiment.content), "job")
+                script = hlb.HandleDAS(json.loads(experiment.content))
                 
                 variables = []
                 variable_list = []
@@ -1730,7 +1730,7 @@ class HandleProjectStopLog(Resource):
               if 'error' not in mapping:
                 experiment = list(em.get_experiment(eid, uid).versions)[-1]
                 transaction_id = experiment.transaction_id
-                script = hlb.HandleBASH(json.loads(experiment.content), "job")
+                script = hlb.HandleDAS(json.loads(experiment.content))
                 
                 variables = []
                 variable_list = []
