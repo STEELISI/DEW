@@ -42,6 +42,10 @@ export class InitUserService {
         console.log(data);
         this.state.disableLoader();
         this.user.next(data);
+      },
+      (error)=> {
+        this.authService.refreshToken();
+        this.initCurrentUser();
       });
    
   }
