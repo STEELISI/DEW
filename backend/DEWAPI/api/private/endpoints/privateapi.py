@@ -1754,6 +1754,7 @@ class HandleProjectStopLog(Resource):
                     r.append(l)
                   return {"error":"Please select label","labels":r}, 200
 
+
               unique_name = mapping['experiment_name']+"_run"
               print("Unique name ",unique_name)
               status = dm.getStatus(eid, uid, unique_name)
@@ -1763,9 +1764,11 @@ class HandleProjectStopLog(Resource):
                   print("Exp already stopped")
                   result = {"error":"Experiment was already stopped"}
               else:
+                  print("Will try to stop this experiment")
                   ssh = SSHConnection(details['username'],details['password'])
                   run_logs = ssh.getRunFile(unique_name, 0, 5)
                   dm.updateRunLogLogs(eid, uid, unique_name, json.dumps(run_logs, separators=(',', ':')))
+                  print("Now running our file")
                   result_log = ssh.runFile(mapping['project_name'],mapping['experiment_name'],run_content,variables, unique_name, "stop")
                   print("Result log ", result_log)
                   if 'error' not in result_log:
@@ -1776,6 +1779,7 @@ class HandleProjectStopLog(Resource):
                       result['success'] = True
                   else:
                       result = result_log
+                      print(result)
             else:
               result = {'error':'username or password does not exists'}
           Logger.backendLog(user,"HandleProjectStopLog()", "Stopped log with result - " + str(result))
@@ -1868,7 +1872,7 @@ class HandleProjectGetLog(Resource):
                 result = json.loads(result)
               else:
                 result = {}
-              print(result)
+               #print(result)
             else:
               details = ps.get(uid,daid)
               if str(details['username']).strip() !='' and str(details['password']).strip() !='':

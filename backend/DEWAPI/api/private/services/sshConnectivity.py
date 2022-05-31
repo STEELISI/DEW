@@ -258,6 +258,7 @@ class SSHConnection():
                 results = []
                 directory = directory+ "/" + unique_name
                 cmd = "/share/shared/dew/jobstatus " + unique_name
+                print("Cmd ", cmd)
                 output = gatewaySession.get_cmd_output(cmd)
                 print("output ", output)
                 jo = json.loads(output)
@@ -265,7 +266,7 @@ class SSHConnection():
                 for data in jo:
                     for id in data:
                         if (id == 'data'):
-                            print("One element is ", data[id])
+                            #print("One element is ", data[id])
                             results.append(data[id])
                             cnt += 1
                 print("Result ", results)
