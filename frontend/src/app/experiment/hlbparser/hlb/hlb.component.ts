@@ -1135,6 +1135,9 @@ export class HlbComponent implements OnInit, AfterViewInit {
                 color: '#000000'
               },
               ...Object.assign({}, ...this.graphColors.map((color, index) => ({ ["group" + (index)]: { font: { color } } })))
+            },
+            physics: {
+              enabled: false
             }
           });
 
@@ -1377,7 +1380,10 @@ export class HlbComponent implements OnInit, AfterViewInit {
                     color: '#FFFFFF'
                   }
                 },
-                groups: graphGroups
+                groups: graphGroups,
+                physics: {
+                  enabled: false
+                }
               });
 
               //Dependency Graph Click Event
