@@ -131,7 +131,7 @@ export class CurrentInfoComponent implements OnInit, OnChanges {
                 if(this.doRefresh){
                     this.showDetails();
                 }
-            }, 5000);
+            }, 30000);
         }else{
             clearInterval(this.refreshIntervalId);
         }

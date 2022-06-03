@@ -20,6 +20,7 @@ export class RunInfoComponent implements OnInit, OnChanges {
     errorFlag:boolean = false
     logid:String
     executionScript = []
+    runScript = ""
     loader = false
     panelOpenState = false
     refreshIntervalId = null
@@ -74,6 +75,30 @@ export class RunInfoComponent implements OnInit, OnChanges {
             clearInterval(this.refreshIntervalId);
         }
         this.showDetails();
+        //Get the run script
+        this.http.post('/api/v1/pr/deter/project/run/script', {
+            rid: this.logid,
+            account_id: this.account_id,
+            eid: this.experiment_id,
+            rsid: this.logid
+        }, {withCredentials: true})
+            .subscribe(data1 => {
+                if (data1.error==undefined)
+                this.runScript = data1.data ? data1.data.replaceAll("\n", "<br>") : "";
+                else{
+                    this.runScript = "";
+                    console.log(data1.error)
+                this._snackBar.open(data1.error, 'close', {
+                    duration: 2000,
+                });
+                }
+                console.log(this.runScript);
+            }, error => {
+                this.runScript = "";
+                this._snackBar.open('Something went wrong please try again later!', 'close', {
+                    duration: 2000,
+                });
+            });
         //Check if log is in running state, if so refresh every 5 seconds
         if(this.run_status == 'start'){
             if(this.logid == this.logList[0].id) {
@@ -81,9 +106,16 @@ export class RunInfoComponent implements OnInit, OnChanges {
                     if(this.doRefresh){
                         this.showDetails();
                     }
-                }, 5000)
+                }, 30000)
             }
         }
+    }
+
+    getLocalTime(time: string) {
+        var d = new Date(parseInt(time));
+        return d.toLocaleTimeString('en-US', {
+            hour12: false,
+          });
     }
 
     

@@ -25,18 +25,18 @@
                       {{s.node}} : <span style="color:blue">{{s.action}}</span>
                     </mat-panel-title>
                     <mat-panel-description>
-                        
-                    <span style="color:green" *ngIf="(s.status=='0')">
-                      Status: Successful
-          <!-- <span style="color:red" *ngIf="(s.error!='')">
-                            {{' (with Error)'}}
-                        </span>-->
-                    </span>
-                    <span style="color:green" *ngIf="( s.status!='0')">
-                        Status: Unsuccessfull <span style="color:red" *ngIf="(s.error!='')">
-                            {{' (with Error)'}}
+                        <span style="margin-right: 5px;">
+                            Status:
+                        </span>  
+                        <span style="color:green" *ngIf="(s.status=='0')">
+                            Successful
                         </span>
-                    </span>
+                        <span style="color:#17a2b8" *ngIf="s.status!='0' && s.error==''">
+                            In Progress
+                        </span>
+                        <span style="color:red" *ngIf="s.status!='0' && s.error!=''">
+                            Unsuccessful
+                        </span>
                     </mat-panel-description>
                   </mat-expansion-panel-header>
                   <div class="col-md-12" >
