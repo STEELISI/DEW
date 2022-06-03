@@ -474,7 +474,7 @@
               <label class="form-check-label" for="modal-action-event-checkbox">
                 Event Binding
               </label>
-              <input type="text" class="form-control flex-grow-1" placeholder="Binding" id="modal-event-binding-input" list="event-bindings" disabled>
+              <input type="text" class="form-control flex-grow-1" placeholder="Binding" id="modal-event-binding-input" list="event-bindings" disabled  autocomplete="off">
               <datalist id="event-bindings">
                 <option *ngFor="let item of filterBindingOptionsForEventCleaned">{{currentActionNameInModal ? item.replace('$action', currentActionNameInModal) : item}}</option>
              </datalist>
