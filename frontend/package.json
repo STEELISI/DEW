@@ -12,7 +12,8 @@
     "buildt1": "ng build -c=test1",
     "buildt2": "ng build -c=test2",
     "buildt3": "ng build -c=test3",
-    "open": "export NODE_OPTIONS=--openssl-legacy-provider; ng --open serve --proxy-config proxy.conf.json"
+    "open": "export NODE_OPTIONS=--openssl-legacy-provider; ng --open serve --proxy-config proxy.conf.json",
+    "openwin": "ng --open serve --proxy-config proxy.conf.json"
   },
   "private": true,
   "dependencies": {
