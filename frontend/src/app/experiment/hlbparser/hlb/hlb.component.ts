@@ -1470,7 +1470,7 @@ export class HlbComponent implements OnInit, AfterViewInit {
 
     $("#graph-container").keyup((e) => {
       this.isKeyPressed = false;
-      if (e.key === "Control") {
+      if (e.key === " ") {
         this.addNodeType = null;
         this.clearMessage();
         this.selectedNetworkInstance.disableEditMode();
@@ -1486,9 +1486,9 @@ export class HlbComponent implements OnInit, AfterViewInit {
         return;
       }
       this.isKeyPressed = true;
-      if (e.key === "Control") {
+      if (e.key === " ") {
         this.selectedNetworkInstance.addEdgeMode();
-        this.displayMessage("Draw an edge between two nodes");
+        //this.displayMessage("Draw an edge between two nodes");
         accessibleLogger.log(LogHeader.GRAPH_UPDATE, "User initiated drawing an edge");
       }
     });
@@ -1517,8 +1517,8 @@ export class HlbComponent implements OnInit, AfterViewInit {
 
   clearMessage = () => {
     $("#graphActionButtonList").show();
-    $("#actionMessage").html("<span>Press <kbd>Ctrl</kbd> to edit edges, Select a node/edge and press <kbd>Del</kbd> to delete</span>");
-    // $("#actionMessage").hide();
+    $("#actionMessage").html("<span>Hold <kbd>Space</kbd> and click-and-drag between nodes to add edges, Select a node/edge and press <kbd>Del</kbd> to delete</span>");
+    //$("#actionMessage").hide();
   }
 
   onDependencyClick = async (properties) => {
