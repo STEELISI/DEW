@@ -97,7 +97,7 @@
                     <button type="button" class="btn btn-danger" (click)="getRefreshedStatus()">Refresh</button>
                 </li>
             </ul>
-            <div *ngIf="showSwap && !showLoader && !isInTransition">
+            <div *ngIf="showSwap && !showLoader && !isInTransition && experimentStatus">
                 <ul class="ul-style" *ngIf="activateSwapIn; else showSwapOut">
                     <li>
                         <button type="button" class="btn btn-outline-success swap-dt"
@@ -127,13 +127,6 @@
                     <ul class="ul-style">
                         <li *ngIf="runStatus != 'start'">
                             <button type="button" class="btn btn-outline-success swap-dt"
-                                    data-toggle="modal" data-target="#exampleModal"
-                                    [disabled]="deactivateSwapOut"
-                                    (click)="activateModal('swapout')">Swap Out Experiment
-                            </button>
-                        </li>
-                        <li *ngIf="runStatus != 'start'">
-                            <button type="button" class="btn btn-outline-success swap-dt"
                             data-toggle="modal" data-target="#exampleModal"
                                     [disabled]="deactivateSwapOut"
                                     (click)="activateModal('run')"
@@ -146,6 +139,23 @@
                                     [disabled]="deactivateSwapOut"
                                     (click)="activateModal('stop')"
                                    >Stop Experiment
+                            </button>
+                        </li>
+                        <li>
+                            <button type="button" class="btn btn-outline-success swap-dt"
+                                    (click)="updateMapping()">Update Mapping
+                            </button>
+                        <li>
+                            <button type="button" class="btn btn-outline-success swap-dt"
+                                    data-toggle="modal" data-target="#exampleModal"
+                                    (click)="activateModal('delete')">Delete Mapping
+                            </button>
+                        </li>
+                        <li>
+                            <button type="button" class="btn btn-outline-success swap-dt"
+                                    data-toggle="modal" data-target="#exampleModal"
+                                    [disabled]="deactivateSwapOut"
+                                    (click)="activateModal('swapout')">Swap Out Experiment
                             </button>
                         </li>
                     </ul>
