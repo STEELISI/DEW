@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-import pika, sys, os
+import pika, sys, os, pwd
 import socket, re
 import sqlite3
 import signal
@@ -15,12 +15,31 @@ children={}
 spawned={}
 started=False
 isdone=False
+user=""
+home=""
 starttime=0
 folder=""
 
 def init_script(node, script):
-    global myscript, started
+    global myscript, started, user, home
 
+    # Find DEW from script and get username and home dir from there
+    items = script.split('/')
+    home = ""
+    prev = None
+    for i in items:
+        if (i != "DEW"):
+            if home.endswith('/'):
+                home = home + i
+            else:
+                home = home + "/" + i
+            prev = i
+        elif (i == "DEW"):
+            user = prev
+            break
+        
+    print("Home ", home, " user ", user)        
+        
     started=False
 
     with open(script) as myfile:
@@ -76,7 +95,10 @@ def init_script(node, script):
         for rec, mess in myscript[cid]['tell'].items():
             print(rec, mess)
         print("\n\n")
-        sys.stdout.flush()            
+        sys.stdout.flush()
+
+    
+
         
 def recursivekill(pid):
     global children
@@ -122,15 +144,29 @@ def pstree():
             except FileNotFoundError:
                 pass
 
-def run_cmd(script, num):    
+def run_cmd(script, num):
+    global user
     print("Starting /bin/bash ", script)
     f = open("/tmp/runjob.log", "a") 
     epoch=time.time()
     timenow=time.strftime("%d %b %Y %H:%M:%S", time.localtime(epoch)) 
     f.write(timenow + " started child /bin/bash %s\n" % script)
     f.close()
-    process = subprocess.Popen(["/bin/bash", script], stderr=subprocess.STDOUT, stdout=subprocess.PIPE)
-    print("Opened process, pid ", process.pid)
+    # Run as user
+    pw_record = pwd.getpwnam(user)
+    user_name      = pw_record.pw_name
+    user_home_dir  = pw_record.pw_dir
+    user_uid       = pw_record.pw_uid
+    user_gid       = pw_record.pw_gid
+    env = os.environ.copy()
+    env[ 'HOME'     ]  = user_home_dir
+    env[ 'LOGNAME'  ]  = user_name
+    env[ 'PWD'      ]  = user_home_dir
+    env[ 'USER'     ]  = user_name
+    print("Will run script ", script)
+    process = subprocess.Popen(["sudo", "-u",user_name, "/bin/bash", script], start_new_session=True, env=env, stderr=subprocess.STDOUT, stdout=subprocess.PIPE)
+    #process = subprocess.Popen(["/bin/bash", script], stderr=subprocess.STDOUT, stdout=subprocess.PIPE)
+    print("Opened process, pid ", process.pid, " as user ", user_uid, " in group ", user_gid, " home dir ", user_home_dir)
     f = open("/tmp/runjob.log", "a") 
     epoch=time.time()
     timenow=time.strftime("%d %b %Y %H:%M:%S", time.localtime(epoch)) 
@@ -176,7 +212,7 @@ def callback(ch, method, properties, body):
     if (cmd == "init"):
         if (len(elems) != 3):
             return
-        
+
         init_script(elems[1], elems[2])
         return
 
@@ -185,6 +221,7 @@ def callback(ch, method, properties, body):
             return
         starttime = int(elems[1])
         folder = elems[2]
+        
         return
 
     if (cmd.startswith("psuccess") or cmd.startswith("pexists")):
@@ -264,8 +301,11 @@ def check_events():
                 myscript[cid]['done'] = True
                     
             for rec, mess in myscript[cid]['tell'].items():
-                if (mess == "psuccess"): #Jelena do something for pexists
-                    filename = folder + "/status." + str(cid)
+                if (mess == "psuccess" or mess == "pexists"): #Jelena do something for pexists
+                    if (mess == "psuccess"):
+                        filename = folder + "/status." + str(cid)
+                    else:
+                        filename = folder + "/pid." + str(cid)
                     file_exists = exists(filename)
                     print("File exists ", filename, file_exists)
                     if (file_exists):
@@ -273,9 +313,9 @@ def check_events():
                             lines = myfile.readlines()
                             myfile.close()
                             for l in lines:
-                                if int(l) == 0:
-                                    print("Will tell psuccess-"+str(cid)+" to "+rec)
-                                    inform("psuccess-"+str(cid), rec)
+                                if (int(l) == 0 and mess == "psuccess") or mess == "pexists":
+                                    print("Will tell " + mess + "-" + str(cid) + " to " + rec)
+                                    inform(mess + "-" +str(cid), rec)
                                     todelete.append(rec)
                                     continue
                 print("Command ", cid, " waiting to tell ", rec, " about ", mess)
