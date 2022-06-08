@@ -164,7 +164,7 @@ def run_cmd(script, num):
     env[ 'PWD'      ]  = user_home_dir
     env[ 'USER'     ]  = user_name
     print("Will run script ", script)
-    process = subprocess.Popen(["sudo", "-u",user_name, "/bin/bash", script], start_new_session=True, env=env, stderr=subprocess.STDOUT, stdout=subprocess.PIPE)
+    process = subprocess.Popen(["sudo", "-u",user_name, "/bin/bash", script], start_new_session=True, env=env, cwd=user_home_dir, stderr=subprocess.STDOUT, stdout=subprocess.PIPE)
     #process = subprocess.Popen(["/bin/bash", script], stderr=subprocess.STDOUT, stdout=subprocess.PIPE)
     print("Opened process, pid ", process.pid, " as user ", user_uid, " in group ", user_gid, " home dir ", user_home_dir)
     f = open("/tmp/runjob.log", "a") 
