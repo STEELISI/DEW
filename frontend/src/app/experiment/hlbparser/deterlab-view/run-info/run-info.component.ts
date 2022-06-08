@@ -92,7 +92,6 @@ export class RunInfoComponent implements OnInit, OnChanges {
                     duration: 2000,
                 });
                 }
-                console.log(this.runScript);
             }, error => {
                 this.runScript = "";
                 this._snackBar.open('Something went wrong please try again later!', 'close', {

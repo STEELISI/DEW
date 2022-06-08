@@ -1874,7 +1874,8 @@ class HandleProjectGetLog(Resource):
               if str(details['username']).strip() !='' and str(details['password']).strip() !='':
                 ssh = SSHConnection(details['username'],details['password'])
                 result = ssh.getRunFile(version_id.unique_name,s,b)
-                dm.updateRunLogLogs(eid, uid, version_id.unique_name, json.dumps(result, separators=(',', ':')))
+                if(dm.getStatus(eid, uid, version_id.unique_name) != 'stop'):
+                  dm.updateRunLogLogs(eid, uid, version_id.unique_name, json.dumps(result, separators=(',', ':')))
               else:
                 result = {'error':'username or password doesnot exists'}
           Logger.backendLog(user,"HandleProjectGetLog()", "Retrieved log with result - " + str(result))
