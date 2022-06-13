@@ -345,21 +345,21 @@ class HLBService():
         actor_interfaces = {}
         actor_num = {}
         for const in parsed_constraints:
+            for act in const[1]:
+                if act not in actor_list:
+                    actor_list.append(act)
             if(const[0]=='config'):
-                for act in const[1]:
-                    if act not in actor_list:
-                        actor_list.append(act)
-                    for i in range(0, len(const[2]), 2):
-                        if(const[2][i]=='os'):
-                            actor_os[act]  = const[2][i+1]
-                        if(const[2][i]=='location'):
-                            actor_location[act] = const[2][i+1]
-                        if(const[2][i]=='nodetype'):
-                            actor_nodetype[act] = const[2][i+1]
-                        if(const[2][i]=='interfaces'):
-                            actor_interfaces[act] = const[2][i+1]
-                        if(const[2][i]=='num'):
-                            actor_num[act] = const[2][i+1]
+                for i in range(0, len(const[2]), 2):
+                    if(const[2][i]=='os'):
+                        actor_os[act]  = const[2][i+1]
+                    if(const[2][i]=='location'):
+                        actor_location[act] = const[2][i+1]
+                    if(const[2][i]=='nodetype'):
+                        actor_nodetype[act] = const[2][i+1]
+                    if(const[2][i]=='interfaces'):
+                        actor_interfaces[act] = const[2][i+1]
+                    if(const[2][i]=='num'):
+                        actor_num[act] = const[2][i+1]
             else:
                 continue
 
