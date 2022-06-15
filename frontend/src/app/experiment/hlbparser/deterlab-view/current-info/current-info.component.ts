@@ -16,7 +16,7 @@ export class CurrentInfoComponent implements OnInit, OnChanges {
     @Input() experiment_id: Number
     @Input() account_id: Number
     @Input() doRefresh: boolean
-    @ViewChild('dependencyGraphNetwork', { static: false }) dependencyGraphNetwork!: ElementRef;
+    @ViewChild('currentInfoNetwork', { static: false }) currentInfoNetwork!: ElementRef;
     logList: []
     error: String
     errorFlag: boolean = false
@@ -233,7 +233,7 @@ export class CurrentInfoComponent implements OnInit, OnChanges {
                                 })
                             })
 
-                        this.dependencyNetworkInstance = new Network(this.dependencyGraphNetwork.nativeElement, { nodes: this.dependencyGraphNodes, edges: this.dependencyGraphEdges }, {
+                        this.dependencyNetworkInstance = new Network(this.currentInfoNetwork.nativeElement, { nodes: this.dependencyGraphNodes, edges: this.dependencyGraphEdges }, {
                             layout: {
                                 hierarchical: {
                                     sortMethod: "directed",
@@ -310,7 +310,7 @@ export class CurrentInfoComponent implements OnInit, OnChanges {
                             if (properties.nodes && properties.nodes.length) {
                                 const id = properties.nodes[0];
                                 const node = this.dependencyGraphNodes.get(id)
-                                this.filteredExecutionScript = this.executionScript.filter(script => node['label'] == script.node)
+                                this.filteredExecutionScript = this.executionScript.filter(script => node['label'] == script.action)
                             } else {
                                 this.filteredExecutionScript = [];
                             }
@@ -324,16 +324,16 @@ export class CurrentInfoComponent implements OnInit, OnChanges {
     updateGraphStats() {
         const actionStats = {}
         for (const script of this.executionScript) {
-            if (!actionStats[script.node]) {
-                actionStats[script.node] = { success: 0, error: 0, inProgress: 0 }
+            if (!actionStats[script.action]) {
+                actionStats[script.action] = { success: 0, error: 0, inProgress: 0 }
             }
             if (script.status === "0") {
-                actionStats[script.node].success += 1;
+                actionStats[script.action].success += 1;
             } else {
                 if (script.error) {
-                    actionStats[script.node].error += 1;
+                    actionStats[script.action].error += 1;
                 } else {
-                    actionStats[script.node].inProgress += 1
+                    actionStats[script.action].inProgress += 1
                 }
             }
         }
