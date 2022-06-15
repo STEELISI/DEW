@@ -50,5 +50,8 @@ pexists()
 if [ ! -d $path/DEW ] ; then
    mkdir $path/DEW
 fi
+if [ ! -d $path/DEW/$id ] ; then
+   mkdir $path/DEW/$id
+fi
 
 rm -f $path/DEW/$id/*

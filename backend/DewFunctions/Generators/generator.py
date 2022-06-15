@@ -42,7 +42,9 @@ class Generator(object):
         self.constraints_parsed = []
         self.bindings_parsed = {}
         self.run = dict()
+        self.tmp = dict()
         self.clear = dict()
+        self.actors = dict()
 
     def parse(self, mode=None):
         # For each item in our scenario/constraints lists, make sure we can parse it and
