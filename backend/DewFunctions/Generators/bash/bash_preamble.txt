@@ -50,4 +50,8 @@ if [ ! -d ~/DEW ] ; then
    mkdir ~/DEW
 fi
 
+if [ ! -d ~/DEW/$id ] ; then
+   mkdir ~/DEW/$id
+fi
+
 rm -f ~/DEW/$id/*

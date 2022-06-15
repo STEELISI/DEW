@@ -4,6 +4,7 @@ from collections import defaultdict
 sys.path.append('./DewFunctions/Generators/')
 sys.path.append('./DewFunctions/Generators/ns')
 sys.path.append('./DewFunctions/Generators/bash')
+sys.path.append('./DewFunctions/Generators/das')
 sys.path.append('./DewFunctions/Generators/mergeTB')
 sys.path.append('./DewFunctions/UI/HighLevelBehaviorLanguage/')
 sys.path.append('./DewFunctions/UI/')
@@ -16,6 +17,7 @@ import re
 from parsebash import GeneralParseBash
 from generator import Generator
 from BashGenerator import BashGenerator as bashGenerator
+from DasGenerator import DasGenerator as dasGenerator
 from NSGenerator import NSGenerator as nSGenerator
 from MergeTBGenerator import MergeTBGenerator as mergeTBGenerator
 from hlb_parser import HLBParser, HLBHintType
@@ -345,21 +347,21 @@ class HLBService():
         actor_interfaces = {}
         actor_num = {}
         for const in parsed_constraints:
+            for act in const[1]:
+                if act not in actor_list:
+                    actor_list.append(act)
             if(const[0]=='config'):
-                for act in const[1]:
-                    if act not in actor_list:
-                        actor_list.append(act)
-                    for i in range(0, len(const[2]), 2):
-                        if(const[2][i]=='os'):
-                            actor_os[act]  = const[2][i+1]
-                        if(const[2][i]=='location'):
-                            actor_location[act] = const[2][i+1]
-                        if(const[2][i]=='nodetype'):
-                            actor_nodetype[act] = const[2][i+1]
-                        if(const[2][i]=='interfaces'):
-                            actor_interfaces[act] = const[2][i+1]
-                        if(const[2][i]=='num'):
-                            actor_num[act] = const[2][i+1]
+                for i in range(0, len(const[2]), 2):
+                    if(const[2][i]=='os'):
+                        actor_os[act]  = const[2][i+1]
+                    if(const[2][i]=='location'):
+                        actor_location[act] = const[2][i+1]
+                    if(const[2][i]=='nodetype'):
+                        actor_nodetype[act] = const[2][i+1]
+                    if(const[2][i]=='interfaces'):
+                        actor_interfaces[act] = const[2][i+1]
+                    if(const[2][i]=='num'):
+                        actor_num[act] = const[2][i+1]
             else:
                 continue
 
@@ -862,5 +864,34 @@ class HLBService():
             bash_script.append(labelDetail)
         
         return bash_script
+    
+    #Handle generateDAS
+    def HandleDAS(self,json_data):
+        errors = []
+        parameterlist = dict()
+        actors = json_data['actors']
+        scenario = json_data['behaviors']
+        constraints = json_data['constraints']
+        bindings = json_data['bindings']
+        generator = dasGenerator(constraints=constraints, scenario=scenario, bindings=bindings)
+        generator.generate(None)
+        das_script = []
+        for label in generator.run.keys():
+            labelDetail = dict()
+            labelDetail['label'] = label
+            labelDetail['run'] = dict()
+            labelDetail['run']['fileName'] = 'run_'+label+'.sh'
+            labelDetail['run']['content'] = generator.run[label]
+            labelDetail['clean'] = dict()
+            labelDetail['clean']['fileName'] = 'cleanup_'+label+'.sh'
+            labelDetail['clean']['content'] = generator.clear[label]
+            variables = []
+            for e in generator.evars[label]:
+                variables.append({"variable":e[0],"message":e[1]})
+            labelDetail['variables'] = variables
+            
+            das_script.append(labelDetail)
+        
+        return das_script
 
     

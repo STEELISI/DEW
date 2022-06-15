@@ -347,7 +347,7 @@
           </div>
         </div>
         <div id="actionMessage">
-          <span>Press <kbd>Ctrl</kbd> to edit edges, Select a node/edge and press <kbd>Del</kbd> to delete</span>
+          <span>Hold <kbd>Space</kbd> and click-and-drag between nodes to add edges, Select a node/edge and press <kbd>Del</kbd> to delete</span>
         </div>
     </div>
       <div id="topologyGraphNetwork" #topologyGraphNetwork></div>
@@ -454,7 +454,7 @@
               <div class="input-group">
                 <input type="number" class="form-control flex-grow-1" placeholder="Wait Time" id="modal-action-wait-input" disabled>
                 <div class="input-group-append">
-                  <span class="input-group-text" id="basic-addon2">ms</span>
+                  <span class="input-group-text" id="basic-addon2">s</span>
                 </div>
               </div>
             </div>
@@ -474,7 +474,7 @@
               <label class="form-check-label" for="modal-action-event-checkbox">
                 Event Binding
               </label>
-              <input type="text" class="form-control flex-grow-1" placeholder="Binding" id="modal-event-binding-input" list="event-bindings" disabled>
+              <input type="text" class="form-control flex-grow-1" placeholder="Binding" id="modal-event-binding-input" list="event-bindings" disabled  autocomplete="off">
               <datalist id="event-bindings">
                 <option *ngFor="let item of filterBindingOptionsForEventCleaned">{{currentActionNameInModal ? item.replace('$action', currentActionNameInModal) : item}}</option>
              </datalist>

@@ -38,7 +38,7 @@ export class DeterLabViewComponent implements OnInit {
     alertMsg = '';
     statusMessages = [];
     activityMessages = [];
-    activateSwapIn = true;
+    activateSwapIn = false;
     deactivateSwapOut = false;
     runStatus = null;
     userCreatedDate;
