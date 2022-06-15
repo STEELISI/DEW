@@ -54,7 +54,7 @@ class BashGenerator(Generator):
                 for i in range(0, len(c[2]), 2):
                     if c[2][i] == 'num':
                         for x in c[1]:
-                            if x > 1:
+                            if int(c[2][i+1]) > 1:
                                 self.num[x] = int(c[2][i+1])
             
     def generateActions(self):
