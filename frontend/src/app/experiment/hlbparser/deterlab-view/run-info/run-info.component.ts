@@ -111,10 +111,11 @@ export class RunInfoComponent implements OnInit, OnChanges {
     }
 
     getLocalTime(time: string) {
-        var d = new Date(parseInt(time));
+        var d = new Date(0);
+        d.setUTCSeconds(parseInt(time));
         return d.toLocaleTimeString('en-US', {
             hour12: false,
-          });
+        });
     }
 
     
