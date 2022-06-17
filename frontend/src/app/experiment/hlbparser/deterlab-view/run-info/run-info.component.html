@@ -34,28 +34,34 @@
                               {{s.node}} : <span style="color:blue">{{s.action}}</span>
                             </mat-panel-title>
                             <mat-panel-description>
-                            <span style="margin-right: 5px;">
-                                Status:
-                            </span>  
-                            <span style="color:green" *ngIf="(s.status=='0')">
-                                Successful <span style="color:gray;">{{getLocalTime(s.time)}}</span>
-                            </span>
-                            <span style="color:#17a2b8" *ngIf="s.status!='0' && s.error==''">
-                                In Progress
-                            </span>
-                            <span style="color:red" *ngIf="s.status!='0' && s.error!=''">
-                                Unsuccessful
-                            </span>
+                                <div class="row" style="width: 100%;">
+                                    <div class="col-6">
+                                        {{s.cmd}}
+                                    </div>
+                                    <div class="col-6">
+                                        <span style="margin-right: 5px;">
+                                            Status:
+                                        </span>  
+                                        <span style="color:green" *ngIf="(s.status=='0')">
+                                            Successful <span style="color:gray;">{{getLocalTime(s.time)}}</span>
+                                        </span>
+                                        <span style="color:#17a2b8" *ngIf="s.status!='0' && s.error==''">
+                                            In Progress
+                                        </span>
+                                        <span style="color:red" *ngIf="s.status!='0' && s.error!=''">
+                                            Unsuccessful
+                                        </span>
+                                    </div>
+                                </div>
+                            
                             
                             </mat-panel-description>
                           </mat-expansion-panel-header>
                           <div class="col-md-12" >
-                            <span style="color:red" *ngIf="(s.error!='')">
-                                {{'Error: *'+s.error+'*' }}
+                            <span style="color:red" *ngIf="(s.error!='')" [innerHTML]="'Error: *'+ s.error.replace('\n', '<br>') +'*'">
                             </span>
                             <div class="col-md-12" style="background-color: black;color: white;">
-                            <p 
-                                >{{s.output}}</p>
+                            <p [innerHTML]="s.output.replace('\n', '<br>')"></p>
                             </div>
                         </div>
                         </mat-expansion-panel>
