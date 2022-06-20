@@ -204,11 +204,16 @@ class NSGenerator(Generator):
                         self.run[label] += line
                         link_lines.append(line)
                         cnt += 1
+                        
         # Generate lans
         for l in lans.keys():
             line = "set lan"+str(l)+" [$ns make-lan \""
-            bw_index = reduce(lambda x,y: x if x != None else y, [x if (set(x.split(' ')) == set([y.split('-')[0] for y in lans[l]])) else None for x in bw.keys()])
-            delay_index = reduce(lambda x,y: x if x != None else y, [x if (set(x.split(' ')) == set([y.split('-')[0] for y in lans[l]])) else None for x in delay.keys()])
+            bw_index = None
+            if len(bw.keys()) > 0:
+                reduce(lambda x,y: x if x != None else y, [x if (set(x.split(' ')) == set([y.split('-')[0] for y in lans[l]])) else None for x in bw.keys()])
+            delay_index = None
+            if len(delay.keys()) > 0:
+                reduce(lambda x,y: x if x != None else y, [x if (set(x.split(' ')) == set([y.split('-')[0] for y in lans[l]])) else None for x in delay.keys()])
             current_bw = '100Mb' if bw_index == None else str(bw[bw_index]) + 'Mb'
             current_delay = '0ms' if delay_index == None else str(delay[delay_index]) + 'ms'
             for n in lans[l]:

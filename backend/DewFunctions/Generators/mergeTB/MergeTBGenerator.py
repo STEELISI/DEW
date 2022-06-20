@@ -124,9 +124,11 @@ class MergeTBGenerator(Generator):
         experimentName = "-".join(sampleList)
         self.run[label] += "# create a topology named '" + experimentName + "'\n"
         self.run[label] += f"net = Network('{experimentName}', addressing==ipv4)\n"
+
+        
         # Generate nodes
         if set(actors) != set(os.keys()):
-            self.run[label] += "nodes = [net.node(name, image==2004) for name in ["
+            self.run[label] += "nodes = [net.node(name) for name in ["
             count = 0
             for a in actors:
                 if a in os.keys():
@@ -186,7 +188,7 @@ class MergeTBGenerator(Generator):
                                     pointer_a = f"-{str(i)}"
                                 if self.num[b]!=1:
                                     pointer_b = f"-{str(j)}"
-                                line = f"link{str(cnt)} = net.connect([nodes[{nodeName_in_list.index(f'{a}{pointer_a}')}], nodes[{nodeName_in_list.index(f'{b}{pointer_b}')}]], capacity=mbps({current_bw}), time=ms({current_delay}))\n"
+                                line = f"link{str(cnt)} = net.connect([nodes[{nodeName_in_list.index(f'{a}{pointer_a}')}], nodes[{nodeName_in_list.index(f'{b}{pointer_b}')}]], capacity==gbps({current_bw}), latency==ms({current_delay}))\n"
                                 self.run[label] += line
                                 link_lines.append(line)
                                 cnt += 1
@@ -195,7 +197,7 @@ class MergeTBGenerator(Generator):
                             pointer_b = ""
                             if self.num[a]!=1:
                                 pointer_a = f"-{str(i)}"
-                            line = f"link{str(cnt)} = net.connect([nodes[{nodeName_in_list.index(f'{a}{pointer_a}')}], nodes[{nodeName_in_list.index(f'{b}')}]], capacity=mbps({current_bw}), time=ms({current_delay}))\n"
+                            line = f"link{str(cnt)} = net.connect([nodes[{nodeName_in_list.index(f'{a}{pointer_a}')}], nodes[{nodeName_in_list.index(f'{b}')}]], capacity==gbps({current_bw}), latency==ms({current_delay}))\n"
                             self.run[label] += line
                             link_lines.append(line)
                             cnt += 1
@@ -215,14 +217,14 @@ class MergeTBGenerator(Generator):
                             pointer_b = ""
                             if self.num[b]!=1:
                                 pointer_b = f"-{str(j)}"
-                            line = f"link{str(cnt)} = net.connect([nodes[{nodeName_in_list.index(f'{a}')}], nodes[{nodeName_in_list.index(f'{b}{pointer_b}')}]], capacity=mbps({current_bw}), time=ms({current_delay}))\n"
+                            line = f"link{str(cnt)} = net.connect([nodes[{nodeName_in_list.index(f'{a}')}], nodes[{nodeName_in_list.index(f'{b}{pointer_b}')}]], capacity==gbps({current_bw}), latency==ms({current_delay}))\n"
                             self.run[label] += line
                             link_lines.append(line)
                             cnt += 1
                     else:
                         pointer_a = ""
                         pointer_b = ""
-                        line = f"link{str(cnt)} = net.connect([nodes[{nodeName_in_list.index(f'{a}{pointer_a}')}], nodes[{nodeName_in_list.index(f'{b}{pointer_b}')}]], capacity=mbps({current_bw}), time=ms({current_delay}))\n"
+                        line = f"link{str(cnt)} = net.connect([nodes[{nodeName_in_list.index(f'{a}{pointer_a}')}], nodes[{nodeName_in_list.index(f'{b}{pointer_b}')}]], capacity==gbps({current_bw}), latency==ms({current_delay}))\n"
                         self.run[label] += line
                         link_lines.append(line)
                         cnt += 1
@@ -230,8 +232,12 @@ class MergeTBGenerator(Generator):
         # Generate lans
         for l in lans.keys():
             line = "lan" + str(l) + " = net.connect(["
-            bw_index = reduce(lambda x,y: x if x != None else y, [x if (set(x.split(' ')) == set([y.split('-')[0] for y in lans[l]])) else None for x in bw.keys()])
-            delay_index = reduce(lambda x,y: x if x != None else y, [x if (set(x.split(' ')) == set([y.split('-')[0] for y in lans[l]])) else None for x in delay.keys()])
+            bw_index = None
+            if len(bw.keys()) > 0:
+                reduce(lambda x,y: x if x != None else y, [x if (set(x.split(' ')) == set([y.split('-')[0] for y in lans[l]])) else None for x in bw.keys()])
+            delay_index = None
+            if len(delay.keys()) > 0:
+                reduce(lambda x,y: x if x != None else y, [x if (set(x.split(' ')) == set([y.split('-')[0] for y in lans[l]])) else None for x in delay.keys()])
             current_bw = '100' if bw_index == None else str(bw[bw_index])
             current_delay = '0' if delay_index == None else str(delay[delay_index])
             for n in lans[l]:
@@ -241,7 +247,7 @@ class MergeTBGenerator(Generator):
                 else:
                     node_name = f"{'-'.join(n.split('-')[:-1])}-{single[0][1:]}"
                     line += f'nodes[{nodeName_in_list.index(f"{node_name}")}], '
-            line = line[:-2] + f"], capacity=mbps({current_bw}), time=ms({current_delay}))\n"
+            line = line[:-2] + f"], capacity==gbps({current_bw}), latency==ms({current_delay}))\n"
             self.run[label] += line
             lan_lines.append(line)
 
@@ -282,7 +288,6 @@ class MergeTBGenerator(Generator):
             
     def generatePreamble(self, label):
         self.run[label] = "from mergexp import *\n"
-        self.run[label] += "from mergexp.net import capacity, time\n\n"
 
     def generatePostamble(self, label):
         #self.run[label] += "# specify the net object as the experiment topology created by this script\n"
