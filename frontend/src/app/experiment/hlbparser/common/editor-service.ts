@@ -23,6 +23,8 @@ export default class EditorService {
   private currentword=new BehaviorSubject<any>('');
   private currentsentence=new BehaviorSubject<any>(null);
   private isTextChange:boolean=false;
+  private suggestionDataTextChange = new BehaviorSubject<any>(false);
+
   getUpdatedValue(): Observable<any> {
     return this.textData.asObservable();
   }
@@ -34,6 +36,11 @@ export default class EditorService {
   getSuggestionData(): Observable<any> {
     return this.currentsentence.asObservable();
   }
+
+  getSuggestionDataOnTextChange(): Observable<any> {
+    return this.suggestionDataTextChange.asObservable();
+  }
+
   isEnterPressed(): Observable<any> {
     return this.isEnterPress.asObservable();
   }
@@ -43,6 +50,11 @@ export default class EditorService {
   setUpdatedValue(Data: String) {
     this.textData.next(Data);
   }
+
+  setSuggestionTextChanged(flag: Boolean) {
+    this.suggestionDataTextChange.next(flag)
+  }
+
   quill: QuillInstance;
   index: number = 0;
   range;
@@ -72,6 +84,13 @@ export default class EditorService {
        instance.isTextChange=true;
         if(delta.ops!=undefined){
           delta.ops.forEach(element => {
+            try {
+              if(element.insert.trim().length==0){
+                instance.setSuggestionTextChanged(true)
+              }
+            } catch (ex) {
+              //Do nothing
+            }
             if(element.retain!=undefined)
               position = element.retain;
             if(element.insert!=undefined){

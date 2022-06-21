@@ -167,8 +167,10 @@ class HLBService():
                 return self.addSuggestions(["in_config_link"])
             elif (item == "[" or item==",") and items[0] in globals.actors:
                 return self.addSuggestions(["in_config_actor"])
+            elif (item==''):
+                return self.addSuggestions(["constraints_enter"])
             else:
-               return self.addSuggestions(["constraints_enter"])
+                return self.addSuggestions(["constraints_end"])
         else:
             return self.addSuggestions(["constraints_enter"])
 
