@@ -224,9 +224,10 @@ getSentenceAt (str, pos) {
     this.isTabPress.next(true);
   }
   insertValue(text: String,flag:boolean=true,word) {
-
+    if(flag)
+      this.index--;
     if (word.trim()==''){
-     this.quill.insertText(this.index, (this.addNewLine ? "\n" : " ") + text);
+     this.quill.insertText(this.index, (this.addNewLine ? "\n" : " ") + text + " ");
     } else
       this.replaceText(this.quill.getText(),text,word,flag);
 
