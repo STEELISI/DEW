@@ -24,6 +24,7 @@ export default class EditorService {
   private currentsentence=new BehaviorSubject<any>(null);
   private isTextChange:boolean=false;
   private suggestionDataTextChange = new BehaviorSubject<any>(false);
+  private addNewLine:Boolean = false;
 
   getUpdatedValue(): Observable<any> {
     return this.textData.asObservable();
@@ -91,6 +92,7 @@ export default class EditorService {
             } catch (ex) {
               //Do nothing
             }
+            this.addNewLine = (element.insert == '\n');
             if(element.retain!=undefined)
               position = element.retain;
             if(element.insert!=undefined){
@@ -224,21 +226,9 @@ getSentenceAt (str, pos) {
   insertValue(text: String,flag:boolean=true,word) {
 
     if (word.trim()==''){
-      //console.log("inside trim");
-      
-     
-      if(flag){
-        this.index--;
-      this.quill.deleteText(this.index,1);
-      }
-      //console.log("::"+text);
-     this.quill.insertText(this.index, text+" ");
-    
-    
-     //console.log("value of index before:"+this.index);
-
-    }else
-    this.replaceText(this.quill.getText(),text,word,flag);
+     this.quill.insertText(this.index, (this.addNewLine ? "\n" : " ") + text);
+    } else
+      this.replaceText(this.quill.getText(),text,word,flag);
 
   }
 

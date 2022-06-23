@@ -863,7 +863,7 @@ export class HlbComponent implements OnInit, AfterViewInit {
 
     data.Scenario = scenarios;
     data.Constraints = this.contraintList = constraints;
-    this.stateservice.setConstraints(this.contraintList);
+    //this.stateservice.setConstraints(this.contraintList);
     this.http
       .put('v1/pr/hlb/parse', data, { withCredential: true })
       .subscribe((receivedData: ParseApiBean) => {
