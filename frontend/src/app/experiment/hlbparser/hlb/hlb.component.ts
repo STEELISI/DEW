@@ -2295,10 +2295,10 @@ export class HlbComponent implements OnInit, AfterViewInit {
   }
   insertValue(text: any, flag: boolean = false) {
     // console.log("word:"+text);
-    this.service.insertVaue(text, flag, this.behaviorTextFilter.text);
+    this.service.insertValue(text, flag, this.behaviorTextFilter.text);
   }
   insertValueInConstraint(text: any, flag: boolean = false) {
-    this.service.insertVaue(text, flag, this.constraintTextFilter.text);
+    this.service.insertValue(text, flag, this.constraintTextFilter.text);
   }
 
   selectTextBox(id: number) {
