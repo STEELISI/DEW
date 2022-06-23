@@ -697,30 +697,6 @@ export class HlbComponent implements OnInit, AfterViewInit {
           }
         });
 
-        this.constraintService.getSuggestionDataOnTextChange().subscribe((flag)=> {
-          let sentence = this.getConstraintsFromEditor()[this.getConstraintsFromEditor().length-1]
-            var params = {
-              type: "constraint",
-              suggestion_for: sentence,
-              behaviors: this.getScenariosFromEditor(),
-              constraints: [],
-              actors: [],
-            };
-            this.http
-              .put("v1/pr/hlb/suggestions", params, { withCredential: true })
-              .subscribe((data) => {
-                var list = [];
-                data.suggestions.forEach((element) => {
-                  list.push({ value: element, flag: false });
-                });
-                if (data.suggestion_text.trim() != "")
-                  this.suggestionConstraintMessage = data.suggestion_text;
-                else this.suggestionConstraintMessage = null;
-                this.constraintWordList = list;
-                this.changeDetection.detectChanges();
-              });
-        });
-
         this.constraintService.getSuggestionData().subscribe((data) => {
           if (data == null) {
             data = {

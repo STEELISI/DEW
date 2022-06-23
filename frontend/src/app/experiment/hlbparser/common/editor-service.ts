@@ -24,7 +24,6 @@ export default class EditorService {
   private currentsentence=new BehaviorSubject<any>(null);
   private isTextChange:boolean=false;
   private suggestionDataTextChange = new BehaviorSubject<any>(false);
-  private addNewLine:Boolean = false;
 
   getUpdatedValue(): Observable<any> {
     return this.textData.asObservable();
@@ -92,7 +91,6 @@ export default class EditorService {
             } catch (ex) {
               //Do nothing
             }
-            this.addNewLine = (element.insert == '\n');
             if(element.retain!=undefined)
               position = element.retain;
             if(element.insert!=undefined){
@@ -114,8 +112,8 @@ export default class EditorService {
         //console.log("value of index inside:"+instance.index);
      
         if(!tabFlag){
-        instance.currentSentence( text,position);
-        instance.currentWord(text,position);
+          instance.currentSentence( text,position);
+          instance.currentWord(text,position);
         }else{
           if(!delFlag)
       setTimeout(function(){ instance.pressedTab(); }, 50); 
@@ -137,7 +135,7 @@ export default class EditorService {
      currentSentence:sentence,
      remainingSentences:remainingSentences
    }
-    if(sentence.length==0 || sentence.charAt(sentence.length-1)==" " || sentence.charAt(sentence.length-1)==",") {
+    if(sentence.length==0 || sentence.charAt(sentence.length-1).trim()==0 || sentence.charAt(sentence.length-1)==",") {
       this.currentsentence.next(obj);
     }
      
@@ -224,13 +222,10 @@ getSentenceAt (str, pos) {
     this.isTabPress.next(true);
   }
   insertValue(text: String,flag:boolean=true,word) {
-    if(flag)
-      this.index--;
     if (word.trim()==''){
-     this.quill.insertText(this.index, (this.addNewLine ? "\n" : " ") + text + " ");
+     this.quill.insertText(this.index, text + " ");
     } else
       this.replaceText(this.quill.getText(),text,word,flag);
-
   }
 
   replaceText(str,text,word,flag){
