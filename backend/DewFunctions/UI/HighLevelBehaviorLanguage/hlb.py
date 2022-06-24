@@ -267,9 +267,11 @@ def getSuggestionsForEvent(evtype):
     elif evtype == "in_config_link":
         suggestions = suggestions + ["bw", "delay"]
     elif evtype == "in_config_actor":
-        suggestions = suggestions + ["num", "os","location","nodetype"]
+        suggestions = suggestions + ["num", "os","location","nodeType"]
     elif evtype == "constraints_end":
         suggestions += ["]", ","]
+    elif evtype == "end_sentence":
+        suggestions = [" "]
     else: # it was text to be displayed as label
         #suggestions.append(evtype)
         suggestion_text = evtype
