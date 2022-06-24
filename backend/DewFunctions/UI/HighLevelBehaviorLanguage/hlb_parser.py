@@ -294,8 +294,8 @@ class HLBParser():
             return rval
 
     def extract_partial(self, partial):
-        #print("Parsing \'%s\'" % partial)
-        if len(partial.strip().split()) == 0:
+        partial = partial.strip()
+        if len(partial.split()) == 0:
             return(HLBHintType.BLANK,  self.new_return_dict(), ['WHEN', 'WAIT', '<ACTOR>'])
         t_events, actors, action, e_events, wait_time, all_keyword, any_keyword, label = self.parse_stmt(partial)
         # In case we have a 2 word action with a <keyword string> pattern:
