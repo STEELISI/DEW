@@ -780,35 +780,42 @@ export class HlbComponent implements OnInit, AfterViewInit {
     //   this.actorsList = [];
     //   return;
     // }
-    this.detectDEWVersion();
-    const data = {
-      ParseType: 'bash',
-      Scenario: [],
-      Constraints: [],
-    };
-    const scenarios = this.getScenariosFromEditor();
-    // const constraints = this.getConstraintsFromEditor();
-    // if (this.stateservice.getAllAnyPresentFlag() && (!this.checkIfAllKeywordPresentInStrings(scenarios) ||
-    //     !this.checkIfAllKeywordPresentInStrings(constraints))) {
-    //   // this.alertMessage = 'You have an unresolved choice between ALL or ANY for either a link or an event.' +
-    //   //                     ' Please resolved it to process the bindings.';
-    //   this.alertMessage = 'You have not inserted an ALL keyword for either a link command, lan command, ' +
-    //                       'os command or an event. Please resolve it to process the bindings.';
-    //   this.showAlertMsg = true;
-    //   return;
-    // } else {
-    //   this.showAlertMsg = false;
-    //   this.stateservice.setAllAnyPresentFlag(false);
-    // }
-    data.Constraints = this.getConstraintsFromEditor();
-    data.Scenario = this.behaviorList = scenarios;
-    //this.stateservice.setBehavior(this.behaviorList);
-    this.http
-      .put('v1/pr/hlb/parse', data, { withCredential: true })
-      .subscribe((receivedData: ParseApiBean) => {
-        this.extractInfo(receivedData);
-        //this.suggestAll(receivedData);
-      });
+
+    setTimeout(()=>{
+
+      if($("#scenario-quill-box .ql-editor")[0]!==document.activeElement) {
+        const data = {
+          ParseType: 'bash',
+          Scenario: [],
+          Constraints: [],
+        };
+        const scenarios = this.getScenariosFromEditor();
+        // const constraints = this.getConstraintsFromEditor();
+        // if (this.stateservice.getAllAnyPresentFlag() && (!this.checkIfAllKeywordPresentInStrings(scenarios) ||
+        //     !this.checkIfAllKeywordPresentInStrings(constraints))) {
+        //   // this.alertMessage = 'You have an unresolved choice between ALL or ANY for either a link or an event.' +
+        //   //                     ' Please resolved it to process the bindings.';
+        //   this.alertMessage = 'You have not inserted an ALL keyword for either a link command, lan command, ' +
+        //                       'os command or an event. Please resolve it to process the bindings.';
+        //   this.showAlertMsg = true;
+        //   return;
+        // } else {
+        //   this.showAlertMsg = false;
+        //   this.stateservice.setAllAnyPresentFlag(false);
+        // }
+        data.Constraints = this.getConstraintsFromEditor();
+        data.Scenario = this.behaviorList = scenarios;
+        this.stateservice.setBehavior(this.behaviorList);
+        this.http
+          .put('v1/pr/hlb/parse', data, { withCredential: true })
+          .subscribe((receivedData: ParseApiBean) => {
+            this.extractInfo(receivedData);
+            //this.suggestAll(receivedData);
+          });
+      }
+
+    }, 500);
+
   }
 
   updateActorsConstraint() {
@@ -817,35 +824,42 @@ export class HlbComponent implements OnInit, AfterViewInit {
     //   this.actorsList = [];
     //   return;
     // }
-    const data = {
-      ParseType: 'bash',
-      Scenario: [],
-      Constraints: [],
-    };
-    const scenarios = this.getScenariosFromEditor();
-    const constraints = this.getConstraintsFromEditor();
-    // if (this.stateservice.getAllAnyPresentFlag() && (!this.checkIfAllKeywordPresentInStrings(scenarios) ||
-    //     !this.checkIfAllKeywordPresentInStrings(constraints))) {
-    //   // this.alertMessage = 'You have an unresolved choice between ALL or ANY for either a link or an event.' +
-    //   //                     ' Please resolved it to process the bindings.';
-    //   this.alertMessage = 'You have not inserted an ALL keyword for either a link command, lan command, ' +
-    //                       'os command or an event. Please resolve it to process the bindings.';
-    //   this.showAlertMsg = true;
-    //   return;
-    // } else {
-    //   this.showAlertMsg = false;
-    //   this.stateservice.setAllAnyPresentFlag(false);
-    // }
+    setTimeout(()=>{
 
-    data.Scenario = scenarios;
-    data.Constraints = this.contraintList = constraints;
-    //this.stateservice.setConstraints(this.contraintList);
-    this.http
-      .put('v1/pr/hlb/parse', data, { withCredential: true })
-      .subscribe((receivedData: ParseApiBean) => {
-        //this.suggestAll(receivedData);
-        this.extractInfo(receivedData);
-      });
+      if($("#constraint-quill-box .ql-editor")[0]!==document.activeElement) {
+        this.detectDEWVersion();
+        const data = {
+          ParseType: 'bash',
+          Scenario: [],
+          Constraints: [],
+        };
+        const scenarios = this.getScenariosFromEditor();
+        const constraints = this.getConstraintsFromEditor();
+        // if (this.stateservice.getAllAnyPresentFlag() && (!this.checkIfAllKeywordPresentInStrings(scenarios) ||
+        //     !this.checkIfAllKeywordPresentInStrings(constraints))) {
+        //   // this.alertMessage = 'You have an unresolved choice between ALL or ANY for either a link or an event.' +
+        //   //                     ' Please resolved it to process the bindings.';
+        //   this.alertMessage = 'You have not inserted an ALL keyword for either a link command, lan command, ' +
+        //                       'os command or an event. Please resolve it to process the bindings.';
+        //   this.showAlertMsg = true;
+        //   return;
+        // } else {
+        //   this.showAlertMsg = false;
+        //   this.stateservice.setAllAnyPresentFlag(false);
+        // }
+  
+        data.Scenario = scenarios;
+        data.Constraints = this.contraintList = constraints;
+        this.stateservice.setConstraints(this.contraintList);
+        this.http
+          .put('v1/pr/hlb/parse', data, { withCredential: true })
+          .subscribe((receivedData: ParseApiBean) => {
+            //this.suggestAll(receivedData);
+            this.extractInfo(receivedData);
+          });
+      }
+
+    }, 500);
   }
 
   extractInfo(data: ParseApiBean) {

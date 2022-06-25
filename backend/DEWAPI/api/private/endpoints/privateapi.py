@@ -17,7 +17,7 @@ from DEWAPI.api.public.services.userinfoservice import GoogleLogin
 from ..services.logger import Logger
 import globals
 import traceback
-
+import unicodedata
 
 
 ns = api.namespace('v1/pr', description='Private operations require authentication.')
@@ -554,6 +554,8 @@ class HandleExperimentSave(Resource):
           constraints = content['constraints']
           behaviors = content['behaviors']
           bindings = content['bindings']
+          constraints = list( map(lambda x: unicodedata.normalize("NFKD", x), constraints) )
+          behaviors = list( map(lambda x: unicodedata.normalize("NFKD", x), behaviors) )
           experimentId = None
           if 'id' in content:
             experimentId = content['id']
