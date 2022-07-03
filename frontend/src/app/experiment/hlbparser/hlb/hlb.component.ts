@@ -149,7 +149,9 @@ export class HlbComponent implements OnInit, AfterViewInit {
   suggestionConstraintMessage: String;
   canvasClickFlag: Boolean = true;
   actionNumberNodes: Array<any>;
-  canvasEventListener: any;
+  actionNumberNodesDependency: Array<any>;
+  canvasEventListenerTopology: any;
+  canvasEventListenerDependency: any;
 
   bindingMap = new Map<String, any>();
   behaviorWordList: any = [];
@@ -445,7 +447,7 @@ export class HlbComponent implements OnInit, AfterViewInit {
     $("#modal-actor-input").attr('disabled', $('.graph-box-dependency').hasClass('hide'));
   }
 
-  onEditActionFromTopologyClick(data) {
+  onEditActionFromTopologyDependencyClick(data) {
     var nodeData = (this.allDependencyNodeData.filter(item => parseInt(item.id) == parseInt(data)))[0]['data']
     this.populateAndShowEditActionModal(nodeData);
   }
@@ -621,6 +623,7 @@ export class HlbComponent implements OnInit, AfterViewInit {
             //this.behaviorService
           }
         });
+
         this.behaviorService.getSuggestionData().subscribe((data) => {
           if (data == null) {
             data = {
@@ -693,6 +696,7 @@ export class HlbComponent implements OnInit, AfterViewInit {
             }
           }
         });
+
         this.constraintService.getSuggestionData().subscribe((data) => {
           if (data == null) {
             data = {
@@ -776,35 +780,42 @@ export class HlbComponent implements OnInit, AfterViewInit {
     //   this.actorsList = [];
     //   return;
     // }
-    this.detectDEWVersion();
-    const data = {
-      ParseType: 'bash',
-      Scenario: [],
-      Constraints: [],
-    };
-    const scenarios = this.getScenariosFromEditor();
-    // const constraints = this.getConstraintsFromEditor();
-    // if (this.stateservice.getAllAnyPresentFlag() && (!this.checkIfAllKeywordPresentInStrings(scenarios) ||
-    //     !this.checkIfAllKeywordPresentInStrings(constraints))) {
-    //   // this.alertMessage = 'You have an unresolved choice between ALL or ANY for either a link or an event.' +
-    //   //                     ' Please resolved it to process the bindings.';
-    //   this.alertMessage = 'You have not inserted an ALL keyword for either a link command, lan command, ' +
-    //                       'os command or an event. Please resolve it to process the bindings.';
-    //   this.showAlertMsg = true;
-    //   return;
-    // } else {
-    //   this.showAlertMsg = false;
-    //   this.stateservice.setAllAnyPresentFlag(false);
-    // }
-    data.Constraints = this.getConstraintsFromEditor();
-    data.Scenario = this.behaviorList = scenarios;
-    this.stateservice.setBehavior(this.behaviorList);
-    this.http
-      .put('v1/pr/hlb/parse', data, { withCredential: true })
-      .subscribe((receivedData: ParseApiBean) => {
-        this.extractInfo(receivedData);
-        //this.suggestAll(receivedData);
-      });
+
+    setTimeout(()=>{
+
+      if($("#scenario-quill-box .ql-editor")[0]!==document.activeElement) {
+        const data = {
+          ParseType: 'bash',
+          Scenario: [],
+          Constraints: [],
+        };
+        const scenarios = this.getScenariosFromEditor();
+        // const constraints = this.getConstraintsFromEditor();
+        // if (this.stateservice.getAllAnyPresentFlag() && (!this.checkIfAllKeywordPresentInStrings(scenarios) ||
+        //     !this.checkIfAllKeywordPresentInStrings(constraints))) {
+        //   // this.alertMessage = 'You have an unresolved choice between ALL or ANY for either a link or an event.' +
+        //   //                     ' Please resolved it to process the bindings.';
+        //   this.alertMessage = 'You have not inserted an ALL keyword for either a link command, lan command, ' +
+        //                       'os command or an event. Please resolve it to process the bindings.';
+        //   this.showAlertMsg = true;
+        //   return;
+        // } else {
+        //   this.showAlertMsg = false;
+        //   this.stateservice.setAllAnyPresentFlag(false);
+        // }
+        data.Constraints = this.getConstraintsFromEditor();
+        data.Scenario = this.behaviorList = scenarios;
+        this.stateservice.setBehavior(this.behaviorList);
+        this.http
+          .put('v1/pr/hlb/parse', data, { withCredential: true })
+          .subscribe((receivedData: ParseApiBean) => {
+            this.extractInfo(receivedData);
+            //this.suggestAll(receivedData);
+          });
+      }
+
+    }, 500);
+
   }
 
   updateActorsConstraint() {
@@ -813,35 +824,42 @@ export class HlbComponent implements OnInit, AfterViewInit {
     //   this.actorsList = [];
     //   return;
     // }
-    const data = {
-      ParseType: 'bash',
-      Scenario: [],
-      Constraints: [],
-    };
-    const scenarios = this.getScenariosFromEditor();
-    const constraints = this.getConstraintsFromEditor();
-    // if (this.stateservice.getAllAnyPresentFlag() && (!this.checkIfAllKeywordPresentInStrings(scenarios) ||
-    //     !this.checkIfAllKeywordPresentInStrings(constraints))) {
-    //   // this.alertMessage = 'You have an unresolved choice between ALL or ANY for either a link or an event.' +
-    //   //                     ' Please resolved it to process the bindings.';
-    //   this.alertMessage = 'You have not inserted an ALL keyword for either a link command, lan command, ' +
-    //                       'os command or an event. Please resolve it to process the bindings.';
-    //   this.showAlertMsg = true;
-    //   return;
-    // } else {
-    //   this.showAlertMsg = false;
-    //   this.stateservice.setAllAnyPresentFlag(false);
-    // }
+    setTimeout(()=>{
 
-    data.Scenario = scenarios;
-    data.Constraints = this.contraintList = constraints;
-    this.stateservice.setConstraints(this.contraintList);
-    this.http
-      .put('v1/pr/hlb/parse', data, { withCredential: true })
-      .subscribe((receivedData: ParseApiBean) => {
-        //this.suggestAll(receivedData);
-        this.extractInfo(receivedData);
-      });
+      if($("#constraint-quill-box .ql-editor")[0]!==document.activeElement) {
+        this.detectDEWVersion();
+        const data = {
+          ParseType: 'bash',
+          Scenario: [],
+          Constraints: [],
+        };
+        const scenarios = this.getScenariosFromEditor();
+        const constraints = this.getConstraintsFromEditor();
+        // if (this.stateservice.getAllAnyPresentFlag() && (!this.checkIfAllKeywordPresentInStrings(scenarios) ||
+        //     !this.checkIfAllKeywordPresentInStrings(constraints))) {
+        //   // this.alertMessage = 'You have an unresolved choice between ALL or ANY for either a link or an event.' +
+        //   //                     ' Please resolved it to process the bindings.';
+        //   this.alertMessage = 'You have not inserted an ALL keyword for either a link command, lan command, ' +
+        //                       'os command or an event. Please resolve it to process the bindings.';
+        //   this.showAlertMsg = true;
+        //   return;
+        // } else {
+        //   this.showAlertMsg = false;
+        //   this.stateservice.setAllAnyPresentFlag(false);
+        // }
+  
+        data.Scenario = scenarios;
+        data.Constraints = this.contraintList = constraints;
+        this.stateservice.setConstraints(this.contraintList);
+        this.http
+          .put('v1/pr/hlb/parse', data, { withCredential: true })
+          .subscribe((receivedData: ParseApiBean) => {
+            //this.suggestAll(receivedData);
+            this.extractInfo(receivedData);
+          });
+      }
+
+    }, 500);
   }
 
   extractInfo(data: ParseApiBean) {
@@ -1153,7 +1171,7 @@ export class HlbComponent implements OnInit, AfterViewInit {
           //Show legends in topology graph
           this.topologyNetworkInstance.on("afterDrawing", (ctx) => {
 
-            this.canvasEventListener && ctx.canvas.removeEventListener('click', this.canvasEventListener);
+            this.canvasEventListenerTopology && ctx.canvas.removeEventListener('click', this.canvasEventListenerTopology);
 
             this.actionNumberNodes = []
 
@@ -1214,12 +1232,12 @@ export class HlbComponent implements OnInit, AfterViewInit {
               }
             }
 
-            this.canvasEventListener = ctx.canvas.addEventListener('click', (e) => {
+            this.canvasEventListenerTopology = ctx.canvas.addEventListener('click', (e) => {
               if (this.canvasClickFlag) {
                 const pos = getCursorPosition(ctx.canvas, e);
                 this.actionNumberNodes.forEach(item => {
                   if (isIntersect(pos, item)) {
-                    this.onEditActionFromTopologyClick(item.dependencyNode.topologyLabel);
+                    this.onEditActionFromTopologyDependencyClick(item.dependencyNode.topologyLabel);
                   }
                 });
                 this.canvasClickFlag = false;
@@ -1399,6 +1417,12 @@ export class HlbComponent implements OnInit, AfterViewInit {
               //Show legends in dependency graph
               this.dependencyNetworkInstance.on("afterDrawing", (ctx) => {
 
+                this.actionNumberNodesDependency = []
+
+                this.canvasEventListenerDependency && ctx.canvas.removeEventListener('click', this.canvasEventListenerDependency);
+
+                let curScale = this.dependencyNetworkInstance.getScale();
+
                 this.dependencyGraphNodes.forEach((node) => {
                   var nodePosition = this.dependencyNetworkInstance.getPosition(node.id);
                   var boundingBox = this.dependencyNetworkInstance.getBoundingBox(node.id);
@@ -1411,7 +1435,7 @@ export class HlbComponent implements OnInit, AfterViewInit {
                   ctx.fillStyle = "#A6D5F7";
 
                   ctx.beginPath();
-                  ctx.fillRect(x + 10 - 10, y - 10, 20, 20);
+                  ctx.fillRect(x, y - 10, 20, 20);
                   ctx.closePath();
 
                   ctx.fill();
@@ -1422,8 +1446,59 @@ export class HlbComponent implements OnInit, AfterViewInit {
                   ctx.textAlign = "center";
                   ctx.textBaseline = "middle";
                   ctx.fillText(node.topologyLabel + "", x + 10, y);
+
+                  var abs_pos = this.dependencyNetworkInstance.canvasToDOM(
+                    {
+                      x: x,
+                      y: y
+                    }
+                  );
+                  this.actionNumberNodesDependency.push({
+                    x: abs_pos.x + curScale,
+                    y: abs_pos.y - 10 * curScale,
+                    width: 20 * curScale,
+                    height: 20 * curScale,
+                    dependencyNode: node
+                  });
+
                 });
+
+
+                function isIntersect(point, box) {
+                  return point.x >= box.x && point.x <= box.x + (box.width) && point.y >= box.y && point.y <= box.y + (box.height);
+                }
+    
+                function getCursorPosition(canvas, event) {
+                  const rect = canvas.getBoundingClientRect()
+                  const x = event.clientX - rect.left
+                  const y = event.clientY - rect.top
+                  return {
+                    x: x,
+                    y: y
+                  }
+                }
+    
+                this.canvasEventListenerDependency = ctx.canvas.addEventListener('click', (e) => {
+                  if (this.canvasClickFlag) {
+                    const pos = getCursorPosition(ctx.canvas, e);
+                    this.actionNumberNodesDependency.forEach(item => {
+                      console.warn(item)
+                      console.error(pos)
+                      if (isIntersect(pos, item)) {
+                        this.onEditActionFromTopologyDependencyClick(item.dependencyNode.topologyLabel);
+                      }
+                    });
+                    this.canvasClickFlag = false;
+                    setTimeout(() => { this.canvasClickFlag = true }, 1000);
+                  }
+                });
+
+
               });
+
+             
+
+
               //Show dependency cycle if any
               if (this.dependencyGraphCyclePath) {
                 $('#dependencyGraphCycleContainer').show();
@@ -2215,10 +2290,10 @@ export class HlbComponent implements OnInit, AfterViewInit {
   }
   insertValue(text: any, flag: boolean = false) {
     // console.log("word:"+text);
-    this.service.insertVaue(text, flag, this.behaviorTextFilter.text);
+    this.service.insertValue(text, flag, this.behaviorTextFilter.text);
   }
   insertValueInConstraint(text: any, flag: boolean = false) {
-    this.service.insertVaue(text, flag, this.constraintTextFilter.text);
+    this.service.insertValue(text, flag, this.constraintTextFilter.text);
   }
 
   selectTextBox(id: number) {

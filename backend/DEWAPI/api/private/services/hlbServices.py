@@ -140,8 +140,8 @@ class HLBService():
         items = re.split("[\s]",last_constraint.strip())
         # if item in ["num", "os","nodetype", "interfaces", "location", "link","lan"] and len(items) == 0:
         #     return self.addSuggestions(["actors_only"])
-        if len(items) >= 1:
-            item = items[-1]
+        item = items[-1]
+        if len(item.strip())!=0:
             if (item == "num" or item == "interfaces" or item == "bw" or item=="delay"):
                 return self.addSuggestions(["enter digit"])
             elif item == "os":
@@ -160,15 +160,19 @@ class HLBService():
             elif item == "lan":
                 return self.addSuggestions(["actors_only"])
             elif item == "location":
-                return self.addSuggestions(["enter testbed"])
+                return self.addSuggestions(["enter testbed address"])
             elif item in globals.actors:
                 return self.addSuggestions(["start_config"])
-            elif (item == "[" or item==",") and (items[0]=="link" or items[0]=="lan"):
+            elif (item == "[" or item[-1]==",") and (items[0]=="link" or items[0]=="lan"):
                 return self.addSuggestions(["in_config_link"])
-            elif (item == "[" or item==",") and items[0] in globals.actors:
+            elif (item == "[" or item[-1]==",") and items[0] in globals.actors:
                 return self.addSuggestions(["in_config_actor"])
-            else:
-               return self.addSuggestions(["constraints_enter"])
+            elif (item==''):
+                return self.addSuggestions(["constraints_enter"])
+            elif (item.replace(",", "").strip().isdigit()):
+                return self.addSuggestions(["constraints_end"])
+            elif (item[-1]=="]"):
+                return self.addSuggestions(["end of sentence"])
         else:
             return self.addSuggestions(["constraints_enter"])
 
