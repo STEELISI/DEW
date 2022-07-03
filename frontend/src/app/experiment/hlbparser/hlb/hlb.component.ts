@@ -1054,6 +1054,12 @@ export class HlbComponent implements OnInit, AfterViewInit {
               enabled: false,
               initiallyActive: false,
               addNode: (nodeData, callback) => {
+                if (this.addNodeType == "LAN") {
+                  nodeData.group = "LAN";
+                } else {
+                  nodeData.group = "group" + this.actorsGroup.get(nodeData.label)
+                }
+
                 [nodeData.label, nodeData.id] = this.assignNewActorInTopologyGraph(nodeData.group == "LAN");
 
                 this.createGraphItemEntry(nodeData);
@@ -1062,17 +1068,16 @@ export class HlbComponent implements OnInit, AfterViewInit {
                 if (!this.actorsGroup.has(nodeData.label)) {
                   this.actorsGroup.set(nodeData.label, this.actorsGroup.size);
                 }
-                if (this.addNodeType == "LAN") {
-                  nodeData.group = "LAN";
-                  nodeData.label = "";
-                } else {
-                  nodeData.group = "group" + this.actorsGroup.get(nodeData.label)
-                }
+                
                 setTimeout(() => {
                   this.topologyNetworkInstance.selectNodes([nodeData.id]);
                   setTimeout(async () => {
                     await this.onTopologyClick({ nodes: [nodeData.id], items: [], edges: [] });
-                    this.topologyGraphSelectedNodeData.nameEditable = true;
+                    if (this.addNodeType == "LAN") {
+                      this.topologyGraphSelectedNodeData.nameEditable = false;
+                    } else {
+                      this.topologyGraphSelectedNodeData.nameEditable = true;
+                    }
                   }, 100);
                 }, 100);
                 this.clearMessage();
@@ -1504,7 +1509,7 @@ export class HlbComponent implements OnInit, AfterViewInit {
     temp['hardwareType'] = '';
     temp['nodeName'] = nodeData.label;
     temp['num'] = '1';
-    temp['type'] = GraphItemType.NODE;
+    temp['type'] = nodeData.group == "LAN" ? GraphItemType.LAN : GraphItemType.NODE;
     this.graphItemParametersList[nodeData.id] = temp;
     globalGraphItemParametersList = this.graphItemParametersList;
   }
