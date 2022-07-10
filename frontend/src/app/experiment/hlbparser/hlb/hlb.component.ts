@@ -780,35 +780,42 @@ export class HlbComponent implements OnInit, AfterViewInit {
     //   this.actorsList = [];
     //   return;
     // }
-    this.detectDEWVersion();
-    const data = {
-      ParseType: 'bash',
-      Scenario: [],
-      Constraints: [],
-    };
-    const scenarios = this.getScenariosFromEditor();
-    // const constraints = this.getConstraintsFromEditor();
-    // if (this.stateservice.getAllAnyPresentFlag() && (!this.checkIfAllKeywordPresentInStrings(scenarios) ||
-    //     !this.checkIfAllKeywordPresentInStrings(constraints))) {
-    //   // this.alertMessage = 'You have an unresolved choice between ALL or ANY for either a link or an event.' +
-    //   //                     ' Please resolved it to process the bindings.';
-    //   this.alertMessage = 'You have not inserted an ALL keyword for either a link command, lan command, ' +
-    //                       'os command or an event. Please resolve it to process the bindings.';
-    //   this.showAlertMsg = true;
-    //   return;
-    // } else {
-    //   this.showAlertMsg = false;
-    //   this.stateservice.setAllAnyPresentFlag(false);
-    // }
-    data.Constraints = this.getConstraintsFromEditor();
-    data.Scenario = this.behaviorList = scenarios;
-    //this.stateservice.setBehavior(this.behaviorList);
-    this.http
-      .put('v1/pr/hlb/parse', data, { withCredential: true })
-      .subscribe((receivedData: ParseApiBean) => {
-        this.extractInfo(receivedData);
-        //this.suggestAll(receivedData);
-      });
+
+    setTimeout(()=>{
+
+      if($("#scenario-quill-box .ql-editor")[0]!==document.activeElement) {
+        const data = {
+          ParseType: 'bash',
+          Scenario: [],
+          Constraints: [],
+        };
+        const scenarios = this.getScenariosFromEditor();
+        // const constraints = this.getConstraintsFromEditor();
+        // if (this.stateservice.getAllAnyPresentFlag() && (!this.checkIfAllKeywordPresentInStrings(scenarios) ||
+        //     !this.checkIfAllKeywordPresentInStrings(constraints))) {
+        //   // this.alertMessage = 'You have an unresolved choice between ALL or ANY for either a link or an event.' +
+        //   //                     ' Please resolved it to process the bindings.';
+        //   this.alertMessage = 'You have not inserted an ALL keyword for either a link command, lan command, ' +
+        //                       'os command or an event. Please resolve it to process the bindings.';
+        //   this.showAlertMsg = true;
+        //   return;
+        // } else {
+        //   this.showAlertMsg = false;
+        //   this.stateservice.setAllAnyPresentFlag(false);
+        // }
+        data.Constraints = this.getConstraintsFromEditor();
+        data.Scenario = this.behaviorList = scenarios;
+        this.stateservice.setBehavior(this.behaviorList);
+        this.http
+          .put('v1/pr/hlb/parse', data, { withCredential: true })
+          .subscribe((receivedData: ParseApiBean) => {
+            this.extractInfo(receivedData);
+            //this.suggestAll(receivedData);
+          });
+      }
+
+    }, 500);
+
   }
 
   updateActorsConstraint() {
@@ -817,35 +824,42 @@ export class HlbComponent implements OnInit, AfterViewInit {
     //   this.actorsList = [];
     //   return;
     // }
-    const data = {
-      ParseType: 'bash',
-      Scenario: [],
-      Constraints: [],
-    };
-    const scenarios = this.getScenariosFromEditor();
-    const constraints = this.getConstraintsFromEditor();
-    // if (this.stateservice.getAllAnyPresentFlag() && (!this.checkIfAllKeywordPresentInStrings(scenarios) ||
-    //     !this.checkIfAllKeywordPresentInStrings(constraints))) {
-    //   // this.alertMessage = 'You have an unresolved choice between ALL or ANY for either a link or an event.' +
-    //   //                     ' Please resolved it to process the bindings.';
-    //   this.alertMessage = 'You have not inserted an ALL keyword for either a link command, lan command, ' +
-    //                       'os command or an event. Please resolve it to process the bindings.';
-    //   this.showAlertMsg = true;
-    //   return;
-    // } else {
-    //   this.showAlertMsg = false;
-    //   this.stateservice.setAllAnyPresentFlag(false);
-    // }
+    setTimeout(()=>{
 
-    data.Scenario = scenarios;
-    data.Constraints = this.contraintList = constraints;
-    //this.stateservice.setConstraints(this.contraintList);
-    this.http
-      .put('v1/pr/hlb/parse', data, { withCredential: true })
-      .subscribe((receivedData: ParseApiBean) => {
-        //this.suggestAll(receivedData);
-        this.extractInfo(receivedData);
-      });
+      if($("#constraint-quill-box .ql-editor")[0]!==document.activeElement) {
+        this.detectDEWVersion();
+        const data = {
+          ParseType: 'bash',
+          Scenario: [],
+          Constraints: [],
+        };
+        const scenarios = this.getScenariosFromEditor();
+        const constraints = this.getConstraintsFromEditor();
+        // if (this.stateservice.getAllAnyPresentFlag() && (!this.checkIfAllKeywordPresentInStrings(scenarios) ||
+        //     !this.checkIfAllKeywordPresentInStrings(constraints))) {
+        //   // this.alertMessage = 'You have an unresolved choice between ALL or ANY for either a link or an event.' +
+        //   //                     ' Please resolved it to process the bindings.';
+        //   this.alertMessage = 'You have not inserted an ALL keyword for either a link command, lan command, ' +
+        //                       'os command or an event. Please resolve it to process the bindings.';
+        //   this.showAlertMsg = true;
+        //   return;
+        // } else {
+        //   this.showAlertMsg = false;
+        //   this.stateservice.setAllAnyPresentFlag(false);
+        // }
+  
+        data.Scenario = scenarios;
+        data.Constraints = this.contraintList = constraints;
+        this.stateservice.setConstraints(this.contraintList);
+        this.http
+          .put('v1/pr/hlb/parse', data, { withCredential: true })
+          .subscribe((receivedData: ParseApiBean) => {
+            //this.suggestAll(receivedData);
+            this.extractInfo(receivedData);
+          });
+      }
+
+    }, 500);
   }
 
   extractInfo(data: ParseApiBean) {
@@ -1058,6 +1072,12 @@ export class HlbComponent implements OnInit, AfterViewInit {
               enabled: false,
               initiallyActive: false,
               addNode: (nodeData, callback) => {
+                if (this.addNodeType == "LAN") {
+                  nodeData.group = "LAN";
+                } else {
+                  nodeData.group = "group" + this.actorsGroup.get(nodeData.label)
+                }
+
                 [nodeData.label, nodeData.id] = this.assignNewActorInTopologyGraph(nodeData.group == "LAN");
 
                 this.createGraphItemEntry(nodeData);
@@ -1066,17 +1086,16 @@ export class HlbComponent implements OnInit, AfterViewInit {
                 if (!this.actorsGroup.has(nodeData.label)) {
                   this.actorsGroup.set(nodeData.label, this.actorsGroup.size);
                 }
-                if (this.addNodeType == "LAN") {
-                  nodeData.group = "LAN";
-                  nodeData.label = "";
-                } else {
-                  nodeData.group = "group" + this.actorsGroup.get(nodeData.label)
-                }
+                
                 setTimeout(() => {
                   this.topologyNetworkInstance.selectNodes([nodeData.id]);
                   setTimeout(async () => {
                     await this.onTopologyClick({ nodes: [nodeData.id], items: [], edges: [] });
-                    this.topologyGraphSelectedNodeData.nameEditable = true;
+                    if (this.addNodeType == "LAN") {
+                      this.topologyGraphSelectedNodeData.nameEditable = false;
+                    } else {
+                      this.topologyGraphSelectedNodeData.nameEditable = true;
+                    }
                   }, 100);
                 }, 100);
                 this.clearMessage();
@@ -1565,7 +1584,7 @@ export class HlbComponent implements OnInit, AfterViewInit {
     temp['hardwareType'] = '';
     temp['nodeName'] = nodeData.label;
     temp['num'] = '1';
-    temp['type'] = GraphItemType.NODE;
+    temp['type'] = nodeData.group == "LAN" ? GraphItemType.LAN : GraphItemType.NODE;
     this.graphItemParametersList[nodeData.id] = temp;
     globalGraphItemParametersList = this.graphItemParametersList;
   }

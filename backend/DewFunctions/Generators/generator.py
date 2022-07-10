@@ -3,6 +3,7 @@
 import os.path
 import sys
 import configparser
+import unicodedata
 
 # cwd = os.path.dirname(os.path.realpath(__file__))
 # parentDir = os.path.abspath(os.path.join(cwd, os.pardir))
@@ -55,6 +56,7 @@ class Generator(object):
         # Constraints -> ['constraint type', 'target', 'value' ] (some of these can be None)
         myc = ""
         for c in self.constraints:
+            c = unicodedata.normalize("NFKD", c)
             myc += c + "\n"
             # c = co[0]
             try:
@@ -66,7 +68,7 @@ class Generator(object):
             # Because we use parsing for UI suggestions, we don't throw exceptions
             # when we can't parse a statement, instead the parser returns a tuplet of Nones.
             if all(x == None for x in parsedTuple):
-                print("ERROR:\tUnparsable constraint: %s\n" % c)
+                print("ERROR:\tUnparsable constraint: %s\n" % repr(c))
                 continue
                 #return False
 
@@ -78,6 +80,7 @@ class Generator(object):
         mys = ""
         label = "main"
         for s in self.scenario:
+            s = unicodedata.normalize("NFKD", s)
             mys += s + "\n"
             # s = sc[0]
             try:
