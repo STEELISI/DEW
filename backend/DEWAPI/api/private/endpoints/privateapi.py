@@ -1287,6 +1287,16 @@ class HandleGetStatus(Resource):
               mapping = dm.getMapping(details['id'],eid)
               if 'error' not in mapping:
                 result = ssh.getExperimentStatusInformation(mapping['project_name'],mapping['experiment_name'])
+                #Stop experiment if running in db and experiment swapped out from deterlab
+                if 'content' in result and "State:" in result['content']:
+                  experiment_status = result['content'].split("\n")[1].split()[1].strip()
+                  if(experiment_status == 'swapped'):
+                    unique_name = mapping['experiment_name']+"_run"
+                    experiment = list(em.get_experiment(eid, uid).versions)[-1]
+                    transaction_id = experiment.transaction_id
+                    run_status = dm.getStatus(eid, uid, unique_name)
+                    if run_status == 'start':
+                      dm.addLog(eid, details['id'], uid, transaction_id, unique_name, "{}", "stop", None)
               else:
                 result = mapping
             else:
