@@ -111,7 +111,7 @@ class HLBService():
       
         items = re.split("[\s,]",last_constraint.strip())
         item = items.pop(0)
-        if item in ["num", "os","nodetype", "interfaces", "location", "link","lan"] and len(items) == 0:
+        if item in ["num", "os","nodetype", "interfaces", "location", "ip",  "link","lan"] and len(items) == 0:
             return actors
         elif len(items) >= 1:
             if (item == "num" or item == "interfaces") and items[-1] in actors:
@@ -133,6 +133,8 @@ class HLBService():
                 return self.addSuggestions(["actors_only"])
             elif item == "location" and (items[-1] in globals.actors):
                 return self.addSuggestions(["enter testbed"])
+            elif item == "ip" and (items[-1] in globals.actors):
+                return self.addSuggestions(["enter IP address"])
             else:
                return self.addSuggestions(["constraints_enter"])
         else:

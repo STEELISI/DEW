@@ -160,7 +160,9 @@ class HLBService():
             elif item == "lan":
                 return self.addSuggestions(["actors_only"])
             elif item == "location":
-                return self.addSuggestions(["enter testbed address"])
+                return self.addSuggestions(["enter testbed name"])
+            elif item == "ip":
+                return self.addSuggestions(["enter IP address"])
             elif item in globals.actors:
                 return self.addSuggestions(["start_config"])
             elif (item == "[" or item[-1]==",") and (items[0]=="link" or items[0]=="lan"):
