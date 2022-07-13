@@ -39,9 +39,10 @@ class NSGenerator(Generator):
                 continue
 
 
-    def samesubnet(a,b):
-        n = ipaddress.ip_network(a+"/24")
-        return ipaddress.ip_address(b) in n
+    def samesubnet(self, a,b):
+        an = int(ipaddress.ip_address(a)) & ((2**24 - 1) << 8)
+        bn = int(ipaddress.ip_address(b)) & ((2**24 - 1) << 8)
+        return (an == bn)
 
     def generateNS(self):
         
@@ -276,10 +277,11 @@ class NSGenerator(Generator):
         for line in link_lines:
             nodes = re.findall('(?<=duplex-link\s)(([\$\(\)a-zA-Z0-9-]+\s)+)(?=[0-9.]+Mb)', line)
             nodes = (nodes[0][0][:-1]).split(' ')
-            regex_links = re.findall('link[0-9]+', line)
+            regex_links = re.findall('link[0-9]+', line) 
+            current_ip = ''
             for node in nodes:
-                current_ip = ''
                 if node[1:] in ip:
+                    print("Checking node ", node, " current ip ", current_ip)
                     if current_ip == '' or self.samesubnet(current_ip, ip[node[1:]]):
                         line = f'tb-set-ip-link {node} ${regex_links[0]} {ip[node[1:]]}\n'
                         self.run[label] += line
@@ -296,8 +298,8 @@ class NSGenerator(Generator):
             nodestring = re.findall('(make-lan\s)(\")((\$[a-zA-Z0-9\(\)\s]+)+)(\")', line) #(([\$\(\)a-zA-Z0-9-]+\s)+)(?=")', line)
             nodes = nodestring[0][2].split(' ')
             regex_lan = re.findall('lan[0-9]+', line)
+            current_ip = ''
             for node in nodes:
-                current_ip = ''
                 if node[1:] in ip:
                     if current_ip == '' or self.samesubnet(current_ip, ip[node[1:]]):
                         line = f'tb-set-ip-lan {node} ${regex_lan[0]} {ip[node[1:]]}\n'
