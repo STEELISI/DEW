@@ -1700,9 +1700,8 @@ export class HlbComponent implements OnInit, AfterViewInit {
     if (!this.topologyGraphSelectedNodeData.nameEditableError) {
       const new_name = this.topologyGraphSelectedNodeData.name;
       const old_name = this.topologyGraphNodes.get(this.topologyGraphSelectedNodeData.id)['label'];
-
+      const node_id = this.topologyGraphSelectedNodeData.id;
       this.actorsList[this.actorsList.findIndex(item => item['text'] == old_name)]['text'] = new_name;
-
       let index = Object.keys(this.graphItemParametersList).find(key => this.graphItemParametersList[key]['nodeName'] === old_name);
       this.graphItemParametersList[index]['nodeName'] = new_name;
       globalGraphItemParametersList = this.graphItemParametersList;
@@ -1727,9 +1726,8 @@ export class HlbComponent implements OnInit, AfterViewInit {
           this.stateservice.setBehavior(receivedData['scenarios']);
           this.stateservice.setConstraints(receivedData['constraints']);
 
-
           this.topologyGraphNodes.update({
-            id: this.topologyGraphSelectedNodeData.id,
+            id: node_id,
             label: new_name
           });
           $('#dialog-box-title').html(new_name);
