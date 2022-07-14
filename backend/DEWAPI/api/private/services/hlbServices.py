@@ -150,7 +150,7 @@ class HLBService():
                     # globals.app.addButton(os,Centry)
                     # globals.sbuttons[os]=1
                 return self.addSuggestions(["enter OS"])
-            elif item == "nodeType":
+            elif item == "nodetype":
                 # for nodetype in globals.deploy_handler.getSuggestions(type='nodetype'):
                 #     globals.app.addButton(nodetype,Centry)
                 #     globals.sbuttons[nodetype]=1
@@ -348,7 +348,7 @@ class HLBService():
         parsed_scenario, parsed_constraints = gen.scenario_parsed, gen.constraints_parsed
         #Get Features from Constraints
         actor_os = {}
-        actor_location = {}
+        actor_ip = {}
         actor_nodetype = {}
         actor_interfaces = {}
         actor_num = {}
@@ -356,20 +356,20 @@ class HLBService():
             for act in const[1]:
                 if act not in actor_list:
                     actor_list.append(act)
-            if(const[0]=='config'):
-                for i in range(0, len(const[2]), 2):
-                    if(const[2][i]=='os'):
-                        actor_os[act]  = const[2][i+1]
-                    if(const[2][i]=='location'):
-                        actor_location[act] = const[2][i+1]
-                    if(const[2][i]=='nodetype'):
-                        actor_nodetype[act] = const[2][i+1]
-                    if(const[2][i]=='interfaces'):
-                        actor_interfaces[act] = const[2][i+1]
-                    if(const[2][i]=='num'):
-                        actor_num[act] = const[2][i+1]
-            else:
-                continue
+                if(const[0]=='config'):
+                    for i in range(0, len(const[2]), 2):
+                        if(const[2][i]=='os'):
+                            actor_os[act]  = const[2][i+1]
+                        if(const[2][i]=='ip'):
+                            actor_ip[act] = const[2][i+1]
+                        if(const[2][i]=='nodetype'):
+                            actor_nodetype[act] = const[2][i+1]
+                        if(const[2][i]=='interfaces'):
+                            actor_interfaces[act] = const[2][i+1]
+                        if(const[2][i]=='num'):
+                            actor_num[act] = const[2][i+1]
+                else:
+                    continue
 
         for s in parsed_scenario:
             if s[1][0] not in actor_list:
@@ -378,8 +378,8 @@ class HLBService():
         for act in actor_list:
             if(act not in actor_os):
                 actor_os[act] = 'default'
-            if(act not in actor_location):
-                actor_location[act] = 'default'
+            if(act not in actor_ip):
+                actor_ip[act] = 'default'
             if(act not in actor_nodetype):
                 actor_nodetype[act] = 'default'
             if(act not in actor_interfaces):
@@ -388,7 +388,7 @@ class HLBService():
                 actor_num[act] = 1
 
         for i in actor_list:
-            actors[i] = dict({ 'num': str(actor_num[i]), 'os': actor_os[i], 'nodeType': actor_nodetype[i], 'location': actor_location[i], 'interfaces': actor_interfaces[i] })
+            actors[i] = dict({ 'num': str(actor_num[i]), 'os': actor_os[i], 'nodetype': actor_nodetype[i], 'ip': actor_ip[i], 'interfaces': actor_interfaces[i] })
 
         for i, const in enumerate(parsed_constraints):
             if const[0] is not None:
@@ -548,8 +548,8 @@ class HLBService():
 
         node_parameters = {
             "operatingSystem": "os",
-            "hardwareType": "nodeType",
-            "ipAddress": "location",
+            "hardwareType": "nodetype",
+            "ipAddress": "ip",
             "num": "num"
         }
 

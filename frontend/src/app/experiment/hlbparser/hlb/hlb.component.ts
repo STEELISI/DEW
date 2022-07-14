@@ -71,7 +71,7 @@ export class HlbComponent implements OnInit, AfterViewInit {
     name: string,
     nameEditable: boolean,
     nameEditableError: string,
-    nodeType: string,
+    nodetype: string,
     actions: Array<{ id: any, action: string, topologyLabel: number }>
   };
   graph_data: any;
@@ -999,9 +999,9 @@ export class HlbComponent implements OnInit, AfterViewInit {
               temp = {}
               temp['bandwidth'] = '';
               temp['delay'] = '';
-              temp['ipAddress'] = actors[data]['location'] == 'default' ? '' : actors[data]['location'];
+              temp['ipAddress'] = actors[data]['ip'] == 'default' ? '' : actors[data]['ip'];
               temp['operatingSystem'] = actors[data]['os'] == 'default' ? '' : actors[data]['os'];
-              temp['hardwareType'] = actors[data]['nodeType'] == 'default' ? '' : actors[data]['nodeType'];
+              temp['hardwareType'] = actors[data]['nodetype'] == 'default' ? '' : actors[data]['nodetype'];
               temp['nodeName'] = data;
               temp['num'] = actors[data]['num'];
               temp['type'] = GraphItemType.NODE;
@@ -1658,7 +1658,7 @@ export class HlbComponent implements OnInit, AfterViewInit {
         name: String(selectedNode.label),
         nameEditable: false,
         nameEditableError: null,
-        nodeType: selectedNode.group == 'LAN' ? 'LAN' : 'NODE',
+        nodetype: selectedNode.group == 'LAN' ? 'LAN' : 'NODE',
         actions: Array<{ id: any, action: string, topologyLabel: number }>()
       }
       if (selectedNode.group != 'LAN') {
@@ -1992,7 +1992,7 @@ export class HlbComponent implements OnInit, AfterViewInit {
   removeConstraintSentences(data) {
     var temp = [];
     data.forEach(element => {
-      if (!['os', 'nodetype', 'location'].includes(element.split(' ')[0])) {
+      if (!['os', 'nodetype', 'ip'].includes(element.split(' ')[0])) {
         temp.push(element);
       }
     });
