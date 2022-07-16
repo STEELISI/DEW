@@ -37,10 +37,10 @@
                                     <span style="color:green" *ngIf="(s.status=='0')">
                                         Successful
                                     </span>
-                                    <span style="color:#17a2b8" *ngIf="s.status!='0' && s.error=='' && s.time!=''">
+                                    <span style="color:#17a2b8" *ngIf="s.status=='' && s.time!=''">
                                         In Progress
                                     </span>
-                                    <span style="color:#f0c929" *ngIf="s.status!='0'&& s.error=='' && s.time==''">
+                                    <span style="color:#f0c929" *ngIf="s.status=='' && s.time==''">
                                         Waiting
                                     </span>
                                     <span style="color:red" *ngIf="s.status!='0' && s.error!=''">
