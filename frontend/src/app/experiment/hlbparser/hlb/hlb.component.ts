@@ -1302,6 +1302,8 @@ export class HlbComponent implements OnInit, AfterViewInit {
                     type: "arrow",
                   },
                 }
+                const waitTime = (nodes.find(item => item.id == e2.target))['data']['wait_time'];
+                e2.label = e2.label + (waitTime != "None" ? " (" + waitTime + "s)" : "");
                 links.push(e2)
               }
 
@@ -1329,7 +1331,7 @@ export class HlbComponent implements OnInit, AfterViewInit {
                     this.onDependencyNodeDelete(actor, action);
                     callback(data);
                   },
-                  addEdge: (edgeData, callback) => {
+                  addEdge: async (edgeData, callback) => {
 
                     if (edgeData.from == edgeData.to) {
                       return;
@@ -1355,18 +1357,17 @@ export class HlbComponent implements OnInit, AfterViewInit {
 
                     const actorTo = this.dependencyGraphNodes.get(edgeData.to)["data"].actors[0];
                     const actionTo = this.dependencyGraphNodes.get(edgeData.to)["data"].action;
-                    this.onDependencyUpdateEdge("INSERT", actorFrom, actionFrom, actorTo, actionTo).then((result: any) => {
-                      const eventName = result.eventName;
-                      const cyclePath = result.cyclePath;
-                      //Only add edge if event name received (if event name is null, the new edge creates a cycle)
-                      if (!cyclePath) {
-                        edgeData.label = eventName;
-                        callback(edgeData);
-                      } else {
-                        alert("Cannot add this dependency, as it will create cyclic dependency");
-                      }
-
-                    })
+                    const result:any = await this.onDependencyUpdateEdge("INSERT", actorFrom, actionFrom, actorTo, actionTo);
+                    const eventName = result.eventName;
+                    const cyclePath = result.cyclePath;
+                    //Only add edge if event name received (if event name is null, the new edge creates a cycle)
+                    if (!cyclePath) {
+                      const waitTime = this.dependencyGraphNodes.get(edgeData.to)['data']['wait_time'];
+                      edgeData.label = eventName + (waitTime != "None" ? " (" + waitTime + "s)" : "");
+                      callback(edgeData);
+                    } else {
+                      alert("Cannot add this dependency, as it will create cyclic dependency");
+                    }
                     this.clearMessage();
                   },
                   deleteEdge: (data, callback) => {
