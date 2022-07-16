@@ -32,9 +32,10 @@ class ConstraintVersionOneParser():
     lan_any_keyword  = lan_keyword + wsp + any_keyword
     interfaces_keyword = CaselessKeyword("interfaces")
     location_keyword = CaselessKeyword("location")
+    ip_keyword = CaselessKeyword("ip")
     nodetype_keyword = CaselessKeyword("nodetype")
-    not_akeyword = (NotAny(all_keyword) + NotAny(any_keyword) + NotAny(num_keyword) + NotAny(os_keyword) + NotAny(link_keyword) + NotAny(lan_keyword) + NotAny(interfaces_keyword) + NotAny(location_keyword) + NotAny(nodetype_keyword))
-    
+    not_akeyword = (NotAny(all_keyword) + NotAny(any_keyword) + NotAny(num_keyword) + NotAny(os_keyword) + NotAny(link_keyword) + NotAny(lan_keyword) + NotAny(interfaces_keyword) + NotAny(location_keyword) + NotAny(ip_keyword) + NotAny(nodetype_keyword))
+    ipValue = (not_akeyword + Word(nums+'.'))
     actor = (not_akeyword + Word(alphanums+'_'))
     actors = actor + ZeroOrMore(wsp + actor)
     actor_pair = actor + wsp + actor
@@ -42,14 +43,15 @@ class ConstraintVersionOneParser():
     numValue = (not_akeyword + Word(nums))
     
     single_entity_num_constraint = num_keyword
-    single_entity_constraint = os_keyword | interfaces_keyword | location_keyword | nodetype_keyword
+    single_entity_constraint = os_keyword | interfaces_keyword | location_keyword | nodetype_keyword | ip_keyword
     
     single_entity_num_stmt = (single_entity_num_constraint("constraint") + wsp + actor("target") + wsp + numValue("value"))
     single_entity_str_stmt = (single_entity_constraint("constraint") + wsp + actor("target") + wsp + strValue("value"))
+    single_entity_ip_stmt = (single_entity_constraint("constraint") + wsp + actor("target") + wsp + ipValue("value"))
     link_stmt = (link_keyword("constraint") + wsp + actor_pair("target")) | (link_all_keyword("constraint") + wsp + actor_pair("target")) | (link_any_keyword("constraint") + wsp + actor_pair("target"))
     lan_stmt = (lan_keyword("constraint") + wsp + actors("target")) | (lan_all_keyword("constraint") + wsp + actors("target")) | (lan_any_keyword("constraint") + wsp + actors("target"))
     
-    constraint_statement = (single_entity_num_stmt | single_entity_str_stmt | link_stmt | lan_stmt) + LineEnd()
+    constraint_statement = (single_entity_num_stmt | single_entity_str_stmt | link_stmt | lan_stmt | single_entity_ip_stmt) + LineEnd()
     
     def parse_stmt(self, statement):
         """Parses an HLB statement and returns a tuple: (triggers, actors, action, e_events)
@@ -79,6 +81,7 @@ class ConstraintParser():
     delay_keyword = CaselessKeyword("delay")
     interfaces_keyword = CaselessKeyword("interfaces")
     location_keyword = CaselessKeyword("location")
+    ip_keyword = CaselessKeyword("ip")
     nodetype_keyword = CaselessKeyword("nodetype")
     os_keyword   = CaselessKeyword("os")
     link_all_keyword = link_keyword + wsp + all_keyword
@@ -86,21 +89,23 @@ class ConstraintParser():
     lan_keyword  = CaselessKeyword("lan")
     lan_all_keyword  = lan_keyword + wsp + all_keyword
     lan_any_keyword  = lan_keyword + wsp + any_keyword
-    not_akeyword = (NotAny(all_keyword) + NotAny(any_keyword) + NotAny(num_keyword) + NotAny(link_keyword) + NotAny(lan_keyword) + NotAny(bw_keyword) + NotAny(delay_keyword) + NotAny(os_keyword) + NotAny(nodetype_keyword) + NotAny(location_keyword) + NotAny(interfaces_keyword))
+    not_akeyword = (NotAny(all_keyword) + NotAny(any_keyword) + NotAny(num_keyword) + NotAny(link_keyword) + NotAny(lan_keyword) + NotAny(bw_keyword) + NotAny(delay_keyword) + NotAny(os_keyword) + NotAny(nodetype_keyword) + NotAny(location_keyword) + NotAny(interfaces_keyword)) + NotAny(ip_keyword)
     
     actor = (not_akeyword + Word(alphanums+'_'))
     actors = actor + ZeroOrMore(wsp + actor)
-    actor_pair = actor + wsp + actor
+    actor_pair = actor + wsp + actor 
+    osValue = (not_akeyword + Word(alphanums+'-'+'_'))
     strValue = (not_akeyword + Word(alphanums+'_'))
     numValue = (not_akeyword + Word(nums))
     ipValue = (not_akeyword + Word(nums+'.'))
+    numWithDecimal = (not_akeyword + Word(nums+'.'))
 
-    entity_param_value_stmt = (os_keyword+ wsp + strValue("value")) | (nodetype_keyword + wsp + strValue("value")) | (location_keyword + wsp + ipValue("value")) | (interfaces_keyword + wsp + strValue("value")) | (num_keyword + wsp + numValue("value"))
+    entity_param_value_stmt = (os_keyword+ wsp + osValue("value")) | (nodetype_keyword + wsp + strValue("value")) | (location_keyword + wsp + strValue("value")) |  (ip_keyword + wsp + ipValue("value")) | (interfaces_keyword + wsp + strValue("value")) | (num_keyword + wsp + numValue("value"))
     multiple_entity_param_value_stmt = (entity_param_value_stmt + ZeroOrMore(ZeroOrMore(wsp) + comma + ZeroOrMore(wsp) + entity_param_value_stmt))
     entity_param_stmt = open_bracket + ZeroOrMore(wsp) + multiple_entity_param_value_stmt + ZeroOrMore(wsp) + close_bracket
     entity_stmt = actors("target") + wsp + entity_param_stmt("value")
 
-    link_lan_param_value_stmt = (bw_keyword + wsp + numValue("value")) | (delay_keyword + wsp + numValue("value"))
+    link_lan_param_value_stmt = (bw_keyword + wsp + numWithDecimal("value")) | (delay_keyword + wsp + numValue("value"))
     multiple_link_lan_param_value_stmt = (link_lan_param_value_stmt + ZeroOrMore(ZeroOrMore(wsp) + comma + ZeroOrMore(wsp) + link_lan_param_value_stmt))
     param_stmt = open_bracket + ZeroOrMore(wsp) + multiple_link_lan_param_value_stmt + ZeroOrMore(wsp) + close_bracket
     link_stmt = (link_keyword("constraint") + wsp + actor_pair("target")) | (link_all_keyword("constraint") + wsp + actors("target")) | (link_any_keyword("constraint") + wsp + actors("target"))

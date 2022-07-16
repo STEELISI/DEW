@@ -1,10 +1,9 @@
-# eth=$(ssh b.cmimic.trafgen "echo \`inet eth exp\`"); echo $eth
-
 from os import link
 import os.path
 import sys
 from functools import reduce
 import re
+import ipaddress
 
 cwd = os.path.dirname(os.path.realpath(__file__))
 parentDir = os.path.abspath(os.path.join(cwd, os.pardir))
@@ -38,7 +37,13 @@ class NSGenerator(Generator):
                     if act not in self.num.keys():
                         self.num[act] = 1
                 continue
-            
+
+
+    def samesubnet(self, a,b):
+        an = int(ipaddress.ip_address(a)) & ((2**24 - 1) << 8)
+        bn = int(ipaddress.ip_address(b)) & ((2**24 - 1) << 8)
+        return (an == bn)
+
     def generateNS(self):
         
         # Collect all actors
@@ -62,10 +67,19 @@ class NSGenerator(Generator):
 
         # Collect IP Address Constraints
         for c in self.constraints_parsed:
-            if (c[0] == 'config') and ('location' in c[2]):
-                config_ip = c[2][c[2].index('location') + 1]
+            if (c[0] == 'config') and ('ip' in c[2]):
+                config_ip = c[2][c[2].index('ip') + 1]
                 for act in c[1]:
-                    ip[act] = config_ip
+                    if act in self.num.keys():
+                        if self.num[act] == 1:
+                            ip[act] = config_ip
+                        else:
+                            for i in range (1, self.num[act]+1):
+                                ip[act+'('+str(i)+')'] = config_ip
+                                config_ip = str(ipaddress.ip_address(int(ipaddress.ip_address(config_ip))+1))
+                    else:
+                        ip[act] = config_ip
+
 
         # Collect Hardware Type Constraints
         for c in self.constraints_parsed:
@@ -152,7 +166,7 @@ class NSGenerator(Generator):
                         current_delay = '0ms'
                         if(set([a,b]) in [set(x.split(' ')) for x in bw.keys()]):
                             current_bw = bw[a + ' ' + b] if ((a + ' ' + b) in bw) else bw[b + ' ' + a]
-                            current_bw = str(current_bw) + 'Mb' 
+                            current_bw = str(float(current_bw)*1000) + 'Mb' 
                         if(set([a,b]) in [set(x.split(' ')) for x in delay.keys()]):
                             current_delay = delay[a + ' ' + b] if ((a + ' ' + b) in delay) else delay[b + ' ' + a] 
                             current_delay = str(current_delay) + 'ms' 
@@ -183,7 +197,7 @@ class NSGenerator(Generator):
                     current_delay = '0ms'
                     if(set(a,b) == set(x.split(' ')) for x in bw.keys()):
                         current_bw = bw[a + ' ' + b] if ((a + ' ' + b) in bw) else bw[b + ' ' + a]
-                        current_bw = str(current_bw) + 'Mb'  
+                        current_bw = str(float(current_bw)*1000) + 'Mb'  
                     if(set(a,b) == set(x.split(' ')) for x in delay.keys()):
                         current_delay = delay[a + ' ' + b] if ((a + ' ' + b) in delay) else delay[b + ' ' + a]
                         current_delay = str(current_delay) + 'ms' 
@@ -204,24 +218,54 @@ class NSGenerator(Generator):
                         self.run[label] += line
                         link_lines.append(line)
                         cnt += 1
-                        
+
         # Generate lans
         for l in lans.keys():
+            lannodes = []
+            lanindexes = []
             line = "set lan"+str(l)+" [$ns make-lan \""
-            bw_index = None
-            if len(bw.keys()) > 0:
-                reduce(lambda x,y: x if x != None else y, [x if (set(x.split(' ')) == set([y.split('-')[0] for y in lans[l]])) else None for x in bw.keys()])
-            delay_index = None
-            if len(delay.keys()) > 0:
-                reduce(lambda x,y: x if x != None else y, [x if (set(x.split(' ')) == set([y.split('-')[0] for y in lans[l]])) else None for x in delay.keys()])
-            current_bw = '100Mb' if bw_index == None else str(bw[bw_index]) + 'Mb'
-            current_delay = '0ms' if delay_index == None else str(delay[delay_index]) + 'ms'
-            for n in lans[l]:
-                single = re.findall('-[0-9]+$', n)
-                if single == []:
-                    line += f'${n} '
+            for le in lans[l]:
+                litems = le.split('-')
+                lannodes.append(litems[0])
+                if len(litems) == 2:
+                    lanindexes.append(litems[1])
                 else:
-                    line += f'${"-".join(n.split("-")[:-1])}({single[0][1:]}) '
+                    lanindexes.append('')
+            nline = ''
+            li = 0
+            for ln in lannodes:
+                if (len(nline) > 0):
+                    nline += ' '
+                nline += '$'+ln
+                if lanindexes[li] != '':
+                    nline += "("+str(lanindexes[li])+")"
+                li += 1
+            line += nline 
+            current_bw = '100Mb'
+            current_delay = '0ms'
+            for b in bw.keys():
+                found = True
+                for nbw in b.split(' '):
+                    foundone = False
+                    for nlan in lannodes:
+                        if nbw == nlan:
+                            foundone = True
+                    if not foundone:
+                        found = False
+                if found:
+                    current_bw = str(float(bw[b])*1000) + 'Mb'
+            for d in delay.keys():
+                found = True
+                for nd in d.split(' '):
+                    foundone = False
+                    for ndel in lannodes:
+                        if nd == ndel:
+                            foundone = True
+                    if not foundone:
+                        found = False
+                if found:
+                    current_delay = str(delay[d]) + 'ms'
+
             line += "\" " + str(current_bw) + " " + str(current_delay) + "]\n"
             self.run[label] += line
             lan_lines.append(line)
@@ -233,32 +277,37 @@ class NSGenerator(Generator):
         for line in link_lines:
             nodes = re.findall('(?<=duplex-link\s)(([\$\(\)a-zA-Z0-9-]+\s)+)(?=[0-9.]+Mb)', line)
             nodes = (nodes[0][0][:-1]).split(' ')
-            regex_links = re.findall('link[0-9]+', line)
+            regex_links = re.findall('link[0-9]+', line) 
+            current_ip = ''
             for node in nodes:
-                if (re.findall('^\$.+\([0-9]+\)$', node) == []):
-                    node_name = node[1:]
-                else:
-                    node_name = '('.join((node.split('('))[:-1])[1:]
-                if node_name in ip:
-                    line = f'tb-set-ip-link {node} ${regex_links[0]} {ip[node_name]}\n'
-                    self.run[label] += line
-                    
+                if node[1:] in ip:
+                    print("Checking node ", node, " current ip ", current_ip)
+                    if current_ip == '' or self.samesubnet(current_ip, ip[node[1:]]):
+                        line = f'tb-set-ip-link {node} ${regex_links[0]} {ip[node[1:]]}\n'
+                        self.run[label] += line
+                        current_ip = ip[node[1:]]
+                        ip[node[1:]] = str(ipaddress.ip_address(int(ipaddress.ip_address(ip[node[1:]]))+1))                        
+                    else:
+                        # Cannot assign this IP address
+                        pass
+                        
 
         self.run[label] += '\n\n'
 
         for line in lan_lines:
-            nodes = re.findall('(?<=make-lan\s")(([\$\(\)a-zA-Z0-9-]+\s)+)(?=")', line)
-            nodes = (nodes[0][0][:-1]).split(' ')
+            nodestring = re.findall('(make-lan\s)(\")((\$[a-zA-Z0-9\(\)\s]+)+)(\")', line) #(([\$\(\)a-zA-Z0-9-]+\s)+)(?=")', line)
+            nodes = nodestring[0][2].split(' ')
             regex_lan = re.findall('lan[0-9]+', line)
+            current_ip = ''
             for node in nodes:
-                if (re.findall('^\$.+\([0-9]+\)$', node) == []):
-                    node_name = node[1:]
-                else:
-                    node_name = '('.join((node.split('('))[:-1])[1:]
-                if node_name in ip:
-                    line = f'tb-set-ip-lan {node} ${regex_lan[0]} {ip[node_name]}\n'
-                    self.run[label] += line
-            
+                if node[1:] in ip:
+                    if current_ip == '' or self.samesubnet(current_ip, ip[node[1:]]):
+                        line = f'tb-set-ip-lan {node} ${regex_lan[0]} {ip[node[1:]]}\n'
+                        self.run[label] += line
+                        current_ip = ip[node[1:]]
+                    else:
+                        # Cannot assign this IP address
+                        pass
 
 
             

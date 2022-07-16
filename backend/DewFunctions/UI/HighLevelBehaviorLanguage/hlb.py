@@ -267,7 +267,7 @@ def getSuggestionsForEvent(evtype):
     elif evtype == "in_config_link":
         suggestions = suggestions + ["bw", "delay"]
     elif evtype == "in_config_actor":
-        suggestions = suggestions + ["num", "os","location","nodeType"]
+        suggestions = suggestions + ["num", "os","location","nodetype", "ip"]
     elif evtype == "constraints_end":
         suggestions += ["]", ","]
     elif evtype == "end_sentence":

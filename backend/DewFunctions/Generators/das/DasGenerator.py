@@ -165,7 +165,6 @@ class DasGenerator(Generator):
 
     def generateCmd(self, actor1, i, actor2 , j, sid, action, label, precmd, wait):
         precmd = " "+precmd;
-        print("Generate command ", action, " precmd ", precmd)
         naction = self.bindings_parsed[action]
         if (j is not None):
             naction = re.sub(r'(\s|^|\()'+actor2+'(\s|$|:|\))', r'\1'+actor2+"-"+str(j)+r'\2', naction)

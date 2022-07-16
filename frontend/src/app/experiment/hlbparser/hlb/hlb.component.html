@@ -259,7 +259,7 @@
         <div class="d-flex justify-content-between align-items-center flex-wrap">
           <div [hidden]="!(!topologyGraphSelectedNodeData || !topologyGraphSelectedNodeData.nameEditable)">
             <span id="dialog-box-title" class="p-2"></span>
-            <i class="fas fa-edit topology-actor-name-action edit" *ngIf="topologyGraphSelectedNodeData && topologyGraphSelectedNodeData.nodeType == 'NODE'" (click)="topologyGraphSelectedNodeData.nameEditable = true"></i>
+            <i class="fas fa-edit topology-actor-name-action edit" *ngIf="topologyGraphSelectedNodeData && topologyGraphSelectedNodeData.nodetype == 'NODE'" (click)="topologyGraphSelectedNodeData.nameEditable = true"></i>
           </div>
           <div *ngIf="topologyGraphSelectedNodeData && topologyGraphSelectedNodeData.nameEditable">
             <input [(ngModel)]="topologyGraphSelectedNodeData.name" (keyup)="onTopologyNodeChange()" (change)="onTopologyNodeSave()"/> 
@@ -276,7 +276,7 @@
 
           <mat-form-field class="flex-grow-1" appearance="outline">
             <mat-label>IP Address</mat-label>
-            <input type="text" id="node-ip-address" aria-label="string" (change)="onTopologyParametersChange($event)" matInput>
+            <input type="text" id="node-ip-address" aria-label="string" onkeypress="return ((event.charCode !=8 && event.charCode ==0) || (event.charCode >= 48 && event.charCode <= 57) || event.charCode == 46)" (change)="onTopologyParametersChange($event)" matInput>
           </mat-form-field>
           <mat-form-field class="flex-grow-1" appearance="outline">
             <mat-label>Operating System</mat-label>
@@ -314,7 +314,7 @@
           <mat-form-field class="flex-grow-1" appearance="outline">
             <mat-label>BandWidth</mat-label>
             <div class="d-flex flex-row">
-              <input type="text" value="1" class="flex-grow-1 align-self-center" id="link-bandwidth" onkeypress="return (event.charCode !=8 && event.charCode ==0 || (event.charCode >= 48 && event.charCode <= 57))" aria-label="string" (change)="onTopologyParametersChange($event)" matInput>
+              <input type="text" value="1" class="flex-grow-1 align-self-center" id="link-bandwidth" onkeypress="return ((event.charCode !=8 && event.charCode ==0) || (event.charCode >= 48 && event.charCode <= 57) || event.charCode == 46)" aria-label="string" (change)="onTopologyParametersChange($event)" matInput>
               <div class="field-units align-self-center">
                 <span>Gbps</span>
               </div>
