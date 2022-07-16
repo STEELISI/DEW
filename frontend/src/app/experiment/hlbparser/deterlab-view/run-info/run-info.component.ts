@@ -22,7 +22,6 @@ export class RunInfoComponent implements OnInit, OnChanges {
     executionScript = []
     runScript = ""
     loader = false
-    panelOpenState = false
     refreshIntervalId = null
     constructor(private http:HttpService
         , private _snackBar: MatSnackBar

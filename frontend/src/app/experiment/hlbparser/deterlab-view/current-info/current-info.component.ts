@@ -24,7 +24,6 @@ export class CurrentInfoComponent implements OnInit, OnChanges {
     executionScript = []
     filteredExecutionScript = []
     loader = false
-    panelOpenState = false
     refreshIntervalId = null
 
     private dependencyNetworkInstance: any;
@@ -320,6 +319,14 @@ export class CurrentInfoComponent implements OnInit, OnChanges {
             });
 
     }
+    
+    getLocalTime(time: string) {
+        var d = new Date(0);
+        d.setUTCSeconds(parseInt(time));
+        return d.toLocaleTimeString('en-US', {
+            hour12: false,
+        });
+    }
 
     updateGraphStats() {
         const actionStats = {}
@@ -332,7 +339,7 @@ export class CurrentInfoComponent implements OnInit, OnChanges {
             } else {
                 if (script.error) {
                     actionStats[script.action].error += 1;
-                } else {
+                } else if(script.time){
                     actionStats[script.action].inProgress += 1
                 }
             }

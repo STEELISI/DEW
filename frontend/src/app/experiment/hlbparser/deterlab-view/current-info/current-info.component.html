@@ -17,35 +17,47 @@
         </div>
         <div style="margin-left: 10px; width: 40%" *ngIf="filteredExecutionScript && filteredExecutionScript.length">
             <mat-accordion>
-                <mat-expansion-panel (opened)="panelOpenState = true"
-                                     (closed)="panelOpenState = false"
-                                     *ngFor="let s of filteredExecutionScript;let i=index">
-                  <mat-expansion-panel-header>
-                    <mat-panel-title>
-                      {{s.node}} : <span style="color:blue">{{s.action}}</span>
-                    </mat-panel-title>
-                    <mat-panel-description>
-                        <span style="margin-right: 5px;">
-                            Status:
-                        </span>  
-                        <span style="color:green" *ngIf="(s.status=='0')">
-                            Successful
+                <mat-expansion-panel *ngFor="let s of filteredExecutionScript;let i=index">
+                    <mat-expansion-panel-header [collapsedHeight]="'fit-content'" [expandedHeight]="'fit-content'"
+                        style="padding: 10px">
+                        <mat-panel-title style="width: 35%;">
+                            <p style="word-break: break-all;">{{s.node}} : <span
+                                    style="color:blue;">{{s.action}}</span>
+                            </p>
+                        </mat-panel-title>
+                        <mat-panel-description style="width: 65%;">
+                            <div class="row" style="width: 100%;">
+                                <div class="col-7">
+                                    {{s.cmd}}
+                                </div>
+                                <div class="col-5">
+                                    <span style="margin-right: 5px;">
+                                        Status:
+                                    </span>
+                                    <span style="color:green" *ngIf="(s.status=='0')">
+                                        Successful
+                                    </span>
+                                    <span style="color:#17a2b8" *ngIf="s.status!='0' && s.error=='' && s.time!=''">
+                                        In Progress
+                                    </span>
+                                    <span style="color:#f0c929" *ngIf="s.status!='0'&& s.error=='' && s.time==''">
+                                        Waiting
+                                    </span>
+                                    <span style="color:red" *ngIf="s.status!='0' && s.error!=''">
+                                        Unsuccessful
+                                    </span>
+                                    <span style="color:gray;" *ngIf="s.time!=''">{{getLocalTime(s.time)}}</span>
+                                </div>
+                            </div>
+                        </mat-panel-description>
+                    </mat-expansion-panel-header>
+                    <div class="col-md-12">
+                        <span style="color:red" *ngIf="(s.error!='')" [innerHTML]="'Error: *'+ s.error.replace('\n', '<br>') +'*'">
                         </span>
-                        <span style="color:#17a2b8" *ngIf="s.status!='0' && s.error==''">
-                            In Progress
-                        </span>
-                        <span style="color:red" *ngIf="s.status!='0' && s.error!=''">
-                            Unsuccessful
-                        </span>
-                    </mat-panel-description>
-                  </mat-expansion-panel-header>
-                  <div class="col-md-12" >
-                    <span style="color:red" *ngIf="(s.error!='')" [innerHTML]="'Error: *'+ s.error.replace('\n', '<br>') +'*'">
-                    </span>
-                    <div class="col-md-12" style="background-color: black;color: white;">
-                    <p [innerHTML]="s.output.replace('\n', '<br>')"></p>
+                        <div class="col-md-12" *ngIf="(s.output!='')" style="background-color: black;color: white;">
+                            <p [innerHTML]="s.output.replace('\n', '<br>')"></p>
+                        </div>
                     </div>
-                </div>
                 </mat-expansion-panel>
             </mat-accordion>
         </div>
