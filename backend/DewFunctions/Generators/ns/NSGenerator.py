@@ -281,12 +281,11 @@ class NSGenerator(Generator):
             current_ip = ''
             for node in nodes:
                 if node[1:] in ip:
-                    print("Checking node ", node, " current ip ", current_ip)
                     if current_ip == '' or self.samesubnet(current_ip, ip[node[1:]]):
                         line = f'tb-set-ip-link {node} ${regex_links[0]} {ip[node[1:]]}\n'
                         self.run[label] += line
                         current_ip = ip[node[1:]]
-                        ip[node[1:]] = str(ipaddress.ip_address(int(ipaddress.ip_address(ip[node[1:]]))+1))                        
+                        ip[node[1:]] = str(ipaddress.ip_address(int(ipaddress.ip_address(ip[node[1:]]))+256))                        
                     else:
                         # Cannot assign this IP address
                         pass

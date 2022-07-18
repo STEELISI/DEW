@@ -39,11 +39,18 @@ class MergeTBGenerator(Generator):
                 continue
 
 
+    def findsubnet(self, a,b):
+        for n in range(1,31):
+            an = int(ipaddress.ip_address(a)) & ((2**24 - 1) << n)
+            bn = int(ipaddress.ip_address(b)) & ((2**24 - 1) << n)
+            if (an == bn):
+                return 32-n
+
     def samesubnet(self, a,b):
         an = int(ipaddress.ip_address(a)) & ((2**24 - 1) << 8)
         bn = int(ipaddress.ip_address(b)) & ((2**24 - 1) << 8)
         return (an == bn)
-
+    
     def generateMergeTB(self):
         
         # Collect all actors
@@ -93,6 +100,7 @@ class MergeTBGenerator(Generator):
         cl = 0
         lans = dict()
         links = dict()
+        longlinks = dict()
         bw = dict()
         delay = dict()
         for c in self.constraints_parsed:
@@ -104,6 +112,7 @@ class MergeTBGenerator(Generator):
                 if a not in links.keys() and b not in links.keys():
                     links[a] = dict()
                     links[a][b] = 1
+                    print("Link between ", a, " and ", b)
                 elif a in links.keys():
                     links[a][b] = 1
                 else:
@@ -192,10 +201,13 @@ class MergeTBGenerator(Generator):
                                 pointer_a = ""
                                 pointer_b = ""
                                 if self.num[a]!=1:
-                                    pointer_a = f"({str(i)})"
+                                    pointer_a = f"-{str(i)}"
                                 if self.num[b]!=1:
-                                    pointer_b = f"({str(j)})"
+                                    pointer_b = f"-{str(j)}"
                                 line = f"link{str(cnt)} = net.connect([nodes[{nodeName_in_list.index(f'{a}{pointer_a}')}], nodes[{nodeName_in_list.index(f'{b}{pointer_b}')}]], capacity==mbps({current_bw}), latency==ms({current_delay}))\n"
+                                longlinks[cnt] = []
+                                longlinks[cnt].append(f'{a}{pointer_a}')
+                                longlinks[cnt].append(f'{b}{pointer_b}')
                                 self.run[label] += line
                                 link_lines.append(line)
                                 cnt += 1
@@ -203,10 +215,13 @@ class MergeTBGenerator(Generator):
                             pointer_a = ""
                             pointer_b = ""
                             if self.num[a]!=1:
-                                pointer_a = f"({str(i)})"
+                                pointer_a = f"-{str(i)}"
                             line = f"link{str(cnt)} = net.connect([nodes[{nodeName_in_list.index(f'{a}{pointer_a}')}], nodes[{nodeName_in_list.index(f'{b}')}]], capacity==mbps({current_bw}), latency==ms({current_delay}))\n"
                             self.run[label] += line
                             link_lines.append(line)
+                            longlinks[cnt] = []
+                            longlinks[cnt].append(f'{a}{pointer_a}')
+                            longlinks[cnt].append(f'{b}{pointer_b}')
                             cnt += 1
             else:
                  for b in links[a].keys():
@@ -223,9 +238,12 @@ class MergeTBGenerator(Generator):
                             pointer_a = ""
                             pointer_b = ""
                             if self.num[b]!=1:
-                                pointer_b = f"({str(j)})"
+                                pointer_b = f"-{str(j)}"
                             line = f"link{str(cnt)} = net.connect([nodes[{nodeName_in_list.index(f'{a}')}], nodes[{nodeName_in_list.index(f'{b}{pointer_b}')}]], capacity==gbps({current_bw}), latency==ms({current_delay}))\n"
                             self.run[label] += line
+                            longlinks[cnt] = []
+                            longlinks[cnt].append(f'{a}{pointer_a}')
+                            longlinks[cnt].append(f'{b}{pointer_b}')
                             link_lines.append(line)
                             cnt += 1
                     else:
@@ -233,6 +251,9 @@ class MergeTBGenerator(Generator):
                         pointer_b = ""
                         line = f"link{str(cnt)} = net.connect([nodes[{nodeName_in_list.index(f'{a}{pointer_a}')}], nodes[{nodeName_in_list.index(f'{b}{pointer_b}')}]], capacity==gbps({current_bw}), latency==ms({current_delay}))\n"
                         self.run[label] += line
+                        longlinks[cnt] = []
+                        longlinks[cnt].append(f'{a}{pointer_a}')
+                        longlinks[cnt].append(f'{b}{pointer_b}')
                         link_lines.append(line)
                         cnt += 1
 
@@ -292,30 +313,87 @@ class MergeTBGenerator(Generator):
 
         self.run[label] += '\n\n'
 
-        actor = []
-        for act in ip.keys():
-            actor.append(act)
+#        actor = []
+#        for act in ip.keys():
+#            actor.append(act)
 
-        print("IPs ",ip, " actor ", actor)
-        for item in actor:
-            line = ""
-            link_item = []
-            lan_item = []
-            for link_line in link_lines:
-                if f"nodes[{nodeName_in_list.index(f'{item}')}]" in link_line:
-                    link_item.append(re.findall('(link[0-9]+) = ', link_line)[0])
-            for l_item in link_item:
-                node_idx = nodeName_in_list.index(f'{item}')
-                line += f"{l_item}[{f'nodes[{node_idx}]'}].socket.addrs = ip4('{ip[act]}')\n" 
-            for lan_line in lan_lines:
-                print("Looking for ", item, " in ", lan_line)
-                if f"nodes[{nodeName_in_list.index(f'{item}')}]" in lan_line:
-                    lan_item.append(re.findall('(lan[0-9]+) = ', lan_line)[0])
-                    print("Found ", lan_item)
-            for l_item in lan_item:
-                node_idx = nodeName_in_list.index(f'{item}')
-                line += f"{l_item}[{f'nodes[{node_idx}]'}].socket.addrs = ip4('{ip[act]}')\n"
+
+        for lan in lans:
+            a = b = None
+            mask = 31
+            found = False
+            for n in lans[lan]:
+                if n in ip.keys():
+                    found = True
+                    if a == None:
+                        a = n
+                    elif b == None:
+                        b = n
+                    else:
+                        m = self.findsubnet(ip[a], ip[b])
+                        if (m < mask):
+                            mask = m
+                        b = None
+            if a != None and b != None:
+                m = self.findsubnet(ip[a], ip[b])
+                if (m < mask):
+                    mask = m
+            # If there is any IP directive go through assignment
+            if found:
+                for n in lans[lan]:
+                    if n in ip.keys():
+                        node_idx = nodeName_in_list.index(f'{n}')
+                        line += "lan" + str(lan) + "[nodes[" + str(node_idx) + "]].socket.addrs = ip4(\'" + ip[n] + '/' + str(mask) +  "\')\n"
+
             self.run[label] += line        
+
+
+        # Force links to have /24 mask
+        for link in longlinks:
+            line = ""
+            a = b = None
+            mask = 31
+            found = False
+            current_ip = ""
+            for n in longlinks[link]:
+                if n in ip.keys():
+                    if current_ip == '' or self.samesubnet(current_ip, ip[n]):
+                        node_idx = nodeName_in_list.index(f'{n}')
+                        line += "link" + str(link) + "[nodes[" + str(node_idx) + "]].socket.addrs = ip4(\'" + ip[n] + "/24\')\n"
+                        current_ip = ip[n]
+                        ip[n] = str(ipaddress.ip_address(int(ipaddress.ip_address(ip[n]))+256))                        
+                    else:
+                        # Cannot assign this IP address
+                        pass
+                    
+            self.run[label] += line
+            
+#        for item in actor:
+#            line = ""
+#            link_item = []
+#            lan_item = []
+#            for link_line in link_lines:
+#                if f"nodes[{nodeName_in_list.index(f'{item}')}]" in link_line:
+#                    link_item.append(re.findall('(link[0-9]+) = ', link_line)[0])
+#            for l_item in link_item:
+#                node_idx = nodeName_in_list.index(f'{item}')
+#                line += f"{l_item}[{f'nodes[{node_idx}]'}].socket.addrs = ip4('{ip[act]}')\n" 
+#            for lan_line in lan_lines:
+#                nodel = "nodes[" + str(nodeName_in_list.index(f'{item}')) + "]"
+#                print("Looking for ", nodel , " in ", lan_line)
+#                if nodel in lan_line:
+#                    lan_item.append(re.findall('(lan[0-9]+) = ', lan_line)[0])
+#                    print("Found ", lan_item)
+#            for l_item in lan_item:
+#                print("Node ", item, " act ", act)
+#                node_idx = nodeName_in_list.index(f'{item}')
+#                line += f"{l_item}[{f'nodes[{node_idx}]'}].socket.addrs = ip4('{ip[item]}')\n"
+#                print("Looking for ", nodel , " in ", lan_line)
+#                if nodel in lan_line:
+#                    lan_item.append(re.findall('(lan[0-9]+) = ', lan_line)[0])
+#                    print("Found ", lan_item)
+
+            
                 
         self.run[label] += '\n\n'
 
