@@ -685,9 +685,9 @@ export class InfoComponent implements OnInit {
   }
 
   exportToDEW(){
-    this.http.put("v1/pr/export/dew", { id: this.experiment['id']}, {withCredential: true}).subscribe(
+    this.http.put("v1/pr/export/dew", { id: this.experiment['id'] }, {withCredential: true}).subscribe(
       (data) => {
-        this.downLoadFile(data['dew_content'], "dew.txt")
+        this.downLoadFile(data['dew_content'], `${this.experiment.name}.dew`)
         this._snackBar.open("Successfully Downloaded.", "close", {
           duration: 2000,
         });
