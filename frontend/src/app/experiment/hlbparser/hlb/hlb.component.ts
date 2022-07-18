@@ -335,6 +335,18 @@ export class HlbComponent implements OnInit, AfterViewInit {
       this.experimentAccess = flag;
     });
 
+    //Detect Uploads
+    this.stateservice.getUpload().subscribe((flag) => {
+      if(flag) {
+        this.stateservice.setUpload(false);
+        setTimeout(()=>{
+          this.detectDEWVersion();
+          this.updateActors();
+          this.updateActorsConstraint();
+        }, 1000);
+      }
+    });
+
   }
 
   ngAfterViewInit(): void {
@@ -406,6 +418,7 @@ export class HlbComponent implements OnInit, AfterViewInit {
     });
 
     this.toggleTopologyView();
+
   }
 
   detectDEWVersion(): void {
@@ -422,6 +435,9 @@ export class HlbComponent implements OnInit, AfterViewInit {
         switch (receivedData['version']) {
           case 1:
             $convertDEWDiv.removeClass('hide');
+            break;
+          default:
+            $convertDEWDiv.addClass('hide');
             break;
         }
       }, (error: any) => {
@@ -870,6 +886,7 @@ export class HlbComponent implements OnInit, AfterViewInit {
     this.updateGraph();
     this.extractScenario(data.parsedScenario);
     this.storeBinding(undefined);
+    this.detectDEWVersion();
   }
 
   getActionBindingDataFromScenario(data) {
@@ -970,7 +987,6 @@ export class HlbComponent implements OnInit, AfterViewInit {
       this.http
         .put('v1/pr/hlb/topology/parse', request, { withCredential: true })
         .subscribe((receivedData: ParseApiBean) => {
-          console.log(receivedData)
           for (var item of Object.keys(receivedData['actors'])) {
             this.extractActors([item]);
           }

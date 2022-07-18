@@ -25,6 +25,7 @@ export class StateService {
   lastSlideSeqNum: BehaviorSubject<number> = new BehaviorSubject(0);
   allAnyPresent = false;
   currentViewId: BehaviorSubject<number>=new BehaviorSubject(1);
+  isUpload: BehaviorSubject<Boolean> = new BehaviorSubject(false);
 
   setAllAnyPresentFlag(val) {
     this.allAnyPresent = val;
@@ -138,6 +139,14 @@ export class StateService {
 
   setExperimentColors(data: any){
     this.experimentColors.next(data);
+  }
+
+  setUpload(val: Boolean) {
+    this.isUpload.next(val);
+  }
+
+  getUpload(): Observable<Boolean> {
+    return this.isUpload.asObservable();
   }
 
   setExperimentDescription(data: String) {
