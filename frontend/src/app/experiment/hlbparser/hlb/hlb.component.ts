@@ -162,6 +162,8 @@ export class HlbComponent implements OnInit, AfterViewInit {
   showAlertMsg = false;
   alertMessage: string;
   showSpecialFuncDialog = false;
+  nodeQty: Number = 0;
+
   constructor(
     private http: HttpService,
     public dialog: MatDialog,
@@ -1080,6 +1082,8 @@ export class HlbComponent implements OnInit, AfterViewInit {
 
           var nodes = this.topologyGraphNodes;
           var edges = this.topologyGraphEdges;
+
+          this.nodeQty = nodes.length;
 
           this.graph_data = { nodes, edges };
 

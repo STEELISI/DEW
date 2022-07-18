@@ -227,11 +227,14 @@
   
   <div id="graph-container">
     <div class="d-flex flex-row justify-content-between toggle-icons">
-      <div style="width: 30%">
+      <div class="d-flex flex-column" style="width: 30%">
         <div (click)="drawer.toggle(); openSideNavBar()" class="side-nav-icon">
           <img src="../../../../assets/icons/svg/arrow-circle-right.svg">
           <img src="../../../../assets/icons/svg/arrow-circle-left.svg" class="hide">
           <span class="text-left font-weight-bold">Textual Representation</span>
+        </div>
+        <div class="node-qty">
+          Number of nodes: {{ nodeQty }}
         </div>
       </div>
 
