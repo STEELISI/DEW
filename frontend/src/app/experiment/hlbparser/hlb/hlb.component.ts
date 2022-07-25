@@ -69,7 +69,6 @@ export class HlbComponent implements OnInit, AfterViewInit {
   topologyGraphSelectedNodeData: {
     id: any,
     name: string,
-    label: string,
     nameEditable: boolean,
     nameEditableError: string,
     nodetype: string,
@@ -1009,7 +1008,7 @@ export class HlbComponent implements OnInit, AfterViewInit {
               id_of_node[data] = id_count;
               temp = {
                 id: id_count++,
-                label: actors[data]['num'] > 1 ? `${data.toString()} (${actors[data]['num']})` : data.toString(),
+                label: data.toString(),
                 group: "group" + this.actorsGroup.get(data)
               }
               temp_nodes.push(temp);
@@ -1202,7 +1201,7 @@ export class HlbComponent implements OnInit, AfterViewInit {
                 let y = nodePosition.y;
 
                 this.dependencyGraphNodes.get({
-                  filter: (item) => item.data.actors[0] == node.label.replace(/\s\(\d+\)$/g, "")
+                  filter: (item) => item.data.actors[0] == node.label
                 }).forEach((dependencyNode, dependencyIndex) => {
                   ctx.strokeStyle = "#294475";
                   ctx.lineWidth = 2;
@@ -1639,7 +1638,7 @@ export class HlbComponent implements OnInit, AfterViewInit {
       $('.dialog-box-action-button').removeClass('hide');
       var nodeGroup = clickedNodes[0]['group'];
       nodeGroup.includes('group') && $('.dialog-box-action-button, .modal-add-button').css('background-color', graphColors[nodeGroup.replace('group', '')]);
-      $('#dialog-box-title').html(clickedNodes[0].label.replace(/\s\(\d+\)$/g, "")) && (currentGraphItemSelection['id'] = clickedNodes[0].id) && (currentGraphItemSelection['type'] = 'node');
+      $('#dialog-box-title').html(clickedNodes[0].label) && (currentGraphItemSelection['id'] = clickedNodes[0].id) && (currentGraphItemSelection['type'] = 'node');
       for (var i in id_of_node) {
         if (id_of_node[i] == currentGraphItemSelection['id'] && clickedNodes[0].group == 'LAN') {
           accessibleLogger.log(LogHeader.KEY_PRESS, "User Clicked on a LAN");
@@ -1673,8 +1672,7 @@ export class HlbComponent implements OnInit, AfterViewInit {
       const selectedNode: any = this.topologyGraphNodes.get(ids[0]);
       const selectedNodeData = {
         id: selectedNode.id,
-        name: String(selectedNode.label.replace(/\s\(\d+\)$/g, "")),
-        label: String(selectedNode.label),
+        name: String(selectedNode.label),
         nameEditable: false,
         nameEditableError: null,
         nodetype: selectedNode.group == 'LAN' ? 'LAN' : 'NODE',
@@ -1682,7 +1680,7 @@ export class HlbComponent implements OnInit, AfterViewInit {
       }
       if (selectedNode.group != 'LAN') {
         selectedNodeData.actions = this.dependencyGraphNodes.get({
-          filter: (item) => item.data.actors[0] == selectedNodeData.name
+          filter: (item) => item.data.actors[0] == selectedNode.label
         }).map(item => {
           return {
             id: item.id,
@@ -1693,7 +1691,7 @@ export class HlbComponent implements OnInit, AfterViewInit {
       }
       this.topologyGraphSelectedNodeData = selectedNodeData;
     } else {
-      setTimeout(()=>this.topologyGraphSelectedNodeData = null, 500);
+      this.topologyGraphSelectedNodeData = null;
     }
     showRelevantContentInDialogBox(); //Content to Display on the Context Menu
     //Hide dialogBox and customMenu
@@ -1706,7 +1704,7 @@ export class HlbComponent implements OnInit, AfterViewInit {
       return;
     }
     const duplicateNodes = this.topologyGraphNodes.get({
-      filter: (node => node.id != this.topologyGraphSelectedNodeData.id && node.label == this.topologyGraphSelectedNodeData.label)
+      filter: (node => node.id != this.topologyGraphSelectedNodeData.id && node.label == this.topologyGraphSelectedNodeData.name)
     });
     if (duplicateNodes.length) {
       this.topologyGraphSelectedNodeData.nameEditableError = "Duplicate node name";
@@ -1718,10 +1716,8 @@ export class HlbComponent implements OnInit, AfterViewInit {
   onTopologyNodeSave = () => {
     if (!this.topologyGraphSelectedNodeData.nameEditableError) {
       const new_name = this.topologyGraphSelectedNodeData.name;
-      const graph_label = this.topologyGraphNodes.get(this.topologyGraphSelectedNodeData.id)['label'];
-      const old_name = graph_label.replace(/\s\(\d+\)$/g, "");
+      const old_name = this.topologyGraphNodes.get(this.topologyGraphSelectedNodeData.id)['label'];
       const node_id = this.topologyGraphSelectedNodeData.id;
-      const old_num = graph_label.split(" ")[graph_label.split(" ").length-1];
       this.actorsList[this.actorsList.findIndex(item => item['text'] == old_name)]['text'] = new_name;
       let index = Object.keys(this.graphItemParametersList).find(key => this.graphItemParametersList[key]['nodeName'] === old_name);
       this.graphItemParametersList[index]['nodeName'] = new_name;
@@ -1740,16 +1736,16 @@ export class HlbComponent implements OnInit, AfterViewInit {
       this.http
         .put('v1/pr/hlb/topology/node-rename', request, { withCredential: true })
         .subscribe((receivedData: ParseApiBean) => {
+
           this.actorsGroup.set(new_name, this.actorsGroup.get(old_name));
           this.actorsGroup.delete(old_name);
 
           this.stateservice.setBehavior(receivedData['scenarios']);
           this.stateservice.setConstraints(receivedData['constraints']);
 
-          const numRegex = new RegExp(/\(\d+\)$/g);
           this.topologyGraphNodes.update({
             id: node_id,
-            label: numRegex.test(old_num) ? `${new_name} ${old_num}` : new_name
+            label: new_name
           });
           $('#dialog-box-title').html(new_name);
           this.topologyGraphSelectedNodeData.nameEditable = false;
@@ -1762,8 +1758,7 @@ export class HlbComponent implements OnInit, AfterViewInit {
 
   onTopologyNodeCancel = () => {
     this.topologyGraphSelectedNodeData.nameEditable = false;
-    this.topologyGraphSelectedNodeData.label = this.topologyGraphNodes.get(this.topologyGraphSelectedNodeData.id)['label'];
-    this.topologyGraphSelectedNodeData.name = this.topologyGraphSelectedNodeData.label.replace(/\s\(\d+\)$/g, "");
+    this.topologyGraphSelectedNodeData.name = this.topologyGraphNodes.get(this.topologyGraphSelectedNodeData.id)['label'];
   }
 
   onAddNodeClick = (type) => {
@@ -1871,7 +1866,7 @@ export class HlbComponent implements OnInit, AfterViewInit {
     this.dependencyCycleNetworkInstance.fit();
   }
 
-  onTopologyChange(nodeName = "", nodeNum = '1') {
+  onTopologyChange() {
     this.logger.log(LogHeader.KEY_PRESS, "The topology changed");
     var request = {
       parameters: [JSON.stringify(globalGraphItemParametersList)],
@@ -1883,10 +1878,6 @@ export class HlbComponent implements OnInit, AfterViewInit {
       .subscribe((receivedData: ParseApiBean) => {
         this.stateservice.setConstraints(receivedData['constraints']);
         this.logger.log(LogHeader.DATA_RECEIVED, "Updated constraints - " + receivedData['constraints']);
-        this.topologyGraphNodes.update({
-          id: id_of_node[nodeName],
-          label: (nodeNum && parseInt(nodeNum) > 1) ? `${nodeName} (${nodeNum})` : nodeName
-        });
       });
   }
 
@@ -1970,7 +1961,7 @@ export class HlbComponent implements OnInit, AfterViewInit {
     this.graphItemParametersList[currentGraphItemSelection['id']] = temp;
     globalGraphItemParametersList = this.graphItemParametersList;
     this.logger.log(LogHeader.GRAPH_UPDATE, entry.printGraphParameterData(globalGraphItemParametersList, id_of_node, id_of_edge));
-    this.onTopologyChange(temp['nodeName'], temp['num']);
+    this.onTopologyChange();
   }
 
   onDependencyNodeDelete(actor, action) {
