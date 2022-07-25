@@ -1200,6 +1200,24 @@ export class HlbComponent implements OnInit, AfterViewInit {
                 let x = nodePosition.x;
                 let y = nodePosition.y;
 
+                //Draw node numbers
+                var nodeNum = globalGraphItemParametersList[id_of_node[node.label]]['num'];
+                if(nodeNum>1) {
+                  ctx.fillStyle = "#E05860";
+                  ctx.strokeStyle = "#E05860";
+                  ctx.beginPath();
+                  ctx.arc(x - 20, y - 25, 10, 0, 2 * Math.PI);
+                  ctx.closePath();
+                  ctx.fill();
+                  ctx.stroke();
+
+                  ctx.font = "10px Arial";
+                  ctx.fillStyle = "#FFFFFF";
+                  ctx.textAlign = "center";
+                  ctx.textBaseline = "middle";
+                  ctx.fillText(nodeNum, x - 20,y - 25);
+                }
+
                 this.dependencyGraphNodes.get({
                   filter: (item) => item.data.actors[0] == node.label
                 }).forEach((dependencyNode, dependencyIndex) => {
