@@ -3,6 +3,7 @@
 import os.path
 import sys
 import configparser
+import unicodedata
 
 # cwd = os.path.dirname(os.path.realpath(__file__))
 # parentDir = os.path.abspath(os.path.join(cwd, os.pardir))
@@ -22,11 +23,12 @@ from hlb_parser import HLBParser, ConstraintParser, BindingParser
 
 class Generator(object):
     # scenario and constraints given as a list.
-    def __init__(self,   constraints, scenario, bindings, inputFileName=None,name='Generic Class'):
+    def __init__(self,   constraints, scenario, bindings, experimentName='', inputFileName=None,name='Generic Class'):
 
         self.constraints = constraints
         self.scenario = scenario
         self.bindings = bindings
+        self.experimentName = experimentName
        
         # For debugging. Subclass should set this to something meaningful. e.g. "bash"
         self.name = name
@@ -41,7 +43,9 @@ class Generator(object):
         self.constraints_parsed = []
         self.bindings_parsed = {}
         self.run = dict()
+        self.tmp = dict()
         self.clear = dict()
+        self.actors = dict()
 
     def parse(self, mode=None):
         # For each item in our scenario/constraints lists, make sure we can parse it and
@@ -52,6 +56,7 @@ class Generator(object):
         # Constraints -> ['constraint type', 'target', 'value' ] (some of these can be None)
         myc = ""
         for c in self.constraints:
+            c = unicodedata.normalize("NFKD", c)
             myc += c + "\n"
             # c = co[0]
             try:
@@ -63,7 +68,7 @@ class Generator(object):
             # Because we use parsing for UI suggestions, we don't throw exceptions
             # when we can't parse a statement, instead the parser returns a tuplet of Nones.
             if all(x == None for x in parsedTuple):
-                print("ERROR:\tUnparsable constraint: %s\n" % c)
+                print("ERROR:\tUnparsable constraint: %s\n" % repr(c))
                 continue
                 #return False
 
@@ -75,6 +80,7 @@ class Generator(object):
         mys = ""
         label = "main"
         for s in self.scenario:
+            s = unicodedata.normalize("NFKD", s)
             mys += s + "\n"
             # s = sc[0]
             try:
@@ -115,4 +121,4 @@ class Generator(object):
 
     def generate(self, mode=None):
         # Parse scenario, constraints and bindings
-        self.parse(mode)
+        self.parse()

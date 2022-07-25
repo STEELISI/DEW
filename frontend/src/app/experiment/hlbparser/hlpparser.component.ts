@@ -26,9 +26,9 @@ export class HLBParserComponent implements OnInit {
         var input = {
           id: params["id"],
         };
-
         
         this.experimentId = params["id"];
+        this.state.setExperimentId(this.experimentId);
         this.state.enableLoader();
         this.http
           .post("api/v1/pr/persist/experiment/control", input,{withCredential:true})
@@ -77,13 +77,13 @@ export class HLBParserComponent implements OnInit {
   this.viewFlag = true;
   }
   show(viewId){
+      this.state.setCurrentViewId(viewId);
       this.viewID = viewId;
   }
   isViewEnable():boolean{return this.viewFlag;}
 
   onKeyDown($event): void {
     // Detect platform
-    console.log("inside keydown")
     if(navigator.platform.match('Mac')){
         this.handleMacKeyEvents($event);
     }
@@ -111,5 +111,9 @@ export class HLBParserComponent implements OnInit {
         $event.preventDefault();
         this.state.triggerSaveEvent();
     } 
+  }
+
+  handleSlideNavigation(viewId: Number){
+    this.show(viewId)
   }
 }

@@ -1,34 +1,35 @@
 
 id=$label
 cnt=0
-
+path=`pwd`
 
 execute_fork()
 {
     local node=$1
     local cmd=$2
     local cnt=$3
+    local aname=$4
     
-    if [ ! -d ~/DEW/$id ] ; then
-	mkdir ~/DEW/$id
+    if [ ! -d $path/DEW/$id ] ; then
+	    mkdir -p $path/DEW/$id
     fi
-    echo "echo \"running $cmd\"" > ~/DEW/$id/script.$cnt.sh
-    echo "$cmd 2>~/DEW/$id/error.$cnt &" > ~/DEW/$id/script.$cnt.sh
-    echo "pid=\"\$!\""  >> ~/DEW/$id/script.$cnt.sh
-    echo "echo \$pid > ~/DEW/$id/pid.$cnt" >> ~/DEW/$id/script.$cnt.sh
-    echo "if wait \$pid; then" >> ~/DEW/$id/script.$cnt.sh
-    echo "    echo 0 > ~/DEW/$id/status.$cnt" >> ~/DEW/$id/script.$cnt.sh	    
-    echo "else" >> ~/DEW/$id/script.$cnt.sh
-    echo "    echo 1 > ~/DEW/$id/status.$cnt" >> ~/DEW/$id/script.$cnt.sh	    
-    echo "fi" >> ~/DEW/$id/script.$cnt.sh
-    /share/shared/dew/submitjob $node $exp $proj "start ~/DEW/$id/script.$cnt.sh $cnt" &
+    echo "date +\"%s\" > $path/DEW/$id/time.$cnt " > $path/DEW/$id/script.$cnt.$aname.$node.sh
+    echo "$cmd 2>$path/DEW/$id/error.$cnt 1>$path/DEW/$id/output.$cnt &" >> $path/DEW/$id/script.$cnt.$aname.$node.sh
+    echo "pid=\"\$!\""  >> $path/DEW/$id/script.$cnt.$aname.$node.sh
+    echo "echo \$pid > $path/DEW/$id/pid.$cnt" >> $path/DEW/$id/script.$cnt.$aname.$node.sh
+    echo "if wait \$pid; then" >> $path/DEW/$id/script.$cnt.$aname.$node.sh
+    echo "    echo 0 > $path/DEW/$id/status.$cnt" >> $path/DEW/$id/script.$cnt.$aname.$node.sh	    
+    echo "else" >> $path/DEW/$id/script.$cnt.$aname.$node.sh
+    echo "    echo 1 > $path/DEW/$id/status.$cnt" >> $path/DEW/$id/script.$cnt.$aname.$node.sh	    
+    echo "fi" >> $path/DEW/$id/script.$cnt.$aname.$node.sh
+    python3 /share/shared/dew/submitjob.py $node "start $path/DEW/$id/script.$cnt.$aname.$node.sh $cnt" &
 }
 
 
 psuccess()
 {
     local cnt=$1
-    while [ ! -f ~/DEW/$id/status.$cnt ] ; do
+    while [ ! -f $path/DEW/$id/status.$cnt ] ; do
 	sleep 0.1
     done
 }
@@ -36,18 +37,21 @@ psuccess()
 pexists()
 {
     local cnt=$1
-    while [ ! -f ~/DEW/$id/pid.$cnt ] ; do
+    while [ ! -f $path/DEW/$id/pid.$cnt ] ; do
 	sleep 0.1
     done
-    if [ ! -f ~/DEW/$id/status.$cnt ] ; then
+    if [ ! -f $path/DEW/$id/status.$cnt ] ; then
        echo "0"
     else
        echo "1"
     fi     
 }
 
-if [ ! -d ~/DEW ] ; then
-   mkdir ~/DEW
+if [ ! -d $path/DEW ] ; then
+   mkdir $path/DEW
+fi
+if [ ! -d $path/DEW/$id ] ; then
+   mkdir $path/DEW/$id
 fi
 
-rm -f ~/DEW/$id/*
+rm -f $path/DEW/$id/*

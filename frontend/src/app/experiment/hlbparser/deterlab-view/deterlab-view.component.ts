@@ -4,6 +4,8 @@ import {Router} from '@angular/router';
 import {HttpParams} from '@angular/common/http';
 import {MatDialog, MatDialogRef, MatSnackBar, MAT_DIALOG_DATA} from '@angular/material';
 import { RunInfoComponent } from './run-info/run-info.component';
+import { CurrentInfoComponent } from './current-info/current-info.component';
+declare let $:any;
 
 @Component({
     selector: 'app-deterlab',
@@ -13,6 +15,7 @@ import { RunInfoComponent } from './run-info/run-info.component';
 
 export class DeterLabViewComponent implements OnInit {
     @ViewChild(RunInfoComponent, { static: false }) runInfoComponent: RunInfoComponent;
+    @ViewChild(CurrentInfoComponent, { static: false }) currentInfoComponent: CurrentInfoComponent;
     userId;
     userNameObj = {username: '', created_date: '', id: null};
     showWarning = false;
@@ -26,6 +29,8 @@ export class DeterLabViewComponent implements OnInit {
     isValidExpName = false;
     experimentId;
     showSwap = false;
+    isInTransition = false;
+    transitionInterval = null;
     experimentStatus = '';
     // experimentName = '';
     alertType = '';
@@ -33,8 +38,9 @@ export class DeterLabViewComponent implements OnInit {
     alertMsg = '';
     statusMessages = [];
     activityMessages = [];
-    activateSwapIn = true;
+    activateSwapIn = false;
     deactivateSwapOut = false;
+    runStatus = null;
     userCreatedDate;
     userNamesList = [];
     showLoader = false;
@@ -46,6 +52,8 @@ export class DeterLabViewComponent implements OnInit {
         , private _snackBar: MatSnackBar,
                 public dialog: MatDialog) {
     }
+    activeTab = 'run_logs';
+    doRefresh = true
 
     ngOnInit() {
         const url = this.route.url.split('/');
@@ -81,6 +89,7 @@ export class DeterLabViewComponent implements OnInit {
         this.getExperimentStatus(params);
         this.getExperimentActivity(params);
         this.runInfoComponent.ngOnInit();
+        this.currentInfoComponent.ngOnInit();
     }
 
     getProjectMapping(params) {
@@ -98,9 +107,14 @@ export class DeterLabViewComponent implements OnInit {
     }
 
     getExperimentStatus(params) {
+        this.showLoader = true;
         this.http.get('v1/pr/deter/project/getstatus', {params, withCredentials: true})
             .subscribe(data2 => {
+                this.showLoader = false;
                 if (data2.error) {
+                    if(this.transitionInterval){
+                        clearInterval(this.transitionInterval);
+                    }
                     this.showSwap = false;
                     this.statusMessages = [data2.error];
                 } else if (data2.content === 'No information available.') {
@@ -108,13 +122,25 @@ export class DeterLabViewComponent implements OnInit {
                     this.statusMessages = [];
                     this.activityMessages = [];
                     this.activateSwapIn = false;
-                    this.deactivateSwapOut = true;
+                    this.deactivateSwapOut = false;
+                    this.isInTransition = true;
+                    if(!this.transitionInterval){
+                        this.transitionInterval = setInterval(() => {
+                            this.getExperimentStatus(params);
+                            this.getExperimentActivity(params);
+                        },15000)
+                    }
                 } else {
+                    if(this.transitionInterval){
+                        clearInterval(this.transitionInterval);
+                    }
+                    this.isInTransition = false;
                     this.statusMessages = data2.content.split('\n');
                     this.experimentStatus = this.statusMessages[1].replace(' ', '').split(':')[1].trim();
                     if (this.experimentStatus === 'active') {
                         this.activateSwapIn = false;
                         this.deactivateSwapOut = false;
+                        this.getRunStatus();
                     } else {
                         this.activateSwapIn = true;
                     }
@@ -166,44 +192,63 @@ export class DeterLabViewComponent implements OnInit {
         });
     }
 
-    createOrLinkToNewExperiment(link:boolean) {
-    if (link){
-        this.http.post('/api/v1/pr/deterlab/experiment/exists',
-            {projectName: this.projName, experimentName: this.expName, account_id: this.userId},
-            {withCredentials: true}).subscribe(data => {
-                if(!data.isExists){
-                    var flag = confirm("Experiment doesn't exist. Do you want to create a new experiment with this name?");
-                    if(!flag)
-                    return
-                }
-                        
-                        
-                        this.http.post('/api/v1/pr/deter/add/project/mapping',
+    createOrLinkToNewExperiment(link: boolean) {
+        if (link) {
+            this.http.post('/api/v1/pr/deterlab/experiment/exists',
+                { projectName: this.projName, experimentName: this.expName, account_id: this.userId },
+                { withCredentials: true }).subscribe(data => {
+                    if (!data.isExists) {
+                        var flag = confirm("Experiment doesn't exist. Do you want to create a new experiment with this name?");
+                        if (!flag)
+                            return
+                    }
+
+                    this.http.post('/api/v1/pr/deter/add/project/mapping',
                         {
                             projectName: this.projName, experimentName: this.expName,
                             experimentId: this.experimentId, account_id: this.userId
                         },
-        {withCredentials: true}).subscribe(data => {
-        console.log(data);
-        if (data === 'Successful') {
-            this.alertMsg = this.showLinkWindow ? 'Successfully linked to experiment' :
-                'Successfully created new experiment';
-            this.alertType = 'alert-success';
-            this.showAlert = true;
-            setTimeout(() => {
-                this.showAlert = false;
-                this.showLinkWindow = false;
-                this.showCreateWindow = false;
-                this.ngOnInit();
-            }, 3000);
+                        { withCredentials: true }).subscribe(data => {
+                            console.log(data);
+                            if (data === 'Successful') {
+                                this.alertMsg = this.showLinkWindow ? 'Successfully linked to experiment' :
+                                    'Successfully created new experiment';
+                                this.alertType = 'alert-success';
+                                this.showAlert = true;
+                                setTimeout(() => {
+                                    this.showAlert = false;
+                                    this.showLinkWindow = false;
+                                    this.showCreateWindow = false;
+                                    this.ngOnInit();
+                                }, 3000);
+                            }
+                        });
+
+
+                });
+        } else {
+            this.http.post('/api/v1/pr/deter/add/project/mapping',
+                {
+                    projectName: this.projName, experimentName: this.expName,
+                    experimentId: this.experimentId, account_id: this.userId
+                },
+                { withCredentials: true }).subscribe(data => {
+                    console.log(data);
+                    if (data === 'Successful') {
+                        this.alertMsg = 'Successfully created new experiment';
+                        this.alertType = 'alert-success';
+                        this.showAlert = true;
+                        setTimeout(() => {
+                            this.showAlert = false;
+                            this.showLinkWindow = false;
+                            this.showCreateWindow = false;
+                            this.ngOnInit();
+                        }, 3000);
+                    }
+                });
         }
-    });
-                    
-                
-        });
-    } 
-   
-    
+
+
     }
 
     swapInOrSwapOutExperiment(type) {
@@ -214,7 +259,7 @@ export class DeterLabViewComponent implements OnInit {
             .subscribe(data => {
                 this.showLoader = false;
                 if (data) {
-                    this.alertMsg = type === 'swapin' ? 'Successfully swapped-in experiment' :
+                    this.alertMsg = type === 'swapin' ? 'Started swap-in experiment' :
                         'Successfully swapped-out experiment';
                     this.alertType = 'alert-success';
                     this.showAlert = true;
@@ -373,12 +418,11 @@ export class DeterLabViewComponent implements OnInit {
         this.getExperimentActivity(params);
     }
 
-    run(data = {}) {
+    run(data = {label: 'main'}) {
         
         const params = {
             eid: this.experimentId,
             account_id: this.userId,
-            
             data: data
         };
 
@@ -388,12 +432,103 @@ export class DeterLabViewComponent implements OnInit {
         }
 
         this.http.post('/api/v1/pr/deter/project/run', params, {withCredentials: true})
+
             .subscribe(data1 => {
                 this.showLoader = false;
+
                 if (data1.success) {
+
                     this._snackBar.open('Successfully started', 'close', {
                         duration: 2000,
                     });
+                    this.runStatus = 'start';
+                } else {
+		
+	          const dialogRef = this.dialog.open(RunVariablePopUp, {
+                     width: '30%',
+                     data: data1.labels,
+                    });
+
+                    dialogRef.afterClosed().subscribe((result) => {
+                        if (result !== undefined) {
+                            this.showLoader = true;
+                            console.log(result)
+                            this.run(result);
+                        }
+                    });
+		}
+            }, error => {
+                this.showLoader = false;
+                this._snackBar.open('Something went wrong please try again later!', 'close', {
+                    duration: 2000,
+                });
+            });
+    }
+
+
+
+
+
+    stop(data = {label: 'main'}) {
+        this.doRefresh = false;
+       const params = {
+            eid: this.experimentId,
+            account_id: this.userId,
+            data: data
+        };
+
+        if(data['label']!=undefined){
+        params['label'] = data['label']
+        delete data['label']
+        }
+
+        this.http.post('/api/v1/pr/deter/project/stop', params, {withCredentials: true})
+            .subscribe(data1 => {
+                this.showLoader = false;
+                if (data1.success) {
+                    this._snackBar.open('Successfully stopped', 'close', {
+                        duration: 2000,
+                    });
+                    this.runStatus = 'stop';
+                    $('#nav-contact-tab').click();
+                    this.updateNavTabStatus('run_logs');
+                } else {
+                    const dialogRef = this.dialog.open(RunVariablePopUp, {
+                        width: '30%',
+                        data: data1.labels,
+                    });
+
+                    dialogRef.afterClosed().subscribe((result) => {
+                        if (result !== undefined) {
+                            this.showLoader = true;
+                            console.log(result)
+                            this.stop(result);
+                        }
+                    });
+                }
+                this.doRefresh = true;
+            }, error => {
+                this.showLoader = false;
+                this._snackBar.open('Something went wrong please try again later!', 'close', {
+                    duration: 2000,
+                });
+                this.doRefresh = true;
+            });
+    }
+
+    getRunStatus() {
+        const params = {
+            eid: this.experimentId,
+            account_id: this.userId,
+        };
+
+        this.http.get('v1/pr/deter/project/getRunStatus', { params, withCredentials: true })
+
+            .subscribe(data1 => {
+                this.showLoader = false;
+
+                if (data1.success) {
+                    this.runStatus = data1.status;
                 } else {
 
                     const dialogRef = this.dialog.open(RunVariablePopUp, {
@@ -419,53 +554,6 @@ export class DeterLabViewComponent implements OnInit {
 
 
 
-    stop(data = {}) {
-
-       const params = {
-            eid: this.experimentId,
-            account_id: this.userId,
-            
-            data: data
-        };
-
-        if(data['label']!=undefined){
-        params['label'] = data['label']
-        delete data['label']
-        }
-
-        this.http.post('/api/v1/pr/deter/project/stop', params, {withCredentials: true})
-            .subscribe(data1 => {
-		    
-                this.showLoader = false;
-                if (data1.success) {
-                    this._snackBar.open('Successfully stopped', 'close', {
-                        duration: 2000,
-                    });
-                } else {
-
-                    const dialogRef = this.dialog.open(RunVariablePopUp, {
-                        width: '30%',
-                        data: data1.labels,
-                    });
-
-                    dialogRef.afterClosed().subscribe((result) => {
-                        if (result !== undefined) {
-                            this.showLoader = true;
-                            console.log(result)
-                            this.stop(result);
-                        }
-                    });
-                }
-            }, error => {
-                this.showLoader = false;
-                this._snackBar.open('Something went wrong please try again later!', 'close', {
-                    duration: 2000,
-                });
-            });
-    }
-
-
-
     getRunLogs() {
         
         let url = 'v1/pr/deter/project/run/logs?eid='+this.experimentId+'&account_id='+this.userId;
@@ -474,6 +562,21 @@ export class DeterLabViewComponent implements OnInit {
                 console.log(data)
                 this.logList = data
             });
+    }
+
+    updateNavTabStatus(tab) {
+        if (tab == 'current') {
+            if (this.activeTab != 'current') {
+                console.log('show');
+                this.currentInfoComponent.onSelectionChange(true);
+            }
+        } else {
+            if (this.activeTab == 'current') {
+                console.log('hide')
+                this.currentInfoComponent.onSelectionChange(false);
+            }
+        }
+        this.activeTab = tab;
     }
 }
 
@@ -513,3 +616,4 @@ export class RunVariablePopUp implements OnInit {
         this.dialogRef.close();
     }
 }
+

@@ -39,7 +39,7 @@ export class NlpComponent {
     this.nlpTextFilter = text[text.length - 2];
   }
   insertValue(text: string) {
-    this.service.insertVaue(text);
+    this.service.insertValue(text);
   }
 
   delete(index: number) {

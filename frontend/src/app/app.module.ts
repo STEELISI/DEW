@@ -1,5 +1,5 @@
 import { BrowserModule } from "@angular/platform-browser";
-import { NgModule} from "@angular/core";
+import { NgModule, ErrorHandler } from "@angular/core";
 import { AppRoutingModule } from "./app-routing.module";
 import { AppComponent } from "./app.component";
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
@@ -8,6 +8,8 @@ import { RouterModule } from '@angular/router';
 import { HttpService } from './http-service.service';
 import { AuthModule } from './@auth/auth.module';
 import { StateService } from './state-service.service';
+import { LogService } from "./experiment/hlbparser/common/logging-service";
+import { ErrorInterceptor } from "./error-interceptor";
 import { SocialLoginModule, SocialAuthServiceConfig } from 'angularx-social-login';
 import { GoogleLoginProvider } from 'angularx-social-login';
 import { environment } from "environments/environment.prod";
@@ -30,6 +32,11 @@ import { environment } from "environments/environment.prod";
   providers: [
     HttpService, 
     StateService,
+    LogService,
+    {
+      provide: ErrorHandler,
+      useClass: ErrorInterceptor
+    },
     {
       provide: "SocialAuthServiceConfig",
       useValue: {

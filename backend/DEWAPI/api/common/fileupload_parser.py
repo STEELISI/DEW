@@ -5,7 +5,7 @@ import werkzeug
 
 upload_parser = api.parser()
 upload_parser.add_argument('file', location='files',
-                   type=werkzeug.FileStorage, required=True)
+                   type=werkzeug.datastructures.FileStorage, required=True)
 
 parser = reqparse.RequestParser()
 parser.add_argument('upload', required = True)

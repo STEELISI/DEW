@@ -2,6 +2,7 @@ from jumpssh import SSHSession, RunCmdError, ConnectionError
 from DEWAPI import settings
 import uuid
 import time
+import json
 
 class SSHConnection():
     def __init__(self,username,password):
@@ -149,7 +150,7 @@ class SSHConnection():
             result['error'] = "Unable to connect to 'deterlab' with user '" + self.username + "'"
         return result
 
-    def runFile(self,project,exp,fileContent,variables):
+    def runFile(self,project,exp,fileContent,variables, unique_name, action):
         result = {}
         try:
             gatewaySession = SSHSession(self.sshURL, self.username, password=self.password).open()
@@ -167,16 +168,17 @@ class SSHConnection():
                 result['error']= "experiment '" + exp + "' is in transition."
                 return result 
             try:
-                unique_name = exp + '_run'# + str(uuid.uuid4())
+                unique_name = exp + '_run'
                 filename = unique_name + ".sh"
+                print("Unique name ", unique_name, " file name ", filename, " action ", action)    
                 if self.createFile(gatewaySession,filename,fileContent):
+                    print("Created file")
                     labels = ''
                     for label in variables:
                         labels += ' \'' + str(label) + '\''
-
-                    cmd = '/share/shared/dew/manager /users/' + self.username + '/' + filename + ' ' + project + ' ' + exp + ' ' + unique_name + labels + ' start' \
+                        
+                    cmd = '/share/shared/dew/manager /users/' + self.username + '/' + filename + ' ' + project + ' ' + exp + ' ' + unique_name + labels + ' ' + action \
                         + '>' + unique_name + '.log' 
-
                     print(cmd)
                     try:
                         gatewaySession.get_cmd_output(cmd)
@@ -186,7 +188,8 @@ class SSHConnection():
                     result['success'] = True
                     result['filename'] = unique_name
                 else:
-                    result['error']= "unable to upload file to server."    
+                    print("Could not create file")
+                    result['error']= "unable to upload file to server."
             except RunCmdError as e:
                 # print(e)
                 result['error']= "project '" + project + "' doesn't exist"
@@ -252,30 +255,25 @@ class SSHConnection():
                 if not gatewaySession.exists(directory) or not gatewaySession.exists(directory+ "/" + unique_name):
                     result['error'] = "No run information available."
                     return result
-                directory = directory+ "/" + unique_name
-                cmd = "ls " + directory + ' | wc -l'
-                numberOfFiles = int(gatewaySession.get_cmd_output(cmd)) //4
-                
                 results = []
-                for i in range(s,min(s+b,numberOfFiles)):
-                    r = {}
-                    script = '/script.'+str(i)+'.sh'
-                    error = '/error.'+str(i)
-                    status = '/status.'+str(i)
-                    cmd = 'cat ' + directory 
-                    try:
-                        r['script'] = gatewaySession.get_cmd_output(cmd + script)
-                        r['error'] = gatewaySession.get_cmd_output(cmd + error)
-                        r['status'] = gatewaySession.get_cmd_output(cmd + status)
-                        results.append(r)
-                    except RunCmdError as e:
-                        result['command_status_message']= "command executed with exception"
-                        break
-                result['startIndex'] = s
-                result['batchSize'] = b
-                result['totalFiles'] = numberOfFiles
+                directory = directory+ "/" + unique_name
+                cmd = "/share/shared/dew/jobstatus " + unique_name
+                print("Cmd ", cmd)
+                output = gatewaySession.get_cmd_output(cmd)
+                print("output ", output)
+                jo = json.loads(output)
+                cnt = 0
+                for data in jo:
+                    for id in data:
+                        if (id == 'data'):
+                            #print("One element is ", data[id])
+                            results.append(data[id])
+                            cnt += 1
+                print("Result ", results)
                 result['data'] = results
-                    # result['filename'] = unique_name
+                result['startIndex'] = 0
+                result['batchSize'] = cnt
+                result['totalFiles'] = cnt
                   
             except RunCmdError as e:
                 result['error']= "command executed with exception"

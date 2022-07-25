@@ -378,7 +378,7 @@ def addSuggestions(evtype, pb):
             globals.sbuttons[s] = 1
             globals.app.addButton(s, pb)
     elif evtype == "constraints_enter":
-        for l in ["num", "os","link","lan","interfaces","location","nodetype"]:
+        for l in ["num", "os","link","lan","interfaces","location","nodetype","ip"]:
             globals.app.addButton(l,Centry)
             globals.sbuttons[l]=1
     elif evtype == "emit":
@@ -429,7 +429,7 @@ def processConstraints():
             item = items.pop(0)
             # parse out constraints
             if len(items) >= 2:
-                if (item == "num" or item == "os" or item == "location" or item == "interfaces" or item == "nodetype"):
+                if (item == "num" or item == "os" or item == "location" or item == "interfaces" or item == "nodetype" or item=="ip"):
                     if items[0] in globals.nodes:
                         if items[0] not in globals.constraints:
                             globals.constraints[items[0]] = dict()
@@ -510,7 +510,7 @@ def processConstraints():
         ll = chs.pop()
         items = re.split("[\s,]",ll.strip())
         item = items.pop(0)
-        if item in ["num", "os","nodetype", "interfaces", "location", "link","lan"] and len(items) == 0:
+        if item in ["num", "os","nodetype", "interfaces", "location", "link", "lan", "ip"] and len(items) == 0:
             addSuggestions("actors_only", Centry)
         elif len(items) >= 1:
             if (item == "num" or item == "interfaces") and items[-1] in globals.actors:
@@ -537,6 +537,9 @@ def processConstraints():
             elif item == "location" and (items[-1] in globals.actors or
                                          items[-1] in globals.nodes):
                 addSuggestions("enter testbed", Centry)
+            elif item == "ip" and (items[-1] in globals.actors or
+                                         items[-1] in globals.nodes):
+                addSuggestions("enter ip address", Centry)
             else:
                addSuggestions("constraints_enter", Centry)
         else:

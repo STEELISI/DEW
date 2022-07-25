@@ -30,7 +30,7 @@ echo "Building frontend..."
 
 cd frontend
 npm install
-$(npm run $FRNTBLD)
+`npm run $FRNTBLD`
 cd ..
 
 echo "Building documentation..."

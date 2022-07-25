@@ -7,6 +7,7 @@ privateUrlpattern = "^/api/v1/pr/*"
 publicUrlpattern = "^/api/v1/p/*"
 
 login = GoogleLogin()
+
 class AuthFilter():
     
     def checkCors(self):
@@ -22,7 +23,8 @@ class AuthFilter():
         if origin in url:
             return True, None
         else:
-            return True, "Unauthorized ussage."
+            return True, "Unauthorized usage."
+        
     def isUrlPathPrivate(self):
         path = request.path
         privateUrlProgPattern = re.compile(privateUrlpattern)
@@ -39,6 +41,7 @@ class AuthFilter():
             return False, True, None
         else:
             return False, False, "Unauthorized usage."
+        
     def authorizeUser(self):
         cookies = request.cookies
         if 'token' in cookies:
@@ -50,7 +53,7 @@ class AuthFilter():
                 userObj.setEmailId(user['emailId'])
                 return False, None
          
-        return True, 'Unauthorize Access'
+        return True, 'Unauthorized Access'
         
 
             

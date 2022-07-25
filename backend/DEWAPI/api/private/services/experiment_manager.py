@@ -1,5 +1,6 @@
 from extensions import db
 from DEWAPI.models.user import User
+from DEWAPI.models.slide import Slide
 from DEWAPI.models.experiment import Experiment
 from DEWAPI.models.drive_table import DriveTable
 from DEWAPI.models.access_control import AccessControl
@@ -310,4 +311,97 @@ class ExperimentManager(object):
         return driveTableId.driveFileId
 
 
+    def create_experiment_slide(self, user_id, experiment_id, actor_action_mapping, sequence_number):
+        user = User.query.filter(User.uid == user_id).first()
 
+        if user is None:
+            return False, "Invalid User"
+
+
+        e = Experiment.query.filter(Experiment.experiment_id == experiment_id).first()
+
+        if e is None:
+            raise ValueError("Forbidden")
+        if self.user_can(experiment_id, user_id, AccessControlEnum.write.value) is not None:
+
+            existing_slide = Slide.query.filter(Slide.experiment_id == experiment_id, Slide.sequence_number == sequence_number).first()
+            if existing_slide:
+                raise ValueError("Slide with same sequence number exists")
+
+            slide = Slide(experiment_id=experiment_id, actor_action_mapping=actor_action_mapping,
+                action_events_mapping="{}",
+                sequence_number=sequence_number)
+
+            db.session.add(slide)
+            db.session.commit()
+        return slide
+
+    def swap_slides(self, user_id, experiment_id, first_slide_id, second_slide_id):
+        if self.user_can(experiment_id, user_id, AccessControlEnum.write) is not None:
+            first_slide = Slide.query.filter(Slide.slide_id == first_slide_id).first()
+            second_slide = Slide.query.filter(Slide.slide_id == second_slide_id).first()
+            tmp = first_slide.sequence_number
+            first_slide.sequence_number = second_slide.sequence_number
+            second_slide.sequence_number = tmp
+            
+            db.session.commit()
+            return True
+
+    def update_experiment_slide_mapping(self, user_id, experiment_id, slide_id, actor_action_mapping, action_binding_mapping):
+        if self.user_can(experiment_id, user_id, AccessControlEnum.write) is not None:
+            s = Slide.query.filter(Slide.slide_id == slide_id).first()
+            s.actor_action_mapping = actor_action_mapping
+            s.action_binding_mapping = action_binding_mapping
+            db.session.commit()
+            return s
+
+    def delete_all_slides(self, user_id, experiment_id):
+        if self.user_can(experiment_id, user_id, AccessControlEnum.read) is not None:
+
+            Slide.query.filter(Slide.experiment_id == experiment_id).delete()
+
+            db.session.commit()
+
+
+    def prepare_slides_from_dew(self, user_id, experiment_id):
+        if self.user_can(experiment_id, user_id, AccessControlEnum.write) is not None:
+            self.delete_all_slides(user_id, experiment_id)
+            dew_content = json.loads(
+                self.get_experiment(experiment_id, user_id).content)
+            seq = 0
+            for behavior in dew_content['behaviors']:
+                s = Slide.get_from_dew(experiment_id, seq, behavior, dew_content['bindings'])
+                db.session.add(s)
+                seq += 1
+            db.session.commit()
+        return Slide.query.filter(Slide.experiment_id == experiment_id).order_by(Slide.sequence_number)
+
+    def slides_of_experiment(self, user_id, experiment_id):
+        if self.user_can(experiment_id, user_id, AccessControlEnum.read) is not None:
+            experiment = self.get_experiment(experiment_id, user_id)
+            slides = Slide.query.filter(Slide.experiment_id == experiment_id).order_by(Slide.sequence_number)
+            s2 = [s.to_dict() for s in slides] or []
+            last_max_updated = 0
+            if(len(s2) > 0):
+                last_max_updated = max([s['updated_at'] for s in s2])
+            if(experiment.updated_at > last_max_updated):
+                slides = self.prepare_slides_from_dew(user_id, experiment_id)
+                return [s.to_dict() for s in slides]
+
+            return s2
+
+    def delete_slide(self, user_id, experiment_id, slide_id):
+        if self.user_can(experiment_id, user_id, AccessControlEnum.write) is not None:
+            Slide.query.filter(Slide.slide_id == slide_id).delete()
+            db.session.commit()
+            return True
+
+    def dew_from_slides(self,user_id, experiment_id):
+        if self.user_can(experiment_id, user_id, AccessControlEnum.read) is not None:
+            slides = Slide.query.filter(Slide.experiment_id == experiment_id).order_by(Slide.sequence_number)
+            dew_string = []
+            bindings = []
+            for slide in slides:
+                dew_string += slide.behavior_string()
+                bindings += slide.bindings()
+            return [dew_string, bindings]

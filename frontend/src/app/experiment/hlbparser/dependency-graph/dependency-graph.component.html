@@ -1,9 +1,16 @@
-<div class="container-fluid">
+<div class="container">
+  <div class="row sticky-top">
+    <mat-toolbar>
+    <button mat-raised-button color="warn" class="col-md-2" (click)="showSlides()">Previous : Edit Slides</button>
+    <div class="col-md-8"></div>
+    <button mat-raised-button color="accent" class="col-md-2" (click)="showEditor()">Next : Go to editor</button>
+  </mat-toolbar>
+  </div>
   <div class="row">
     <p>This graph outlines the sequence of actions in your scenario. Edges denote dependencies where one action produces an event/trigger that the other action depends on.</p>
   </div>
   <div class="row">
-  <div class="col-md-10 taller"> 
+  <div class="col-md-8 taller"> 
     <ngx-graph #graph
     [links]="links"
     [nodes]="nodes"
@@ -81,7 +88,7 @@
 
 </ngx-graph>
   </div>
-  <div class="col-md-2 padded">
+  <div class="col-md-4 padded">
       <div class="row">Legend</div>
       <div *ngFor="let item of matching | keyvalue">
         <div class="row bottom-border">

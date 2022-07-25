@@ -46,12 +46,12 @@ export class AuthService {
     this.lastTime = (new Date()).getTime();
     setInterval(() => {
       this.currentTime = (new Date()).getTime();
-      if (this.currentTime > (this.lastTime + (60*10*1000) + (60*2*1000))) { //Check if the computer is awake every 10 mins. Ignore small delays.
+      if (this.currentTime > (this.lastTime + (60*1*1000) + (60*1*1000))) { //Check if the computer is awake every min. Ignore small delays.
         // Probably just woke up!
         this.refreshToken();
       }
       this.lastTime = this.currentTime;
-    }, (60*10*1000));
+    }, (60*1*1000));
 
   }
 

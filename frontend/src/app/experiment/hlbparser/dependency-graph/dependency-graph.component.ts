@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, ViewChild, HostListener } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter, ViewChild, HostListener } from '@angular/core';
 import { Edge, Node, Layout, ClusterNode, NodePosition, GraphComponent } from '@swimlane/ngx-graph';
 import { Subject } from 'rxjs';
 import * as shape from 'd3-shape';
@@ -12,6 +12,7 @@ import { StateService } from "src/app/state-service.service";
   styleUrls: ['./dependency-graph.component.scss']
 })
 export class DependencyGraphComponent implements OnInit{
+  @Output() navigate: EventEmitter<any> = new EventEmitter();
   public nodes: Node[] = [];
   public links: Edge[] = [];
   public layout: String | Layout = 'dagreCluster';
@@ -439,5 +440,13 @@ node   */
       reconstructedString += "emit " +  node.data['e_events'].join(", ")
     }
     return reconstructedString
+  }
+
+  showSlides(){
+    this.navigate.emit(4)
+  }
+
+  showEditor(){
+    this.navigate.emit(1)
   }
 }

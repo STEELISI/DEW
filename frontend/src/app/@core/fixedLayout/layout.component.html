@@ -57,44 +57,30 @@
 </div>
   
   <div id="content" style="border-bottom: 1px solid #eee;">
-    <div class="col-md-12">
-   
-  <div class="header">
-    <nav class="navbar navbar-expand-lg static-top" style="padding: 0;">
-          <div class="container col-md-12"> 
-   
-            <div class="navbar-header">
-      <i  (click)=" toggle()" class="fas fa-bars menu_pointer navbar-brand"></i>
-             
-            <a class="navbar-brand" href="#">
-              <h3 style="font-family: serif; font-style: italic; margin-left: 3px; color: #900">Distributed Experiment Workflows</h3>
-            </a>
-           
-            </div>
-  
-        <ul class="navbar-nav ml-auto">
-              <li class="nav-item">
-                <a class="nav-link" href="/docs">Help</a>
-              </li>
-              <li class="nav-item">
-                <a class="nav-link" href="/docs/contact_us">Contact us</a>
-              </li>
-            </ul>
-            
-  
-      
-  
-        
+
+  <div class="header d-flex">
+    <nav class="navbar navbar-expand-lg static-top flex-grow-1">
+          <div class="flex-grow-1"> 
+              <div class="navbar-header flex-grow-1 d-flex mr-2">
+                <i (click)=" toggle()" class="fas fa-bars menu_pointer navbar-brand p-2 align-self-center"></i>
+              
+                <a class="navbar-brand p-2 align-self-center flex-grow-1" href="#">
+                  <h3 class="navbar-heading">Distributed Experiment Workflows</h3>
+                </a>
+                <ul class="navbar-nav ml-auto p-2">
+                  <li class="nav-item align-self-center">
+                    <a class="nav-link" href="/docs">Help</a>
+                  </li>
+                  <li class="nav-item align-self-center">
+                    <a class="nav-link" href="/docs/contact_us">Contact us</a>
+                  </li>
+                </ul>
+              </div>
       </div>
-      
     </nav>
   </div>
-
-   
 </div>
-
-</div>
-<div id="mainRouter" class="row" (click)="closeMenu()">
+<div id="mainRouter" (click)="closeMenu()">
   <div class="container">
   
   <ng-content select="router-outlet"></ng-content>

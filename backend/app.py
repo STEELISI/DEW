@@ -47,7 +47,7 @@ def register_extensions(app):
 
 def create_app():
     flask_app = Flask(__name__)
-# app.debug = true
+    # app.debug = true
     flask_app.config.from_object('DEWAPI.settings')
     register_extensions(flask_app)
     return flask_app

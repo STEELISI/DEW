@@ -28,7 +28,7 @@ class BashGenerator(Generator):
             '(?:\s|^|\/)(eid)(?:\s|$|\/|\.)': 'pexp -e',
             '(?:\s|^|\/)(nid)(?:\s|$|\/|\.)': 'pexp -n',
         }
-        self.evars = dict();
+        self.evars = dict()
 
 
     def generate(self, mode=None):
@@ -40,6 +40,7 @@ class BashGenerator(Generator):
         self.generatePreamble(mode)        
         self.collectConds()        
         self.generateActions()
+        self.generatePostamble(mode)
 
     def collectLabels(self):
         self.labels = dict()
@@ -49,8 +50,12 @@ class BashGenerator(Generator):
     def collectNum(self):
         self.num = dict()
         for c in self.constraints_parsed:
-            if c[0] == 'num':
-                self.num[c[1][0]] = int(c[2][0])
+            if c[0] == 'config':
+                for i in range(0, len(c[2]), 2):
+                    if c[2][i] == 'num':
+                        for x in c[1]:
+                            if int(c[2][i+1]) > 1:
+                                self.num[x] = int(c[2][i+1])
             
     def generateActions(self):
         sid = 0
@@ -124,7 +129,7 @@ class BashGenerator(Generator):
                         for c in count:
                             r1 = re.findall(cond+'\.\d+',c)
                             if len(r1) > 0:
-                                if (self.conditions[cond][0] == "psuccess"):
+                                if (cond in self.conditions and self.conditions[cond][0] == "psuccess"):
                                     if ctext != "":
                                         ctext +=  "|| [ $status" +str(count[c])+" -ne 0 ] "
                                     else:
@@ -138,7 +143,7 @@ class BashGenerator(Generator):
                     self.run[label] += ctext + " ; then \n\t exit 1\nfi\n"
                                 
             if wait is not None:
-                self.run[label] += "sleep "+str(wait)+"\n";
+                self.run[label] += "sleep "+str(wait)+"\n"
 
             if action in self.bindings_parsed:                
                 words = re.split(' |\(|\)', self.bindings_parsed[action])
@@ -174,6 +179,16 @@ class BashGenerator(Generator):
                         if (event is not None):
                             count[event] = sid
                         sid += 1
+                        
+        for w in actors:
+            if w in self.num.keys():
+                found = True
+                for i in range(0,self.num[w]):
+                    self.clear[label] += "execute_stop \"" + w + "-" + str(i)+ "\"  \"all\" 0 all &\n"
+            else:
+                self.clear[label] += "execute_stop \"" + w + "\" \"all\" 0 all &\n"
+
+
 
     def generateCmd(self, actor1, i, actor2 , j, sid, action, label):
         print("Generate command ", action)
@@ -202,11 +217,9 @@ class BashGenerator(Generator):
                     rcnt += 1
 
         if i is not None:
-            self.run[label] += "execute_fork \"" + actor1 + "-" + str(i)+ "\" \"" + naction +"\" " + str(sid) + " &\n"
-            self.clear[label] += "execute_clear \"" + actor1 + "-" + str(i)+ "\" \"" + naction +"\" " + str(sid) + " &\n"
+            self.run[label] += "execute_fork \"" + actor1 + "-" + str(i)+ "\" \"" + naction +"\" " + str(sid) + " " + action +" &\n"
         else:
-            self.run[label] += "execute_fork \"" + actor1 + "\" \"" + naction +"\" " + str(sid) + " &\n"
-            self.clear[label] += "execute_clear \"" + actor1 + "\" \"" + naction +"\" " + str(sid) + " &\n"
+            self.run[label] += "execute_fork \"" + actor1 + "\" \"" + naction +"\" " + str(sid) + " " + action + " &\n"
 
     def collectConds(self):
         self.conditions = dict()
@@ -217,12 +230,12 @@ class BashGenerator(Generator):
             r1 = re.findall(r"(pexists\()(\w+)", self.bindings_parsed[b])
             if len(r1) > 0:
                 for r in r1:
-                    self.cflags[r[1]] |= 1;
+                    self.cflags[r[1]] |= 1
                     self.conditions[b] = ['pexists',r[1]]
             r1 = re.findall(r"(psuccess\()(\w+)", self.bindings_parsed[b])
             if len(r1) > 0:
                 for r in r1:
-                    self.cflags[r[1]] |= 2;
+                    self.cflags[r[1]] |= 2
                     self.conditions[b] = ['psuccess',r[1]]
         
                 
@@ -246,12 +259,14 @@ class BashGenerator(Generator):
                     continue
                 action = s[2][0]
                 clist = s[0]
-                pos_vars.append(self.bindings_parsed[action])
+                if action in self.bindings_parsed:
+                    pos_vars.append(self.bindings_parsed[action])
                 if clist is not None:
                     for c in clist:
-                        pos_vars.append(self.bindings_parsed[c])
-                        if s[4] is not None:
-                            pos_vars.append("wait " + s[4])    
+                        if self.bindings_parsed != {}:
+                            pos_vars.append(self.bindings_parsed[c])
+                            if s[4] is not None:
+                                pos_vars.append("wait " + s[4])    
             
             for stmt in pos_vars:
                 r1 = re.findall(r"\$\w+", stmt)
@@ -275,7 +290,12 @@ class BashGenerator(Generator):
 
             self.run[label] += argstring
         
-            
+
+    def generatePostamble(self, mode=None):
+        for label in self.labels:
+            if mode == "job":
+                self.clear[label] += open('./DewFunctions/Generators/bash/bash_job_clean_postamble.txt', 'r').read()
+                
     def generatePreamble(self, mode=None):
         for label in self.labels:
             if mode == "job":

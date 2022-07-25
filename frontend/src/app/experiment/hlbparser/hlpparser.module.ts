@@ -17,6 +17,7 @@ import {
   MatSelectModule,
   MatTooltipModule,
   MatIconModule,
+  MatSidenavModule
 } from "@angular/material";
 import { NgxFileDropModule } from "ngx-file-drop";
 import { HLBParserComponent } from "./hlpparser.component";
@@ -34,6 +35,16 @@ import {
 import { AuthGuard } from "src/app/@auth/auth.guard";
 import { AuthModule } from "src/app/@auth/auth.module";
 import { DependencyGraphComponent } from "./dependency-graph/dependency-graph.component";
+import { 
+  TopologyGraphComponent,
+  UpdateActorInfo
+} from "./topology/topology.component";
+import { ExperimentSlides } from "./experiment-slides/experiment-slides.component";
+import { 
+  SingleSlideComponent,
+  UpdateSlideMapping
+} from "./experiment-slides/single-slide.component";
+import { DesignPageComponent } from "./design-page/design-page.component";
 import { MatRadioModule } from "@angular/material/radio";
 import {
   InfoComponent,
@@ -51,6 +62,7 @@ import { BrowserModule } from '@angular/platform-browser';
 import { UserIdleModule } from 'angular-user-idle';
 import {DeterLabViewComponent, RunVariablePopUp} from './deterlab-view/deterlab-view.component';
 import { RunInfoComponent } from "./deterlab-view/run-info/run-info.component";
+import { CurrentInfoComponent } from "./deterlab-view/current-info/current-info.component";
 
 @NgModule({
   exports: [HLBParserComponent],
@@ -59,6 +71,7 @@ import { RunInfoComponent } from "./deterlab-view/run-info/run-info.component";
     HlbComponent,
     NlpComponent,
     DependencyGraphComponent,
+    TopologyGraphComponent,
     DeterLabViewComponent,
     TextFilterPipe,
     UploadComponent,
@@ -73,8 +86,14 @@ import { RunInfoComponent } from "./deterlab-view/run-info/run-info.component";
     BASHFilePopUp,
     UserListPopUp,
     VersionsPopUp,
+    UpdateActorInfo,
+    ExperimentSlides,
+    SingleSlideComponent,
+    UpdateSlideMapping,
+    DesignPageComponent,
     RunVariablePopUp,
     RunInfoComponent,
+    CurrentInfoComponent
   ],
   imports: [
     CommonModule,
@@ -92,6 +111,7 @@ import { RunInfoComponent } from "./deterlab-view/run-info/run-info.component";
     MatSnackBarModule,
     FontAwesomeModule,
     MatTabsModule,
+    MatSidenavModule,
     DragDropModule,
     FormsModule,
     MatTableModule,
@@ -115,8 +135,13 @@ import { RunInfoComponent } from "./deterlab-view/run-info/run-info.component";
     BASHFilePopUp,
     UserListPopUp,
     VersionsPopUp,
+    UpdateActorInfo,
+    ExperimentSlides,
+    SingleSlideComponent,
+    UpdateSlideMapping,
+    DesignPageComponent,
     RunVariablePopUp
-  ],
+    ],
   providers: [StateService],
   bootstrap: [HLBParserComponent],
 })

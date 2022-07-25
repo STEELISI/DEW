@@ -45,7 +45,8 @@ export class InfoComponent implements OnInit {
     protected route: Router,
     protected gdrive: GoogleDriveService,
     private _snackBar: MatSnackBar,
-    private userIdle: UserIdleService
+    private userIdle: UserIdleService,
+    private changeRef: ChangeDetectorRef,
   ) {}
   // gdrive = new GoogleDriveService(this.http, this.auth);
   nameControl = new FormControl();
@@ -114,6 +115,11 @@ export class InfoComponent implements OnInit {
     this.state.monitorSaveEvent().subscribe((flag:boolean) =>{
         if(flag)
           this.save();
+    });
+
+    this.state.getCurrentViewId().subscribe((id) => {
+        this.viewid = id
+        this.changeRef.detectChanges();
     });
 
     if(this.experimentControl>3){
@@ -291,7 +297,6 @@ export class InfoComponent implements OnInit {
       alert("Please Enter Name to save the experiment.");
       this.nameControl.markAsTouched();
     }
-    console.log(this.experiment);
   }
 
   unsetShowAlertMessage() {
@@ -460,7 +465,6 @@ export class InfoComponent implements OnInit {
       alert("Please Enter Name to save the experiment.");
       this.nameControl.markAsTouched();
     }
-    console.log(this.experiment);
     })}
 
   updateDrive() {
@@ -508,14 +512,12 @@ export class InfoComponent implements OnInit {
 
   addUserPopUp(){
     let t:string = this.auth.getCookie('userId')
-    console.log(t)
       var dialogRef = this.dialog.open(AddUserPopUp, {
         width: "40%",
         data: t
       });
 
       dialogRef.afterClosed().subscribe((result) => {
-        console.log(result);
         if (result!=undefined)
           this.addUser(result)
       });
@@ -541,7 +543,6 @@ export class InfoComponent implements OnInit {
     }
 
     this.http.post("api/v1/pr/persist/experiment/grantaccess",params,{withCredential:true}).subscribe(data=>{
-      console.log(data);
       if(data.error != undefined && data.error != null)
       alert("Error in granting access.")
     },error=>{
@@ -585,7 +586,6 @@ export class InfoComponent implements OnInit {
 }
 
   showVersionsPopup(){
-    console.log("this.experiment: ", this.experiment)
     var dialogRef = this.dialog.open(VersionsPopUp, {
       width: "80%",
       data: this.experiment['id']
@@ -685,9 +685,9 @@ export class InfoComponent implements OnInit {
   }
 
   exportToDEW(){
-    this.http.put("v1/pr/export/dew", { id: this.experiment['id']}, {withCredential: true}).subscribe(
+    this.http.put("v1/pr/export/dew", { id: this.experiment['id'] }, {withCredential: true}).subscribe(
       (data) => {
-        this.downLoadFile(data['dew_content'], "dew.txt")
+        this.downLoadFile(data['dew_content'], `${this.experiment.name}.dew`)
         this._snackBar.open("Successfully Downloaded.", "close", {
           duration: 2000,
         });
@@ -706,6 +706,52 @@ export class InfoComponent implements OnInit {
 
       }
     )
+  }
+
+  mergeTBGen() {
+    this.generateMergeTB();
+  }
+  generateMergeTB() {
+    var data = {
+      actors: this.experiment.actors,
+      behaviors: this.experiment.behaviors,
+      constraints: this.experiment.constraints,
+      bindings: this.experiment.bindings,
+      name: this.experiment.name,
+    };
+    var flag = false;
+    this.experiment.behaviors.forEach((element) => {
+      if (element == null || element.trim() == "") {
+        flag = true;
+        return;
+      }
+    });
+
+    if (flag) return;
+    this.http.put("v1/pr/hlb/generateMergeTB", data, {withCredential:true}).subscribe(
+      (data) => {
+        let message = "Successfully Downloaded."
+        if(data.script != ''){
+        this.downLoadFile(data.script, "mergeTB.txt");
+        }else
+        message = "Error in Downloading"
+        this._snackBar.open(message, "close", {
+          duration: 2000,
+        });
+        // this.stateservice.setBindings(data.Bindings);
+      },
+      (error) => {
+        if(error.status == 401){
+          this._snackBar.open("You have been logged out. Please login in another tab or window and try again.", "close", {
+            duration: 2000,
+          });
+        } else {
+          this._snackBar.open(error.message, "close", {
+            duration: 2000,
+          });
+        }
+      }
+    );
   }
 
   bashGen() {
@@ -738,22 +784,18 @@ export class InfoComponent implements OnInit {
     if (flag) return;
     this.http.put("v1/pr/hlb/generateBash", data, {withCredential:true}).subscribe(
       (result) => {
-      console.log(result)
         let message = "Error in Downloading."
       let data = {}
       for(let x of result){
-          console.log(x)
           data[x.run.fileName] = x.run.content
           data[x.clean.fileName] = x.clean.content
       }
       
       if (Object.keys(data).length !=0){
       var keys = Object.keys(data)
-      console.log(keys)
       var zip = new JSZip();
       var bashFolder = zip.folder("Bash Files");
       keys.forEach((key)=> {
-        console.log(key,data[key])
         bashFolder.file(key, data[key]);
       })
       zip.generateAsync({ type: "blob" })
