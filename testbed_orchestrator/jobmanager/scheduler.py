@@ -19,6 +19,8 @@ user=""
 home=""
 starttime=0
 folder=""
+netname = ""
+myname = ""
 
 def init_script(node, script):
     global myscript, started, user, home
@@ -37,8 +39,6 @@ def init_script(node, script):
         elif (i == "DEW"):
             user = prev
             break
-        
-    print("Home ", home, " user ", user)        
         
     started=False
 
@@ -86,14 +86,19 @@ def init_script(node, script):
             todelete.append(cid)
     for cid in todelete:
         print("Will delete command ", cid, " actor ", myscript[cid]['actor'], " node ", node)
+        sys.stdout.flush()
         del myscript[cid]
     for cid, val in myscript.items():    
         print("Command ", cid, " when ")
+        sys.stdout.flush()
         for cond in myscript[cid]['when']:
             print(cond)
+            sys.stdout.flush()
         print(" actor ", myscript[cid]['actor'], " action ", myscript[cid]['action'], " tell ")
+        sys.stdout.flush()
         for rec, mess in myscript[cid]['tell'].items():
             print(rec, mess)
+            sys.stdout.flush()
         print("\n\n")
         sys.stdout.flush()
 
@@ -147,6 +152,7 @@ def pstree():
 def run_cmd(script, num):
     global user
     print("Starting /bin/bash ", script)
+    sys.stdout.flush()
     f = open("/tmp/runjob.log", "a") 
     epoch=time.time()
     timenow=time.strftime("%d %b %Y %H:%M:%S", time.localtime(epoch)) 
@@ -164,9 +170,11 @@ def run_cmd(script, num):
     env[ 'PWD'      ]  = user_home_dir
     env[ 'USER'     ]  = user_name
     print("Will run script ", script)
+    sys.stdout.flush()
     process = subprocess.Popen(["sudo", "-u",user_name, "/bin/bash", script], start_new_session=True, env=env, cwd=user_home_dir, stderr=subprocess.STDOUT, stdout=subprocess.PIPE)
     #process = subprocess.Popen(["/bin/bash", script], stderr=subprocess.STDOUT, stdout=subprocess.PIPE)
     print("Opened process, pid ", process.pid, " as user ", user_uid, " in group ", user_gid, " home dir ", user_home_dir)
+    sys.stdout.flush()
     f = open("/tmp/runjob.log", "a") 
     epoch=time.time()
     timenow=time.strftime("%d %b %Y %H:%M:%S", time.localtime(epoch)) 
@@ -177,6 +185,7 @@ def run_cmd(script, num):
     cur = con.cursor()
     statement = "insert into processes values (" + str(process.pid)+",\""+script+"\","+str(num)+")"
     print(statement)
+    sys.stdout.flush()
     cur.execute(statement)
     con.commit()
     con.close()
@@ -204,6 +213,7 @@ def callback(ch, method, properties, body):
     f.write(timenow + " received %r\n" % body.decode())
     f.flush()
     print(" [x] Received msg %r" % body.decode())
+    sys.stdout.flush()
     f.close()
     
     elems = received_data.split()
@@ -229,6 +239,7 @@ def callback(ch, method, properties, body):
                 if cmd in myscript[cid]['when']:
                     myscript[cid]['when'].remove(cmd)
                     print("Removed ", cmd, " from command ", cid)
+                    sys.stdout.flush()
             return
         
 
@@ -245,17 +256,22 @@ def callback(ch, method, properties, body):
         else:
             statement = "select pid from processes\n"
         print(statement)
+        sys.stdout.flush()
 
         for row in cur.execute(statement):
             pid = str(row[0])
             print("Got pid from DB ", pid)
-
+            sys.stdout.flush()
+        
             if pid in children:
                 print("Children has pid ", pid)
+                sys.stdout.flush()
                 for c in children[pid]:
                     print("Should kill child ", c)
+                    sys.stdout.flush()
                     recursivekill(c)
             print("Should kill ", pid)
+            sys.stdout.flush()
             delpid = pid
             try:
                 os.kill(int(pid),signal.SIGABRT)
@@ -264,6 +280,7 @@ def callback(ch, method, properties, body):
                 #subprocess.call(["kill", "-9", pid])
             except:
                 print("Error ", sys.exc_info()[0])
+                sys.stdout.flush()
                 pass
 
             statementd = "delete from processes where pid="+delpid
@@ -286,7 +303,7 @@ def check_events():
                 started = True
                 starttime = 0
                 print("Starting now, time ", time.time())
-                
+                sys.stdout.flush()
         if started == False:
             continue
 
@@ -307,7 +324,6 @@ def check_events():
                     else:
                         filename = folder + "/pid." + str(cid)
                     file_exists = exists(filename)
-                    print("File exists ", filename, file_exists)
                     if (file_exists):
                         with open(filename) as myfile:
                             lines = myfile.readlines()
@@ -315,6 +331,7 @@ def check_events():
                             for l in lines:
                                 if (int(l) == 0 and mess == "psuccess") or mess == "pexists":
                                     print("Will tell " + mess + "-" + str(cid) + " to " + rec)
+                                    sys.stdout.flush()
                                     inform(mess + "-" +str(cid), rec)
                                     todelete.append(rec)
                                     continue
@@ -334,37 +351,60 @@ def check_events():
 
 def inform(msg, host):
 
+    global netname
+    
+    host = host + '.' + netname
     credentials = pika.PlainCredentials('dew', 'dew')
     connection = pika.BlockingConnection(pika.ConnectionParameters(host, credentials=credentials))
     channel = connection.channel()
 
 
-    channel.basic_publish(exchange='',
-                          routing_key='experiment',
-                          body=msg)
-    print(" [x] Sent ", msg, " to ", host)
-
+    try:
+        channel.basic_publish(exchange='',
+                              routing_key='experiment',
+                              body=msg, properties=pika.BasicProperties(content_type='text/plain',
+                                                          delivery_mode=pika.DeliveryMode.Transient),
+                          mandatory=True)
+        
+        print(" [x] Sent ", msg, " to ", host)
+        sys.stdout.flush()
+    except pika.exceptions.UnroutableError:
+        print(" [x] Message ", msg, " was returned")
+        sys.stdout.flush()
+                
     connection.close()
 
         
 def main():
 
     global connection
+    global netname
+    global myname
     
     hostname = socket.gethostname().split('.')
-    myname = hostname[0]
+    for h in hostname:
+        if myname == "":
+            myname = h
+        elif netname == "":
+            netname = h
+        else:
+            netname = netname+'.'+h
 
     t = threading.Thread(target=check_events, args=())
     t.daemon = True
     t.start()
         
     credentials = pika.PlainCredentials('dew', 'dew')
-    connection = pika.BlockingConnection(pika.ConnectionParameters(host=myname, credentials=credentials))
+    connection = pika.BlockingConnection(pika.ConnectionParameters(host=socket.gethostname(), credentials=credentials))
     channel = connection.channel()
-    channel.queue_declare(queue='experiment')
+    channel.queue_declare(queue='experiment', exclusive=False, auto_delete=False)
+    
     channel.basic_consume(queue='experiment', on_message_callback=cb, auto_ack=True)
+    channel.confirm_delivery()
 
     print(' [*] Waiting for messages. To exit press CTRL+C')
+    sys.stdout.flush()
+                    
     channel.start_consuming()
 
 if __name__ == '__main__':

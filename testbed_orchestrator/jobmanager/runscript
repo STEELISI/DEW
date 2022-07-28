@@ -43,11 +43,6 @@ if (!-e $script)
 # Check if folder exists, and refuse to run if it does
 if ($action eq "start")
 {
-    if (-d glob("~/DEW/$label"))
-    {
-	print "It looks like script has already run. Please stop it first, before rerunning\n";
-	exit 1;
-    }
     check_stragglers($script);
     print("Will run script $script\n");
     system("bash $script $proj $exp $label $action > runscript.out");
@@ -56,11 +51,6 @@ if ($action eq "start")
 if ($action eq "stop")
 {
     # Check if folder exists, and refuse to run if it does not
-    if (! -d glob("~/DEW/$label"))
-    {
-	print "The script is already inactive\n";
-	exit 1;
-    }
     check_stragglers($script);
     print("Will run script $script\n");
     system("bash $script $proj $exp $label $action > runscript.out");

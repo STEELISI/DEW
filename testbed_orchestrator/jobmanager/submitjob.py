@@ -13,11 +13,23 @@ def declare():
     return min
 
 def main():
+    netname = ""
+    myname = ""
+    hostname = socket.gethostname().split('.')    
+    for h in hostname:
+        if myname == "":
+            myname = h
+        elif netname == "":
+            netname = h
+        else:
+            netname = netname+'.'+h
+
     #min = declare()
-    host = sys.argv[1]
+    host = sys.argv[1] + "." + netname
     msg = sys.argv[2]
 
     credentials = pika.PlainCredentials('dew', 'dew')
+    print("Connecting to ", host)
     connection = pika.BlockingConnection(pika.ConnectionParameters(host, credentials=credentials))
     channel = connection.channel()
 

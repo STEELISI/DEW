@@ -9,7 +9,7 @@ ExecStart=/share/shared/dew/scheduler.sh start
 ExecStop=/share/shared/dew/scheduler.sh stop
 PIDFile=/tmp/scheduler.pid
 Restart=always
-RestartSec=1s
+RestartSec=5s
 
 [Install]
 WantedBy=default.target

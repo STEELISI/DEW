@@ -4,7 +4,7 @@
 # as CSV. Look for this in ~/DEW/label
 # id, node, action, cmd, ran, status, error
 
-$usage = "$0 job label\n";
+$usage = "$0 label\n";
 %tasks=();
 if ($#ARGV < 0)
 {
@@ -28,13 +28,18 @@ for $f (@files)
     $id = $items[1];
     if ($items[0] eq "script")
     {
-	$node = $items[2];
-	$action = $items[3];
+	$node = $items[3];
+	$action = $items[2];
 	$tasks{$id}{'node'} = $node;
 	$tasks{$id}{'action'} = $action;
 	$fh = new IO::File(glob("~/DEW/$label/$f"));
-	<$fh>;
-	$cmd = <$fh>;
+	while(<$fh>)
+	{
+	    if ($_ =~ /\&$/)
+	    {
+		$cmd = $_;
+	    }
+	}
 	close($fh);
 	@elems = split /2\>/, $cmd;
 	$cmd = $elems[0];
@@ -78,7 +83,8 @@ for $f (@files)
     }
     elsif($items[0] eq "output")
     {
-	$fh = new IO::File(glob("~/DEW/$label/$f"));
+	@list = glob("~/DEW/$label/$f");
+	open(my $fh, "tail -10 $list[0] | ");
 	$output = "";
 	while(<$fh>)
 	{
