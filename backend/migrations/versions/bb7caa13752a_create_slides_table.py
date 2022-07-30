@@ -1,7 +1,7 @@
 """create_slides_table
 
 Revision ID: bb7caa13752a
-Revises: d784e7db522f
+Revises: 607ff753485b
 Create Date: 2021-01-04 13:11:13.001149
 
 """

@@ -17,7 +17,7 @@ depends_on = None
 
 def upgrade():
     op.add_column('deterlab_run_script_log', 
-        sa.Column('logs', sa.String, nullable=True)
+        sa.Column('logs', sa.String(5000), nullable=True)
     )
 
 
