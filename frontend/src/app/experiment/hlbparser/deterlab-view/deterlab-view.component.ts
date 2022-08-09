@@ -114,6 +114,7 @@ export class DeterLabViewComponent implements OnInit {
                 if (data2.error) {
                     if(this.transitionInterval){
                         clearInterval(this.transitionInterval);
+                        this.transitionInterval = null;
                     }
                     this.showSwap = false;
                     this.statusMessages = [data2.error];
@@ -133,6 +134,7 @@ export class DeterLabViewComponent implements OnInit {
                 } else {
                     if(this.transitionInterval){
                         clearInterval(this.transitionInterval);
+                        this.transitionInterval = null;
                     }
                     this.isInTransition = false;
                     this.statusMessages = data2.content.split('\n');
