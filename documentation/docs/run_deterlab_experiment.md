@@ -99,3 +99,8 @@ It might take a few minutes before your experiment updates are reflected on the 
     <br><br>
 
 * Once you're finished with the experiment, you can click on `Stop Experiment` towards the right of your screen in order to stop the current experiment.
+
+## Tutorials
+View video tutorials on using the testbed page below: <br>
+<iframe width="560" height="315" src="https://www.youtube.com/embed/AH4rYIfsRCQ" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+<br>
