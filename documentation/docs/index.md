@@ -1,4 +1,4 @@
-# Distributed Experiment workflows
+# Distributed Experiment Workflows
 
 Welcome to DEW - Distributed Experiment Workflows. Our goal is to simplify design and orchestration of testbed experiments using a webapp.
 
