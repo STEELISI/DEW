@@ -4,9 +4,9 @@ Jinja2==2.11.2
 joblib==0.16.0
 livereload==2.6.3
 lunr==0.5.8
-Markdown==3.2.2
+Markdown==3.0
 MarkupSafe==1.1.1
-mkdocs==1.1.2
+mkdocs==1.0.4
 nltk==3.5
 PyYAML==5.3.1
 regex==2020.7.14
