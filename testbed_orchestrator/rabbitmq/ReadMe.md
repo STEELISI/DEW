@@ -1,4 +1,4 @@
-# TestBed Orchestrator
+# TestBed Orchestrator - deprecated - this folder contains software we do not use
 
 Testbed orchestrator folder has 2 main files: nodeExecutor and nodeCommunicator.
 
