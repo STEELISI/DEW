@@ -1,0 +1,14 @@
+{
+    "Scenario": {
+        "task1": "c1 pingServer",
+        "task2": "server pingClient"
+    },
+    "Bindings": {
+        "pingServer": "ping -c 10 server",
+        "pingClient": "ping -c 10 c1"
+    },
+    "Constraints": {
+        "con1": "link c1 server",
+        "con2": "link c2 server"
+    }
+}
