@@ -52,14 +52,14 @@
     "roboto-fontface": "^0.10.0",
     "rxjs": "~6.4.0",
     "tslib": "^1.10.0",
-    "vis-data": "^7.1.2",
-    "vis-network": "^9.1.0",
+    "vis-data": "^8.0.4",
+    "vis-network": "^10.1.0",
     "vis-util": "^5.0.2",
     "zone.js": "~0.9.1"
   },
   "devDependencies": {
-    "@angular-devkit/build-angular": "^0.803.24",
-    "@angular/cli": "^8.3.23",
+    "@angular-devkit/build-angular": "^21.2.19",
+    "@angular/cli": "^22.0.6",
     "@angular/compiler-cli": "^8.2.14",
     "@angular/core": "^8.2.14",
     "@angular/language-service": "~8.2.14",
