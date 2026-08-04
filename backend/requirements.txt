@@ -11,7 +11,7 @@ cffi==1.15.0
 chardet==3.0.4
 Click==7.0
 crudini==0.9.3
-cryptography==37.0.2
+cryptography==50.0.0
 cymem==2.0.3
 cytoolz==0.9.0.1
 decorator==4.3.0
